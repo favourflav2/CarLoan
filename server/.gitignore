@@ -1,0 +1,9 @@
+.env.development
+.env.production
+.env
+env.development
+
+data/
+screenshots/
+/node_modules
+node_modules
