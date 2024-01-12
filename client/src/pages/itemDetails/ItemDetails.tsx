@@ -954,5 +954,3 @@ export default function ItemDetails(props: IItemDetailsProps) {
   );
 }
 
-// 877 662 7447
-// w05c776274

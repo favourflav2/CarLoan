@@ -51,9 +51,9 @@ export default function CreditTable () {
                   },
                 }}
               >
-                <TableCell className='text-[17px]'>Credit Score</TableCell>
-                <TableCell className='text-[17px]'>Average APR, new car</TableCell>
-                <TableCell className='text-[17px]'>Average APR, used car</TableCell>
+                <TableCell className='lg:text-[17px] text-[14px]'>Credit Score</TableCell>
+                <TableCell className='lg:text-[17px] text-[14px]'>Average APR, new car</TableCell>
+                <TableCell className='lg:text-[17px] text-[14px]'>Average APR, used car</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -65,11 +65,11 @@ export default function CreditTable () {
                     "&:nth-of-type(odd)": { backgroundColor: "#DCDCDC" },
                   }}
                 >
-                  <TableCell component="th" scope="row" className='text-[16px]'>
+                  <TableCell component="th" scope="row" className='lg:text-[16px] text-[13px]'>
                     {item?.score}
                   </TableCell>
-                  <TableCell className='text-[16px]'>{item.avgNewCar}%</TableCell>
-                  <TableCell className='text-[16px]'>{item.avgUsedCar}%</TableCell>
+                  <TableCell className='lg:text-[16px] text-[13px]'>{item.avgNewCar}%</TableCell>
+                  <TableCell className='lg:text-[16px] text-[13px]'>{item.avgUsedCar}%</TableCell>
                   
                 </TableRow>
               ))}
