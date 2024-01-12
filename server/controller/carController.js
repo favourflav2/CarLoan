@@ -1216,7 +1216,13 @@ export async function getOneCar(req, res) {
   try {
     const { id } = req.body;
     let data = allCarData.find((item) => item.index === Number(id));
-    res.send(data);
+
+    if(data){
+      res.send(data);
+    }else{
+      return res.status(404).json({msg:"Sorry There is No Car with Provided Information"})
+    }
+    
   } catch (e) {
     console.log(e);
     res.status(400).json({ msg: e.message });

@@ -126,6 +126,9 @@ const carSlice = createSlice({
     reducers: {
       setSearchedCars: (state) => {
         state.searchedCars = []
+      },
+      setCarSliceError: (state) =>{
+        state.error = ""
       }
     },
     extraReducers(builder){
@@ -215,4 +218,4 @@ const carSlice = createSlice({
 })
 
 export default carSlice.reducer
-export const {setSearchedCars} = carSlice.actions
+export const {setSearchedCars, setCarSliceError} = carSlice.actions
