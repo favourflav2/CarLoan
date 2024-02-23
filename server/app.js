@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { env } from "custom-env";
 import helmet from "helmet";
 import carRoutes from "./routes/carRoutes.js";
+import costOfLivingRoutes from "./routes/costOfLivingRoutes.js";
 
 
 env(true);
@@ -31,16 +32,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/carData", carRoutes);
+app.use("/COL",costOfLivingRoutes)
 
 
 
 console.log(process.env.NODE_ENV);
 
-//! inputs and outputs
-//*   (input) => outputs
 
-//! random values
-//* Math.random()
-
-//! Activation "relue"
-// function relu(value){
