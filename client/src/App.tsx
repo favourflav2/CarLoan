@@ -6,18 +6,22 @@ import Prac from './components/Prac';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ItemDetails from './pages/itemDetails/ItemDetails';
+import Cars from './pages/Cars/Cars';
+import { Dispatch, UseSelector } from './redux/store';
 
 
 function App() {
+  const dispatch = Dispatch()
+  const {lightAndDarkMode} = UseSelector(state => state.app)
   return (
-    <div className='w-full h-full'>
+    <div className={`w-full h-full ${lightAndDarkMode ? " bg-homeBg":" bg-lightHomeBg"}`}>
       <>
       <BrowserRouter>
       <ToastContainer />
       <NavBar />
       <Routes>
-        <Route path="/" element={<Navigate to="/cars"/>}/>
-        <Route path="/cars" element={<Home />} />
+        <Route path="/" element={<Home />}/>
+        <Route path="/cars" element={<Cars />} />
         <Route path="/path" element={<Prac />} />
         <Route path="/vehicle/:id" element={<ItemDetails />} />
       

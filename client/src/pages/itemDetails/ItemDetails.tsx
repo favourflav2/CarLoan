@@ -16,7 +16,7 @@ import {
   setMonths,
   setTotalPrice,
   updateLoanAmount,
-} from "../../redux/features/websiteSlice";
+} from "../../redux/features/carStateSlice";
 import { Loan } from "loanjs";
 import AmortizationItemDetails from "../../components/amortization/AmortizationItemDetails";
 import LoanPieChart from "../../components/charts/LoanPieChart";

@@ -3,8 +3,7 @@ import noImgPlaceHolder from "../../assets/noImg.png";
 import { NumericFormat } from "react-number-format";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "../../redux/store";
-import { resetItemDetailsState } from "../../redux/features/websiteSlice";
-
+import { resetItemDetailsState } from "../../redux/features/carStateSlice";
 
 // client/src/assets/noImg.png
 
@@ -17,20 +16,28 @@ export interface ICarVanaCardProps {
     mileage_name: string;
     name_modal: string;
     deal: string;
-    index: number
+    index: number;
   };
 }
 
 export default function CarVanaCard({ item }: ICarVanaCardProps) {
-  const navigate = useNavigate()
-  const dispatch = Dispatch()
+  const navigate = useNavigate();
+  const dispatch = Dispatch();
   return (
-    <div className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? 'border-2 border-emerald-300 ':"border-gray-300 border"}`} onClick={()=>{
-      navigate(`/vehicle/${item.index}`)
-      dispatch(resetItemDetailsState())
-    }}>
+    <div
+      className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
+      onClick={() => {
+        navigate(`/vehicle/${item.index}`);
+        dispatch(resetItemDetailsState());
+      }}
+    >
       {/* Img */}
-      <img src={item?.img ? item?.img : noImgPlaceHolder} alt="dominant color placeholder" loading="lazy" className="2xl:h-[270px] xl:h-[220px] lg:h-[193px] md:h-[180px] min-[445px]:h-[165px] h-[225px] w-auto rounded-t-lg object-cover" />
+      <img
+        src={item?.img ? item?.img : noImgPlaceHolder}
+        alt="dominant color placeholder"
+        loading="lazy"
+        className="2xl:h-[270px] xl:h-[220px] lg:h-[193px] md:h-[180px] min-[445px]:h-[165px] h-[225px] w-auto rounded-t-lg object-cover"
+      />
 
       {/* Certified */}
       <div className="flex justify-between items-center px-2 py-3">

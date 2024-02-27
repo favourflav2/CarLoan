@@ -1,68 +1,74 @@
-import * as React from 'react';
-import noImgPlaceHolder from '../../assets/noImg.png'
+import * as React from "react";
+import noImgPlaceHolder from "../../assets/noImg.png";
 import { NumericFormat } from "react-number-format";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from '../../redux/store';
-import { resetItemDetailsState } from '../../redux/features/websiteSlice';
+import { Dispatch } from "../../redux/store";
+import { resetItemDetailsState } from "../../redux/features/carStateSlice";
 
 export interface ICarDotComCardProps {
-    item: {
-        img: string;
-        type: string;
-        mileage: string;
-        price: string;
-        name_modal: string;
-        deal: string;
-        index: number
-      };
+  item: {
+    img: string;
+    type: string;
+    mileage: string;
+    price: string;
+    name_modal: string;
+    deal: string;
+    index: number;
+  };
 }
 
-export default function CarDotComCard ({item}: ICarDotComCardProps) {
-  const navigate = useNavigate()
-  const dispatch = Dispatch()
-
+export default function CarDotComCard({ item }: ICarDotComCardProps) {
+  const navigate = useNavigate();
+  const dispatch = Dispatch();
 
   const checkIfImageExists = (url: string, callback: (exists: boolean) => void) => {
     const img = new Image();
     img.src = url;
-  
+
     if (img.complete) {
       callback(true);
     } else {
       img.onload = () => {
         callback(true);
       };
-  
+
       img.onerror = () => {
         callback(false);
       };
     }
   };
 
-  checkIfImageExists(`${item?.img}`, (exists:any) => {
+  checkIfImageExists(`${item?.img}`, (exists: any) => {
     if (exists) {
       // Success code
       //console.log("good")
       //alert("me")
     } else {
       // Fail code
-      console.log("bad")
+      console.log("bad");
       //alert("cash")
     }
   });
 
-
-
   return (
-    <div className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? 'border-2 border-emerald-300 ':"border-gray-300 border"}`} onClick={()=>{
-      navigate(`/vehicle/${item.index}`)
-      dispatch(resetItemDetailsState())
-    }}>
+    <div
+      className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
+      onClick={() => {
+        navigate(`/vehicle/${item.index}`);
+        dispatch(resetItemDetailsState());
+      }}
+    >
       {/* Img */}
-      
-      <img src={item?.img ? item?.img : noImgPlaceHolder} alt="dominant color placeholder" loading="lazy" className="2xl:h-[270px] xl:h-[220px] lg:h-[193px] sm:h-[180px] min-[445px]:h-[165px] h-[225px] w-auto rounded-t-lg object-cover"  onError={e => {
-          e.currentTarget.src = noImgPlaceHolder
-        }}/>
+
+      <img
+        src={item?.img ? item?.img : noImgPlaceHolder}
+        alt="dominant color placeholder"
+        loading="lazy"
+        className="2xl:h-[270px] xl:h-[220px] lg:h-[193px] sm:h-[180px] min-[445px]:h-[165px] h-[225px] w-auto rounded-t-lg object-cover"
+        onError={(e) => {
+          e.currentTarget.src = noImgPlaceHolder;
+        }}
+      />
 
       {/* Certified */}
       <div className="flex justify-between items-center px-2 py-3">
