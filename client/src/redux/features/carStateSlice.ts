@@ -163,8 +163,8 @@ const initialState: PageState = {
   StaticMonths: 60
 };
 
-const websiteSlice = createSlice({
-  name: "websiteSlice",
+const carStateSlice = createSlice({
+  name: "carStateSlice",
   initialState,
   reducers: {
     setSortByState: (state, action) => {
@@ -318,25 +318,10 @@ const websiteSlice = createSlice({
       state.compareData = null
     },
   },
-  // extraReducers(builder){
-  //     builder
-
-  //     // Save Tv or Movie
-  //   .addCase(carVanaData.pending, (state) => {
-  //     state.loading = true;
-  //   })
-  //   .addCase(carVanaData.fulfilled, (state, action) => {
-  //     state.loading = false;
-  //     state.carVana = action.payload
-  //   })
-  //   .addCase(carVanaData.rejected, (state, action) => {
-  //     state.loading = false;
-  //     state.error = action.payload;
-  //   })
-  // }
+  
 });
 
-export default websiteSlice.reducer;
+export default carStateSlice.reducer;
 export const {
   setSortByState,
   setCurrentPage,
@@ -357,4 +342,4 @@ export const {
   setCompareData,
   setTotalPrice,
   resetItemDetailsState
-} = websiteSlice.actions;
+} = carStateSlice.actions;

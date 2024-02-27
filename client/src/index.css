@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
@@ -9,6 +10,13 @@
     margin: 0;
   }
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+
+ body {
+  font-family: "Space Mono", monospace;
+ }
 
 *{
   margin: 0;
@@ -25,6 +33,10 @@
 
 .boxShadow{
   box-shadow: rgba(123, 123, 226, 0.25) 0px 30px 60px -12px inset, rgba(90, 181, 230, 0.3) 0px 18px 36px -18px inset, rgba(58, 183, 255, 0.3) 0px 18px 200px -18px inset;
+}
+
+.fav {
+  background-color: #3163e0;
 }
 
 
