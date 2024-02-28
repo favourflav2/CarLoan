@@ -11,6 +11,8 @@ import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
+import dayjs from "dayjs";
+import { addRetireGoal } from "../../redux/features/retirementSlice";
 
 // truthy values pass the refine validation ... since preRate.length when empty is 0 ... item.length is not greater than zero ... so en error shows
 const schema = z.object({
@@ -97,8 +99,8 @@ const schema = z.object({
     .refine((item) => item.length > 0, {
       message: "Please enter a number between 0% and 15%",
     }),
+  id: z.string().optional(),
 });
-
 
 type FormFields = z.infer<typeof schema>;
 
@@ -132,10 +134,13 @@ export default function Retire2nd() {
 
   // Helper functions
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    console.log(data);
-  };
+    const date = new Date();
+    data.id = dayjs(date).format("MMMM D, YYYY h:m s");
 
-  
+    dispatch(addRetireGoal(data));
+    dispatch(setCurrentStepIndexRedux("back"));
+    dispatch(setRetireModal(false));
+  };
 
   return (
     <motion.div
@@ -152,10 +157,12 @@ export default function Retire2nd() {
         {/* First Box */}
         <div className="w-full justify-between flex items-center ">
           <h1 className=" text-[22px] font-medium">Retirement Details</h1>
-          <CloseOutlinedIcon onClick={() => {
-            dispatch(setRetireModal(false))
-            dispatch(setCurrentStepIndexRedux("back"))
-          }} />
+          <CloseOutlinedIcon
+            onClick={() => {
+              dispatch(setRetireModal(false));
+              dispatch(setCurrentStepIndexRedux("back"));
+            }}
+          />
         </div>
 
         <hr className="my-2 border dark:border-darkSelectedColor border-lightSelectedColor" />
@@ -452,12 +459,14 @@ export default function Retire2nd() {
           )}
 
           <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 ">
-            <button type="button" className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-homeText text-lightSmallNavBarBg" onClick={()=>dispatch(setCurrentStepIndexRedux("back"))}>
+            <button
+              type="button"
+              className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-homeText text-lightSmallNavBarBg"
+              onClick={() => dispatch(setCurrentStepIndexRedux("back"))}
+            >
               Go Back
             </button>
-            <button className="p-2 dark:bg-darkSelectedColor bg-lightSelectedColor dark:text-homeText text-lightSmallNavBarBg  w-full rounded-md">
-              Save And Continue
-            </button>
+            <button className="p-2 dark:bg-darkSelectedColor bg-lightSelectedColor dark:text-homeText text-lightSmallNavBarBg  w-full rounded-md">Save And Continue</button>
           </div>
         </form>
       </div>
