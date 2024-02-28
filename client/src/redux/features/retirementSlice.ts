@@ -14,6 +14,7 @@ interface RetirementGoals {
   preRate: number;
   postRate: number;
   inflation: number;
+  title:string;
 }
 
 interface RetirementSlice {
@@ -29,10 +30,10 @@ const retirementSlice = createSlice({
   initialState,
   reducers: {
     addRetireGoal: (state, action) => {
-      const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings } = action.payload;
+      const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
       const formattedData = {
         id,
-        type:'retirement',
+        type:'Retirement',
         age: age,
         budget: parseFloat(budget.replace(/[,%$]/gm, "")),
         preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
@@ -40,12 +41,18 @@ const retirementSlice = createSlice({
         inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+        title
       };
      
       state.retireGoals = [...state.retireGoals, formattedData]
     },
+    removeRetireItem: (state,action) => {
+        const {id,title} = action.payload
+
+        state.retireGoals = state.retireGoals.filter(item => item.id !== id && item.title !== title)
+    }
   },
 });
 
 export default retirementSlice.reducer;
-export const { addRetireGoal } = retirementSlice.actions;
+export const { addRetireGoal, removeRetireItem } = retirementSlice.actions;

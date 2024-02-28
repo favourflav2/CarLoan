@@ -100,6 +100,11 @@ const schema = z.object({
       message: "Please enter a number between 0% and 15%",
     }),
   id: z.string().optional(),
+  title: z.string({
+    required_error: "Please enter a number between 0% and 15%",
+  }).max(18,{
+    message:"Max length is 18"
+  })
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -135,7 +140,7 @@ export default function Retire2nd() {
   // Helper functions
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const date = new Date();
-    data.id = dayjs(date).format("MMMM D, YYYY h:m s");
+    data.id = dayjs(date).format("MMM D, YYYY h:mm:ss")
 
     dispatch(addRetireGoal(data));
     dispatch(setCurrentStepIndexRedux("back"));
@@ -168,6 +173,14 @@ export default function Retire2nd() {
         <hr className="my-2 border dark:border-darkSelectedColor border-lightSelectedColor" />
 
         <form className="w-full flex flex-col mt-3" onSubmit={handleSubmit(onSubmit)}>
+
+            {/* Add A Title */}
+            <div className="w-full mb-10 flex justify-center items-center h-auto flex-col">
+                <label htmlFor="" className="text-[12px]">Title</label>
+                <input type="text" placeholder="Title" className="bg-inherit border-[1px] border-gray-500/20 dark:focus:outline-lightHomeText focus:outline-gray-400    rounded-lg p-3 " {...register("title")}/>
+                {errors?.title && <p className="text-red-500 text-[13px] ">{errors?.title?.message}</p>}
+            </div>
+
           <div className=" w-full h-auto grid lg:grid-cols-3 grid-cols-1 gap-5 mb-3">
             {/* Current Age */}
             <div className="w-auto flex flex-col">
@@ -180,7 +193,7 @@ export default function Retire2nd() {
                   valueAsNumber: true,
                 })}
                 placeholder="Age"
-                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                   errors?.age?.currentAge && "border-2 border-red-500"
                 }`}
               />
@@ -204,7 +217,7 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${errors.savings && "border-2 border-red-500"}`}
+                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.savings && "border-2 border-red-500"}`}
                     prefix="$"
                     placeholder="Current Savings"
                     thousandSeparator=","
@@ -229,7 +242,7 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                       errors.monthlyContribution && "border-2 border-red-500"
                     }`}
                     prefix="$"
@@ -256,7 +269,7 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${errors.budget && "border-2 border-red-500"}`}
+                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.budget && "border-2 border-red-500"}`}
                     prefix="$"
                     placeholder="Budget in retirement"
                     thousandSeparator=","
@@ -288,7 +301,7 @@ export default function Retire2nd() {
                   valueAsNumber: true,
                 })}
                 placeholder="Retire Age"
-                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                   errors?.age?.retireAge && "border-2 border-red-500"
                 }`}
               />
@@ -318,7 +331,7 @@ export default function Retire2nd() {
                   valueAsNumber: true,
                 })}
                 placeholder="Life Expectancy"
-                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                   errors?.age?.lifeExpectancy && "border-2 border-red-500"
                 }`}
               />
@@ -370,7 +383,7 @@ export default function Retire2nd() {
                   control={control}
                   render={({ field: { ref, ...rest } }) => (
                     <NumericFormat
-                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                         errors.preRate && "border-2 border-red-500"
                       }`}
                       suffix="%"
@@ -408,7 +421,7 @@ export default function Retire2nd() {
                   control={control}
                   render={({ field: { ref, ...rest } }) => (
                     <NumericFormat
-                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                         errors.postRate && "border-2 border-red-500"
                       }`}
                       suffix="%"
@@ -439,7 +452,7 @@ export default function Retire2nd() {
                   control={control}
                   render={({ field: { ref, ...rest } }) => (
                     <NumericFormat
-                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-current placeholder:text-gray-500 ${
+                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                         errors.inflation && "border-2 border-red-500"
                       }`}
                       suffix="%"
@@ -458,7 +471,7 @@ export default function Retire2nd() {
             </motion.div>
           )}
 
-          <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 ">
+          <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 sm:mb-0 mb-4">
             <button
               type="button"
               className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-homeText text-lightSmallNavBarBg"

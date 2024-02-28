@@ -38,7 +38,7 @@ module.exports = {
         lightBoxBg: '#a2a2e12e',
         lightBoxText: '#9090fc66',
         lightBoxBgDropDown: '#a2a2e160',
-        darkSelectedColor: '#1b55e9',
+        darkSelectedColor: '#A84FF7',
         lightSelectedColor: '#6161de7f',
 
         // Postive and Negative Ticks
