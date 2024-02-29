@@ -2,11 +2,13 @@ import * as React from "react";
 import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
 import FirstModal from "../../components/modals/FirstModal";
 import RetireModal from "../../components/modals/RetireModal";
-//import { UseSelector } from "../../redux/store";
+import { UseSelector } from "../../redux/store";
 import DashboardMappedData from "../../components/dashboardComponents/DashboardMappedData";
+import RetirementPage from "../RetirementPage/RetirementPage";
 
 export default function Home() {
-
+  // Redux States
+  const { selectedGoal } = UseSelector((state) => state.app);
 
   // Modal States
   const [firstModal, setFirstModal] = React.useState(false);
@@ -27,7 +29,7 @@ export default function Home() {
 
           {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
           <div className="w-full h-[600px] overflow-y-auto ">
-            <DashboardMappedData setFirstModal={setFirstModal}/>
+            <DashboardMappedData setFirstModal={setFirstModal} />
           </div>
 
           {/* Modals */}
@@ -36,7 +38,13 @@ export default function Home() {
         </div>
 
         {/* Right Side */}
-        <div className="bg-green-200 p-4">right side</div>
+        <div className=" p-4">
+          {selectedGoal?.type === "Retirement" ? (
+            <RetirementPage />
+          ) : (
+            <div>Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+          )}
+        </div>
       </div>
     </div>
   );

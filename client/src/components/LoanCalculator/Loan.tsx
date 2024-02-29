@@ -123,14 +123,7 @@ function newReturnData(){
       age: age + i,
       value: value 
     })
-    //console.log(value + fvOfPv)
 
-   
-    
-
-    
-
-    
   }
 return res
 }

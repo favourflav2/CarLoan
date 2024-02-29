@@ -6,6 +6,7 @@ import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { motion } from "framer-motion";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { removeRetireItem } from "../../redux/features/retirementSlice";
+import { setSelectedGoal } from "../../redux/features/applicationSlice";
 
 export interface IDashboardMappedDataProps {
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,7 +15,8 @@ export interface IDashboardMappedDataProps {
 export default function DashboardMappedData({ setFirstModal }: IDashboardMappedDataProps) {
   // Redux State
   const { retireGoals } = UseSelector((state) => state.retireSlice);
-  const dispatch = Dispatch()
+  const { selectedGoal } = UseSelector((state) => state.app);
+  const dispatch = Dispatch();
   return (
     <div className="w-full flex flex-col">
       <motion.div
@@ -49,19 +51,22 @@ export default function DashboardMappedData({ setFirstModal }: IDashboardMappedD
               whileHover={{ scale: 0.99 }}
               transition={{ duration: 0.3 }}
               key={item.id}
-              className="flex flex-col w-full p-3 mb-3 dark:text-homeText text-lightSmallNavBarBg border border-lightSelectedColor dark:border-darkSelectedColor rounded-lg  cursor-pointer dark:shadow-[inset_0px_0px_2px_0px_#A84FF7] shadow-[inset_0px_0px_10px_0px_#A2A2E160]"
+              className={`flex flex-col w-full p-3 mb-3 dark:text-homeText text-lightSmallNavBarBg border border-lightSelectedColor dark:border-darkSelectedColor rounded-lg  cursor-pointer dark:shadow-[inset_0px_0px_2px_0px_#A84FF7] shadow-[inset_0px_0px_10px_0px_#A2A2E160] ${
+                selectedGoal?.id === item.id && selectedGoal.title === item.title && " bg-lightSelectedColor/40 dark:bg-purple-900/40"
+              }`}
+              onClick={() => dispatch(setSelectedGoal(item))}
             >
               <div className="w-full justify-between items-center flex">
                 <h1 className="text-[19px] underline">{item?.title}</h1>
-                <DeleteIcon className="text-[20px]" onClick={()=>{
-                    const confirmBox = window.confirm(
-                        "Do you really want to delete this Crumb?"
-                      )
-                      if (confirmBox === true) {
-                        dispatch(removeRetireItem(item))
-                      }
-                    
-                }}/>
+                <DeleteIcon
+                  className="text-[20px]"
+                  onClick={() => {
+                    const confirmBox = window.confirm("Do you really want to delete this Crumb?");
+                    if (confirmBox === true) {
+                      dispatch(removeRetireItem(item));
+                    }
+                  }}
+                />
               </div>
               <div className="w-full flex justify-between items-center mt-2">
                 <div className="w-auto flex items-center ">

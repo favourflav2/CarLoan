@@ -1,17 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+interface RetirementGoals {
+    type: string;
+    id: string;
+    age: {
+      currentAge: number;
+      retireAge: number;
+      lifeExpectancy: number;
+    };
+    savings: number;
+    monthlyContribution: number;
+    budget: number;
+    preRate: number;
+    postRate: number;
+    inflation: number;
+    title:string;
+  }
+
 interface AppSlice {
     lightAndDarkMode: boolean;
     retireModal: boolean;
     currentStepIndex: number,
-    steps: number
+    steps: number;
+    selectedGoal: RetirementGoals | null
 }
 
 const initialState: AppSlice = {
     lightAndDarkMode: false,
     retireModal:false,
     currentStepIndex:0,
-    steps:0
+    steps:0,
+    selectedGoal:null
 }
 
 const appSlice = createSlice({
@@ -37,6 +56,9 @@ const appSlice = createSlice({
      },
      setStepLength: (state,action) => {
         state.steps = action.payload
+     },
+     setSelectedGoal: (state,action) => {
+        state.selectedGoal = action.payload
      }
     },
    
@@ -44,4 +66,4 @@ const appSlice = createSlice({
 
   export default appSlice.reducer
   export const {setLightAndDarkMode,
-setRetireModal, setStepLength, setCurrentStepIndexRedux} = appSlice.actions
+setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal} = appSlice.actions
