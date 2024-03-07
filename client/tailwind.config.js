@@ -15,9 +15,9 @@ module.exports = {
         // Dark Theme
         chartBlue: '#1fb6ff',
         navBar: '#1b1c23',
-        homeBg: '#13121B',
-        homeText: '#FFF',
-        smallNavBarBg: '#1F1934',
+        homeBg: '	#100c08',
+        darkText: '#a2a2a2',
+        lightText: '#929292',
 
         // Light Theme
         lightHomeBg: '#F3F5F9',
@@ -27,10 +27,8 @@ module.exports = {
         lightSmallNavBarText: '#D1D1D1',
 
         // Chart Colors
-        chartGreen: '#4ade80',
-        darkBgChart: '#1F1934',
-        priceChartBg: '#191934',
-        lightChartsBg: '#FFF',
+        chartGreen: '#00A36C',
+        chartYellow:'#FFAA33',
 
         // Navbar themes
         selectedPageColor: '#8a8b8aab',
