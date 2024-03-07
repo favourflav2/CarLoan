@@ -4,6 +4,7 @@ import { Dispatch, UseSelector } from "../../redux/store";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import { Divider } from "@mui/material";
 import RetirementLineChart from "../../components/charts/RetirementLineChart";
+import RetirementInputs from "./RetirementInputs";
 export interface IRetirementPageProps {}
 
 interface FutureValue {
@@ -247,8 +248,11 @@ export default function RetirementPage(props: IRetirementPageProps) {
 //   console.log(getWhatYouNeedFinalPrice(objDataWhatYouNeed))
 
   return (
-    <div className="w-full h-full">
-      {/* Content */}
+    <div className="w-full h-full grid xl:grid-cols-[23%_1fr] 2xl:grid-cols-[20%_1fr] ">
+
+        {/* Left Side Inputs */}
+        <RetirementInputs />
+      {/* Right Side Chart */}
       <AnimatePresence mode="wait">
         <motion.div
           key={selectedGoal ? selectedGoal?.title : "empty"}
@@ -256,7 +260,7 @@ export default function RetirementPage(props: IRetirementPageProps) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -10, opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="w-full flex flex-col dark:text-gray-300 text-black"
+          className="w-full flex flex-col dark:text-gray-300 text-black p-4"
         >
           {/* <h1 className='text-[19px] font-semibold'>Retirement savings at age {selectedGoal?.age?.retireAge}</h1> */}
           <h1 className="text-[19px] font-semibold underline">{selectedGoal?.title}</h1>

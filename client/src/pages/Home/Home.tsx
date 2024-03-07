@@ -25,7 +25,7 @@ export default function Home() {
   return (
     <div className="w-full min-h-full  ">
       {/* content */}
-      <div className="w-full grid grid-cols-[25%_1fr]">
+      <div className="w-full grid grid-cols-[280px_1fr]">
         {/* Left Side */}
         <div className=" w-full flex flex-col p-4 bg-[#e8e9ed] dark:bg-[#120d0a]">
           {/* Dashboard Title */}

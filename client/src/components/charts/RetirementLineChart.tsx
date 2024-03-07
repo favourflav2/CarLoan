@@ -1,9 +1,9 @@
 import * as React from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, LogarithmicScale, ChartOptions, TooltipItem } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { Filler, ScriptableContext } from "chart.js";
+import { Filler } from "chart.js";
 import { UseSelector } from "../../redux/store";
-import { light } from "@mui/material/styles/createPalette";
+
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
@@ -66,7 +66,7 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
         const {
           ctx,
           tooltip,
-          data,
+          //data,
           chartArea: { top, bottom },
         } = chart;
         if (tooltip?._active?.length > 0) {
@@ -96,12 +96,12 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
   };
 
   function labelTooltip(item: any) {
-    return `${item.datasetIndex === 0 ? 'You Have:':'You Need:'} ${USDollar.format(item.raw.toFixed(2))}`;
+    return `${item.datasetIndex === 0 ? "You Have:" : "You Need:"} ${USDollar.format(item.raw.toFixed(2))}`;
   }
 
   const options: ChartOptions<"line"> = {
     responsive: true,
-    maintainAspectRatio:false,
+    maintainAspectRatio: false,
     interaction: {
       intersect: false,
       mode: "index" as "index",
@@ -121,7 +121,7 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
         usePointStyle: true,
         callbacks: {
           title: titleTooltip,
-          label:labelTooltip
+          label: labelTooltip,
         },
       },
     },
@@ -172,10 +172,5 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
     },
   };
 
-  return ( 
-    <div className="w-full h-auto flex flex-col  p-5">
-     {need.data && have.data ? <Line options={options} data={data} plugins={hoverLine} /> : null}
-      
-    </div>
-  );
+  return <div className="w-full h-auto flex flex-col">{need.data && have.data ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>;
 }
