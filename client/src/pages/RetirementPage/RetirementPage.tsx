@@ -30,6 +30,14 @@ interface FutureValueWhatYouNeed {
   age: number;
   lifeExpectancy: number;
 }
+interface AgeNum {
+  age:number;
+  value:number
+}
+interface ForLoopData {
+  data: Array<AgeNum>;
+  highestNum: string;
+}
 
 export default function RetirementPage(props: IRetirementPageProps) {
   // Redux States
@@ -39,10 +47,18 @@ export default function RetirementPage(props: IRetirementPageProps) {
   // Chart State and Summary State
   const [view, setView] = React.useState<string>("Graph View");
 
-  if (!selectedGoal) {
-    dispatch(setSelectedGoal(null));
-    return null;
-  }
+  // Have State
+  const [have, setHave] = React.useState<ForLoopData>({
+    data: [],
+    highestNum:''
+  });
+
+  const [need, setNeed] = React.useState<ForLoopData>({
+    data: [],
+    highestNum:''
+  });
+
+  const [needFinalPrice, setNeedFinalPrice ]= React.useState<number>(0)
 
   const USDollar = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -50,29 +66,29 @@ export default function RetirementPage(props: IRetirementPageProps) {
   });
 
   // Obj for future value
-  const objData: FutureValue = {
-    savings: selectedGoal.savings,
-    age: selectedGoal.age.currentAge,
-    time: selectedGoal.age.retireAge - selectedGoal.age.currentAge,
-    monthlyContribution: selectedGoal.monthlyContribution,
-    preRate: selectedGoal.preRate / 100,
+   const objData: FutureValue = {
+    savings: selectedGoal?.savings ? selectedGoal?.savings : 0,
+    age: selectedGoal?.age.currentAge ? selectedGoal?.age.currentAge : 23,
+    time: selectedGoal?.age?.retireAge && selectedGoal.age.currentAge ? selectedGoal.age.retireAge - selectedGoal.age.currentAge : 67 - 23,
+    monthlyContribution: selectedGoal?.monthlyContribution ? selectedGoal.monthlyContribution : 500,
+    preRate: selectedGoal?.preRate ? selectedGoal.preRate / 100 : 0.06,
     compound: 1,
-    postRate: selectedGoal.postRate / 100,
-    budget: selectedGoal.budget,
-    retireAge: selectedGoal.age.retireAge,
-    inflation: selectedGoal.inflation / 100,
-    lifeExpectancy: selectedGoal.age.lifeExpectancy,
-  };
-  const objDataWhatYouNeed: FutureValueWhatYouNeed = {
-    time: selectedGoal.age.lifeExpectancy - selectedGoal.age.retireAge,
-    budget: selectedGoal.budget,
-    postRate: selectedGoal.postRate / 100,
-    inflation: selectedGoal.inflation / 100,
+    postRate: selectedGoal?.postRate ? selectedGoal.postRate / 100 : 0.05,
+    budget: selectedGoal?.budget ? selectedGoal.budget : 2000,
+    retireAge: selectedGoal?.age.retireAge ? selectedGoal.age.retireAge : 67,
+    inflation: selectedGoal?.inflation ? selectedGoal.inflation / 100 : 0.03,
+    lifeExpectancy: selectedGoal?.age?.lifeExpectancy ? selectedGoal.age.lifeExpectancy : 90,
+   };
+   const objDataWhatYouNeed: FutureValueWhatYouNeed = {
+    time: selectedGoal?.age?.retireAge && selectedGoal.age.lifeExpectancy ? selectedGoal.age.lifeExpectancy - selectedGoal.age.retireAge : 23,
+    budget: selectedGoal?.budget ? selectedGoal.budget : 2000,
+    postRate: selectedGoal?.postRate ? selectedGoal.postRate / 100 : 0.05,
+    inflation: selectedGoal?.inflation ? selectedGoal.inflation / 100 : 0.03,
     compound: 1,
-    retireAge: selectedGoal.age.retireAge,
-    age: selectedGoal.age.currentAge,
-    lifeExpectancy: selectedGoal.age.lifeExpectancy,
-  };
+    retireAge: selectedGoal?.age.retireAge ? selectedGoal.age.retireAge : 67,
+    age: selectedGoal?.age.currentAge ? selectedGoal?.age.currentAge : 23,
+    lifeExpectancy: selectedGoal?.age?.lifeExpectancy ? selectedGoal.age.lifeExpectancy : 90,
+   };
 
   // Future Value Function ... returns array
   // link explains that investments and loans typically compound monthly ... so all we do is take the nomial rate / coumponding periods === 12
@@ -121,25 +137,24 @@ export default function RetirementPage(props: IRetirementPageProps) {
   function futureValueWhatYouHave(obj: FutureValue) {
     let res = [];
     for (let i = 0; i <= obj.time; i++) {
-
-        // Without making sure i > 0 ... the for loop stopped 1 year short ... now its stops at the right retirement age
-      if(i > 0){
+      // Without making sure i > 0 ... the for loop stopped 1 year short ... now its stops at the right retirement age
+      if (i > 0) {
         let age = obj.age;
-      const amount = obj.savings;
-      const time = i ;
-      const monthlyP = obj.monthlyContribution;
-      //const c = obj.compound;
-      const months = 12;
-      const rate = obj.preRate / months;
-      //const equivalentPeriodicRate = Math.pow(1 + rate, c / months) - 1;
-      const fvOfPv = amount * Math.pow(1 + rate, time * months);
-      const top = Math.pow(1 + rate, time * 12) - 1;
-      const value = monthlyP * (top / rate);
+        const amount = obj.savings;
+        const time = i;
+        const monthlyP = obj.monthlyContribution;
+        //const c = obj.compound;
+        const months = 12;
+        const rate = obj.preRate / months;
+        //const equivalentPeriodicRate = Math.pow(1 + rate, c / months) - 1;
+        const fvOfPv = amount * Math.pow(1 + rate, time * months);
+        const top = Math.pow(1 + rate, time * 12) - 1;
+        const value = monthlyP * (top / rate);
 
-      res.push({
-        age: age + i,
-        value: value + fvOfPv,
-      });
+        res.push({
+          age: age + i,
+          value: value + fvOfPv,
+        });
       }
     }
     const highestNum = Math.max(...res.map((item) => item.value));
@@ -158,10 +173,9 @@ export default function RetirementPage(props: IRetirementPageProps) {
       const time = i + 1;
 
       const monthlyP = obj.budget;
-      
-      
+
       const months = 12;
-      const addInflationAndPostRate = (((1 + obj.postRate) / (1 + obj.inflation)) - 1);
+      const addInflationAndPostRate = (1 + obj.postRate) / (1 + obj.inflation) - 1;
 
       const rate = addInflationAndPostRate / months;
       //const equivalentPeriodicRate = Math.pow(1 + rate, c / months) - 1;
@@ -174,16 +188,15 @@ export default function RetirementPage(props: IRetirementPageProps) {
       res.push({
         age: age + i,
         value: value,
-        
       });
     }
 
     const highestNum = Math.max(...res.map((item) => item.value));
-    return highestNum
+    return highestNum;
   }
 
   function futureValueWhatYouWillNeed(obj: FutureValueWhatYouNeed) {
-    // This function grabs the monthy payment 
+    // This function grabs the monthy payment
     //* We simply solve for PMT
     //Future Value of an Ordinary Annuity
     //* FV = PMT * ((1 + rate/months)^ time * months - 1) / (rate / 12)
@@ -193,7 +206,7 @@ export default function RetirementPage(props: IRetirementPageProps) {
         const time = obj.retireAge - obj.age;
 
         const moneyNeededForBudgetNumber = getWhatYouNeedFinalPrice(obj);
-        const addInflationAndPostRate = (((1 + obj.postRate) / (1 + obj.inflation)) - 1);
+        const addInflationAndPostRate = (1 + obj.postRate) / (1 + obj.inflation) - 1;
         const months = 12;
         const rate = addInflationAndPostRate / months;
 
@@ -207,14 +220,12 @@ export default function RetirementPage(props: IRetirementPageProps) {
       return monthlyContribution;
     }
 
-
-    
     // Here we take the retire age - age to get the length
-    //* and just loop ... each loop/year is the future value of the concsective year and it keeps getting bigger as the years increase 
+    //* and just loop ... each loop/year is the future value of the concsective year and it keeps getting bigger as the years increase
     // Future Value of a Savings Annuity = PV(1 + (rate/months))^ time * months + (PMT * PMT * ((1 + rate/months)^ time * months - 1) / (rate / 12))
     let res = [];
     for (let i = 0; i <= obj.retireAge - obj.age; i++) {
-      if(i > 0){
+      if (i > 0) {
         let age = obj.age;
 
         const amount = 0;
@@ -222,14 +233,14 @@ export default function RetirementPage(props: IRetirementPageProps) {
         const monthlyP = getMonthlyPayment();
         //const c = obj.compound;
         const months = 12;
-        const addInflationAndPostRate = (((1 + obj.postRate) / (1 + obj.inflation)) - 1);
-  
+        const addInflationAndPostRate = (1 + obj.postRate) / (1 + obj.inflation) - 1;
+
         const rate = addInflationAndPostRate / months;
         //const equivalentPeriodicRate = Math.pow(1 + rate, c / months) - 1;
         const fvOfPv = amount * Math.pow(1 + rate, time * months);
         const top = Math.pow(1 + rate, time * 12) - 1;
         const value = monthlyP * (top / rate);
-  
+
         res.push({
           age: age + i,
           value: value + fvOfPv,
@@ -244,14 +255,18 @@ export default function RetirementPage(props: IRetirementPageProps) {
     };
   }
 
-//   console.log(futureValueWhatYouWillNeed(objDataWhatYouNeed), "need");
-//   console.log(getWhatYouNeedFinalPrice(objDataWhatYouNeed))
+console.log(selectedGoal)
+  
+
+  if (!selectedGoal) {
+    dispatch(setSelectedGoal(null));
+    return null;
+  }
 
   return (
-    <div className="w-full h-full grid xl:grid-cols-[23%_1fr] 2xl:grid-cols-[20%_1fr] ">
-
-        {/* Left Side Inputs */}
-        <RetirementInputs />
+    <div className="w-full h-full grid lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1">
+      {/* Left Side Inputs */}
+      <RetirementInputs />
       {/* Right Side Chart */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -274,7 +289,8 @@ export default function RetirementPage(props: IRetirementPageProps) {
               {/* What You Have Number */}
               <div>
                 <h1 className="mb-2 text-[17px] text-lightText dark:text-white font-bold dark:font-normal">What you'll have</h1>
-                <h1 className="text-[21px] font-semibold text-chartGreen">{futureValueWhatYouHave(objData).highestNum}</h1>
+                
+                <h1 className="text-[21px] font-semibold text-chartGreen">{futureValueWhatYouHave(objData).highestNum}</h1> 
               </div>
 
               <Divider orientation="vertical" flexItem className="border border-gray-300 mx-8" />
@@ -282,7 +298,8 @@ export default function RetirementPage(props: IRetirementPageProps) {
               {/* What You Need Number */}
               <div>
                 <h1 className="mb-2 text-[17px] text-lightText dark:text-white font-bold dark:font-normal">What you'll need</h1>
-                <h1 className="text-[21px] font-semibold text-chartYellow">{USDollar.format(getWhatYouNeedFinalPrice(objDataWhatYouNeed))}</h1>
+                
+                 <h1 className="text-[21px] font-semibold text-chartYellow">{USDollar.format(getWhatYouNeedFinalPrice(objDataWhatYouNeed))}</h1>
               </div>
             </div>
 
@@ -297,9 +314,10 @@ export default function RetirementPage(props: IRetirementPageProps) {
                 </h1>
               </div>
 
-               <div className="w-full h-auto grid grid-cols-1 relative ">
-               <RetirementLineChart need={futureValueWhatYouWillNeed(objDataWhatYouNeed)} have={futureValueWhatYouHave(objData)} /> 
-               </div>
+              <div className="w-full h-auto grid grid-cols-1 relative ">
+              
+                 <RetirementLineChart need={futureValueWhatYouWillNeed(objDataWhatYouNeed)} have={futureValueWhatYouHave(objData)} /> 
+              </div>
             </div>
           </div>
         </motion.div>

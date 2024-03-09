@@ -14,7 +14,7 @@ export interface IDashboardCardProps {
 export default function DashboardCard (props: IDashboardCardProps) {
     // Redux States
     const { retireGoals } = UseSelector((state) => state.retireSlice);
-    const { selectedGoal, lightAndDarkMode } = UseSelector((state) => state.app);
+    const { selectedGoal } = UseSelector((state) => state.app);
     const dispatch = Dispatch();
   return (
     <>

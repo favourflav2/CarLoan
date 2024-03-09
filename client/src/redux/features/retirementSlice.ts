@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice,current } from "@reduxjs/toolkit";
 
 interface RetirementGoals {
   type: string;
@@ -14,7 +14,7 @@ interface RetirementGoals {
   preRate: number;
   postRate: number;
   inflation: number;
-  title:string;
+  title: string;
 }
 
 interface RetirementSlice {
@@ -33,7 +33,7 @@ const retirementSlice = createSlice({
       const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
       const formattedData = {
         id,
-        type:'Retirement',
+        type: "Retirement",
         age: age,
         budget: parseFloat(budget.replace(/[,%$]/gm, "")),
         preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
@@ -41,18 +41,39 @@ const retirementSlice = createSlice({
         inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
-        title
+        title,
       };
-     
-      state.retireGoals = [...state.retireGoals, formattedData]
-    },
-    removeRetireItem: (state,action) => {
-        const {id,title} = action.payload
 
-        state.retireGoals = state.retireGoals.filter(item => item.id !== id && item.title !== title)
-    }
+      state.retireGoals = [...state.retireGoals, formattedData];
+    },
+    removeRetireItem: (state, action) => {
+      const { id, title } = action.payload;
+
+      state.retireGoals = state.retireGoals.filter((item) => item.id !== id && item.title !== title);
+    },
+    editRetireGoal: (state, action) => {
+      const {id,title,name,value} = action.payload
+      const index = state.retireGoals.findIndex(item => item.id === id && item.title === title)
+      
+     const copyData = state.retireGoals.map(item => {
+      if(item.id === id && item.title === title){
+        return {
+          ...item,
+          [name]: value
+        }
+      }else{
+        return {
+          ...item,
+        }
+      }
+     })
+
+     state.retireGoals = copyData
+     
+     
+    },
   },
 });
 
 export default retirementSlice.reducer;
-export const { addRetireGoal, removeRetireItem } = retirementSlice.actions;
+export const { addRetireGoal, removeRetireItem, editRetireGoal } = retirementSlice.actions;

@@ -10,18 +10,18 @@ import { setSelectedGoal } from "../../redux/features/applicationSlice";
 export default function Home() {
   // Redux States
   const { selectedGoal } = UseSelector((state) => state.app);
-  const {retireGoals} = UseSelector(state => state.retireSlice)
-  const dispatch = Dispatch()
+  const { retireGoals } = UseSelector((state) => state.retireSlice);
+  const dispatch = Dispatch();
 
   // Modal States
   const [firstModal, setFirstModal] = React.useState(false);
 
   // If theres no saved goals ... going to set selected goal to null
-  React.useEffect(()=>{
-    if(retireGoals.length === 0){
-      dispatch(setSelectedGoal(null))
+  React.useEffect(() => {
+    if (retireGoals.length === 0) {
+      dispatch(setSelectedGoal(null));
     }
-  },[dispatch, retireGoals])
+  }, [dispatch, retireGoals]);
   return (
     <div className="w-full min-h-full  ">
       {/* content */}
@@ -49,14 +49,19 @@ export default function Home() {
 
         {/* Right Side */}
         <div className=" w-full h-auto">
-          {selectedGoal?.type === "Retirement" ? (
-            <RetirementPage />
+          {selectedGoal?.id ? (
+            selectedGoal?.type === "Retirement" ? (
+              <RetirementPage />
+            ) : (
+              <div>Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+            )
           ) : (
-            <div>Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+            <div>Theres no selected goal id</div>
           )}
+          
         </div>
       </div>
     </div>
   );
 }
-// 
+//

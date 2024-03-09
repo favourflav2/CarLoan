@@ -2,10 +2,8 @@ import * as React from "react";
 
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { motion } from "framer-motion";
-import {  UseSelector } from "../../redux/store";
+import { UseSelector } from "../../redux/store";
 
-import darkPic from '../../assets/retirePicBlack.svg'
-import lightPic from '../../assets/retirePicWhite.svg'
 import DashboardCard from "../cards/DashboardCard";
 
 export interface IDashboardMappedDataProps {
@@ -14,18 +12,11 @@ export interface IDashboardMappedDataProps {
 
 export default function DashboardMappedData({ setFirstModal }: IDashboardMappedDataProps) {
   // Redux State
- 
-  const {  lightAndDarkMode } = UseSelector((state) => state.app);
- 
 
+  const {} = UseSelector((state) => state.app);
 
   return (
-   
-    
-    
-   
     <div className="w-full flex flex-col">
-      
       <motion.div
         whileHover={{ scale: 0.95 }}
         transition={{ duration: 0.3 }}
@@ -42,7 +33,5 @@ export default function DashboardMappedData({ setFirstModal }: IDashboardMappedD
         <DashboardCard />
       </div>
     </div>
-   
   );
 }
-
