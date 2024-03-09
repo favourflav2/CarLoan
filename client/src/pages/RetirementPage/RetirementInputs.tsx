@@ -132,6 +132,7 @@ export default function RetirementInputs() {
     //handleSubmit,
     control,
     reset,
+    trigger,
     formState: { errors },
   } = useForm<FormFields>({
     mode: "all",
@@ -180,7 +181,12 @@ export default function RetirementInputs() {
         budget: selectedGoal?.budget ? selectedGoal.budget.toString() : "0",
       });
     }
+    trigger()
   }, [selectedGoal,reset]);
+
+  React.useEffect(()=>{
+
+  })
 
   console.log(errors)
 
