@@ -1,4 +1,4 @@
-import { createSlice,current } from "@reduxjs/toolkit";
+import {  createSlice } from "@reduxjs/toolkit";
 
 interface RetirementGoals {
   type: string;
@@ -17,12 +17,19 @@ interface RetirementGoals {
   title: string;
 }
 
+interface InputRetireErrors {
+  [key: string]: any;
+}
+
+
 interface RetirementSlice {
   retireGoals: Array<RetirementGoals>;
+  errors: InputRetireErrors | null;
 }
 
 const initialState: RetirementSlice = {
   retireGoals: [],
+  errors: null,
 };
 
 const retirementSlice = createSlice({
@@ -52,25 +59,48 @@ const retirementSlice = createSlice({
       state.retireGoals = state.retireGoals.filter((item) => item.id !== id && item.title !== title);
     },
     editRetireGoal: (state, action) => {
-      const {id,title,name,value} = action.payload
-      const index = state.retireGoals.findIndex(item => item.id === id && item.title === title)
-      
-     const copyData = state.retireGoals.map(item => {
-      if(item.id === id && item.title === title){
-        return {
-          ...item,
-          [name]: value
-        }
-      }else{
-        return {
-          ...item,
-        }
-      }
-     })
+      // This reducer updates the retirment goal in the array
+      const { id, title, name, value } = action.payload;
 
-     state.retireGoals = copyData
-     
-     
+      const copyData = state.retireGoals.map((val) => {
+        if (val.id === id && val.title === title) {
+          if (name === "age.currentAge") {
+            return {
+              ...val,
+              age: {
+                ...val.age,
+                currentAge: Number(value),
+              },
+            };
+          } else if (name === "age.retireAge") {
+            return {
+              ...val,
+              age: {
+                ...val.age,
+                retireAge: Number(value),
+              },
+            };
+          } else if (name === "age.lifeExpectancy") {
+            return {
+              ...val,
+              age: {
+                ...val.age,
+                lifeExpectancy: Number(value),
+              },
+            };
+          } else {
+            return {
+              ...val,
+              [name]: Number(value),
+            };
+          }
+        } else {
+          return val;
+        }
+      });
+
+      state.retireGoals = copyData;
+      
     },
   },
 });

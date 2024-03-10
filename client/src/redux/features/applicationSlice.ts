@@ -33,13 +33,6 @@ const initialState: AppSlice = {
   selectedGoal: null,
 };
 
-interface Fav {
-  type: string;
-  name: string;
-  goal: RetirementGoals;
-  value: number;
-}
-
 const appSlice = createSlice({
   name: "appSlice",
   initialState,
@@ -68,22 +61,37 @@ const appSlice = createSlice({
       state.selectedGoal = action.payload;
     },
     editSelectedGoal: (state, action) => {
+      // This reducer updates the selected goal ... so when you change the number a user sees the update
       const { goal, value, name } = action.payload;
 
-      switch(goal.type){
-        case 'Retirement':
-         console.log(value)
-         // age.currentAge
-         if(name === 'age.currentAge'){
-            if(state.selectedGoal){
-                if(value){
-                    state.selectedGoal.age.currentAge = Number(value)
-                }
+      if (!state.selectedGoal) {
+        console.log("select a goal");
+        return;
+      }
+
+      switch (goal.type) {
+        case "Retirement":
+          if (name === "age.currentAge") {
+            // If what we type is a value we add it to state ... added this because typing backspace was causing problems
+            if (value) {
+              state.selectedGoal.age.currentAge = Number(value);
             }
-         }
-         break;
-         default:
-            console.log('unknown') 
+          } else if (name === "age.retireAge") {
+            if (value) {
+              state.selectedGoal.age.retireAge = Number(value);
+            }
+          } else if (name === "age.lifeExpectancy") {
+            if (value) {
+              state.selectedGoal.age.lifeExpectancy = Number(value);
+            }
+          } else {
+            if (value) {
+              (state.selectedGoal[name as keyof RetirementGoals] as number) = Number(value);
+            }
+          }
+          break;
+        default:
+          console.log("unknown");
       }
     },
   },

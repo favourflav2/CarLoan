@@ -5,11 +5,11 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Tooltip } from "@mui/material";
 import { motion } from "framer-motion";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { SubmitHandler, useForm, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
-import dayjs from "dayjs";
+
 import { editRetireGoal } from "../../redux/features/retirementSlice";
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
 
@@ -102,13 +102,6 @@ const schema = z.object({
       message: "Please enter a number between 0% and 15%",
     }),
   id: z.string().optional(),
-  title: z
-    .string({
-      required_error: "Please enter a number between 0% and 15%",
-    })
-    .max(18, {
-      message: "Max length is 18",
-    }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -116,12 +109,11 @@ type FormFields = z.infer<typeof schema>;
 export default function RetirementInputs() {
   // Redux States
   const { selectedGoal } = UseSelector((state) => state.app);
-  const dispatch = Dispatch()
+  const dispatch = Dispatch();
 
   // Id
-  const id = selectedGoal?.id
-  const title = selectedGoal?.title
-
+  const id = selectedGoal?.id;
+  const title = selectedGoal?.title;
 
   // Advanced Details State
   const [details, setDetails] = React.useState(false);
@@ -136,12 +128,9 @@ export default function RetirementInputs() {
     formState: { errors },
   } = useForm<FormFields>({
     mode: "all",
-    criteriaMode: "all",
     resetOptions: {
-      //keepDirtyValues: true, // user-interacted input will be retained
       keepErrors: true, // input errors will be retained with value update
     },
-    reValidateMode: "onBlur",
     defaultValues: {
       age: {
         currentAge: selectedGoal?.age?.currentAge ? selectedGoal.age.currentAge : 23,
@@ -159,10 +148,9 @@ export default function RetirementInputs() {
   });
 
   // Handle Change
-  function handleChange(e:any){
-    //console.log(e.target.name)
-    //dispatch(editRetireGoal({name:e.target.name, id, title, value:e.target.value}))
-    dispatch(editSelectedGoal({type:'retire',name:e.target.name, goal:selectedGoal, value:e.target.value}))
+  function handleChange(e: any) {
+    dispatch(editRetireGoal({ name: e.target.name, id, title, value: e.target.value }));
+    dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
   }
 
   React.useEffect(() => {
@@ -181,15 +169,8 @@ export default function RetirementInputs() {
         budget: selectedGoal?.budget ? selectedGoal.budget.toString() : "0",
       });
     }
-    trigger()
-  }, [selectedGoal,reset]);
-
-  React.useEffect(()=>{
-
-  })
-
-  console.log(errors)
-
+    trigger();
+  }, [selectedGoal, reset]); // eslint-disable-line
 
   return (
     <div className="w-full h-full py-4 px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
@@ -223,10 +204,9 @@ export default function RetirementInputs() {
                 <HelpOutlineIcon className="!text-[15px] ml-[2px]" />
               </Tooltip>
             </label>
+
             <Controller
-              name="savings"
-              control={control}
-              render={({ field: { ref, ...rest } }) => (
+              render={({ field: { onChange, value } }) => (
                 <NumericFormat
                   className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.savings && "border-2 border-red-500"}`}
                   prefix="$"
@@ -234,15 +214,19 @@ export default function RetirementInputs() {
                   decimalSeparator="."
                   decimalScale={2}
                   autoComplete="off"
-                  getInputRef={ref}
-                  onValueChange={(values, e) => {
-                    dispatch(editRetireGoal({name:'savings', title, id, value:values.floatValue}))
-                    dispatch(editSelectedGoal({type:'retire',name:'savings', goal:selectedGoal, value:values.floatValue}))
+                  allowNegative={false}
+                  onValueChange={(v) => {
+                    dispatch(editRetireGoal({ name: "savings", title, id, value: v.value }));
+                    dispatch(editSelectedGoal({ name: "savings", goal: selectedGoal, value: v.value }));
+                    onChange(v.value);
                   }}
-                  {...rest}
+                  value={value}
                 />
               )}
+              name="savings"
+              control={control}
             />
+
             {errors?.savings && <p className="text-red-500 text-[13px] ">{errors?.savings?.message}</p>}
           </div>
 
@@ -251,10 +235,9 @@ export default function RetirementInputs() {
             <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
               Monthly Contribution
             </label>
+
             <Controller
-              name="monthlyContribution"
-              control={control}
-              render={({ field: { ref, ...rest } }) => (
+              render={({ field: { onChange, value } }) => (
                 <NumericFormat
                   className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.monthlyContribution && "border-2 border-red-500"}`}
                   prefix="$"
@@ -262,10 +245,17 @@ export default function RetirementInputs() {
                   decimalSeparator="."
                   decimalScale={2}
                   autoComplete="off"
-                  getInputRef={ref}
-                  {...rest}
+                  allowNegative={false}
+                  onValueChange={(v) => {
+                    dispatch(editRetireGoal({ name: "monthlyContribution", title, id, value: v.value }));
+                    dispatch(editSelectedGoal({ name: "monthlyContribution", goal: selectedGoal, value: v.value }));
+                    onChange(v.value);
+                  }}
+                  value={value}
                 />
               )}
+              name="monthlyContribution"
+              control={control}
             />
             {errors?.monthlyContribution && <p className="text-red-500 text-[13px] ">{errors?.monthlyContribution?.message}</p>}
           </div>
@@ -275,23 +265,29 @@ export default function RetirementInputs() {
             <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
               Monthly budget in retirement
             </label>
+
             <Controller
-              name="budget"
-              control={control}
-              render={({ field: { ref, ...rest } }) => (
+              render={({ field: { onChange, value } }) => (
                 <NumericFormat
-                  className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.monthlyContribution && "border-2 border-red-500"}`}
+                  className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.budget && "border-2 border-red-500"}`}
                   prefix="$"
                   thousandSeparator=","
                   decimalSeparator="."
                   decimalScale={2}
                   autoComplete="off"
-                  getInputRef={ref}
-                  {...rest}
+                  allowNegative={false}
+                  onValueChange={(v) => {
+                    dispatch(editRetireGoal({ name: "budget", title, id, value: v.value }));
+                    dispatch(editSelectedGoal({ name: "budget", goal: selectedGoal, value: v.value }));
+                    onChange(v.value);
+                  }}
+                  value={value}
                 />
               )}
+              name="budget"
+              control={control}
             />
-            {errors?.monthlyContribution && <p className="text-red-500 text-[13px] ">{errors?.monthlyContribution?.message}</p>}
+            {errors?.budget && <p className="text-red-500 text-[13px] ">{errors?.budget?.message}</p>}
           </div>
 
           {/* Advanced Details Button */}
@@ -333,6 +329,7 @@ export default function RetirementInputs() {
                   type="number"
                   {...register("age.retireAge", {
                     valueAsNumber: true,
+                    onChange: (e) => handleChange(e),
                   })}
                   className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.age?.retireAge && "border-2 border-red-500"}`}
                 />
@@ -359,6 +356,7 @@ export default function RetirementInputs() {
                   type="number"
                   {...register("age.lifeExpectancy", {
                     valueAsNumber: true,
+                    onChange: (e) => handleChange(e),
                   })}
                   className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.age?.lifeExpectancy && "border-2 border-red-500"}`}
                 />
@@ -380,21 +378,27 @@ export default function RetirementInputs() {
                     <HelpOutlineIcon className="!text-[15px] ml-[2px]" />
                   </Tooltip>
                 </label>
+
                 <Controller
-                  name="preRate"
-                  control={control}
-                  render={({ field: { ref, ...rest } }) => (
+                  render={({ field: { onChange, value } }) => (
                     <NumericFormat
-                      className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.preRate && "border-2 border-red-500"}`}
+                      className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.preRate && "border-2 border-red-500"}`}
                       suffix="%"
                       thousandSeparator=","
                       decimalSeparator="."
                       decimalScale={2}
                       autoComplete="off"
-                      getInputRef={ref}
-                      {...rest}
+                      allowNegative={false}
+                      onValueChange={(v) => {
+                        dispatch(editRetireGoal({ name: "preRate", title, id, value: v.value }));
+                        dispatch(editSelectedGoal({ name: "preRate", goal: selectedGoal, value: v.value }));
+                        onChange(v.value);
+                      }}
+                      value={value}
                     />
                   )}
+                  name="preRate"
+                  control={control}
                 />
                 {errors?.preRate && <p className="text-red-500 text-[13px] ">{errors?.preRate?.message}</p>}
               </div>
@@ -414,21 +418,27 @@ export default function RetirementInputs() {
                     <HelpOutlineIcon className="!text-[15px] ml-[2px]" />
                   </Tooltip>
                 </label>
+
                 <Controller
-                  name="postRate"
-                  control={control}
-                  render={({ field: { ref, ...rest } }) => (
+                  render={({ field: { onChange, value } }) => (
                     <NumericFormat
-                      className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.postRate && "border-2 border-red-500"}`}
+                      className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.postRate && "border-2 border-red-500"}`}
                       suffix="%"
                       thousandSeparator=","
                       decimalSeparator="."
                       decimalScale={2}
                       autoComplete="off"
-                      getInputRef={ref}
-                      {...rest}
+                      allowNegative={false}
+                      onValueChange={(v) => {
+                        dispatch(editRetireGoal({ name: "postRate", title, id, value: v.value }));
+                        dispatch(editSelectedGoal({ name: "postRate", goal: selectedGoal, value: v.value }));
+                        onChange(v.value);
+                      }}
+                      value={value}
                     />
                   )}
+                  name="postRate"
+                  control={control}
                 />
                 {errors?.postRate && <p className="text-red-500 text-[13px] ">{errors?.postRate?.message}</p>}
               </div>
@@ -438,21 +448,28 @@ export default function RetirementInputs() {
                 <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
                   Inflation Rate
                 </label>
+
                 <Controller
-                  name="inflation"
-                  control={control}
-                  render={({ field: { ref, ...rest } }) => (
+                  render={({ field: { onChange, value } }) => (
                     <NumericFormat
-                      className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.inflation && "border-2 border-red-500"}`}
+                      className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.inflation && "border-2 border-red-500"}`}
                       suffix="%"
                       thousandSeparator=","
                       decimalSeparator="."
                       decimalScale={2}
+                      allowLeadingZeros
                       autoComplete="off"
-                      getInputRef={ref}
-                      {...rest}
+                      allowNegative={false}
+                      onValueChange={(v) => {
+                        dispatch(editRetireGoal({ name: "inflation", title, id, value: v.value }));
+                        dispatch(editSelectedGoal({ name: "inflation", goal: selectedGoal, value: v.value }));
+                        onChange(v.value);
+                      }}
+                      value={value}
                     />
                   )}
+                  name="inflation"
+                  control={control}
                 />
                 {errors?.inflation && <p className="text-red-500 text-[13px] ">{errors?.inflation?.message}</p>}
               </div>
