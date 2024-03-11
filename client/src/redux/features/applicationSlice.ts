@@ -65,7 +65,6 @@ const appSlice = createSlice({
       const { goal, value, name } = action.payload;
 
       if (!state.selectedGoal) {
-        console.log("select a goal");
         return;
       }
 
@@ -91,11 +90,25 @@ const appSlice = createSlice({
           }
           break;
         default:
-          console.log("unknown");
+          return
       }
     },
+    editSelectedGoalTitle: (state,action) => {
+      const { goal, value} = action.payload;
+      if (!state.selectedGoal) {
+        return;
+      }
+
+      switch (goal.type) {
+        case "Retirement":
+          state.selectedGoal.title = value
+          break;
+        default:
+          return
+      }
+    }
   },
 });
 
 export default appSlice.reducer;
-export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal } = appSlice.actions;
+export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle } = appSlice.actions;

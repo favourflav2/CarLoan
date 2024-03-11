@@ -1,5 +1,7 @@
 import {  createSlice } from "@reduxjs/toolkit";
 
+//! Need to add a check to make sure theres no item in array that matches id ... checking for dupilcates before I push into array
+
 interface RetirementGoals {
   type: string;
   id: string;
@@ -102,8 +104,23 @@ const retirementSlice = createSlice({
       state.retireGoals = copyData;
       
     },
+    editRetireGoalTitle: (state,action) => {
+      const { value, id,} = action.payload
+      const copyData = state.retireGoals.map((item) => {
+        if(item.id === id){
+          return {
+            ...item,
+            title: value
+          }
+        }else{
+          return item
+        }
+      })
+
+      state.retireGoals = copyData
+    }
   },
 });
 
 export default retirementSlice.reducer;
-export const { addRetireGoal, removeRetireItem, editRetireGoal } = retirementSlice.actions;
+export const { addRetireGoal, removeRetireItem, editRetireGoal,editRetireGoalTitle } = retirementSlice.actions;

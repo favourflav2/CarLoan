@@ -153,6 +153,7 @@ export default function RetirementInputs() {
     dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
   }
 
+  // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
     if (selectedGoal) {
       reset({

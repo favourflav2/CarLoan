@@ -101,7 +101,7 @@ const schema = z.object({
     }),
   id: z.string().optional(),
   title: z.string({
-    required_error: "Please enter a number between 0% and 15%",
+    required_error: "Please enter a title",
   }).max(18,{
     message:"Max length is 18"
   })
