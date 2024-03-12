@@ -104,6 +104,8 @@ const schema = z.object({
     required_error: "Please enter a title",
   }).max(18,{
     message:"Max length is 18"
+  }).min(4,{
+    message: 'Min length is 4'
   })
 });
 

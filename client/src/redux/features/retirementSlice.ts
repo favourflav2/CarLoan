@@ -27,11 +27,13 @@ interface InputRetireErrors {
 interface RetirementSlice {
   retireGoals: Array<RetirementGoals>;
   errors: InputRetireErrors | null;
+ 
 }
 
 const initialState: RetirementSlice = {
   retireGoals: [],
   errors: null,
+  
 };
 
 const retirementSlice = createSlice({
@@ -118,7 +120,8 @@ const retirementSlice = createSlice({
       })
 
       state.retireGoals = copyData
-    }
+    },
+    
   },
 });
 

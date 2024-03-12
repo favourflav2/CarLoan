@@ -23,6 +23,8 @@ interface AppSlice {
   currentStepIndex: number;
   steps: number;
   selectedGoal: RetirementGoals | null;
+  shrinkDashboardSidebar:boolean;
+  shrinkRetirementInputs: boolean
 }
 
 const initialState: AppSlice = {
@@ -31,6 +33,8 @@ const initialState: AppSlice = {
   currentStepIndex: 0,
   steps: 0,
   selectedGoal: null,
+  shrinkDashboardSidebar:false,
+  shrinkRetirementInputs:false
 };
 
 const appSlice = createSlice({
@@ -106,9 +110,12 @@ const appSlice = createSlice({
         default:
           return
       }
+    },
+    setShrinkDashboard: (state) => {
+      state.shrinkDashboardSidebar = !state.shrinkDashboardSidebar
     }
   },
 });
 
 export default appSlice.reducer;
-export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle } = appSlice.actions;
+export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard } = appSlice.actions;

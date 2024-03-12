@@ -55,7 +55,7 @@ type FormFields = z.infer<typeof schema>;
 
 export default function RetirementPage() {
   // Redux States
-  const { selectedGoal } = UseSelector((state) => state.app);
+  const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const dispatch = Dispatch();
 
@@ -110,8 +110,8 @@ export default function RetirementPage() {
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     dispatch(editRetireGoalTitle({ name: "title", id, value: data?.title }));
     dispatch(editSelectedGoalTitle({ name: "title", value: data?.title, goal: selectedGoal }));
-    setEditState(false)
-    setSaveBtn(false)
+    setEditState(false);
+    setSaveBtn(false);
   };
 
   // Future Value Function ... returns array
@@ -278,7 +278,7 @@ export default function RetirementPage() {
     }
   }, [selectedGoal, retireGoals, dispatch]); // eslint-disable-line
 
-   // Makes Sure inputs match selected goal on page refresh 
+  // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
     if (selectedGoal && saveBtn === false) {
       reset({
@@ -308,13 +308,17 @@ export default function RetirementPage() {
     const arr = str.split(" ");
 
     for (let i = 0; i < arr.length; i++) {
-      arr[i] = arr[i][0].toUpperCase() + arr[i].substring(1);
+      if (arr[i]) {
+        arr[i] = arr[i][0].toUpperCase() + arr[i].substring(1);
+      }
     }
 
-    return arr.join(" ");
+    if (selectedGoal) {
+      return arr.join(" ");
+    } else {
+      return "";
+    }
   }
-
- 
 
   if (!selectedGoal) {
     dispatch(setSelectedGoal(null));
@@ -322,7 +326,7 @@ export default function RetirementPage() {
   }
 
   return (
-    <div className="w-full h-full grid lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1">
+    <div className={`w-full h-full grid ${shrinkDashboardSidebar ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1" : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"}`}>
       {/* Left Side Inputs */}
       <RetirementInputs />
       {/* Right Side Chart */}
