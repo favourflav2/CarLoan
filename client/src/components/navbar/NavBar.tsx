@@ -10,7 +10,7 @@ import { searchCars, setSearchedCars } from "../../redux/features/carSlice";
 import NightlightOutlinedIcon from '@mui/icons-material/NightlightOutlined';
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
 import { setLightAndDarkMode } from "../../redux/features/applicationSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 export interface INavBarProps {}
@@ -20,6 +20,8 @@ export default function NavBar(props: INavBarProps) {
   const {lightAndDarkMode} = UseSelector(state => state.app)
   const dispatch = Dispatch()
   const navigate = useNavigate()
+  const pathName = useLocation()
+  console.log(pathName)
 
 
 

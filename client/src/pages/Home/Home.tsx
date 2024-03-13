@@ -8,7 +8,7 @@ import RetirementPage from "../RetirementPage/RetirementPage";
 import { setSelectedGoal, setShrinkDashboard } from "../../redux/features/applicationSlice";
 import FitScreenIcon from "@mui/icons-material/FitScreen";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { motion } from "framer-motion";
 import NavBar from "../../components/navbar/NavBar";
 
@@ -28,14 +28,15 @@ export default function Home() {
     }
   }, [dispatch, retireGoals]);
   return (
-    <div className="w-full h-screen  flex flex-col">
-      <NavBar />
+    <div className="w-full h-full flex flex-col">
+      {/* Header */}
+      {/* <div className="bg-green-100 w-full h-[70px]">ww</div> */}
       {/* content */}
       <div className={`w-full h-full grid ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
         {/* Left Side */}
         {shrinkDashboardSidebar ? (
           // Shrinked Left Side
-          <div className=" w-full flex items-center   flex-col p-4 bg-[#e8e9ed] dark:bg-[#120d0a]">
+          <div className=" w-full flex items-center   flex-col p-4 ">
             <NavigateNextIcon className="text-[30px] mr-1 dark:text-gray-300  text-lightText" onClick={() => dispatch(setShrinkDashboard())} />
           </div>
         ) : (
@@ -57,7 +58,7 @@ export default function Home() {
               </div>
               {/* Shrink Btn */}
               <div className="w-auto flex items-center cursor-pointer dark:text-gray-300  text-lightText" onClick={() => dispatch(setShrinkDashboard())}>
-                <NavigateBeforeIcon className="!text-[30px] "/>
+                <NavigateBeforeIcon className="!text-[30px] " />
               </div>
             </div>
 
