@@ -8,7 +8,9 @@ import RetirementPage from "../RetirementPage/RetirementPage";
 import { setSelectedGoal, setShrinkDashboard } from "../../redux/features/applicationSlice";
 import FitScreenIcon from "@mui/icons-material/FitScreen";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { motion } from "framer-motion";
+import NavBar from "../../components/navbar/NavBar";
 
 export default function Home() {
   // Redux States
@@ -26,9 +28,10 @@ export default function Home() {
     }
   }, [dispatch, retireGoals]);
   return (
-    <div className="w-full min-h-full  ">
+    <div className="w-full h-screen  flex flex-col">
+      <NavBar />
       {/* content */}
-      <div className={`w-full grid ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
+      <div className={`w-full h-full grid ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
         {/* Left Side */}
         {shrinkDashboardSidebar ? (
           // Shrinked Left Side
@@ -41,21 +44,20 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.5, x: -200 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             transition={{
-              duration: 0.6,
+              duration: 0.4,
               ease: [0, 0.71, 0.2, 1.01],
             }}
             className=" w-full flex flex-col p-4 bg-[#e8e9ed] dark:bg-[#120d0a]"
           >
             {/* Dashboard Title */}
-            <div className="w-full h-auto flex items-end justify-between">
+            <div className="w-full h-auto flex items-center justify-between">
               <div className="w-auto flex items-center dark:text-gray-300  text-lightText">
                 <GridViewOutlinedIcon className="!text-[25px] mr-1" />
                 <h1>Dashboard</h1>
               </div>
               {/* Shrink Btn */}
-              <div className="w-auto flex items-center cursor-pointer" onClick={() => dispatch(setShrinkDashboard())}>
-                <FitScreenIcon className="text-[24px] mr-1 dark:text-gray-300  text-lightText" />
-                <p className="text-[12.5px] dark:text-gray-300  text-lightText">Shrink</p>
+              <div className="w-auto flex items-center cursor-pointer dark:text-gray-300  text-lightText" onClick={() => dispatch(setShrinkDashboard())}>
+                <NavigateBeforeIcon className="!text-[30px] "/>
               </div>
             </div>
 

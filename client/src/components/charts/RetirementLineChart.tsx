@@ -172,5 +172,5 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
     },
   };
 
-  return <div className="w-full h-auto flex flex-col">{need.data && have.data ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>;
+  return <div className="w-full h-[500px] flex flex-col">{need.data && have.data ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>;
 }

@@ -18,7 +18,7 @@ function App() {
       <>
       <BrowserRouter>
       <ToastContainer />
-      <NavBar />
+      {/* <NavBar /> */}
       <Routes>
         <Route path="/" element={<Home />}/>
         <Route path="/cars" element={<Cars />} />

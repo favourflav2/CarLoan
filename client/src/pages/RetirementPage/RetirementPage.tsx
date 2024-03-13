@@ -2,7 +2,7 @@ import * as React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { editSelectedGoalTitle, setSelectedGoal } from "../../redux/features/applicationSlice";
-import { Divider } from "@mui/material";
+import { Divider} from "@mui/material";
 import RetirementLineChart from "../../components/charts/RetirementLineChart";
 import RetirementInputs from "./RetirementInputs";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,6 +11,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { editRetireGoalTitle } from "../../redux/features/retirementSlice";
+import RetirementSummary from "./RetirementSummary";
 
 interface SelectedGoalType {
   type: string;
@@ -36,6 +37,7 @@ interface AgeNum {
 interface ForLoopData {
   data: Array<AgeNum>;
   highestNum: string;
+  highestNumNoFormat: number;
 }
 
 const schema = z.object({
@@ -90,13 +92,27 @@ export default function RetirementPage() {
   const [have, setHave] = React.useState<ForLoopData>({
     data: [],
     highestNum: "",
+    highestNumNoFormat: 0,
   });
 
   // Need State
   const [need, setNeed] = React.useState<ForLoopData>({
     data: [],
     highestNum: "",
+    highestNumNoFormat: 0,
   });
+
+  // Need Monthly Contribution State
+  const [needMonthlyContribution, setNeedMonthlyContribution] = React.useState(0);
+
+  // Have Retirement Budget
+  const [haveRetireBudget, setHaveRetireBudget] = React.useState({
+    value: 0,
+    valueNoInflation: 0,
+  });
+
+  // Show State
+  const [show, setShow] = React.useState(true);
 
   // Final Price State
   const [needFinalPrice, setNeedFinalPrice] = React.useState<number>(0);
@@ -157,6 +173,7 @@ export default function RetirementPage() {
       return {
         data: res,
         highestNum: USDollar.format(highestNum),
+        highestNumNoFormat: highestNum,
       };
     }
 
@@ -212,7 +229,7 @@ export default function RetirementPage() {
       } = obj;
       const newPostRate = postRate / 100;
       const newInflation = inflation / 100;
-      // This function grabs the monthy payment
+      // This function grabs the monthy payment ... becasue I need it in the foor loop below to create my what you need chart
       //* We simply solve for PMT
       //Future Value of an Ordinary Annuity
       //* FV = PMT * ((1 + rate/months)^ time * months - 1) / (rate / 12)
@@ -232,7 +249,11 @@ export default function RetirementPage() {
 
           const PMT = moneyNeededForBudgetNumber / topAndBottom;
 
-          monthlyContribution = PMT;
+          // if inflation and postRate === each ohter it means we have a nomial rate of 0
+          const numberOfPayments = time * months;
+          const pmtZeroInterest = moneyNeededForBudgetNumber / numberOfPayments;
+
+          monthlyContribution = newInflation === newPostRate ? pmtZeroInterest : PMT;
         }
         return monthlyContribution;
       }
@@ -258,9 +279,13 @@ export default function RetirementPage() {
           const top = Math.pow(1 + rate, time * 12) - 1;
           const value = monthlyP * (top / rate);
 
+          // if inflation and postRate === each ohter it means we have a nomial rate of 0
+          const yearlyDeposit = monthlyP * 12;
+          const rateOfZero = yearlyDeposit * time;
+
           res.push({
             age: i === 1 ? currentAge : age + i,
-            value: value + fvOfPv,
+            value: newInflation === newPostRate ? rateOfZero : value + fvOfPv,
           });
         }
       }
@@ -269,12 +294,92 @@ export default function RetirementPage() {
       return {
         data: res,
         highestNum: USDollar.format(highestNum),
+        highestNumNoFormat: highestNum,
       };
     }
+
+    // Payout Annutiy Function is being used with inflation to calculate monthly withdraw
+    function getMonthlyPaymentHave(obj: SelectedGoalType, highNum: number) {
+      const {
+        age: { retireAge, lifeExpectancy },
+
+        postRate,
+        inflation,
+      } = obj;
+      const newPostRate = postRate / 100;
+      const newInflation = inflation / 100;
+
+      const time = lifeExpectancy - retireAge;
+
+      const finalPrice = highNum;
+      const addInflationAndPostRate = (1 + newPostRate) / (1 + newInflation) - 1;
+      //console.log(addInflationAndPostRate)
+      const months = 12;
+      const rate = addInflationAndPostRate / months;
+
+      const toThePowerTop = Math.pow(1 + rate, -time * months);
+      const subtractToThePower = 1 - toThePowerTop;
+      const topDivideBottom = subtractToThePower / rate;
+      const value = finalPrice / topDivideBottom;
+
+      // This for PMT with not adjusted with infaltion
+      const rateNoInflation = newPostRate / months;
+
+      const toThePowerTopNoInflation = Math.pow(1 + rateNoInflation, -time * months);
+      const subtractToThePowerNoInflation = 1 - toThePowerTopNoInflation;
+      const topDivideBottomNoInflation = subtractToThePowerNoInflation / rateNoInflation;
+      const valueNoInflation = finalPrice / topDivideBottomNoInflation;
+
+      // if inflation and postRate === each ohter it means we have a nomial rate of 0
+      const numberOfPayments = time * months;
+      const pmtZeroInterest = finalPrice / numberOfPayments;
+
+      return {
+        value: newInflation === newPostRate ? pmtZeroInterest : value,
+        valueNoInflation,
+      };
+    }
+
+    // Payout Annutiy for getting montly contribution for what you need final price
+    function getMonthlyPaymentNeed(obj: SelectedGoalType) {
+      let monthlyContribution = 0;
+      const {
+        age: { retireAge, currentAge },
+
+        postRate,
+        inflation,
+      } = obj;
+      const newPostRate = postRate / 100;
+      const newInflation = inflation / 100;
+
+      const time = retireAge - currentAge;
+
+      const moneyNeededForBudgetNumber = getWhatYouNeedFinalPrice(obj);
+      const addInflationAndPostRate = (1 + newPostRate) / (1 + newInflation) - 1;
+
+      const months = 12;
+      const rate = addInflationAndPostRate / months;
+
+      const toThePowerTop = Math.pow(1 + rate, time * months) - 1;
+      const topAndBottom = toThePowerTop / rate;
+
+      const PMT = moneyNeededForBudgetNumber / topAndBottom;
+
+      // if inflation and postRate === each ohter it means we have a nomial rate of 0
+      const numberOfPayments = time * months;
+      const pmtZeroInterest = moneyNeededForBudgetNumber / numberOfPayments;
+
+      monthlyContribution = newInflation === newPostRate ? pmtZeroInterest : PMT;
+
+      return monthlyContribution;
+    }
+
     if (selectedGoal) {
       setHave(futureValueWhatYouHave(selectedGoal));
       setNeedFinalPrice(getWhatYouNeedFinalPrice(selectedGoal));
       setNeed(futureValueWhatYouWillNeed(selectedGoal));
+      setHaveRetireBudget(getMonthlyPaymentHave(selectedGoal, futureValueWhatYouHave(selectedGoal).highestNumNoFormat));
+      setNeedMonthlyContribution(getMonthlyPaymentNeed(selectedGoal));
     }
   }, [selectedGoal, retireGoals, dispatch]); // eslint-disable-line
 
@@ -326,7 +431,11 @@ export default function RetirementPage() {
   }
 
   return (
-    <div className={`w-full h-full grid ${shrinkDashboardSidebar ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1" : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"}`}>
+    <div
+      className={`w-full h-full grid ${
+        shrinkDashboardSidebar ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1" : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
+      }`}
+    >
       {/* Left Side Inputs */}
       <RetirementInputs />
       {/* Right Side Chart */}
@@ -453,15 +562,21 @@ export default function RetirementPage() {
             {/* Charts Go Here */}
             <div className="w-full h-auto flex flex-col ">
               <div className="flex items-center w-auto h-auto">
-                <h1 className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline" : "text-gray-400"}`} onClick={() => setView("Graph View")}>
+                <h1 className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Graph View")}>
                   Graph View
                 </h1>
-                <h1 className={` cursor-pointer ${view === "Summary View" ? "underline" : "text-gray-500"}`} onClick={() => setView("Summary View")}>
+                <h1 className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Summary View")}>
                   Summary View
                 </h1>
               </div>
 
-              <div className="w-full h-auto grid grid-cols-1 relative ">{need && have && <RetirementLineChart need={need} have={have} />}</div>
+              <hr className="border my-2 border-gray-300" />
+
+              {view === "Graph View" && <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">{need && have && <RetirementLineChart need={need} have={have} />}</div>}
+
+              {view === "Summary View" && (
+                <RetirementSummary show={show} setShow={setShow} have={have} need={need} haveRetireBudget={haveRetireBudget} needMonthlyContribution={needMonthlyContribution} />
+              )}
             </div>
           </div>
         </motion.div>
