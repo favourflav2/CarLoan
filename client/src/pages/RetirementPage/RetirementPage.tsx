@@ -587,7 +587,7 @@ export default function RetirementPage() {
       </div>
 
       {/* Bottom Text Explaining Whats Going on */}
-      <RetirementExplain />
+      <RetirementExplain haveHighNum={have.highestNumNoFormat}/>
     </div>
   );
 }

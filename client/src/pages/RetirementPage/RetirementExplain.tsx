@@ -1,22 +1,25 @@
 import * as React from "react";
 import { UseSelector } from "../../redux/store";
+import RetirementHowItWorksHave from "./RetirementHowItWorksHave";
 
-export interface IRetirementExplainProps {}
+export interface IRetirementExplainProps {
+  haveHighNum: number;
+}
 
-export default function RetirementExplain(props: IRetirementExplainProps) {
-    const {shrinkDashboardSidebar, selectedGoal} = UseSelector(state => state.app)
+export default function RetirementExplain({ haveHighNum }: IRetirementExplainProps) {
+  // Redux States
+  const { shrinkDashboardSidebar, selectedGoal } = UseSelector((state) => state.app);
+  //const dispatch = Dispatch();
 
-    const USDollar = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: `USD`,
-      });
 
-      if(!selectedGoal){
-        return null
-      }
-    
+
+
+  if (!selectedGoal) {
+    return null;
+  }
+
   return (
-    <div className={`my-10 h-auto  flex flex-col ${shrinkDashboardSidebar ? '':'p-4 2xl:px-[80px]'} w-full text-black dark:text-gray-300`}>
+    <div className={`my-10 h-auto  flex flex-col ${shrinkDashboardSidebar ? "2xl:px-[80px]" : "p-4 2xl:px-[80px]"} w-full text-black dark:text-gray-300`}>
       <h1 className="text-[24px] mb-2">About The Retirement Calculator</h1>
       <p className="text-[15px] mb-3">
         Our free calculator estimates your retirement nest egg based on your current retirement savings contributions and then calculates how it will stretch over your retirement in today’s dollars,
@@ -30,7 +33,7 @@ export default function RetirementExplain(props: IRetirementExplainProps) {
 
       {/* retirement details section */}
       <div className="w-full flex flex-col mt-5">
-        <h1 className="text-[20px]  mb-2 font-semibold underline">How to fill out your retirement details</h1>
+        <h1 className="text-[20px]  mb-2 font-semibold ">How to fill out your retirement details</h1>
 
         {/* Current retirement savings */}
         <div className="mb-3">
@@ -68,7 +71,7 @@ export default function RetirementExplain(props: IRetirementExplainProps) {
 
       {/* retirement advanced details section */}
       <div className="w-full flex flex-col mt-5">
-        <h1 className="text-[20px]  mb-2 font-semibold underline">How to fill out advanced details</h1>
+        <h1 className="text-[20px]  mb-2 font-semibold ">How to fill out advanced details</h1>
 
         {/* Retirement age */}
         <div className="mb-3">
@@ -116,37 +119,16 @@ export default function RetirementExplain(props: IRetirementExplainProps) {
         <div className="mb-3">
           <h1>
             <span className="font-semibold">Post-retirement rate of return:</span>{" "}
-            <span className="text-[15px]">Your rate of return during retirement is typically lower than pre-retirement because most people shift at least some of their portfolio to lower-risk investments.</span>
+            <span className="text-[15px]">
+              Your rate of return during retirement is typically lower than pre-retirement because most people shift at least some of their portfolio to lower-risk investments.
+            </span>
           </h1>
         </div>
       </div>
 
       {/* how it works */}
-      <div className="w-full flex flex-col mt-5">
-        <h1 className="text-[20px]  mb-2 font-semibold underline">How the retirement calculator works</h1>
-
-        {/* Have Function */}
-        <div className="mb-3">
-          <p className="text-[15px]">To come up with our estimate of the total amount of savings you’ll have for retirement (“What you’ll have”), we start with your current age and how much you’ve saved so far. Using your income and savings contributions, we calculate how much more you’ll save between now and your projected retirement date.</p>
-
-          <h1 className="font-semibold mt-5 mb-1">Example #1</h1>
-
-          <p>Currently  you have <span className="font-bold">{USDollar.format(selectedGoal?.savings)}</span> in savings and will start to save <span className="font-bold">{USDollar.format(selectedGoal?.monthlyContribution)}</span> per month in an account that yields <span className="font-bold">{selectedGoal?.preRate}%</span> per year. You will make your deposits at the end of each month. You want to know the value of your investment in <span className="font-bold">{selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge}</span> years.</p>
-
-          <ul className="list-disc list-inside mt-3">
-            <li className="text-[13.5px]">1 Period = 1 Year</li>
-            <li className="text-[13.5px]">Present Value Investment <span className="font-bold">PV</span> = {USDollar.format(selectedGoal?.savings)}</li>
-            <li className="text-[13.5px]">Number of Periods <span className="font-bold">t</span> = {selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge} (years)</li>
-            <li className="text-[13.5px]">Rate per Period R = 6% (<span className="font-bold">r</span> = 0.06)</li>
-            <li className="text-[13.5px]">Coumpounding 12 times per period (monthly) <span className="font-bold">m</span> = 12</li>
-            <li className="text-[13.5px]">Payment Amount <span className="font-bold">PMT</span> = ${selectedGoal?.monthlyContribution}</li>
-          </ul>
-        </div>
-
-      
-      </div>
-
-
+      <RetirementHowItWorksHave haveHighNum={haveHighNum} />
     </div>
   );
 }
+
