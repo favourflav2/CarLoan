@@ -28,7 +28,7 @@ interface AppSlice {
   showHaveExample:boolean;
   showNeedExample1:boolean;
   showNeedExample2:boolean;
-  showNeedExample3:boolean;
+  
 }
 
 const initialState: AppSlice = {
@@ -42,7 +42,7 @@ const initialState: AppSlice = {
   showHaveExample:true,
   showNeedExample1:true,
   showNeedExample2:true,
-  showNeedExample3:true,
+ 
 };
 
 const appSlice = createSlice({
@@ -133,9 +133,6 @@ const appSlice = createSlice({
           break;
         case 2: 
           state.showNeedExample2 = !state.showNeedExample2
-          break;
-        case 3:
-          state.showNeedExample3 = !state.showNeedExample3
           break;
           default:
             return
