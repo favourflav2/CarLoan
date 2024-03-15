@@ -9,11 +9,12 @@ import { AnimatePresence, motion, easeInOut } from "framer-motion";
 
 export interface IRetirementHowItWorksHaveProps {
   haveHighNum: number;
+  needFinalPrice: number;
 }
 
-export default function RetirementHowItWorksHave({ haveHighNum }: IRetirementHowItWorksHaveProps) {
+export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }: IRetirementHowItWorksHaveProps) {
   // Redux States
-  const {  selectedGoal, showHaveExample } = UseSelector((state) => state.app);
+  const { selectedGoal, showHaveExample, showNeedExample1 } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   const USDollar = new Intl.NumberFormat("en-US", {
@@ -27,6 +28,10 @@ export default function RetirementHowItWorksHave({ haveHighNum }: IRetirementHow
   if (!selectedGoal) {
     return null;
   }
+  const newPostRate = selectedGoal?.postRate / 100;
+  const newInflation = selectedGoal?.inflation / 100;
+  const addInflationAndPostRate = (1 + newPostRate) / (1 + newInflation) - 1;
+
   return (
     <>
       <MathJaxContext>
@@ -43,7 +48,11 @@ export default function RetirementHowItWorksHave({ haveHighNum }: IRetirementHow
             {/* Example */}
             <div className="w-auto flex items-center mt-5 mb-1">
               <h1 className="font-semibold mr-1">Example #1</h1>
-              {showHaveExample ? <ArrowDropUpIcon onClick={() => dispatch(setShowHaveExample())} className=" cursor-pointer text-[28px]" /> : <ArrowDropDownIcon onClick={() => dispatch(setShowHaveExample())} className=" cursor-pointer text-[28px]" />}
+              {showHaveExample ? (
+                <ArrowDropUpIcon onClick={() => dispatch(setShowHaveExample(0))} className=" cursor-pointer text-[28px]" />
+              ) : (
+                <ArrowDropDownIcon onClick={() => dispatch(setShowHaveExample(0))} className=" cursor-pointer text-[28px]" />
+              )}
             </div>
 
             {/* Math and Example Container */}
@@ -73,7 +82,7 @@ export default function RetirementHowItWorksHave({ haveHighNum }: IRetirementHow
                       Number of Periods <span className="font-bold">t</span> = {selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge} (years)
                     </li>
                     <li className="text-[13.5px]">
-                      Rate per Period R = 6% (<span className="font-bold">r</span> = 0.06)
+                      Rate per Period R = {selectedGoal?.preRate}% (<span className="font-bold">r</span> = {updatedPreRate})
                     </li>
                     <li className="text-[13.5px]">
                       Coumpounding 12 times per period (monthly) <span className="font-bold">m</span> = 12
@@ -132,6 +141,135 @@ export default function RetirementHowItWorksHave({ haveHighNum }: IRetirementHow
                       </h1>
                     </div>
                   </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Need Function */}
+          <div className="mb-3 flex flex-col w-full">
+            <p className="text-[15px]">
+              To calculate your target retirement savings total <span className="text-[16px] font-bold underline">(“What you’ll need”)</span>, I use your life expectancy to determine how much you’ll
+              need (taking inflation into account) to match your projected monthly budget in retirement and have it last from retirement through the remainder of your life.
+            </p>
+
+            {/* Example */}
+            <div className="w-auto flex items-center mt-5 mb-1">
+              <h1 className="font-semibold mr-1">
+                Example #2 (<span className="text-[12px]">Retrieve total amount for what you need</span>)
+              </h1>
+              {showNeedExample1 ? (
+                <ArrowDropUpIcon onClick={() => dispatch(setShowHaveExample(1))} className=" cursor-pointer text-[28px]" />
+              ) : (
+                <ArrowDropDownIcon onClick={() => dispatch(setShowHaveExample(1))} className=" cursor-pointer text-[28px]" />
+              )}
+            </div>
+
+            {/* Math and Example Container */}
+            <AnimatePresence>
+              {showNeedExample1 && (
+                <motion.div
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1, transition: { duration: 0.5, ease: easeInOut } }}
+                  exit={{ x: -100, opacity: 0, transition: { duration: 0.5, ease: easeInOut } }}
+                  className="w-full flex flex-col h-auto"
+                >
+                  <p className="text-[15px] font-bold mb-2 text-green-700">
+                    The first step in calculating what you need is getting the total amount using the payout annuity formula. By understanding you want to withdraw{" "}
+                    <span className=" underline font-bold">{USDollar.format(selectedGoal?.budget)}</span> every month in retirement I can use the formula to get you an estimate on what you will need.
+                    Which is proportionally related to your withdrawal amount.
+                  </p>
+                  <p className="text-[15px]">
+                    Our current situation goes like this. You don't know how much you will need in your account to retire if you want to withdraw{" "}
+                    <span className="font-bold">{USDollar.format(selectedGoal?.budget)}</span> for a total of{" "}
+                    <span className="font-bold">{selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge}</span> years(life expectancy - retire age), and your retirement account will earn{" "}
+                    <span className="font-bold">{selectedGoal?.postRate}%</span> interest and the inflation rate is <span className="font-bold">{selectedGoal?.inflation}%</span>. How much will you
+                    need in your account when you retire?
+                  </p>
+
+                  {/* List Items */}
+                  <ul className="list-disc list-inside mt-3">
+                    <li className="text-[13.5px]">1 Period = 1 Year</li>
+                    <li className="text-[13.5px]">
+                      Present Value Investment <span className="font-bold">PV</span> = PV (unknown)
+                    </li>
+                    <li className="text-[13.5px]">
+                      Number of Periods <span className="font-bold">t</span> = {selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge} (years)
+                    </li>
+                    <li className="text-[13.5px]">
+                      Rate per Period R = {selectedGoal?.postRate}% (<span className="font-bold">r</span> = {selectedGoal?.postRate / 100})
+                    </li>
+                    <li className="text-[13.5px]">
+                      Inflation per Period I = {selectedGoal?.inflation}% (<span className="font-bold">r</span> = {selectedGoal?.inflation / 100})
+                    </li>
+                    <li className="text-[13.5px]">
+                      Coumpounding 12 times per period (monthly) <span className="font-bold">m</span> = 12
+                    </li>
+                    <li className="text-[13.5px]">
+                      Withdraw Amount <span className="font-bold">w</span> = {USDollar.format(selectedGoal?.budget)}
+                    </li>
+                  </ul>
+
+                  {/* Formualas */}
+
+                  {/* Getting Real Interest Rate */}
+                  {newInflation !== newPostRate && (
+                    <div className="w-full flex flex-col mt-6">
+                      <h1 className="underline">Getting the real interest rate (adjusted with inflation)</h1>
+
+                      <div className="w-full flex items-center mt-3">
+                        {/* Calculating Future Value of the Present Value */}
+
+                        <MathJax>{`\\(Real \\ Interest \\ Rate=(\\frac{1 \\ + \\ nominal \\ rate}{1 \\ + \\ interest \\ rate}) \\ - \\ 1\\)`}</MathJax>
+
+                        <EastIcon className="mx-5" />
+
+                        <MathJax>{`\\(Real \\ Interest \\ Rate=(\\frac{1 \\ + \\ ${selectedGoal?.postRate / 100}}{1 \\ + \\ ${selectedGoal?.inflation / 100}}) \\ - \\ 1\\)`}</MathJax>
+
+                        <span className="mx-2">=</span>
+                        <h1 className="text-[15px]"> {addInflationAndPostRate.toFixed(3)} </h1>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Payout Annutiy  */}
+                  {newInflation !== newPostRate && (
+                    <div className="w-full flex flex-col mt-8">
+                      <h1 className="underline">Payout Annuity Formula solve for PV</h1>
+
+                      <div className="w-full flex items-center mt-3">
+                        {/* Calculating Future Value of the Present Value */}
+
+                        <MathJax className="text-[20px]">{"\\(PV= \\frac{w \\ (1 \\ - \\ (1 + \\frac{r}{m})^{(-t * m)})}{\\frac{r}{m}}\\)"}</MathJax>
+
+                        <EastIcon className="mx-5" />
+
+                        <MathJax className="text-[20px]">{`\\(PV= \\frac{${selectedGoal?.budget} \\ (1 \\ - \\ (1 + \\frac{${addInflationAndPostRate.toFixed(5)}}{12})^{(-${
+                          selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge
+                        } * m)})}{\\frac{${addInflationAndPostRate.toFixed(5)}}{12}}\\)`}</MathJax>
+
+                        <span className="mx-2">=</span>
+                        <h1 className="text-[15px] font-bold"> {USDollar.format(needFinalPrice)} </h1>
+                      </div>
+                    </div>
+                  )}
+
+                  {newInflation === newPostRate && <div className="w-full flex flex-col mt-6">
+                      <h1 className="text-[15px] text-red-500">* Since the interest rate is equal to the Post-retirement rate of return our rate becomes 0% </h1>
+
+                      <div className="w-full flex items-center mt-3">
+                        {/* Calculating Future Value of the Present Value */}
+
+                        <MathJax className="">{"\\(PV= w * (t \\ * \\ m)\\)"}</MathJax>
+
+                        <EastIcon className="mx-5" />
+
+                        <MathJax className="">{`\\(PV= ${selectedGoal?.budget} * (${selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge} \\ * \\ 12)\\)`}</MathJax>
+
+                        <span className="mx-2">=</span>
+                        <h1 className="text-[15px] font-bold"> {USDollar.format(needFinalPrice)} </h1>
+                      </div>
+                  </div>}
                 </motion.div>
               )}
             </AnimatePresence>

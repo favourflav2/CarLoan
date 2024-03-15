@@ -4,9 +4,10 @@ import RetirementHowItWorksHave from "./RetirementHowItWorksHave";
 
 export interface IRetirementExplainProps {
   haveHighNum: number;
+  needFinalPrice:number
 }
 
-export default function RetirementExplain({ haveHighNum }: IRetirementExplainProps) {
+export default function RetirementExplain({ haveHighNum, needFinalPrice }: IRetirementExplainProps) {
   // Redux States
   const { shrinkDashboardSidebar, selectedGoal } = UseSelector((state) => state.app);
   //const dispatch = Dispatch();
@@ -127,7 +128,7 @@ export default function RetirementExplain({ haveHighNum }: IRetirementExplainPro
       </div>
 
       {/* how it works */}
-      <RetirementHowItWorksHave haveHighNum={haveHighNum} />
+      <RetirementHowItWorksHave haveHighNum={haveHighNum} needFinalPrice={needFinalPrice}/>
     </div>
   );
 }

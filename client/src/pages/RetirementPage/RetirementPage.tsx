@@ -206,6 +206,8 @@ export default function RetirementPage() {
         const top = monthlyP * subtractToThePower;
         const value = top / rate;
 
+        
+
         // if inflation and postRate === each ohter it means we have a nomial rate of 0
         const yearlyDeposit = monthlyP * 12;
         //console.log(yearlyDeposit)
@@ -587,7 +589,7 @@ export default function RetirementPage() {
       </div>
 
       {/* Bottom Text Explaining Whats Going on */}
-      <RetirementExplain haveHighNum={have.highestNumNoFormat}/>
+      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice}/>
     </div>
   );
 }

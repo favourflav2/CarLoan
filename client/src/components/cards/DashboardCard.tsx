@@ -4,7 +4,6 @@ import CircleIcon from "@mui/icons-material/Circle";
 import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
-import { motion } from "framer-motion";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import { removeRetireItem } from "../../redux/features/retirementSlice";
 

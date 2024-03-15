@@ -26,6 +26,9 @@ interface AppSlice {
   shrinkDashboardSidebar:boolean;
   shrinkRetirementInputs: boolean;
   showHaveExample:boolean;
+  showNeedExample1:boolean;
+  showNeedExample2:boolean;
+  showNeedExample3:boolean;
 }
 
 const initialState: AppSlice = {
@@ -37,6 +40,9 @@ const initialState: AppSlice = {
   shrinkDashboardSidebar:false,
   shrinkRetirementInputs:false,
   showHaveExample:true,
+  showNeedExample1:true,
+  showNeedExample2:true,
+  showNeedExample3:true,
 };
 
 const appSlice = createSlice({
@@ -116,8 +122,24 @@ const appSlice = createSlice({
     setShrinkDashboard: (state) => {
       state.shrinkDashboardSidebar = !state.shrinkDashboardSidebar
     },
-    setShowHaveExample: (state) => {
-      state.showHaveExample = !state.showHaveExample
+    setShowHaveExample: (state,action) => {
+      
+      switch(action.payload){
+        case 0:
+          state.showHaveExample = !state.showHaveExample
+          break;
+        case 1:
+          state.showNeedExample1 = !state.showNeedExample1
+          break;
+        case 2: 
+          state.showNeedExample2 = !state.showNeedExample2
+          break;
+        case 3:
+          state.showNeedExample3 = !state.showNeedExample3
+          break;
+          default:
+            return
+      }
     }
   },
 });

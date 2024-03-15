@@ -21,7 +21,7 @@ export default function NavBar(props: INavBarProps) {
   const dispatch = Dispatch()
   const navigate = useNavigate()
   const pathName = useLocation()
-  console.log(pathName)
+
 
 
 
