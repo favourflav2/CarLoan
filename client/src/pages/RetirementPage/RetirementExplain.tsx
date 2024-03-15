@@ -20,7 +20,7 @@ export default function RetirementExplain({ haveHighNum, needFinalPrice }: IReti
   }
 
   return (
-    <div className={`my-10 h-auto  flex flex-col ${shrinkDashboardSidebar ? "2xl:px-[80px]" : "p-4 2xl:px-[80px]"} w-full text-black dark:text-gray-300`}>
+    <div className={`my-10 h-auto   flex flex-col ${shrinkDashboardSidebar ? "2xl:px-[80px]" : "p-4 2xl:px-[80px]"} w-full text-black dark:text-gray-300`}>
       <h1 className="text-[24px] mb-2">About The Retirement Calculator</h1>
       <p className="text-[15px] mb-3">
         Our free calculator estimates your retirement nest egg based on your current retirement savings contributions and then calculates how it will stretch over your retirement in today’s dollars,
@@ -104,7 +104,7 @@ export default function RetirementExplain({ haveHighNum, needFinalPrice }: IReti
         <div className="w-full flex flex-col my-5">
           <hr className="border-2 border-chartGreen" />
           {/* Content Box */}
-          <div className="w-full h-[170px] bg-[#EADDCA] dark:bg-[#1814149c] p-8">
+          <div className="w-full h-auto bg-[#EADDCA] dark:bg-[#1814149c] p-8">
             <div className="w-auto flex items-center">
               <span className="text-[35px] mr-2">🤓</span> <h1 className="text-[18px]">Nerdy Tip</h1>
             </div>

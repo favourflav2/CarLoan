@@ -29,10 +29,8 @@ export default function Home() {
   }, [dispatch, retireGoals]);
   return (
     <div className="w-full h-full flex flex-col">
-      {/* Header */}
-      {/* <div className="bg-green-100 w-full h-[70px]">ww</div> */}
-      {/* content */}
-      <div className={`w-full h-full grid ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
+      {/* desktop content */}
+      <div className={`w-full h-full min-[900px]:grid hidden ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
         {/* Left Side */}
         {shrinkDashboardSidebar ? (
           // Shrinked Left Side
@@ -88,6 +86,23 @@ export default function Home() {
             <div>Theres no selected goal id</div>
           )}
         </div>
+      </div>
+
+      {/* ---------------------------Mobile Content------------------------- */}
+      <div className="w-full h-full flex flex-col min-[900px]:hidden">
+
+        <div className=" w-full h-auto">
+          {selectedGoal?.id ? (
+            selectedGoal?.type === "Retirement" ? (
+              <RetirementPage />
+            ) : (
+              <div>Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+            )
+          ) : (
+            <div>Theres no selected goal id</div>
+          )}
+        </div>
+
       </div>
     </div>
   );

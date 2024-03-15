@@ -174,7 +174,7 @@ export default function RetirementInputs() {
   }, [selectedGoal, reset]); // eslint-disable-line
 
   return (
-    <div className="w-full max-h-[900px] py-4 px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
+    <div className="w-full max-h-[900px] py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
         <form className="w-full h-auto flex flex-col">

@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { editRetireGoalTitle } from "../../redux/features/retirementSlice";
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
+import MenuIcon from "@mui/icons-material/Menu";
 
 interface SelectedGoalType {
   type: string;
@@ -205,8 +206,6 @@ export default function RetirementPage() {
         const subtractToThePower = 1 - toThePowerTop;
         const top = monthlyP * subtractToThePower;
         const value = top / rate;
-
-        
 
         // if inflation and postRate === each ohter it means we have a nomial rate of 0
         const yearlyDeposit = monthlyP * 12;
@@ -434,7 +433,10 @@ export default function RetirementPage() {
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
+      <div className=" min-[900px]:hidden block my-3 ">
+        <MenuIcon className=" " />
+      </div>
       {/* Top Section Chart and Inputs */}
       <div
         className={`w-full h-full grid ${
@@ -546,21 +548,21 @@ export default function RetirementPage() {
               <h1 className="text-[19px] font-semibold">Retirement savings at age {selectedGoal?.age?.retireAge}</h1>
 
               {/* Numbers */}
-              <div className="w-auto flex items-center my-5">
+              <div className="w-auto flex md:justify-normal justify-around items-center my-5">
                 {/* What You Have Number */}
                 <div>
-                  <h1 className="mb-2 text-[17px] text-lightText dark:text-white font-bold dark:font-normal">What you'll have</h1>
+                  <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">What you'll have</h1>
 
-                  <h1 className="text-[21px] font-semibold text-chartGreen">{have ? have.highestNum : 0}</h1>
+                  <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartGreen">{have ? have.highestNum : 0}</h1>
                 </div>
 
-                <Divider orientation="vertical" flexItem className="border border-gray-300 mx-8" />
+                <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8" />
 
                 {/* What You Need Number */}
                 <div>
-                  <h1 className="mb-2 text-[17px] text-lightText dark:text-white font-bold dark:font-normal">What you'll need</h1>
+                  <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">What you'll need</h1>
 
-                  <h1 className="text-[21px] font-semibold text-chartYellow">{needFinalPrice ? USDollar.format(needFinalPrice) : 0}</h1>
+                  <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">{needFinalPrice ? USDollar.format(needFinalPrice) : 0}</h1>
                 </div>
               </div>
 
@@ -589,7 +591,7 @@ export default function RetirementPage() {
       </div>
 
       {/* Bottom Text Explaining Whats Going on */}
-      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice}/>
+      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} />
     </div>
   );
 }

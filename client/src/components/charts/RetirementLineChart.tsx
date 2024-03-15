@@ -4,7 +4,6 @@ import { Line } from "react-chartjs-2";
 import { Filler } from "chart.js";
 import { UseSelector } from "../../redux/store";
 
-
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
 interface Data {
@@ -78,12 +77,6 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
           ctx.moveTo(xCord, top);
           ctx.lineTo(xCord, bottom);
           ctx.stroke();
-
-          //   chart.getActiveElements().forEach((active: any) => {
-
-          //     const value = data.datasets[active.datasetIndex].data[active.index];
-
-          //   });
         }
       },
     },
@@ -108,7 +101,7 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
     },
     plugins: {
       legend: {
-        display: true,
+        display: false,
       },
       title: {
         display: false,
@@ -150,7 +143,7 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
           },
           color: `${lightAndDarkMode ? "white" : "black"}`,
           font: {
-            size: 11,
+            size: 13,
           },
         },
       },
@@ -164,13 +157,33 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
         },
         ticks: {
           color: `${lightAndDarkMode ? "white" : "black"}`,
+
           font: {
-            size: 11,
+            size: 13,
           },
         },
       },
     },
   };
 
-  return <div className="w-full h-[500px] flex flex-col">{need.data && have.data ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>;
+  return (
+    <div className="w-full h-auto flex flex-col">
+      {/* Legend */}
+      <div className="w-full flex items-center justify-around mt-3 lg:mb-1 mb-3">
+        {/* Have */}
+        <div className="w-auto flex items-center">
+          <div className="w-[25px] h-[15px] bg-chartGreen rounded-sm" />
+          <p className="text-[13px] ml-1">What You Have</p>
+        </div>
+
+        {/* Need */}
+        <div className="w-auto flex items-center">
+          <div className="w-[25px] h-[15px] bg-chartYellow rounded-sm" />
+          <p className="text-[13px] ml-1">What You Need</p>
+        </div>
+      </div>
+      {/* Chart */}
+      <div className="w-full min-[900px]:h-[500px] h-[350px]  flex flex-col">{need.data && have.data ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>
+    </div>
+  );
 }

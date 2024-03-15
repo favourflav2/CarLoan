@@ -6,6 +6,7 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { setShowHaveExample } from "../../redux/features/applicationSlice";
 import { AnimatePresence, motion, easeInOut } from "framer-motion";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 
 export interface IRetirementHowItWorksHaveProps {
   haveHighNum: number;
@@ -100,7 +101,8 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                       Calculating Future Value of the Present Value (<span className="text-[12.5px]">Current Savings {USDollar.format(selectedGoal?.savings)}</span>)
                     </h1>
 
-                    <div className="w-full flex items-center mt-3">
+                    {/* Desktop Version */}
+                    <div className="w-full md:flex hidden items-center mt-3">
                       {/* Calculating Future Value of the Present Value */}
 
                       <MathJax>{`\\(FV=PV(1 + \\frac{r}{m})^{(t * m)}\\)`}</MathJax>
@@ -112,6 +114,19 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                       <span className="mx-2">=</span>
                       <h1 className="text-[15px]"> Future value of current savings </h1>
                     </div>
+                    {/* Mobile Version */}
+                    <div className="w-full md:hidden flex flex-col justify-center items-center  mt-3">
+                      {/* Calculating Future Value of the Present Value */}
+
+                      <MathJax>{`\\(FV=PV(1 + \\frac{r}{m})^{(t * m)}\\)`}</MathJax>
+
+                      <ArrowDownwardIcon className="my-3" />
+
+                      <MathJax>{`\\(FV=${selectedGoal?.savings}(1 + \\frac{${updatedPreRate}}{12})^{(${time} * 12)}\\)`}</MathJax>
+
+                      <ArrowDownwardIcon className="my-3" />
+                      <h1 className="text-[15px]"> Future value of current savings </h1>
+                    </div>
                   </div>
 
                   {/* Getting Future Value of PMT */}
@@ -119,8 +134,8 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                     <h1 className="underline">
                       Calculating Future Value of Payments (<span className="text-[12.5px]">PMT {USDollar.format(selectedGoal?.monthlyContribution)}</span>)
                     </h1>
-
-                    <div className="w-full flex items-center mt-3">
+                    {/* Desktop Version */}
+                    <div className="w-full md:flex hidden items-center mt-3">
                       {/* Calculating Future Value of the Present Value */}
 
                       <MathJax className="text-[20px]">{"\\(FV=PMT \\frac{((1 + \\frac{r}{m})^{(t * m)} - 1)}{\\frac{r}{m}}\\)"}</MathJax>
@@ -130,6 +145,19 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                       <MathJax className="text-[20px]">{`\\(FV=${selectedGoal?.monthlyContribution} \\frac{((1 + \\frac{${updatedPreRate}}{12})^{(${time} * 12)} - 1)}{\\frac{${updatedPreRate}}{12}}\\)`}</MathJax>
 
                       <span className="mx-2">=</span>
+                      <h1 className="text-[15px]"> Future value of payments </h1>
+                    </div>
+                    {/* Mobile Version */}
+                    <div className="w-full md:hidden flex flex-col justify-center items-center  mt-3">
+                      {/* Calculating Future Value of the Present Value */}
+
+                      <MathJax className="">{"\\(FV=PMT \\frac{((1 + \\frac{r}{m})^{(t * m)} - 1)}{\\frac{r}{m}}\\)"}</MathJax>
+
+                      <ArrowDownwardIcon className="my-3" />
+
+                      <MathJax className="">{`\\(FV=${selectedGoal?.monthlyContribution} \\frac{((1 + \\frac{${updatedPreRate}}{12})^{(${time} * 12)} - 1)}{\\frac{${updatedPreRate}}{12}}\\)`}</MathJax>
+
+                      <ArrowDownwardIcon className="my-3" />
                       <h1 className="text-[15px]"> Future value of payments </h1>
                     </div>
 
@@ -216,8 +244,8 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                   {newInflation !== newPostRate && (
                     <div className="w-full flex flex-col mt-6">
                       <h1 className="underline">Getting the real interest rate (adjusted with inflation)</h1>
-
-                      <div className="w-full flex items-center mt-3">
+                      {/* Desktop Version */}
+                      <div className="w-full md:flex hidden items-center mt-3">
                         {/* Calculating Future Value of the Present Value */}
 
                         <MathJax>{`\\(Real \\ Interest \\ Rate=(\\frac{1 \\ + \\ nominal \\ rate}{1 \\ + \\ interest \\ rate}) \\ - \\ 1\\)`}</MathJax>
@@ -229,15 +257,32 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                         <span className="mx-2">=</span>
                         <h1 className="text-[15px]"> {addInflationAndPostRate.toFixed(3)} </h1>
                       </div>
+
+                      {/* Mobile Version */}
+                      <div className="w-full md:hidden flex items-center justify-center flex-col mt-3">
+                        {/* Calculating Future Value of the Present Value */}
+
+                        <MathJax>{`\\(Real \\ Interest \\ Rate=(\\frac{1 \\ + \\ nominal \\ rate}{1 \\ + \\ interest \\ rate}) \\ - \\ 1\\)`}</MathJax>
+
+                        <ArrowDownwardIcon className="my-3" />
+
+                        <MathJax>{`\\(Real \\ Interest \\ Rate=(\\frac{1 \\ + \\ ${selectedGoal?.postRate / 100}}{1 \\ + \\ ${selectedGoal?.inflation / 100}}) \\ - \\ 1\\)`}</MathJax>
+
+                        <ArrowDownwardIcon className="my-3" />
+                        <h1 className="text-[15px]">
+                          {" "}
+                          Real Interest Rate = <span className="font-bold">{addInflationAndPostRate.toFixed(3)}</span>{" "}
+                        </h1>
+                      </div>
                     </div>
                   )}
 
                   {/* Payout Annutiy  */}
                   {newInflation !== newPostRate && (
-                    <div className="w-full flex flex-col mt-8">
+                    <div className="w-full flex  flex-col mt-8">
                       <h1 className="underline">Payout Annuity Formula solve for PV</h1>
-
-                      <div className="w-full flex items-center mt-3">
+                      {/* Desktop Version */}
+                      <div className="w-full md:flex hidden items-center mt-3">
                         {/* Calculating Future Value of the Present Value */}
 
                         <MathJax className="text-[20px]">{"\\(PV= \\frac{w \\ (1 \\ - \\ (1 + \\frac{r}{m})^{(-t * m)})}{\\frac{r}{m}}\\)"}</MathJax>
@@ -251,13 +296,34 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                         <span className="mx-2">=</span>
                         <h1 className="text-[15px] font-bold"> {USDollar.format(needFinalPrice)} </h1>
                       </div>
+
+                      {/* Mobile Version */}
+                      <div className="w-full md:hidden flex items-center justify-center flex-col mt-3">
+                        {/* Calculating Future Value of the Present Value */}
+
+                        <MathJax className="text-[20px]">{"\\(PV= \\frac{w \\ (1 \\ - \\ (1 + \\frac{r}{m})^{(-t * m)})}{\\frac{r}{m}}\\)"}</MathJax>
+
+                        <ArrowDownwardIcon className="my-3" />
+
+                        <MathJax className="text-[20px]">{`\\(PV= \\frac{${selectedGoal?.budget} \\ (1 \\ - \\ (1 + \\frac{${addInflationAndPostRate.toFixed(5)}}{12})^{(-${
+                          selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge
+                        } * m)})}{\\frac{${addInflationAndPostRate.toFixed(5)}}{12}}\\)`}</MathJax>
+
+                        <ArrowDownwardIcon className="my-3" />
+                        <h1 className="text-[15px]">
+                          {" "}
+                          Present Value = <span className="font-bold">{USDollar.format(needFinalPrice)}</span>{" "}
+                        </h1>
+                      </div>
                     </div>
                   )}
 
-                  {newInflation === newPostRate && <div className="w-full flex flex-col mt-6">
+                  {newInflation === newPostRate && (
+                    <div className="w-full flex flex-col mt-6">
                       <h1 className="text-[15px] text-red-500">* Since the interest rate is equal to the Post-retirement rate of return our rate becomes 0% </h1>
 
-                      <div className="w-full flex items-center mt-3">
+                      {/* Desktop Version */}
+                      <div className="w-full md:flex hidden items-center mt-3">
                         {/* Calculating Future Value of the Present Value */}
 
                         <MathJax className="">{"\\(PV= w * (t \\ * \\ m)\\)"}</MathJax>
@@ -269,7 +335,25 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                         <span className="mx-2">=</span>
                         <h1 className="text-[15px] font-bold"> {USDollar.format(needFinalPrice)} </h1>
                       </div>
-                  </div>}
+
+                      {/* Mobile Version */}
+                      <div className="w-full md:hidden flex items-center justify-center flex-col mt-3">
+                        {/* Calculating Future Value of the Present Value */}
+
+                        <MathJax className="">{"\\(PV= w * (t \\ * \\ m)\\)"}</MathJax>
+
+                        <ArrowDownwardIcon className="my-3" />
+
+                        <MathJax className="">{`\\(PV= ${selectedGoal?.budget} * (${selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge} \\ * \\ 12)\\)`}</MathJax>
+
+                        <ArrowDownwardIcon className="my-3" />
+                        <h1 className="text-[15px]">
+                          {" "}
+                          Present Value = <span className="font-bold">{USDollar.format(needFinalPrice)}</span>{" "}
+                        </h1>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -279,3 +363,5 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
     </>
   );
 }
+
+
