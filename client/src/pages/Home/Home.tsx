@@ -6,11 +6,12 @@ import { Dispatch, UseSelector } from "../../redux/store";
 import DashboardMappedData from "../../components/dashboardComponents/DashboardMappedData";
 import RetirementPage from "../RetirementPage/RetirementPage";
 import { setSelectedGoal, setShrinkDashboard } from "../../redux/features/applicationSlice";
-import FitScreenIcon from "@mui/icons-material/FitScreen";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { motion } from "framer-motion";
-import NavBar from "../../components/navbar/NavBar";
+import MenuIcon from "@mui/icons-material/Menu";
+import MobileDrawer from "../../components/Drawer/MobileDrawer";
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 export default function Home() {
   // Redux States
@@ -18,8 +19,15 @@ export default function Home() {
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const dispatch = Dispatch();
 
+  // Media Breakpoint
+  const matches = useMediaQuery('(min-width:900px)');
+
+
   // Modal States
   const [firstModal, setFirstModal] = React.useState(false);
+
+  // Drawer State Mobile Devices
+  const [open, setOpen] = React.useState(false);
 
   // If theres no saved goals ... going to set selected goal to null
   React.useEffect(() => {
@@ -27,8 +35,16 @@ export default function Home() {
       dispatch(setSelectedGoal(null));
     }
   }, [dispatch, retireGoals]);
+
+  // If the breakpoint hit/pass 900px we close mobile drawer
+  React.useEffect(()=>{
+    if(matches){
+      setOpen(false)
+    }
+  },[matches])
   return (
     <div className="w-full h-full flex flex-col">
+      
       {/* desktop content */}
       <div className={`w-full h-full min-[900px]:grid hidden ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
         {/* Left Side */}
@@ -65,12 +81,8 @@ export default function Home() {
 
             {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
             <div className="w-full h-[600px] overflow-y-auto ">
-              <DashboardMappedData setFirstModal={setFirstModal} />
+              <DashboardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} />
             </div>
-
-            {/* Modals */}
-            <FirstModal open={firstModal} setOpen={setFirstModal} />
-            <RetireModal />
           </motion.div>
         )}
 
@@ -90,7 +102,11 @@ export default function Home() {
 
       {/* ---------------------------Mobile Content------------------------- */}
       <div className="w-full h-full flex flex-col min-[900px]:hidden">
-
+        <div className=" min-[900px]:hidden block my-3 px-4">
+          <MenuIcon className=" dark:text-gray-300 text-black " onClick={() => setOpen(true)} />
+        </div>
+        {/* Drawer */}
+        <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} />
         <div className=" w-full h-auto">
           {selectedGoal?.id ? (
             selectedGoal?.type === "Retirement" ? (
@@ -102,8 +118,11 @@ export default function Home() {
             <div>Theres no selected goal id</div>
           )}
         </div>
-
       </div>
+
+      {/* Modals */}
+      <FirstModal open={firstModal} setOpen={setFirstModal} />
+      <RetireModal />
     </div>
   );
 }

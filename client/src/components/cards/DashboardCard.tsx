@@ -7,9 +7,12 @@ import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import { removeRetireItem } from "../../redux/features/retirementSlice";
 
-export interface IDashboardCardProps {}
+export interface IDashboardCardProps {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  type:string;
+}
 
-export default function DashboardCard(props: IDashboardCardProps) {
+export default function DashboardCard({type, setOpen}: IDashboardCardProps) {
   // Redux States
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { selectedGoal } = UseSelector((state) => state.app);
@@ -27,8 +30,16 @@ export default function DashboardCard(props: IDashboardCardProps) {
                   ? " text-chartGreen border-chartGreen dark:bg-inherit bg-white"
                   : "dark:text-gray-300 text-lightText  border-lightText dark:border-gray-300   "
               }`}
-              onClick={() => dispatch(setSelectedGoal(item))}
+              onClick={() => {
+                if(type === "desktop"){
+                  dispatch(setSelectedGoal(item))
+                }else{
+                  setOpen(false)
+                  dispatch(setSelectedGoal(item))
+                }
+              }}
             >
+              {/* Title and Delete Icon */}
               <div className="w-full justify-between items-center flex">
                 <h1 className="text-[15px] underline">{item?.title}</h1>
                 <DeleteIcon
@@ -41,6 +52,8 @@ export default function DashboardCard(props: IDashboardCardProps) {
                   }}
                 />
               </div>
+
+              {/* Type and Date */}
               <div className="w-full flex justify-between items-center mt-2">
                 <div className="w-auto flex items-center ">
                   {selectedGoal?.id === item.id && selectedGoal.title === item.title ? (
@@ -51,7 +64,8 @@ export default function DashboardCard(props: IDashboardCardProps) {
 
                   <p className="text-[12.5px]">{item.type}</p>
                 </div>
-                <p className="text-[12.5px]">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+                <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+                <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
               </div>
             </div>
           ))}

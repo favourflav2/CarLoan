@@ -13,11 +13,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { editRetireGoalTitle } from "../../redux/features/retirementSlice";
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
-import MenuIcon from "@mui/icons-material/Menu";
 import futureValueWhatYouHave from "../../components/helperFunctions/futureValueWhatYouHave";
 import getWhatYouNeedFinalPrice from "../../components/helperFunctions/getWhatYouNeedFinalPrice";
 import futureValueWhatYouWillNeed from "../../components/helperFunctions/futureValueWhatYouWillNeed";
 import { getMonthlyPaymentForHave, getMonthlyPaymentForNeed } from "../../components/helperFunctions/getMonthlyPaymentForHave";
+
 
 interface AgeNum {
   age: number;
@@ -103,13 +103,6 @@ export default function RetirementPage() {
   // Show State
   const [show, setShow] = React.useState(true);
 
-  //
-  // const [open, setOpen] = React.useState(false);
-
-  // const toggleDrawer = (newOpen: boolean) => () => {
-  //   setOpen(newOpen);
-  // };
-
   // Final Price State
   const [needFinalPrice, setNeedFinalPrice] = React.useState<number>(0);
 
@@ -136,7 +129,7 @@ export default function RetirementPage() {
       setHaveRetireBudget(getMonthlyPaymentForHave(selectedGoal, futureValueWhatYouHave(selectedGoal).highestNumNoFormat));
       setNeedMonthlyContribution(getMonthlyPaymentForNeed(selectedGoal));
     }
-  }, [selectedGoal, retireGoals, dispatch]); // eslint-disable-line
+  }, [selectedGoal, retireGoals, dispatch]);
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
@@ -187,9 +180,8 @@ export default function RetirementPage() {
 
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
-      <div className=" min-[900px]:hidden block my-3 ">
-        <MenuIcon className=" " />
-      </div>
+      
+
       {/* Top Section Chart and Inputs */}
       <div
         className={`w-full h-full grid ${

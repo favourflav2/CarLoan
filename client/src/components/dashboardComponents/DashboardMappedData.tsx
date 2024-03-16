@@ -8,12 +8,15 @@ import DashboardCard from "../cards/DashboardCard";
 
 export interface IDashboardMappedDataProps {
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
+  type:string
+
+  // Passing this props from Home... This is for mobile dashboard drawer state
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>
+  
 }
 
-export default function DashboardMappedData({ setFirstModal }: IDashboardMappedDataProps) {
-  // Redux State
-
-  ;
+export default function DashboardMappedData({ setFirstModal, type, setOpen }: IDashboardMappedDataProps) {
+  
 
   return (
     <div className="w-full flex flex-col">
@@ -22,7 +25,12 @@ export default function DashboardMappedData({ setFirstModal }: IDashboardMappedD
         transition={{ duration: 0.3 }}
         className="flex items-center w-full p-2 dark:text-gray-300 text-lightText border border-lightText dark:border-gray-300 rounded-lg justify-center cursor-pointer"
         onClick={() => {
-          setFirstModal(true);
+          if(type === "desktop"){
+            setFirstModal(true);
+          }else{
+            setOpen(false)
+            setFirstModal(true);
+          }
         }}
       >
         <h1 className="text-[15px]">Create A Goal</h1>
@@ -30,7 +38,7 @@ export default function DashboardMappedData({ setFirstModal }: IDashboardMappedD
       </motion.div>
       {/* Container For Mapped Data */}
       <div>
-        <DashboardCard />
+        <DashboardCard type={type} setOpen={setOpen}/>
       </div>
     </div>
   );
