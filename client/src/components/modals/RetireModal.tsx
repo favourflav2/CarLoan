@@ -28,7 +28,7 @@ export default function RetireModal() {
           <div className="w-auto flex justify-end my-5">
             {currentStepIndex === 0 && (
               <button
-                className="p-2 dark:bg-darkSelectedColor bg-lightSelectedColor dark:text-homeText text-lightSmallNavBarBg  dark:shadow-darkPurpelGlow shadow-lightPurpleGlow min-w-[100px] rounded-md"
+                className="p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  min-w-[100px] rounded-md"
                 onClick={next}
               >
                 Next

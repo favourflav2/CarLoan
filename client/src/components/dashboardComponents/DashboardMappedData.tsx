@@ -23,7 +23,7 @@ export default function DashboardMappedData({ setFirstModal, type, setOpen }: ID
       <motion.div
         whileHover={{ scale: 0.95 }}
         transition={{ duration: 0.3 }}
-        className="flex items-center w-full p-2 dark:text-gray-300 text-lightText border border-lightText dark:border-gray-300 rounded-lg justify-center cursor-pointer"
+        className="flex items-center w-full p-2 dark:text-darkText text-lightDashboardText border border-lightDashboardText dark:border-darkText rounded-lg justify-center cursor-pointer"
         onClick={() => {
           if(type === "desktop"){
             setFirstModal(true);

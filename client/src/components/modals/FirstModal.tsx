@@ -19,7 +19,7 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
       <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg lg:w-[30%] md:w-[40%] sm:w-[45%] 2xl:w-[25%] w-full rounded-lg">
         {/* Content */}
         <motion.div 
-        className="w-full h-full  flex flex-col p-4 dark:text-homeText text-lightSmallNavBarBg"
+        className="w-full h-full  flex flex-col p-4 dark:text-darkText text-lightText"
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{
@@ -34,7 +34,7 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
         <CloseOutlinedIcon onClick={()=>setOpen(false)}/>
             </div>
 
-            <hr className="my-2 border dark:border-darkSelectedColor border-lightSelectedColor"/>
+            <hr className="my-2 border dark:border-darkText border-lightText"/>
 
             {/* Second Box */}
             <div className="w-auto flex flex-col h-auto">

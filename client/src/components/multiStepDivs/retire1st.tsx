@@ -11,7 +11,7 @@ export default function Retire1st(props: IRetire1stProps) {
   const dispatch = Dispatch();
   return (
     <motion.div
-      className="w-full h-full  flex flex-col  dark:text-homeText text-lightSmallNavBarBg"
+      className="w-full h-full  flex flex-col  text-lightText dark:text-darkText"
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{
@@ -26,7 +26,7 @@ export default function Retire1st(props: IRetire1stProps) {
         <CloseOutlinedIcon onClick={() => dispatch(setRetireModal(false))} />
       </div>
 
-      <hr className="my-2 border dark:border-darkSelectedColor border-lightSelectedColor" />
+      <hr className="my-2 border dark:border-darkText border-lightText" />
 
       {/* Second Box */}
       <div className="w-full flex flex-col h-auto">

@@ -8,10 +8,10 @@ import RetirementPage from "../RetirementPage/RetirementPage";
 import { setSelectedGoal, setShrinkDashboard } from "../../redux/features/applicationSlice";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { motion } from "framer-motion";
+import { motion} from "framer-motion";
 import MenuIcon from "@mui/icons-material/Menu";
 import MobileDrawer from "../../components/Drawer/MobileDrawer";
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 export default function Home() {
   // Redux States
@@ -20,8 +20,7 @@ export default function Home() {
   const dispatch = Dispatch();
 
   // Media Breakpoint
-  const matches = useMediaQuery('(min-width:900px)');
-
+  const matches = useMediaQuery("(min-width:900px)");
 
   // Modal States
   const [firstModal, setFirstModal] = React.useState(false);
@@ -37,21 +36,20 @@ export default function Home() {
   }, [dispatch, retireGoals]);
 
   // If the breakpoint hit/pass 900px we close mobile drawer
-  React.useEffect(()=>{
-    if(matches){
-      setOpen(false)
+  React.useEffect(() => {
+    if (matches) {
+      setOpen(false);
     }
-  },[matches])
+  }, [matches]);
   return (
     <div className="w-full h-full flex flex-col">
-      
       {/* desktop content */}
       <div className={`w-full h-full min-[900px]:grid hidden ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
         {/* Left Side */}
         {shrinkDashboardSidebar ? (
           // Shrinked Left Side
           <div className=" w-full flex items-center   flex-col p-4 ">
-            <NavigateNextIcon className="text-[30px] mr-1 dark:text-gray-300  text-lightText" onClick={() => dispatch(setShrinkDashboard())} />
+            <NavigateNextIcon className="text-[30px] mr-1 dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())} />
           </div>
         ) : (
           // Regualr Left Side
@@ -66,18 +64,18 @@ export default function Home() {
           >
             {/* Dashboard Title */}
             <div className="w-full h-auto flex items-center justify-between">
-              <div className="w-auto flex items-center dark:text-gray-300  text-lightText">
+              <div className="w-auto flex items-center dark:text-darkText  text-lightDashboardText">
                 <GridViewOutlinedIcon className="!text-[25px] mr-1" />
                 <h1>Dashboard</h1>
               </div>
               {/* Shrink Btn */}
-              <div className="w-auto flex items-center cursor-pointer dark:text-gray-300  text-lightText" onClick={() => dispatch(setShrinkDashboard())}>
+              <div className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())}>
                 <NavigateBeforeIcon className="!text-[30px] " />
               </div>
             </div>
 
             {/* Divider */}
-            <hr className=" my-4 border-2 dark:border-gray-300 border-lightText" />
+            <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
 
             {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
             <div className="w-full h-[600px] overflow-y-auto ">
@@ -103,7 +101,7 @@ export default function Home() {
       {/* ---------------------------Mobile Content------------------------- */}
       <div className="w-full h-full flex flex-col min-[900px]:hidden">
         <div className=" min-[900px]:hidden block my-3 px-4">
-          <MenuIcon className=" dark:text-gray-300 text-black " onClick={() => setOpen(true)} />
+          <MenuIcon className=" dark:text-darkText text-lightText " onClick={() => setOpen(true)} />
         </div>
         {/* Drawer */}
         <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} />
@@ -126,4 +124,5 @@ export default function Home() {
     </div>
   );
 }
-//
+
+

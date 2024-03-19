@@ -157,10 +157,10 @@ export default function Retire2nd() {
         duration: 0.3,
         delay: 0.3,
       }}
-      className="w-full h-full overflow-y-auto"
+      className="w-full sm:max-h-[700px] h-full overflow-y-auto no-scrollbar"
     >
       {/* Content */}
-      <div className="w-full h-full flex flex-col dark:text-homeText text-lightSmallNavBarBg ">
+      <div className="w-full h-full flex flex-col dark:text-gray-300 text-black ">
         {/* First Box */}
         <div className="w-full justify-between flex items-center ">
           <h1 className=" text-[22px] font-medium">Retirement Details</h1>
@@ -172,7 +172,7 @@ export default function Retire2nd() {
           />
         </div>
 
-        <hr className="my-2 border dark:border-darkSelectedColor border-lightSelectedColor" />
+        <hr className="my-2 border dark:border-gray-300 border-black" />
 
         <form className="w-full flex flex-col mt-3" onSubmit={handleSubmit(onSubmit)}>
 
@@ -195,7 +195,7 @@ export default function Retire2nd() {
                   valueAsNumber: true,
                 })}
                 placeholder="Age"
-                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                   errors?.age?.currentAge && "border-2 border-red-500"
                 }`}
               />
@@ -219,7 +219,7 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.savings && "border-2 border-red-500"}`}
+                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.savings && "border-2 border-red-500"}`}
                     prefix="$"
                     placeholder="Current Savings"
                     thousandSeparator=","
@@ -244,7 +244,7 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                       errors.monthlyContribution && "border-2 border-red-500"
                     }`}
                     prefix="$"
@@ -271,7 +271,7 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.budget && "border-2 border-red-500"}`}
+                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.budget && "border-2 border-red-500"}`}
                     prefix="$"
                     placeholder="Budget in retirement"
                     thousandSeparator=","
@@ -303,7 +303,7 @@ export default function Retire2nd() {
                   valueAsNumber: true,
                 })}
                 placeholder="Retire Age"
-                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                   errors?.age?.retireAge && "border-2 border-red-500"
                 }`}
               />
@@ -333,7 +333,7 @@ export default function Retire2nd() {
                   valueAsNumber: true,
                 })}
                 placeholder="Life Expectancy"
-                className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                   errors?.age?.lifeExpectancy && "border-2 border-red-500"
                 }`}
               />
@@ -385,7 +385,7 @@ export default function Retire2nd() {
                   control={control}
                   render={({ field: { ref, ...rest } }) => (
                     <NumericFormat
-                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                      className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                         errors.preRate && "border-2 border-red-500"
                       }`}
                       suffix="%"
@@ -423,7 +423,7 @@ export default function Retire2nd() {
                   control={control}
                   render={({ field: { ref, ...rest } }) => (
                     <NumericFormat
-                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                      className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                         errors.postRate && "border-2 border-red-500"
                       }`}
                       suffix="%"
@@ -454,7 +454,7 @@ export default function Retire2nd() {
                   control={control}
                   render={({ field: { ref, ...rest } }) => (
                     <NumericFormat
-                      className={`p-3 outline-none bg-lightBoxBgDropDown dark:bg-boxBg rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                      className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
                         errors.inflation && "border-2 border-red-500"
                       }`}
                       suffix="%"
@@ -476,12 +476,12 @@ export default function Retire2nd() {
           <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 sm:mb-0 mb-4">
             <button
               type="button"
-              className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-homeText text-lightSmallNavBarBg"
+              className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-gray-300 text-black"
               onClick={() => dispatch(setCurrentStepIndexRedux("back"))}
             >
               Go Back
             </button>
-            <button className="p-2 dark:bg-darkSelectedColor bg-lightSelectedColor dark:text-homeText text-lightSmallNavBarBg  w-full rounded-md">Save And Continue</button>
+            <button className="p-2 dark:bg-darkText bg-lightText dark:text-lightText text-darkText  w-full rounded-md">Save And Continue</button>
           </div>
         </form>
       </div>

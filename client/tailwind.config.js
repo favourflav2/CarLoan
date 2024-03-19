@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-  ],
-  darkMode: 'class',
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: "class",
   theme: {
     extend: {
       // backgroundImage: {
@@ -13,58 +11,32 @@ module.exports = {
       // },
       colors: {
         // Dark Theme
-        chartBlue: '#1fb6ff',
-        navBar: '#1b1c23',
-        homeBg: '	#100c08',
-        darkText: '#a2a2a2',
-        lightText: '#929292',
+        chartBlue: "#1fb6ff",
+        navBar: "#1b1c23",
+        homeBg: "	#100c08",
+        lightDashboardText: "#929292",
+        lightText: "black",
 
         // Light Theme
+        darkText: "#d1d5db",
+        darkDashboardText: "#a2a2a2",
         lightHomeBg: '#F3F5F9',
-        lightNavBar: '#d1d5db',
-        lightHomeText: '#181826',
-        lightSmallNavBarBg: '#353574',
-        lightSmallNavBarText: '#D1D1D1',
 
         // Chart Colors
-        chartGreen: '#00A36C',
-        chartYellow:'#FFAA33',
-
-        // Navbar themes
-        selectedPageColor: '#8a8b8aab',
-        boxBg: '#191926',
-        lightBoxBg: '#a2a2e12e',
-        lightBoxText: '#9090fc66',
-        lightBoxBgDropDown: '#a2a2e160',
-        darkSelectedColor: '#A84FF7',
-        lightSelectedColor: '#6161de7f',
-
-        // Postive and Negative Ticks
-        postiveTick: '#00F5E4',
-        negativeTick: '#FF0061',
-        lightNegativeTick:'',
-        lightPositiveTick:'#00B4A7',
-
-        // Legned Colors For Chart
-        lineChartBitcoinColor: '#7474F2',
-        barChartBitcoinColor: '#A75EE0',
-        lineChartCompareColor: '#A75EE0',
-        barChartCompareColor: '#7474F2',
-
-        // Mobile Fix Div Themes
-        fixedDivDarkBg: '#191926AB',
+        chartGreen: "#00A36C",
+        chartYellow: "#FFAA33",
       },
 
       // Box Shadows
       boxShadow: {
-        darkPurpelGlow: '0px 1px 3px 2px #3163e0',
-        lightPurpleGlow: '0px 1px 3px 2px #A2A2E160',
-        fixedDivBoxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        darkPurpelGlow: "0px 1px 3px 2px #3163e0",
+        lightPurpleGlow: "0px 1px 3px 2px #A2A2E160",
+        fixedDivBoxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
       },
     },
   },
   plugins: [],
-}
+};
 
 // #3535d2
 // #6161D6

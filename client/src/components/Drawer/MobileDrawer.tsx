@@ -18,18 +18,18 @@ export default function MobileDrawer({ open, setOpen, setFirstModal }: IMobileDr
         <div className="h-full w-full flex flex-col p-4 ">
           {/* Dashboard Title */}
           <div className="w-full h-auto flex items-center justify-between">
-            <div className="w-auto flex items-center dark:text-gray-300  text-lightText">
+            <div className="w-auto flex items-center dark:text-darkText  text-lightDashboardText">
               <GridViewOutlinedIcon className="!text-[25px] mr-1" />
               <h1>Dashboard</h1>
             </div>
             {/* Shrink Btn */}
-            <div className="w-auto flex items-center cursor-pointer dark:text-gray-300  text-lightText">
+            <div className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText">
               <NavigateBeforeIcon className="!text-[30px] " onClick={()=>setOpen(false)}/>
             </div>
           </div>
 
           {/* Divider */}
-          <hr className=" my-4 border-2 dark:border-gray-300 border-lightText" />
+          <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
 
           {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
           <div className="w-full h-[600px] overflow-y-auto ">
