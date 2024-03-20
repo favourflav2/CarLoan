@@ -55,11 +55,11 @@ function handleClickOutside(e: any) {
         <h1 className="text-[19px]">Finance Tracker</h1>
 
         <div className="w-auto flex items-center dark:text-homeText text-lightSmallNavBarBg">
-          <h1 className="dark:bg-boxBg bg-lightBoxBgDropDown rounded-md p-2 mr-2 dark:border border-gray-800 cursor-pointer" onClick={()=>navigate('/')}>Home</h1>
-          <h1 className="dark:bg-boxBg bg-lightBoxBgDropDown rounded-md p-2 mr-2 dark:border border-gray-800 cursor-pointer" onClick={()=>navigate('/cars')}>Cars</h1>
-          <h1 className="dark:bg-boxBg bg-lightBoxBgDropDown rounded-md p-2 mr-2 dark:border border-gray-800 cursor-pointer">Login</h1>
-          <h1 className="dark:bg-boxBg bg-lightBoxBgDropDown rounded-md p-2 mr-2 dark:border border-gray-800 cursor-pointer">Sign Up</h1>
-          {lightAndDarkMode ? <button className="dark:bg-boxBg bg-lightBoxBgDropDown rounded-md p-2 mr-2 dark:border border-gray-800 cursor-pointer"><WbSunnyOutlinedIcon onClick={()=> dispatch(setLightAndDarkMode())} /></button> : <button className="dark:bg-boxBg bg-lightBoxBgDropDown rounded-md p-2 mr-2 dark:border border-gray-800 cursor-pointer"><NightlightOutlinedIcon onClick={()=> dispatch(setLightAndDarkMode())}/></button>}
+          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={()=>navigate('/')}>Home</h1>
+          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={()=>navigate('/cars')}>Cars</h1>
+          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer">Login</h1>
+          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer">Sign Up</h1>
+          {lightAndDarkMode ? <button className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer"><WbSunnyOutlinedIcon onClick={()=> dispatch(setLightAndDarkMode())} /></button> : <button className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer"><NightlightOutlinedIcon onClick={()=> dispatch(setLightAndDarkMode())}/></button>}
         </div>
       </div>
     </div>

@@ -13,6 +13,19 @@ export default function RetireModal() {
 
   // MultiStep
   const { currentStep, currentStepIndex, next } = useMultiStepForm([<Retire1st />, <Retire2nd />]);
+
+  // ref for scrolling to top
+  const myRef = React.useRef<any>(null);
+
+  const executeScroll = () => {
+    myRef?.current?.scrollTo(0, 0);
+  };
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+    executeScroll();
+  }, [currentStepIndex, currentStep]);
+
   return (
     <Modal
       open={retireModal}
@@ -23,14 +36,11 @@ export default function RetireModal() {
     >
       <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[70%] md:w-[60%] w-full sm:h-auto h-full  rounded-lg">
         {/* Content */}
-        <div className="w-full h-full flex flex-col p-4 ">
-          {currentStep}
+        <div className="w-full h-full flex flex-col p-4 overflow-y-auto no-scrollbar" ref={myRef}>
+          <div>{currentStep}</div>
           <div className="w-auto flex justify-end my-5">
             {currentStepIndex === 0 && (
-              <button
-                className="p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  min-w-[100px] rounded-md"
-                onClick={next}
-              >
+              <button className="p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  min-w-[100px] rounded-md" onClick={next}>
                 Next
               </button>
             )}

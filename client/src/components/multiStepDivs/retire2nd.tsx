@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Dispatch } from "../../redux/store";
+import { Dispatch, UseSelector } from "../../redux/store";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { setCurrentStepIndexRedux, setRetireModal } from "../../redux/features/applicationSlice";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -100,13 +100,16 @@ const schema = z.object({
       message: "Please enter a number between 0% and 15%",
     }),
   id: z.string().optional(),
-  title: z.string({
-    required_error: "Please enter a title",
-  }).max(18,{
-    message:"Max length is 18"
-  }).min(4,{
-    message: 'Min length is 4'
-  })
+  title: z
+    .string({
+      required_error: "Please enter a title",
+    })
+    .max(18, {
+      message: "Max length is 18",
+    })
+    .min(4, {
+      message: "Min length is 4",
+    }),
 });
 
 type FormFields = z.infer<typeof schema>;
@@ -114,6 +117,7 @@ type FormFields = z.infer<typeof schema>;
 export default function Retire2nd() {
   // Redux States
   const dispatch = Dispatch();
+  const { currentStepIndex } = UseSelector((state) => state.app);
 
   // Form Feilds
   const {
@@ -142,7 +146,7 @@ export default function Retire2nd() {
   // Helper functions
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const date = new Date();
-    data.id = dayjs(date).format("MMM D, YYYY h:mm:ss")
+    data.id = dayjs(date).format("MMM D, YYYY h:mm:ss");
 
     dispatch(addRetireGoal(data));
     dispatch(setCurrentStepIndexRedux("back"));
@@ -157,7 +161,7 @@ export default function Retire2nd() {
         duration: 0.3,
         delay: 0.3,
       }}
-      className="w-full sm:max-h-[700px] h-full overflow-y-auto no-scrollbar"
+      className="w-full sm:max-h-[700px] h-full "
     >
       {/* Content */}
       <div className="w-full h-full flex flex-col dark:text-gray-300 text-black ">
@@ -175,13 +179,19 @@ export default function Retire2nd() {
         <hr className="my-2 border dark:border-gray-300 border-black" />
 
         <form className="w-full flex flex-col mt-3" onSubmit={handleSubmit(onSubmit)}>
-
-            {/* Add A Title */}
-            <div className="w-full mb-10 flex justify-center items-center h-auto flex-col">
-                <label htmlFor="" className="text-[12px]">Title</label>
-                <input type="text" placeholder="Title" className="bg-inherit border-[1px] border-gray-500/20 dark:focus:outline-lightHomeText focus:outline-gray-400    rounded-lg p-3 " {...register("title")}/>
-                {errors?.title && <p className="text-red-500 text-[13px] ">{errors?.title?.message}</p>}
-            </div>
+          {/* Add A Title */}
+          <div className="w-full mb-10 flex justify-center items-center h-auto flex-col">
+            <label htmlFor="" className="text-[12px]">
+              Title
+            </label>
+            <input
+              type="text"
+              placeholder="Title"
+              className="bg-inherit border-[1px] border-gray-500/20 dark:focus:outline-lightHomeText focus:outline-gray-400    rounded-lg p-3 "
+              {...register("title")}
+            />
+            {errors?.title && <p className="text-red-500 text-[13px] ">{errors?.title?.message}</p>}
+          </div>
 
           <div className=" w-full h-auto grid lg:grid-cols-3 grid-cols-1 gap-5 mb-3">
             {/* Current Age */}
@@ -219,7 +229,9 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.savings && "border-2 border-red-500"}`}
+                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                      errors.savings && "border-2 border-red-500"
+                    }`}
                     prefix="$"
                     placeholder="Current Savings"
                     thousandSeparator=","
@@ -271,7 +283,9 @@ export default function Retire2nd() {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <NumericFormat
-                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${errors.budget && "border-2 border-red-500"}`}
+                    className={`p-3 outline-none bg-white border border-black dark:border-none dark:bg-gray-300 text-lightText rounded-sm dark:placeholder:text-gray-700 placeholder:text-gray-500 ${
+                      errors.budget && "border-2 border-red-500"
+                    }`}
                     prefix="$"
                     placeholder="Budget in retirement"
                     thousandSeparator=","
@@ -473,7 +487,7 @@ export default function Retire2nd() {
             </motion.div>
           )}
 
-          <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 sm:mb-0 mb-4">
+          <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 sm:mb-3 mb-3">
             <button
               type="button"
               className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-gray-300 text-black"

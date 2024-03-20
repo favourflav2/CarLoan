@@ -16,7 +16,7 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
     const dispatch = Dispatch()
   return (
     <Modal onClose={() => setOpen(false)} open={open}>
-      <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg lg:w-[30%] md:w-[40%] sm:w-[45%] 2xl:w-[25%] w-full rounded-lg">
+      <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg lg:w-[30%] md:w-[40%] sm:w-[45%] 2xl:w-[25%] w-[95%] rounded-lg">
         {/* Content */}
         <motion.div 
         className="w-full h-full  flex flex-col p-4 dark:text-darkText text-lightText"
