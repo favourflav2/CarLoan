@@ -24,7 +24,8 @@ export default function RetireModal() {
   React.useEffect(() => {
     window.scrollTo(0, 0);
     executeScroll();
-  }, [currentStepIndex, currentStep]);
+    console.log("favour")
+  }, [currentStepIndex]);
 
   return (
     <Modal

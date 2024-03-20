@@ -57,8 +57,8 @@ function handleClickOutside(e: any) {
         <div className="w-auto flex items-center dark:text-homeText text-lightSmallNavBarBg">
           <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={()=>navigate('/')}>Home</h1>
           <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={()=>navigate('/cars')}>Cars</h1>
-          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer">Login</h1>
-          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer">Sign Up</h1>
+          {/* <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer">Login</h1>
+          <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer">Sign Up</h1> */}
           {lightAndDarkMode ? <button className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer"><WbSunnyOutlinedIcon onClick={()=> dispatch(setLightAndDarkMode())} /></button> : <button className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer"><NightlightOutlinedIcon onClick={()=> dispatch(setLightAndDarkMode())}/></button>}
         </div>
       </div>

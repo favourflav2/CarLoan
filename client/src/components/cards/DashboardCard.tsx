@@ -17,6 +17,8 @@ export default function DashboardCard({type, setOpen}: IDashboardCardProps) {
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { selectedGoal } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
+
+  
   return (
     <>
       {retireGoals.length > 0 ? (

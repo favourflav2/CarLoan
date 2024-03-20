@@ -177,7 +177,7 @@ export default function RetirementInputs() {
     <div className="w-full max-h-[900px] py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
-        <form className="w-full h-auto flex flex-col">
+        <form className="w-full h-auto flex flex-col ">
           {/* Current Age */}
           <div className="w-auto flex flex-col mb-3">
             <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Dispatch, UseSelector } from "../../redux/store";
+import { Dispatch } from "../../redux/store";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { setCurrentStepIndexRedux, setRetireModal } from "../../redux/features/applicationSlice";
+import { setCurrentStepIndexRedux, setRetireModal, setSelectedGoalAfterCreate } from "../../redux/features/applicationSlice";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -117,7 +117,6 @@ type FormFields = z.infer<typeof schema>;
 export default function Retire2nd() {
   // Redux States
   const dispatch = Dispatch();
-  const { currentStepIndex } = UseSelector((state) => state.app);
 
   // Form Feilds
   const {
@@ -150,6 +149,11 @@ export default function Retire2nd() {
 
     dispatch(addRetireGoal(data));
     dispatch(setCurrentStepIndexRedux("back"));
+
+    // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
+    dispatch(setSelectedGoalAfterCreate(data));
+
+    // Close Modal After Everything is done
     dispatch(setRetireModal(false));
   };
 

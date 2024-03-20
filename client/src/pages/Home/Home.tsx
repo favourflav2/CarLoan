@@ -90,7 +90,7 @@ export default function Home() {
             selectedGoal?.type === "Retirement" ? (
               <RetirementPage />
             ) : (
-              <div>Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+              <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
             )
           ) : (
             <div>Theres no selected goal id</div>
@@ -110,7 +110,7 @@ export default function Home() {
             selectedGoal?.type === "Retirement" ? (
               <RetirementPage />
             ) : (
-              <div>Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+              <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
             )
           ) : (
             <div>Theres no selected goal id</div>

@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import {  createSlice } from "@reduxjs/toolkit";
 
 interface RetirementGoals {
   type: string;
@@ -72,6 +72,22 @@ const appSlice = createSlice({
     setSelectedGoal: (state, action) => {
       state.selectedGoal = action.payload;
     },
+    setSelectedGoalAfterCreate: (state, action) => {
+      const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
+      const formattedData = {
+        id,
+        type: "Retirement",
+        age: age,
+        budget: parseFloat(budget.replace(/[,%$]/gm, "")),
+        preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
+        postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
+        inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
+        monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
+        savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+        title,
+      }
+      state.selectedGoal = formattedData
+    },
     editSelectedGoal: (state, action) => {
       // This reducer updates the selected goal ... so when you change the number a user sees the update
       const { goal, value, name } = action.payload;
@@ -142,4 +158,4 @@ const appSlice = createSlice({
 });
 
 export default appSlice.reducer;
-export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard, setShowHaveExample } = appSlice.actions;
+export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard, setShowHaveExample, setSelectedGoalAfterCreate } = appSlice.actions;

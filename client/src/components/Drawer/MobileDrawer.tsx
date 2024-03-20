@@ -32,7 +32,7 @@ export default function MobileDrawer({ open, setOpen, setFirstModal }: IMobileDr
           <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
 
           {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
-          <div className="w-full h-[600px] overflow-y-auto ">
+          <div className="w-full max-h-[600px] no-scrollbar overflow-y-auto ">
             <DashboardMappedData setFirstModal={setFirstModal} type="mobile" setOpen={setOpen}/>
           </div>
         </div>

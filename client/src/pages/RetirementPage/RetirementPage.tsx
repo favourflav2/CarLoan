@@ -173,10 +173,17 @@ export default function RetirementPage() {
     }
   }
 
+  // On refresh or selected goal changes set view back to chart
+  React.useEffect(()=>{
+    setView("Graph View")
+  },[selectedGoal])
+
   if (!selectedGoal) {
     dispatch(setSelectedGoal(null));
     return null;
   }
+
+
 
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
