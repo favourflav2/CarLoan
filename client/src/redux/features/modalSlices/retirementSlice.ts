@@ -33,7 +33,6 @@ interface RetirementSlice {
 const initialState: RetirementSlice = {
   retireGoals: [],
   errors: null,
-  
 };
 
 const retirementSlice = createSlice({

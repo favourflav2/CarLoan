@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import NavigateNextOutlinedIcon from '@mui/icons-material/NavigateNextOutlined';
 import { Dispatch } from "../../redux/store";
-import { setRetireModal } from "../../redux/features/applicationSlice";
+import { setAnyTypeOfModal } from "../../redux/features/applicationSlice";
 
 
 export interface IFirstModalProps {
@@ -42,22 +42,28 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
                 <div className="w-auto flex items-center my-3 cursor-pointer" >
                     <h1 className="underline text-[17px] font-medium" onClick={()=>{
                     setOpen(false)
-                    dispatch(setRetireModal(true))
+                    dispatch(setAnyTypeOfModal({value:true,type:'Retirement'}))
                 }}>Retirement</h1>
                     <NavigateNextOutlinedIcon className="text-[19px]" onClick={()=>{
                     setOpen(false)
-                    dispatch(setRetireModal(true))
+                    dispatch(setAnyTypeOfModal({value:true,type:'Retirement'}))
                 }}/>
                 </div>
 
                 <div className="w-auto flex items-center my-3 cursor-pointer">
-                    <h1 className="underline text-[17px] font-medium">House</h1>
+                    <h1 className="underline text-[17px] font-medium" >House</h1>
                     <NavigateNextOutlinedIcon className="text-[19px]"/>
                 </div>
 
                 <div className="w-auto flex items-center my-3 cursor-pointer">
-                    <h1 className="underline text-[17px] font-medium">Car</h1>
-                    <NavigateNextOutlinedIcon className="text-[19px]"/>
+                    <h1 className="underline text-[17px] font-medium" onClick={()=>{
+                    setOpen(false)
+                    dispatch(setAnyTypeOfModal({value:true,type:'Car'}))
+                }}>Car</h1>
+                    <NavigateNextOutlinedIcon className="text-[19px]" onClick={()=>{
+                    setOpen(false)
+                    dispatch(setAnyTypeOfModal({value:true,type:'Car'}))
+                }}/>
                 </div>
 
                 <div className="w-auto flex items-center my-3 cursor-pointer">

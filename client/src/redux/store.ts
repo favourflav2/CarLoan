@@ -5,21 +5,21 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import carSlice from "./features/carSlice";
 import carStateSlice from "./features/carStateSlice";
 import applicationSlice from "./features/applicationSlice";
-import retirementSlice from "./features/retirementSlice";
+import retirementSlice from "./features/modalSlices/retirementSlice";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
   blacklist: ["car"],
-  whitelist: ["page", "app","retireSlice"],
+  whitelist: ["page", "app", "retireSlice"],
 };
 
 const reducer = combineReducers({
   car: carSlice,
   page: carStateSlice,
   app: applicationSlice,
-  retireSlice: retirementSlice
+  retireSlice: retirementSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

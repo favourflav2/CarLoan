@@ -10,7 +10,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
 
-import { editRetireGoal } from "../../redux/features/retirementSlice";
+import { editRetireGoal } from "../../redux/features/modalSlices/retirementSlice";
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
 
 const schema = z.object({

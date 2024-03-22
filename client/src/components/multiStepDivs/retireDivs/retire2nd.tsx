@@ -1,8 +1,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Dispatch } from "../../redux/store";
+import { Dispatch } from "../../../redux/store";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { setCurrentStepIndexRedux, setRetireModal, setSelectedGoalAfterCreate } from "../../redux/features/applicationSlice";
+import { setCurrentStepIndexRedux, setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../redux/features/applicationSlice";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -12,7 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
 import dayjs from "dayjs";
-import { addRetireGoal } from "../../redux/features/retirementSlice";
+import { addRetireGoal } from "../../../redux/features/modalSlices/retirementSlice";
 
 // truthy values pass the refine validation ... since preRate.length when empty is 0 ... item.length is not greater than zero ... so en error shows
 const schema = z.object({
@@ -154,7 +154,7 @@ export default function Retire2nd() {
     dispatch(setSelectedGoalAfterCreate(data));
 
     // Close Modal After Everything is done
-    dispatch(setRetireModal(false));
+    dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
   };
 
   return (
@@ -174,7 +174,7 @@ export default function Retire2nd() {
           <h1 className=" text-[22px] font-medium">Retirement Details</h1>
           <CloseOutlinedIcon
             onClick={() => {
-              dispatch(setRetireModal(false));
+              dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
               dispatch(setCurrentStepIndexRedux("back"));
             }}
           />

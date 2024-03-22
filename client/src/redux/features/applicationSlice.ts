@@ -20,6 +20,7 @@ interface RetirementGoals {
 interface AppSlice {
   lightAndDarkMode: boolean;
   retireModal: boolean;
+  carModal: boolean;
   currentStepIndex: number;
   steps: number;
   selectedGoal: RetirementGoals | null;
@@ -36,6 +37,7 @@ const initialState: AppSlice = {
   retireModal: false,
   currentStepIndex: 0,
   steps: 0,
+  carModal: false,
   selectedGoal: null,
   shrinkDashboardSidebar:false,
   shrinkRetirementInputs:false,
@@ -52,8 +54,18 @@ const appSlice = createSlice({
     setLightAndDarkMode: (state) => {
       state.lightAndDarkMode = !state.lightAndDarkMode;
     },
-    setRetireModal: (state, action) => {
-      state.retireModal = action.payload;
+    setAnyTypeOfModal: (state, action) => {
+      const {type, value} = action.payload
+      switch (type) {
+        case "Retirement":
+          state.retireModal = value
+          break;
+        case "Car":
+          state.carModal = value
+          break;
+        default:
+          return
+      }
     },
     setCurrentStepIndexRedux: (state, action) => {
       if (action.payload === "next") {
@@ -158,4 +170,4 @@ const appSlice = createSlice({
 });
 
 export default appSlice.reducer;
-export const { setLightAndDarkMode, setRetireModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard, setShowHaveExample, setSelectedGoalAfterCreate } = appSlice.actions;
+export const { setLightAndDarkMode, setAnyTypeOfModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard, setShowHaveExample, setSelectedGoalAfterCreate } = appSlice.actions;

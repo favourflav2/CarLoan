@@ -1,6 +1,6 @@
 import * as React from "react";
 import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
-import FirstModal from "../../components/modals/FirstModal";
+import SelectGoalModal from "../../components/modals/SelectGoalModal";
 import RetireModal from "../../components/modals/RetireModal";
 import { Dispatch, UseSelector } from "../../redux/store";
 import DashboardMappedData from "../../components/dashboardComponents/DashboardMappedData";
@@ -8,14 +8,15 @@ import RetirementPage from "../RetirementPage/RetirementPage";
 import { setSelectedGoal, setShrinkDashboard } from "../../redux/features/applicationSlice";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { motion} from "framer-motion";
+import { motion } from "framer-motion";
 import MenuIcon from "@mui/icons-material/Menu";
 import MobileDrawer from "../../components/Drawer/MobileDrawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import CarModal from "../../components/modals/CarModal";
 
 export default function Home() {
   // Redux States
-  const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const { selectedGoal, shrinkDashboardSidebar, retireModal, carModal } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const dispatch = Dispatch();
 
@@ -90,7 +91,9 @@ export default function Home() {
             selectedGoal?.type === "Retirement" ? (
               <RetirementPage />
             ) : (
-              <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+              <div className="text-lightText dark:text-darkText">
+                Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data
+              </div>
             )
           ) : (
             <div>Theres no selected goal id</div>
@@ -110,7 +113,9 @@ export default function Home() {
             selectedGoal?.type === "Retirement" ? (
               <RetirementPage />
             ) : (
-              <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
+              <div className="text-lightText dark:text-darkText">
+                Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data
+              </div>
             )
           ) : (
             <div>Theres no selected goal id</div>
@@ -119,10 +124,9 @@ export default function Home() {
       </div>
 
       {/* Modals */}
-      <FirstModal open={firstModal} setOpen={setFirstModal} />
-      <RetireModal />
+      <SelectGoalModal open={firstModal} setOpen={setFirstModal} />
+      {retireModal && <RetireModal setFirstModal={setFirstModal}/>}
+      {carModal && <CarModal setFirstModal={setFirstModal}/>}
     </div>
   );
 }
-
-

@@ -10,14 +10,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { editRetireGoalTitle } from "../../redux/features/retirementSlice";
+import { editRetireGoalTitle } from "../../redux/features/modalSlices/retirementSlice";
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
 import futureValueWhatYouHave from "../../components/helperFunctions/futureValueWhatYouHave";
 import getWhatYouNeedFinalPrice from "../../components/helperFunctions/getWhatYouNeedFinalPrice";
 import futureValueWhatYouWillNeed from "../../components/helperFunctions/futureValueWhatYouWillNeed";
 import { getMonthlyPaymentForHave, getMonthlyPaymentForNeed } from "../../components/helperFunctions/getMonthlyPaymentForHave";
-
 
 interface AgeNum {
   age: number;
@@ -174,21 +173,17 @@ export default function RetirementPage() {
   }
 
   // On refresh or selected goal changes set view back to chart
-  React.useEffect(()=>{
-    setView("Graph View")
-  },[selectedGoal])
+  React.useEffect(() => {
+    setView("Graph View");
+  }, [selectedGoal]);
 
   if (!selectedGoal) {
     dispatch(setSelectedGoal(null));
     return null;
   }
 
-
-
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
-      
-
       {/* Top Section Chart and Inputs */}
       <div
         className={`w-full h-full grid ${

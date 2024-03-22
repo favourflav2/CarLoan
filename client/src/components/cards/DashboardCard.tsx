@@ -5,20 +5,19 @@ import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
-import { removeRetireItem } from "../../redux/features/retirementSlice";
+import { removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
 
 export interface IDashboardCardProps {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>
-  type:string;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  type: string;
 }
 
-export default function DashboardCard({type, setOpen}: IDashboardCardProps) {
+export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
   // Redux States
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { selectedGoal } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
-  
   return (
     <>
       {retireGoals.length > 0 ? (
@@ -33,11 +32,11 @@ export default function DashboardCard({type, setOpen}: IDashboardCardProps) {
                   : "dark:text-gray-300 text-lightText  border-lightText dark:border-gray-300   "
               }`}
               onClick={() => {
-                if(type === "desktop"){
-                  dispatch(setSelectedGoal(item))
-                }else{
-                  setOpen(false)
-                  dispatch(setSelectedGoal(item))
+                if (type === "desktop") {
+                  dispatch(setSelectedGoal(item));
+                } else {
+                  setOpen(false);
+                  dispatch(setSelectedGoal(item));
                 }
               }}
             >

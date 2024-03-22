@@ -1,8 +1,8 @@
 import * as React from "react";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import { motion } from "framer-motion";
-import { Dispatch } from "../../redux/store";
-import { setRetireModal } from "../../redux/features/applicationSlice";
+import { Dispatch } from "../../../redux/store";
+import { setAnyTypeOfModal } from "../../../redux/features/applicationSlice";
 
 export interface IRetire1stProps {}
 
@@ -32,7 +32,7 @@ export default function Retire1st(props: IRetire1stProps) {
       {/* First Box */}
       <div className="w-full justify-between flex items-center ">
         <h1 className=" text-[22px] font-medium">Retirement</h1>
-        <CloseOutlinedIcon onClick={() => dispatch(setRetireModal(false))} />
+        <CloseOutlinedIcon onClick={() => dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }))} />
       </div>
 
       <hr className="my-2 border dark:border-darkText border-lightText" />
