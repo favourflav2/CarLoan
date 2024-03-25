@@ -1,28 +1,15 @@
 import * as React from "react";
-import { Dispatch } from "../../../redux/store";
-import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { motion } from "framer-motion";
-import { setAnyTypeOfModal } from "../../../redux/features/applicationSlice";
-import AddIcon from '@mui/icons-material/Add';
-import insertCar from "../../../assets/addImg.png";
-
+//import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+//import { motion } from "framer-motion";
 import ReactCrop, { type Crop, makeAspectCrop, centerCrop, convertToPixelCrop } from "react-image-crop";
-import ImageCrop from "../../ImageCropper/ImageCropper";
-import Car1stInputs from "./CarComponets/Car1stInputs";
+import UploadIcon from "@mui/icons-material/Upload";
 
-const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 200;
-
-export default function Car1st() {
-  // Redux States
-  const dispatch = Dispatch();
-
+export default function ImageCrop() {
   // File Uploader
   const [file, setFile] = React.useState<string>();
   const [crop, setCrop] = React.useState<Crop | any>();
   const [error, setError] = React.useState("");
-  const [height, setHeight] = React.useState(0);
-  const [width, setWidth] = React.useState(0);
   const refImg = React.useRef(null as null | HTMLImageElement);
   const refPreview = React.useRef(null as null | HTMLCanvasElement);
   const fileRef = React.useRef(null as null | HTMLInputElement);
@@ -62,7 +49,7 @@ export default function Car1st() {
       fileRef.current.click();
     }
   }
-  // 200
+
   function onImgLoad(e: any) {
     const { width, height } = e.currentTarget;
     const cropWidthIndex = (MIN_DIMENSION / width) * 100;
@@ -108,46 +95,60 @@ export default function Car1st() {
     ctx.restore();
   }
 
-  // ref for scrolling to top
-  const myRef = React.useRef<any>(null);
-  const executeScroll = () => myRef?.current?.scrollTo(0, 0);
-
-  React.useEffect(() => {
-    executeScroll();
-  }, []);
-
   return (
-    <motion.div
-      className="w-full h-full  flex flex-col  text-lightText dark:text-darkText"
-      initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{
-        duration: 0.3,
-        delay: 0.3,
-        ease: [0, 0.71, 0.2, 1.01],
-      }}
-      ref={myRef}
-    >
-      {/* First Box */}
-      <div className="w-full justify-between flex items-center ">
-        <h1 className=" text-[22px] font-medium">Car</h1>
-        <CloseOutlinedIcon onClick={() => dispatch(setAnyTypeOfModal({ value: false, type: "Car" }))} />
+    <div className="w-full h-auto flex flex-col">
+      <div className="w-[300px] flex flex-col h-auto mt-3">
+        {file ? (
+          <div className="w-full h-full flex flex-col">
+            <ReactCrop
+              crop={crop}
+              keepSelection
+              aspect={1}
+              minWidth={MIN_DIMENSION}
+              onChange={(pixelCrop) => {
+                setCrop(pixelCrop);
+              }}
+            >
+              <img src={file} alt="" className={`w-full h-[200px] `} onLoad={onImgLoad} ref={refImg} />
+            </ReactCrop>
+            <button
+              className="my-2 bg-green-800 text-white rounded-md"
+              onClick={() => {
+                if (refImg?.current?.height && refImg?.current?.width) {
+                  setCanvasPreview(refImg.current, refPreview.current, convertToPixelCrop(crop, refImg?.current?.width, refImg?.current?.height));
+
+                  const dataUrl = refPreview?.current?.toDataURL();
+                  console.log(dataUrl);
+                }
+              }}
+            >
+              Crop Image
+            </button>
+          </div>
+        ) : (
+          <div className=" w-full h-[200px] flex flex-col border-dashed border-2 border-chartGreen dark:border-darkText" onClick={chooseImg}>
+            <div className="w-full h-full flex items-center justify-center flex-col">
+              <button className="text-chartGreen bg-green-100 dark:bg-darktext dark:text-lightText p-2 rounded-full mb-4">
+                <UploadIcon className="text-[35px]" />
+              </button>
+              <h1 className="text-chartGreen dark:text-darkText">Upload File</h1>
+            </div>
+          </div>
+        )}
+        <input type="file" accept="image/*" onChange={getFiles} className="hidden" ref={fileRef} />
+        {file ? (
+          <button className="p-1 rounded-lg mt-3 bg-red-400   text-white transition ease-in-out delay-150  hover:scale-95 duration-300" onClick={()=>{
+            setFile("")
+          }}>
+            Remove
+          </button>
+        ) : (
+          <button className="p-1 rounded-lg mt-3 bg-chartGreen dark:bg-darkText dark:text-lightText text-white transition ease-in-out delay-150  hover:scale-95 duration-300" onClick={chooseImg}>
+            Upload
+          </button>
+        )}
       </div>
-
-      <hr className="my-2 border dark:border-darkText border-lightText" />
-
-      {/* {error && <h1 className="mt-5">{error}</h1>} */}
-
-      {/* Add Car */}
-      <div className="w-auto flex flex-col h-auto">
-        <img src={insertCar} alt="" className="w-[180px] h-[180px]"/>
-       <button className="w-[180px] p-1 mt-2 dark:bg-darkText dark:text-lightText rounded-lg bg-chartGreen text-white ">Add Image</button>
-      </div>
-
-      {/* Form */}
-      <Car1stInputs />
-      
-      
-    </motion.div>
+      {crop && <canvas className="mt-4 w-[200px] h-[200px] border-2 border-black" ref={refPreview}></canvas>}
+    </div>
   );
 }

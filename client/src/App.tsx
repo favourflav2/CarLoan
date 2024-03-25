@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ItemDetails from './pages/itemDetails/ItemDetails';
 import Cars from './pages/Cars/Cars';
 import { Dispatch, UseSelector } from './redux/store';
+import 'react-image-crop/dist/ReactCrop.css'
 
 
 function App() {

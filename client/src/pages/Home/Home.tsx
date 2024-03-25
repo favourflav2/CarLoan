@@ -43,11 +43,12 @@ export default function Home() {
     }
   }, [matches]);
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full min-h-screen flex flex-col">
       {/* desktop content */}
-      <div className={`w-full h-full min-[900px]:grid hidden ${shrinkDashboardSidebar ? "grid-cols-[40px_1fr]" : "grid-cols-[280px_1fr]"}`}>
-        {/* Left Side */}
-        {shrinkDashboardSidebar ? (
+      <div className="min-[900px]:block hidden">
+      <div className={`  ${shrinkDashboardSidebar ? "w-[40px]" : "w-[280px]"} h-full fixed z-10 top-[75px] left-0 overscroll-x-none`}>
+      {/* Left Side */}
+      {shrinkDashboardSidebar ? (
           // Shrinked Left Side
           <div className=" w-full flex items-center   flex-col p-4 ">
             <NavigateNextIcon className="text-[30px] mr-1 dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())} />
@@ -61,9 +62,10 @@ export default function Home() {
               duration: 0.4,
               ease: [0, 0.71, 0.2, 1.01],
             }}
-            className=" w-full flex flex-col p-4 bg-[#e8e9ed] dark:bg-[#120d0a]"
+            className=" w-full h-full flex flex-col p-4 bg-[#e8e9ed] dark:bg-[#120d0a] "
           >
-            {/* Dashboard Title */}
+         
+              {/* Dashboard Title */}
             <div className="w-full h-auto flex items-center justify-between">
               <div className="w-auto flex items-center dark:text-darkText  text-lightDashboardText">
                 <GridViewOutlinedIcon className="!text-[25px] mr-1" />
@@ -76,17 +78,19 @@ export default function Home() {
             </div>
 
             {/* Divider */}
-            <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
+            {/* <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" /> */}
 
             {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
-            <div className="w-full h-[600px] overflow-y-auto ">
+             <div className="w-full h-[600px] overflow-y-auto ">
               <DashboardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} />
-            </div>
+            </div> 
+          
           </motion.div>
         )}
-
+      </div>
+      <div className={`${shrinkDashboardSidebar ? "ml-[40px]" : "ml-[280px]"}`}>
         {/* Right Side */}
-        <div className=" w-full h-auto">
+      <div className=" w-full h-full">
           {selectedGoal?.id ? (
             selectedGoal?.type === "Retirement" ? (
               <RetirementPage />
@@ -100,6 +104,10 @@ export default function Home() {
           )}
         </div>
       </div>
+      </div>
+
+      
+      
 
       {/* ---------------------------Mobile Content------------------------- */}
       <div className="w-full h-full flex flex-col min-[900px]:hidden">
@@ -125,8 +133,8 @@ export default function Home() {
 
       {/* Modals */}
       <SelectGoalModal open={firstModal} setOpen={setFirstModal} />
-      {retireModal && <RetireModal setFirstModal={setFirstModal}/>}
-      {carModal && <CarModal setFirstModal={setFirstModal}/>}
+      {retireModal && <RetireModal setFirstModal={setFirstModal} />}
+      {carModal && <CarModal setFirstModal={setFirstModal} />}
     </div>
   );
 }

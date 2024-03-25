@@ -29,6 +29,7 @@
     "react-currency-input-field": "^3.8.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
+    "react-image-crop": "^11.0.5",
     "react-lazy-load-image-component": "^1.6.0",
     "react-minimal-pie-chart": "^8.4.0",
     "react-number-format": "^5.3.3",

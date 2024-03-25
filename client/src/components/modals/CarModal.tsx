@@ -44,9 +44,9 @@ export default function CarModal ({setFirstModal}: ICarModalProps) {
       <div className="w-full h-full flex flex-col p-4 overflow-y-auto no-scrollbar" ref={myRef}>
         <div>{currentStep}</div>
         <div className="w-full flex items-center justify-between">
-          <div className="w-auto flex justify-start my-5">
+          <div className="w-full h-auto">
             {currentStepIndex === 0 && (
-              <button className="p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  min-w-[100px] rounded-md" onClick={()=>{
+              <button className="w-full p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  rounded-lg" onClick={()=>{
                 dispatch(setAnyTypeOfModal({ value: false, type: "Car" }));
                 setFirstModal(true)
               }}>
@@ -55,14 +55,7 @@ export default function CarModal ({setFirstModal}: ICarModalProps) {
             )}
             <></>
           </div>
-          <div className="w-auto flex justify-end my-5">
-            {steps > 1 && (
-              <button className="p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  min-w-[100px] rounded-md" onClick={next}>
-                Next
-              </button>
-            )}
-            <></>
-          </div>
+          
           </div>
       </div>
     </div>
