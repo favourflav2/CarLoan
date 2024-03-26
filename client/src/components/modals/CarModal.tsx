@@ -39,7 +39,7 @@ export default function CarModal ({setFirstModal}: ICarModalProps) {
       dispatch(setCurrentStepIndexRedux("back"));
     }}
   >
-    <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[70%] md:w-[60%] w-full sm:h-auto h-full  rounded-lg">
+    <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[70%] md:w-[60%] xl:w-[50%] 2xl:w-[45%] w-full sm:h-auto h-full  rounded-lg">
       {/* Content */}
       <div className="w-full h-full flex flex-col p-4 overflow-y-auto no-scrollbar" ref={myRef}>
         <div>{currentStep}</div>

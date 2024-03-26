@@ -78,7 +78,7 @@ export default function Home() {
             </div>
 
             {/* Divider */}
-            {/* <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" /> */}
+             <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" /> 
 
             {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
              <div className="w-full h-[600px] overflow-y-auto ">

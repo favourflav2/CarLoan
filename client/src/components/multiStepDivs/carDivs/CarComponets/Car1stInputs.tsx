@@ -7,7 +7,8 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Dispatch } from "../../../../redux/store";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Tooltip } from "@mui/material";
+import { Modal, Tooltip } from "@mui/material";
+import CarImgModal from "./CarImgModal";
 
 export interface ICar1stInputsProps {}
 
@@ -62,6 +63,7 @@ const schema = z
     term: z.number({
       required_error: "Please select a time",
     }),
+    id: z.string().optional(),
   })
   .superRefine((values, ctx) => {
     if (values.downPayment >= values.price) {
@@ -131,6 +133,8 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
   // States
   const [openChooseModal, setOpenChooseModal] = React.useState(false);
 
+ 
+
   // Form Feilds
   const {
     register,
@@ -161,6 +165,7 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
   }, []); // eslint-disable-line
 
   return (
+  
     <form className="w-full h-auto flex flex-col mt-5" onSubmit={handleSubmit(onSubmit)}>
       {/* Input Container */}
       <div className="w-full h-auto grid grid-cols-2 gap-x-4">
@@ -401,5 +406,7 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
 
       <button className="w-full p-2 rounded-lg mt-2 mb-3 bg-chartYellow dark:text-lightText">Save & Continue</button>
     </form>
+
+    
   );
 }
