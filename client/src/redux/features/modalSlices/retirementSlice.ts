@@ -2,8 +2,8 @@ import {  createSlice } from "@reduxjs/toolkit";
 
 //! Need to add a check to make sure theres no item in array that matches id ... checking for dupilcates before I push into array
 
-interface RetirementGoals {
-  type: string;
+export interface RetirementGoals {
+  type: "Retirement";
   id: string;
   age: {
     currentAge: number;
@@ -41,7 +41,7 @@ const retirementSlice = createSlice({
   reducers: {
     addRetireGoal: (state, action) => {
       const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
-      const formattedData = {
+      const formattedData:RetirementGoals = {
         id,
         type: "Retirement",
         age: age,

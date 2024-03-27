@@ -7,10 +7,14 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Dispatch } from "../../../../redux/store";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Modal, Tooltip } from "@mui/material";
-import CarImgModal from "./CarImgModal";
+import { Tooltip } from "@mui/material";
 
-export interface ICar1stInputsProps {}
+import dayjs from "dayjs";
+import { addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
+
+export interface ICar1stInputsProps {
+  updatedImg: string
+}
 
 const schema = z
   .object({
@@ -63,7 +67,8 @@ const schema = z
     term: z.number({
       required_error: "Please select a time",
     }),
-    id: z.string().optional(),
+    id: z.string(),
+    img: z.string().optional()
   })
   .superRefine((values, ctx) => {
     if (values.downPayment >= values.price) {
@@ -126,12 +131,19 @@ const carsArr = [
 
 const termArr = [36, 48, 60, 72, 84];
 
-export default function Car1stInputs(props: ICar1stInputsProps) {
+export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
   // Redux States
   const dispath = Dispatch();
 
   // States
   const [openChooseModal, setOpenChooseModal] = React.useState(false);
+
+  // Date
+  const date = new Date();
+  const dateFormat = dayjs(date).format("MMM D, YYYY h:mm:ss");
+
+  // Outside Click
+  const ref = React.useRef<HTMLDivElement>(null);
 
  
 
@@ -140,6 +152,7 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
     register,
     handleSubmit,
     watch,
+    clearErrors,
     setValue,
     control,
     formState: { errors },
@@ -153,16 +166,34 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
   const watchModal = watch("modal", "Select A Car Modal...");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    //const date = new Date();
+   
 
-    console.log(data);
+    dispath(addCarGoal(data))
   };
 
-  function handleChange(e: any) {}
+
 
   React.useEffect(() => {
-    //trigger();
-  }, []); // eslint-disable-line
+    setValue("id",dateFormat)
+  }, [setValue,dateFormat]); 
+
+  React.useEffect(() => {
+    const handleClickOutside = (event:any) => {
+      if (ref.current && !ref?.current?.contains(event.target)) {
+        setOpenChooseModal(false)
+      }
+    };
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }, [ openChooseModal ]);
+
+  React.useEffect(()=>{
+    if(updatedImg){
+      setValue("img",updatedImg)
+    }
+  },[updatedImg, setValue])
 
   return (
   
@@ -178,7 +209,7 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
             type="text"
             placeholder="Enter name..."
             {...register("name", {
-              onChange: (e) => handleChange(e),
+          
             })}
             autoComplete="off"
             className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.name && "border-2 border-red-500"}`}
@@ -204,15 +235,16 @@ export default function Car1stInputs(props: ICar1stInputsProps) {
           </div>
           {/* Dropdown */}
           {openChooseModal && (
-            <div className=" absolute z-10 w-full h-[200px] border-2 bg-gray-100 rounded-md border-chartGreen  top-[63px] ">
+            <div className=" absolute z-10 w-full h-[200px] border-2 bg-gray-100 rounded-md border-chartGreen  top-[63px] " ref={ref}>
               <div className="w-full h-full flex flex-col overflow-y-auto no-scrollbar">
                 {carsArr.map((item: string) => (
                   <div
                     key={item}
-                    className="p-1 cursor-pointer transition ease-in-out delay-150  hover:bg-gray-400 duration-300 text-lightText"
+                    className="p-1 cursor-pointer transition border border-b  ease-in-out delay-100  hover:bg-gray-400 duration-300 text-lightText"
                     onClick={() => {
                       setValue("modal", item);
                       setOpenChooseModal(false);
+                      clearErrors("modal")
                     }}
                   >
                     <h1>{item === "MercedesBenz" ? "Mercedes-Benz" : item === "AlfaRomeo" ? "Alfa Romeo" : item}</h1>

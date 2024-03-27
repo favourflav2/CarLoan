@@ -68,7 +68,7 @@ export default function Car1st() {
       </div>
 
       {/* Form */}
-      <Car1stInputs />
+      <Car1stInputs updatedImg={updatedImg}/>
       <CarImgModal open={openImgModal} updateImg={updateImg} setOpenImgModal={setOpenImgModal} />
     </motion.div>
   );

@@ -38,7 +38,7 @@ export default function CarImgModal({ setOpenImgModal, open, updateImg }: ICarIm
           {/* First Box */}
           <div className="w-full justify-between flex items-center ">
             <h1 className=" text-[22px] font-medium">Crop Image</h1>
-            <CloseOutlinedIcon />
+            <CloseOutlinedIcon onClick={() => setOpenImgModal(false)}/>
           </div>
 
           <hr className="my-2 border dark:border-darkText border-lightText" />

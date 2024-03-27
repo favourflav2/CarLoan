@@ -1,7 +1,21 @@
-import {  createSlice } from "@reduxjs/toolkit";
+import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface RetirementGoals {
-  type: string;
+interface CarObjWithFormattedData {
+  type:"Car";
+  id: string;
+  name: string;
+  price: number;
+  mileage: number;
+  downPayment: number;
+  interest: number;
+  term: number;
+  salary: number;
+  img?: string | undefined;
+  modal: string;
+}
+
+export interface RetirementGoals {
+  type: "Retirement";
   id: string;
   age: {
     currentAge: number;
@@ -16,6 +30,11 @@ interface RetirementGoals {
   inflation: number;
   title: string;
 }
+type goal = RetirementGoals | CarObjWithFormattedData | null
+
+
+
+
 
 interface AppSlice {
   lightAndDarkMode: boolean;
@@ -23,7 +42,7 @@ interface AppSlice {
   carModal: boolean;
   currentStepIndex: number;
   steps: number;
-  selectedGoal: RetirementGoals | null;
+  selectedGoal: RetirementGoals | null
   shrinkDashboardSidebar:boolean;
   shrinkRetirementInputs: boolean;
   showHaveExample:boolean;
@@ -83,10 +102,11 @@ const appSlice = createSlice({
     },
     setSelectedGoal: (state, action) => {
       state.selectedGoal = action.payload;
+      console.log("where")
     },
     setSelectedGoalAfterCreate: (state, action) => {
       const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
-      const formattedData = {
+      const formattedData:RetirementGoals = {
         id,
         type: "Retirement",
         age: age,
@@ -108,30 +128,32 @@ const appSlice = createSlice({
         return;
       }
 
-      switch (goal.type) {
-        case "Retirement":
-          if (name === "age.currentAge") {
-            // If what we type is a value we add it to state ... added this because typing backspace was causing problems
-            if (value) {
-              state.selectedGoal.age.currentAge = Number(value);
+     
+        switch (goal.type) {
+          case "Retirement":
+            if (name === "age.currentAge") {
+              // If what we type is a value we add it to state ... added this because typing backspace was causing problems
+              if (value) {
+                state.selectedGoal.age.currentAge = Number(value);
+              }
+            } else if (name === "age.retireAge") {
+              if (value) {
+                state.selectedGoal.age.retireAge = Number(value);
+              }
+            } else if (name === "age.lifeExpectancy") {
+              if (value) {
+                state.selectedGoal.age.lifeExpectancy = Number(value);
+              }
+            } else {
+              if (value) {
+                (state.selectedGoal[name as keyof RetirementGoals] as number) = Number(value);
+              }
             }
-          } else if (name === "age.retireAge") {
-            if (value) {
-              state.selectedGoal.age.retireAge = Number(value);
-            }
-          } else if (name === "age.lifeExpectancy") {
-            if (value) {
-              state.selectedGoal.age.lifeExpectancy = Number(value);
-            }
-          } else {
-            if (value) {
-              (state.selectedGoal[name as keyof RetirementGoals] as number) = Number(value);
-            }
-          }
-          break;
-        default:
-          return
-      }
+            break;
+          default:
+            return
+        }
+      
     },
     editSelectedGoalTitle: (state,action) => {
       const { goal, value} = action.payload;
@@ -165,9 +187,36 @@ const appSlice = createSlice({
           default:
             return
       }
-    }
+    },
+   
   },
 });
 
 export default appSlice.reducer;
 export const { setLightAndDarkMode, setAnyTypeOfModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard, setShowHaveExample, setSelectedGoalAfterCreate } = appSlice.actions;
+
+
+// switch (goal?.type) {
+//   case "Retirement":
+//     if (name === "age.currentAge") {
+//       // If what we type is a value we add it to state ... added this because typing backspace was causing problems
+//       if (value) {
+//         state.selectedGoal.age.currentAge = Number(value);
+//       }
+//     } else if (name === "age.retireAge") {
+//       if (value) {
+//         state.selectedGoal.age.retireAge = Number(value);
+//       }
+//     } else if (name === "age.lifeExpectancy") {
+//       if (value) {
+//         state.selectedGoal.age.lifeExpectancy = Number(value);
+//       }
+//     } else {
+//       if (value) {
+//         (state.selectedGoal[name as keyof RetirementGoals] as number) = Number(value);
+//       }
+//     }
+//     break;
+//   default:
+//     return
+// }

@@ -328,7 +328,7 @@ export default function RetirementPage() {
 
                 {view === "Graph View" && <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">{need && have && <RetirementLineChart need={need} have={have} />}</div>}
 
-                {view === "Summary View" && (
+                {view === "Summary View" &&  (
                   <RetirementSummary show={show} setShow={setShow} have={have} need={need} haveRetireBudget={haveRetireBudget} needMonthlyContribution={needMonthlyContribution} />
                 )}
               </div>
@@ -338,7 +338,7 @@ export default function RetirementPage() {
       </div>
 
       {/* Bottom Text Explaining Whats Going on */}
-      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} />
+      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} /> 
     </div>
   );
 }

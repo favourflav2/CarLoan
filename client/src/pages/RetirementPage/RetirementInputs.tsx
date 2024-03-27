@@ -149,8 +149,8 @@ export default function RetirementInputs() {
 
   // Handle Change
   function handleChange(e: any) {
-    dispatch(editRetireGoal({ name: e.target.name, id, title, value: e.target.value }));
-    dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
+    //dispatch(editRetireGoal({ name: e.target.name, id, title, value: e.target.value }));
+    //dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
   }
 
   // Makes Sure inputs match selected goal on page refresh

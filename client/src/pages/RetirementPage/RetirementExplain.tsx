@@ -9,15 +9,13 @@ export interface IRetirementExplainProps {
 
 export default function RetirementExplain({ haveHighNum, needFinalPrice }: IRetirementExplainProps) {
   // Redux States
-  const { shrinkDashboardSidebar, selectedGoal } = UseSelector((state) => state.app);
-  //const dispatch = Dispatch();
+  const { shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  
 
 
 
 
-  if (!selectedGoal) {
-    return null;
-  }
+  
 
   return (
     <div className={`my-10 h-auto w-full   flex flex-col ${shrinkDashboardSidebar ? "2xl:px-[80px]" : "p-4 2xl:px-[80px]"}  text-black dark:text-gray-300`}>
