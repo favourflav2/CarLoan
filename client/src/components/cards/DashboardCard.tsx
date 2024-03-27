@@ -27,6 +27,8 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
   const { carGoals } = UseSelector((state) => state.carModalSlice);
   const dispatch = Dispatch();
 
+  
+
   const concatData: Array<RetirementGoals | CarObjWithFormattedData> = [...retireGoals, ...carGoals];
   const selectedType = selectedGoal?.type;
 
@@ -48,6 +50,9 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
   //       return <div>Error: Invalid User Role</div>;
   //   }
   // }
+  if(selectedGoal?.type !== "Retirement"){
+    return null
+  }
 
   return (
     <>

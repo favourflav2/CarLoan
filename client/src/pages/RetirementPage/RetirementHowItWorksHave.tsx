@@ -23,12 +23,14 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
     currency: `USD`,
   });
 
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
+    return null;
+  }
+
   const updatedPreRate = selectedGoal && selectedGoal?.preRate / 100;
   const time: number | null = selectedGoal && selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge;
 
-  if (!selectedGoal) {
-    return null;
-  }
+
   const newPostRate = selectedGoal?.postRate / 100;
   const newInflation = selectedGoal?.inflation / 100;
   const addInflationAndPostRate = (1 + newPostRate) / (1 + newInflation) - 1;

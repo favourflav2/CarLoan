@@ -113,7 +113,7 @@ export default function RetirementInputs() {
 
   // Id
   const id = selectedGoal?.id;
-  const title = selectedGoal?.title;
+  const title = selectedGoal?.type === "Retirement" && selectedGoal?.title;
 
   // Advanced Details State
   const [details, setDetails] = React.useState(false);
@@ -133,16 +133,16 @@ export default function RetirementInputs() {
     },
     defaultValues: {
       age: {
-        currentAge: selectedGoal?.age?.currentAge ? selectedGoal.age.currentAge : 23,
-        retireAge: selectedGoal?.age?.retireAge ? selectedGoal.age.retireAge : 67,
-        lifeExpectancy: selectedGoal?.age?.lifeExpectancy ? selectedGoal.age.lifeExpectancy : 95,
+        currentAge: selectedGoal?.type === "Retirement" &&  selectedGoal?.age?.currentAge ? selectedGoal.age.currentAge : 23,
+        retireAge: selectedGoal?.type === "Retirement" &&  selectedGoal?.age?.retireAge ? selectedGoal.age.retireAge : 67,
+        lifeExpectancy: selectedGoal?.type === "Retirement" &&  selectedGoal?.age?.lifeExpectancy ? selectedGoal.age.lifeExpectancy : 95,
       },
-      preRate: selectedGoal?.preRate ? selectedGoal.preRate.toString() : "0",
-      postRate: selectedGoal?.postRate ? selectedGoal.postRate.toString() : "0",
-      inflation: selectedGoal?.inflation ? selectedGoal.inflation.toString() : "0",
-      savings: selectedGoal?.savings ? selectedGoal.savings.toString() : "0",
-      monthlyContribution: selectedGoal?.monthlyContribution ? selectedGoal.monthlyContribution.toString() : "0",
-      budget: selectedGoal?.budget ? selectedGoal.budget.toString() : "0",
+      preRate: selectedGoal?.type === "Retirement" &&  selectedGoal?.preRate ? selectedGoal.preRate.toString() : "0",
+      postRate: selectedGoal?.type === "Retirement" &&  selectedGoal?.postRate ? selectedGoal.postRate.toString() : "0",
+      inflation: selectedGoal?.type === "Retirement" &&  selectedGoal?.inflation ? selectedGoal.inflation.toString() : "0",
+      savings: selectedGoal?.type === "Retirement" &&  selectedGoal?.savings ? selectedGoal.savings.toString() : "0",
+      monthlyContribution: selectedGoal?.type === "Retirement" &&  selectedGoal?.monthlyContribution ? selectedGoal.monthlyContribution.toString() : "0",
+      budget: selectedGoal?.type === "Retirement" &&  selectedGoal?.budget ? selectedGoal.budget.toString() : "0",
     },
     resolver: zodResolver(schema),
   });
@@ -150,12 +150,12 @@ export default function RetirementInputs() {
   // Handle Change
   function handleChange(e: any) {
     //dispatch(editRetireGoal({ name: e.target.name, id, title, value: e.target.value }));
-    //dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
+    dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
   }
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
-    if (selectedGoal) {
+    if (selectedGoal && selectedGoal.type === "Retirement") {
       reset({
         age: {
           currentAge: selectedGoal?.age?.currentAge ? selectedGoal.age.currentAge : 23,
@@ -172,6 +172,10 @@ export default function RetirementInputs() {
     }
     trigger();
   }, [selectedGoal, reset]); // eslint-disable-line
+
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
+    return null;
+  }
 
   return (
     <div className="w-full max-h-[900px] py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">

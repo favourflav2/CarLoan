@@ -43,11 +43,15 @@ const schema = z.object({
 
 type FormFields = z.infer<typeof schema>;
 
+
 export default function RetirementPage() {
+
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const dispatch = Dispatch();
+
+  
 
   // Form Feilds
   const {
@@ -61,7 +65,7 @@ export default function RetirementPage() {
   } = useForm<FormFields>({
     mode: "onChange",
     defaultValues: {
-      title: selectedGoal?.title ? selectedGoal?.title : "",
+      title: selectedGoal?.type === "Retirement" && selectedGoal?.title ? selectedGoal?.title : "",
     },
     resolver: zodResolver(schema),
   });
@@ -118,10 +122,13 @@ export default function RetirementPage() {
     setSaveBtn(false);
   };
 
+  
+
+ 
   //* UseEffect here handles all the math needed for charts
   // link explains that investments and loans typically compound monthly ... so all we do is take the nomial rate / coumponding periods === 12
   React.useEffect(() => {
-    if (selectedGoal) {
+    if (selectedGoal && selectedGoal?.type === "Retirement") {
       setHave(futureValueWhatYouHave(selectedGoal));
       setNeedFinalPrice(getWhatYouNeedFinalPrice(selectedGoal));
       setNeed(futureValueWhatYouWillNeed(selectedGoal));
@@ -132,7 +139,7 @@ export default function RetirementPage() {
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
-    if (selectedGoal && saveBtn === false) {
+    if (selectedGoal && selectedGoal?.type === "Retirement" && saveBtn === false) {
       reset({
         title: selectedGoal?.title ? selectedGoal?.title : "",
       });
@@ -142,18 +149,21 @@ export default function RetirementPage() {
 
   // Callback version of watch.  It's your responsibility to unsubscribe when done.
   React.useEffect(() => {
-    const subscription = watch((data) => {
-      if (data?.title === selectedGoal?.title) {
-        setSaveBtn(false);
-      } else {
-        setSaveBtn(true);
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [watch, saveBtn, selectedGoal?.title]);
+    if(selectedGoal && selectedGoal?.type === "Retirement"){
+      const subscription = watch((data) => {
+        if (data?.title === selectedGoal?.title) {
+          setSaveBtn(false);
+        } else {
+          setSaveBtn(true);
+        }
+      });
+  
+      return () => {
+        subscription.unsubscribe();
+      };
+    }
+    
+  }, [watch, saveBtn, selectedGoal]);
 
   // Function take a string and return upper case at postion [0]
   function upperCaseWords(str: string) {
@@ -177,10 +187,13 @@ export default function RetirementPage() {
     setView("Graph View");
   }, [selectedGoal]);
 
-  if (!selectedGoal) {
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
     dispatch(setSelectedGoal(null));
     return null;
   }
+
+ 
+
 
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">

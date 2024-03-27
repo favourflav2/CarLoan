@@ -38,7 +38,7 @@ export default function RetirementSummary({ setShow, show, need, have, haveRetir
     currency: `USD`,
   });
 
-  if (!selectedGoal) {
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
     dispatch(setSelectedGoal(null));
     return null;
   }
