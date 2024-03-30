@@ -13,7 +13,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MobileDrawer from "../../components/Drawer/MobileDrawer";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CarModal from "../../components/modals/CarModal";
-import { RetirementGoals } from "../../redux/features/applicationSlice";
+import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
 
 export default function Home() {
@@ -102,18 +102,7 @@ export default function Home() {
         <div className={`${shrinkDashboardSidebar ? "ml-[40px]" : "ml-[280px]"}`}>
           {/* Right Side */}
           <div className=" w-full h-full">
-            {/* {selectedGoal?.id ? (
-            selectedGoal?.type === "Retirement" ? (
-              <RetirementPage />
-            ) : (
-              <div className="text-lightText dark:text-darkText">
-                Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data
-              </div>
-            )
-          ) : (
-            <div>Theres no selected goal id</div>
-          )} */}
-            {selectedGoal?.id ? renderSwitch(selectedGoal) : <div>Theres no selected goal id</div>}
+             {selectedGoal?.id ? renderSwitch(selectedGoal) : <div>Theres no selected goal id</div>} 
           </div>
         </div>
       </div>

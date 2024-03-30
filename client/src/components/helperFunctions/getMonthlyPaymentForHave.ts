@@ -3,11 +3,9 @@ import getWhatYouNeedFinalPrice from "./getWhatYouNeedFinalPrice";
 interface SelectedGoalType {
   type: string;
   id: string;
-  age: {
-    currentAge: number;
-    retireAge: number;
-    lifeExpectancy: number;
-  };
+  currentAge: number;
+  retireAge: number;
+  lifeExpectancy: number;
   savings: number;
   monthlyContribution: number;
   budget: number;
@@ -22,7 +20,8 @@ interface SelectedGoalType {
 //* Since we have the present value we solve for W (the monthly withdraw)
 export function getMonthlyPaymentForHave(obj: SelectedGoalType, highNum: number) {
   const {
-    age: { retireAge, lifeExpectancy },
+    retireAge,
+    lifeExpectancy,
 
     postRate,
     inflation,
@@ -64,7 +63,8 @@ export function getMonthlyPaymentForHave(obj: SelectedGoalType, highNum: number)
 export function getMonthlyPaymentForNeed(obj: SelectedGoalType) {
   let monthlyContribution = 0;
   const {
-    age: { retireAge, currentAge },
+    retireAge,
+    currentAge,
 
     postRate,
     inflation,

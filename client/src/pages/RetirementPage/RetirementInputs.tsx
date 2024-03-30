@@ -3,106 +3,17 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Tooltip } from "@mui/material";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
-
+import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { editRetireGoal } from "../../redux/features/modalSlices/retirementSlice";
-import { editSelectedGoal } from "../../redux/features/applicationSlice";
-
-const schema = z.object({
-  age: z
-    .object({
-      currentAge: z
-        .number({
-          required_error: "Please enter a number between 18 and 80",
-          invalid_type_error: "Please enter a number between 18 and 80",
-        })
-        .min(18, { message: "Please enter a number between 18 and 80" })
-        .max(80, { message: "Please enter a number between 18 and 80" }),
-
-      retireAge: z
-        .number({
-          required_error: "Please enter a number",
-          invalid_type_error: "Please enter a number",
-        })
-        .max(90, { message: "90 is the max age" }),
-
-      lifeExpectancy: z
-        .number({
-          required_error: "Please enter a number",
-          invalid_type_error: "Please enter a number",
-        })
-        .max(120, { message: "120 is the max age" }),
-    })
-    .refine(({ currentAge, retireAge }) => currentAge <= retireAge - 1, {
-      message: "Your retirement age must be higher than your current age",
-      path: ["retireAge"],
-    })
-    .refine(({ currentAge, retireAge }) => currentAge <= retireAge - 1, {
-      message: "Your retirement age must be higher than your current age",
-      path: ["currentAge"],
-    })
-    .refine(({ retireAge, lifeExpectancy }) => retireAge <= lifeExpectancy - 1, {
-      message: "Your retirement age must be higher than your current age",
-      path: ["lifeExpectancy"],
-    }),
-  savings: z
-    .string({
-      required_error: "Please enter a number",
-    })
-    .refine((item) => item.length > 0, {
-      message: "Please enter a number",
-    }),
-  monthlyContribution: z
-    .string({
-      required_error: "Please enter a number",
-    })
-    .refine((item) => item.length > 0, {
-      message: "Please enter a number",
-    }),
-  budget: z
-    .string({
-      required_error: "Please enter a number",
-    })
-    .refine((item) => item.length > 0, {
-      message: "Please enter a number",
-    }),
-  preRate: z
-    .string({
-      required_error: "Please enter a number between 0% and 15%",
-    })
-    .refine((item) => Number(item.replace("%", "")) < 16, {
-      message: "Please enter a number between 0% and 15%",
-    })
-    .refine((item) => item.length > 0, {
-      message: "Please enter a number between 0% and 15%",
-    }),
-  postRate: z
-    .string({
-      required_error: "Please enter a number between 0% and 15%",
-    })
-    .refine((item) => Number(item.replace("%", "")) < 16, {
-      message: "Please enter a number between 0% and 15%",
-    })
-    .refine((item) => item.length > 0, {
-      message: "Please enter a number between 0% and 15%",
-    }),
-  inflation: z
-    .string({
-      required_error: "Please enter a number between 0% and 15%",
-    })
-    .refine((item) => Number(item.replace("%", "")) < 16, {
-      message: "Please enter a number between 0% and 15%",
-    })
-    .refine((item) => item.length > 0, {
-      message: "Please enter a number between 0% and 15%",
-    }),
-  id: z.string().optional(),
-});
+import { editSelectedGoal, setSelectedGoal } from "../../redux/features/applicationSlice";
+import _ from "lodash";
+import { schema } from "./inputSchema";
 
 type FormFields = z.infer<typeof schema>;
 
@@ -111,19 +22,18 @@ export default function RetirementInputs() {
   const { selectedGoal } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
-  // Id
-  const id = selectedGoal?.id;
-  const title = selectedGoal?.title;
-
   // Advanced Details State
   const [details, setDetails] = React.useState(false);
+
+  // All react hook form states
+  const [showUpadateBtn, setShowUpdateBtn] = React.useState<boolean>(false);
 
   // Form Feilds
   const {
     register,
-    //handleSubmit,
     control,
     reset,
+    watch,
     trigger,
     formState: { errors },
   } = useForm<FormFields>({
@@ -133,34 +43,80 @@ export default function RetirementInputs() {
     },
     defaultValues: {
       age: {
-        currentAge: selectedGoal?.age?.currentAge ? selectedGoal.age.currentAge : 23,
-        retireAge: selectedGoal?.age?.retireAge ? selectedGoal.age.retireAge : 67,
-        lifeExpectancy: selectedGoal?.age?.lifeExpectancy ? selectedGoal.age.lifeExpectancy : 95,
+        currentAge: selectedGoal?.type === "Retirement" && selectedGoal?.currentAge ? selectedGoal.currentAge : 23,
+        retireAge: selectedGoal?.type === "Retirement" && selectedGoal?.retireAge ? selectedGoal.retireAge : 67,
+        lifeExpectancy: selectedGoal?.type === "Retirement" && selectedGoal?.lifeExpectancy ? selectedGoal.lifeExpectancy : 95,
       },
-      preRate: selectedGoal?.preRate ? selectedGoal.preRate.toString() : "0",
-      postRate: selectedGoal?.postRate ? selectedGoal.postRate.toString() : "0",
-      inflation: selectedGoal?.inflation ? selectedGoal.inflation.toString() : "0",
-      savings: selectedGoal?.savings ? selectedGoal.savings.toString() : "0",
-      monthlyContribution: selectedGoal?.monthlyContribution ? selectedGoal.monthlyContribution.toString() : "0",
-      budget: selectedGoal?.budget ? selectedGoal.budget.toString() : "0",
+      preRate: selectedGoal?.type === "Retirement" && selectedGoal?.preRate ? selectedGoal.preRate.toString() : "0",
+      postRate: selectedGoal?.type === "Retirement" && selectedGoal?.postRate ? selectedGoal.postRate.toString() : "0",
+      inflation: selectedGoal?.type === "Retirement" && selectedGoal?.inflation ? selectedGoal.inflation.toString() : "0",
+      savings: selectedGoal?.type === "Retirement" && selectedGoal?.savings ? selectedGoal.savings.toString() : "0",
+      monthlyContribution: selectedGoal?.type === "Retirement" && selectedGoal?.monthlyContribution ? selectedGoal.monthlyContribution.toString() : "0",
+      budget: selectedGoal?.type === "Retirement" && selectedGoal?.budget ? selectedGoal.budget.toString() : "0",
     },
     resolver: zodResolver(schema),
   });
 
-  // Handle Change
-  function handleChange(e: any) {
-    //dispatch(editRetireGoal({ name: e.target.name, id, title, value: e.target.value }));
-    //dispatch(editSelectedGoal({ name: e.target.name, goal: selectedGoal, value: e.target.value }));
-  }
+  const allInputData = watch();
+  const errorsArray = Object.keys(errors);
+
+  React.useEffect(() => {
+    function checkValid(
+      select: RetirementGoals,
+      inputStates:any
+    ) {
+      if (!select) return false;
+      const { title, id, type } = select;
+     
+      const {
+        age: { lifeExpectancy, currentAge, retireAge },
+        savings,
+        budget,
+        preRate,
+        inflation,
+        postRate,
+        monthlyContribution,
+      } = inputStates;
+
+      const obj: RetirementGoals = {
+        id,
+        title,
+        currentAge,
+        lifeExpectancy,
+        retireAge,
+        type,
+        budget: parseFloat(budget.replace(/[,%$]/gm, "")),
+        preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
+        postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
+        inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
+        monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
+        savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+      };
+
+      const isTheSame = _.isEqual(obj, select);
+      if (isTheSame) {
+        setShowUpdateBtn(false);
+        return false;
+      } else {
+        setShowUpdateBtn(true);
+        return true;
+      }
+    }
+    const subscription = watch((data) => {
+      if (!selectedGoal || selectedGoal?.type !== "Retirement") return;
+      checkValid(selectedGoal, data);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch, selectedGoal]);
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
-    if (selectedGoal) {
+    if (selectedGoal && selectedGoal?.type === "Retirement") {
       reset({
         age: {
-          currentAge: selectedGoal?.age?.currentAge ? selectedGoal.age.currentAge : 23,
-          retireAge: selectedGoal?.age?.retireAge ? selectedGoal.age.retireAge : 67,
-          lifeExpectancy: selectedGoal?.age?.lifeExpectancy ? selectedGoal.age.lifeExpectancy : 95,
+          currentAge: selectedGoal?.currentAge ? selectedGoal.currentAge : 23,
+          retireAge: selectedGoal?.retireAge ? selectedGoal.retireAge : 67,
+          lifeExpectancy: selectedGoal?.lifeExpectancy ? selectedGoal.lifeExpectancy : 95,
         },
         preRate: selectedGoal?.preRate ? selectedGoal.preRate.toString() : "0",
         postRate: selectedGoal?.postRate ? selectedGoal.postRate.toString() : "0",
@@ -173,8 +129,49 @@ export default function RetirementInputs() {
     trigger();
   }, [selectedGoal, reset]); // eslint-disable-line
 
+  // Update Function
+  function handleUpdate() {
+    if (!selectedGoal?.id || selectedGoal?.type !== "Retirement") return;
+
+    if (errorsArray.length) return;
+
+    const {
+      age: { currentAge, lifeExpectancy, retireAge },
+      monthlyContribution,
+      preRate,
+      postRate,
+      inflation,
+      budget,
+      savings,
+    } = allInputData;
+    const { title, id, type } = selectedGoal;
+    const newObj: RetirementGoals = {
+      id,
+      title,
+      type,
+      currentAge,
+      retireAge,
+      lifeExpectancy,
+      budget: parseFloat(budget.replace(/[,%$]/gm, "")),
+      preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
+      postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
+      inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
+      monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
+      savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+    };
+
+    dispatch(editSelectedGoal({ goal: newObj }));
+    dispatch(editRetireGoal({ id, title, goal: newObj }));
+  }
+
+
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
+    dispatch(setSelectedGoal(null));
+    return null;
+  }
+
   return (
-    <div className="w-full max-h-[900px] py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
+    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
         <form className="w-full h-auto flex flex-col ">
@@ -187,7 +184,6 @@ export default function RetirementInputs() {
               type="number"
               {...register("age.currentAge", {
                 valueAsNumber: true,
-                onChange: (e) => handleChange(e),
               })}
               className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.age?.currentAge && "border-2 border-red-500"}`}
             />
@@ -217,8 +213,6 @@ export default function RetirementInputs() {
                   autoComplete="off"
                   allowNegative={false}
                   onValueChange={(v) => {
-                    dispatch(editRetireGoal({ name: "savings", title, id, value: v.value }));
-                    dispatch(editSelectedGoal({ name: "savings", goal: selectedGoal, value: v.value }));
                     onChange(v.value);
                   }}
                   value={value}
@@ -248,8 +242,6 @@ export default function RetirementInputs() {
                   autoComplete="off"
                   allowNegative={false}
                   onValueChange={(v) => {
-                    dispatch(editRetireGoal({ name: "monthlyContribution", title, id, value: v.value }));
-                    dispatch(editSelectedGoal({ name: "monthlyContribution", goal: selectedGoal, value: v.value }));
                     onChange(v.value);
                   }}
                   value={value}
@@ -278,8 +270,6 @@ export default function RetirementInputs() {
                   autoComplete="off"
                   allowNegative={false}
                   onValueChange={(v) => {
-                    dispatch(editRetireGoal({ name: "budget", title, id, value: v.value }));
-                    dispatch(editSelectedGoal({ name: "budget", goal: selectedGoal, value: v.value }));
                     onChange(v.value);
                   }}
                   value={value}
@@ -330,7 +320,6 @@ export default function RetirementInputs() {
                   type="number"
                   {...register("age.retireAge", {
                     valueAsNumber: true,
-                    onChange: (e) => handleChange(e),
                   })}
                   className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.age?.retireAge && "border-2 border-red-500"}`}
                 />
@@ -357,7 +346,6 @@ export default function RetirementInputs() {
                   type="number"
                   {...register("age.lifeExpectancy", {
                     valueAsNumber: true,
-                    onChange: (e) => handleChange(e),
                   })}
                   className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.age?.lifeExpectancy && "border-2 border-red-500"}`}
                 />
@@ -391,8 +379,6 @@ export default function RetirementInputs() {
                       autoComplete="off"
                       allowNegative={false}
                       onValueChange={(v) => {
-                        dispatch(editRetireGoal({ name: "preRate", title, id, value: v.value }));
-                        dispatch(editSelectedGoal({ name: "preRate", goal: selectedGoal, value: v.value }));
                         onChange(v.value);
                       }}
                       value={value}
@@ -431,8 +417,6 @@ export default function RetirementInputs() {
                       autoComplete="off"
                       allowNegative={false}
                       onValueChange={(v) => {
-                        dispatch(editRetireGoal({ name: "postRate", title, id, value: v.value }));
-                        dispatch(editSelectedGoal({ name: "postRate", goal: selectedGoal, value: v.value }));
                         onChange(v.value);
                       }}
                       value={value}
@@ -462,8 +446,6 @@ export default function RetirementInputs() {
                       autoComplete="off"
                       allowNegative={false}
                       onValueChange={(v) => {
-                        dispatch(editRetireGoal({ name: "inflation", title, id, value: v.value }));
-                        dispatch(editSelectedGoal({ name: "inflation", goal: selectedGoal, value: v.value }));
                         onChange(v.value);
                       }}
                       value={value}
@@ -476,6 +458,22 @@ export default function RetirementInputs() {
               </div>
             </motion.div>
           )}
+
+        
+          <AnimatePresence>
+            {selectedGoal && showUpadateBtn && (
+              <motion.button
+                className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"}`}
+                type="button"
+                onClick={handleUpdate}
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+              >
+                Update
+              </motion.button>
+            )}
+          </AnimatePresence>
         </form>
       </div>
     </div>

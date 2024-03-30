@@ -8,130 +8,20 @@ import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Dispatch } from "../../../../redux/store";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Tooltip } from "@mui/material";
-
+import { carModalSchema } from "./carModalSchema";
 import dayjs from "dayjs";
 import { addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
-
+import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
+import { carsArr } from "./carModalSchema";
 export interface ICar1stInputsProps {
-  updatedImg: string
+  updatedImg: string;
 }
 
-const schema = z
-  .object({
-    name: z
-      .string({
-        required_error: "Please enter a name",
-      })
-      .max(50, {
-        message: "Max length is 50",
-      })
-      .min(4, {
-        message: "Min length is 4",
-      }),
-    modal: z
-      .string({
-        required_error: "Please enter a modal",
-      })
-      .max(50, {
-        message: "Max length is 50",
-      })
-      .min(1, {
-        message: "Min length is 1",
-      }),
-    price: z.string({
-      required_error: "Please enter a price",
-    }),
-    mileage: z.string({
-      required_error: "Please enter a mileage",
-    }),
-    downPayment: z
-      .string({
-        required_error: "Please enter a down payment",
-      })
-      .refine((item) => item.length > 0, {
-        message: "Please enter a down payment",
-      }),
-    interest: z
-      .string({
-        required_error: "Please enter a number between 0% and 39%",
-      })
-      .refine((item) => Number(item.replace("%", "")) < 40, {
-        message: "Please enter a number between 0% and 39%",
-      })
-      .refine((item) => item.length > 0, {
-        message: "Please enter a number between 0% and 39%",
-      }),
-    salary: z.string({
-      required_error: "Please enter your salary",
-    }),
-    term: z.number({
-      required_error: "Please select a time",
-    }),
-    id: z.string(),
-    img: z.string().optional()
-  })
-  .superRefine((values, ctx) => {
-    if (values.downPayment >= values.price) {
-      ctx.addIssue({
-        message: "Your down payment should not be greater the car price.",
-        code: z.ZodIssueCode.custom,
-        path: ["downPayment"],
-      });
-      ctx.addIssue({
-        message: "Your down payment should not be greater the car price.",
-        code: z.ZodIssueCode.custom,
-        path: ["price"],
-      });
-    }
-  });
-
-type FormFields = z.infer<typeof schema>;
-
-const carsArr = [
-  "Acura",
-  "AlfaRomeo",
-  "Audi",
-  "BMW",
-  "Buick",
-  "Cadillac",
-  "Chevrolet",
-  "Chrysler",
-  "Dodge",
-  "FIAT",
-  "Ford",
-  "Genesis",
-  "GMC",
-  "Honda",
-  "Hyundai",
-  "INFINITI",
-  "Jaguar",
-  "Jeep",
-  "Kia",
-  "LandRover",
-  "Lexus",
-  "Lincoln",
-  "Lucid",
-  "Maserati",
-  "Mazada",
-  "MercedesBenz",
-  "MINI",
-  "Mitsubishi",
-  "Nissan",
-  "Polestar",
-  "Porsche",
-  "Ram",
-  "Rivian",
-  "Scion",
-  "Subaru",
-  "Telsa",
-  "Toyota",
-  "Volkswagen",
-  "Volvo",
-];
+type FormFields = z.infer<typeof carModalSchema>;
 
 const termArr = [36, 48, 60, 72, 84];
 
-export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
+export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   // Redux States
   const dispath = Dispatch();
 
@@ -144,8 +34,6 @@ export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
 
   // Outside Click
   const ref = React.useRef<HTMLDivElement>(null);
-
- 
 
   // Form Feilds
   const {
@@ -161,42 +49,38 @@ export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
     defaultValues: {
       term: 60,
     },
-    resolver: zodResolver(schema),
+    resolver: zodResolver(carModalSchema),
   });
   const watchModal = watch("modal", "Select A Car Modal...");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-   
-
-    dispath(addCarGoal(data))
+    dispath(addCarGoal(data));
+    dispath(setAnyTypeOfModal({ value: false, type: "Car" }));
   };
 
-
+  React.useEffect(() => {
+    setValue("id", dateFormat);
+  }, [setValue, dateFormat]);
 
   React.useEffect(() => {
-    setValue("id",dateFormat)
-  }, [setValue,dateFormat]); 
-
-  React.useEffect(() => {
-    const handleClickOutside = (event:any) => {
+    const handleClickOutside = (event: any) => {
       if (ref.current && !ref?.current?.contains(event.target)) {
-        setOpenChooseModal(false)
+        setOpenChooseModal(false);
       }
     };
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.removeEventListener("click", handleClickOutside, true);
     };
-  }, [ openChooseModal ]);
+  }, [openChooseModal]);
 
-  React.useEffect(()=>{
-    if(updatedImg){
-      setValue("img",updatedImg)
+  React.useEffect(() => {
+    if (updatedImg) {
+      setValue("img", updatedImg);
     }
-  },[updatedImg, setValue])
+  }, [updatedImg, setValue]);
 
   return (
-  
     <form className="w-full h-auto flex flex-col mt-5" onSubmit={handleSubmit(onSubmit)}>
       {/* Input Container */}
       <div className="w-full h-auto grid grid-cols-2 gap-x-4">
@@ -208,9 +92,7 @@ export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
           <input
             type="text"
             placeholder="Enter name..."
-            {...register("name", {
-          
-            })}
+            {...register("name", {})}
             autoComplete="off"
             className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.name && "border-2 border-red-500"}`}
           />
@@ -244,7 +126,7 @@ export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
                     onClick={() => {
                       setValue("modal", item);
                       setOpenChooseModal(false);
-                      clearErrors("modal")
+                      clearErrors("modal");
                     }}
                   >
                     <h1>{item === "MercedesBenz" ? "Mercedes-Benz" : item === "AlfaRomeo" ? "Alfa Romeo" : item}</h1>
@@ -438,7 +320,5 @@ export default function Car1stInputs({updatedImg}: ICar1stInputsProps) {
 
       <button className="w-full p-2 rounded-lg mt-2 mb-3 bg-chartYellow dark:text-lightText">Save & Continue</button>
     </form>
-
-    
   );
 }

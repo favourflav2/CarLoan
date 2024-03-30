@@ -38,7 +38,7 @@ export default function RetirementSummary({ setShow, show, need, have, haveRetir
     currency: `USD`,
   });
 
-  if (!selectedGoal) {
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
     dispatch(setSelectedGoal(null));
     return null;
   }
@@ -74,7 +74,7 @@ export default function RetirementSummary({ setShow, show, need, have, haveRetir
             {/* Age Retirement Savings Run Out */}
             <div className="w-full flex items-center justify-between">
               <p className="">Age Retirement Savings Run Out</p>
-              <h1 className=" text-chartGreen font-semibold">{selectedGoal?.age?.lifeExpectancy}</h1>
+              <h1 className=" text-chartGreen font-semibold">{selectedGoal?.lifeExpectancy}</h1>
             </div>
 
             <hr className="border my-2 border-gray-300" />
@@ -155,7 +155,7 @@ export default function RetirementSummary({ setShow, show, need, have, haveRetir
             {/* Age Retirement Savings Run Out */}
             <div className="w-full flex items-center justify-between">
               <p className="">Age Retirement Savings Run Out</p>
-              <h1 className=" text-chartGreen font-semibold">{selectedGoal?.age?.lifeExpectancy}</h1>
+              <h1 className=" text-chartGreen font-semibold">{selectedGoal?.lifeExpectancy}</h1>
             </div>
 
             <hr className="border my-2 border-gray-300" />
@@ -199,7 +199,7 @@ export default function RetirementSummary({ setShow, show, need, have, haveRetir
             {/* Age Retirement Savings Run Out */}
             <div className="w-full flex items-center justify-between">
               <p className="text-[14px] sm:text-base">Age Retirement Savings Run Out</p>
-              <h1 className=" text-chartGreen font-semibold text-[15px] sm:text-base">{selectedGoal?.age?.lifeExpectancy}</h1>
+              <h1 className=" text-chartGreen font-semibold text-[15px] sm:text-base">{selectedGoal?.lifeExpectancy}</h1>
             </div>
 
             <hr className="border my-2 border-gray-300" />
@@ -280,7 +280,7 @@ export default function RetirementSummary({ setShow, show, need, have, haveRetir
             {/* Age Retirement Savings Run Out */}
             <div className="w-full flex items-center justify-between">
               <p className="text-[14px] sm:text-base">Age Retirement Savings Run Out</p>
-              <h1 className=" text-chartGreen font-semibold text-[15px] sm:text-base">{selectedGoal?.age?.lifeExpectancy}</h1>
+              <h1 className=" text-chartGreen font-semibold text-[15px] sm:text-base">{selectedGoal?.lifeExpectancy}</h1>
             </div>
 
             <hr className="border my-2 border-gray-300" />

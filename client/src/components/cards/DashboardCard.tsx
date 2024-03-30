@@ -14,10 +14,6 @@ export interface IDashboardCardProps {
   type: string;
 }
 
-interface Arr {
-  data: Array<RetirementGoals | CarObjWithFormattedData>;
-}
-
 // trying to figure out how to concat and do a switch case
 
 export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
@@ -28,36 +24,23 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
   const dispatch = Dispatch();
 
   const concatData: Array<RetirementGoals | CarObjWithFormattedData> = [...retireGoals, ...carGoals];
-  const selectedType = selectedGoal?.type;
+  const retirement = selectedGoal?.type === "Retirement";
+  const car = selectedGoal?.type === "Car";
 
   // ref
   const ref = React.useRef(null);
 
-  // switch case
-  // function switchCase(typeOfGoal: string, item:any) {
-  //   switch (typeOfGoal) {
-  //     case "Retirement":
-  //       if(selectedGoal?.type === "Retirement"){
-  //         return selectedGoal?.id === item.id && selectedGoal?.title === item?.title
-  //         ? " text-chartGreen border-chartGreen dark:bg-inherit bg-white"
-  //         : "dark:text-gray-300 text-lightText  border-lightText dark:border-gray-300   ";
-  //       }
-  //     case "user":
-  //       return null
-  //     default:
-  //       return <div>Error: Invalid User Role</div>;
-  //   }
-  // }
-
   return (
     <>
       {retireGoals.length > 0 || carGoals.length > 0 ? (
-        <div className="mt-4 bg-red-500">
+        <div className="mt-4 text-lightText dark:text-darkText">
           {/* Mapped Data */}
-          {retireGoals.map((item) => (
+          {concatData.map((item) => (
             <div
               key={item.id}
-              className={`flex flex-col w-full p-3 cursor-pointer border-b  ${selectedType === "Retirement"} `}
+              className={`flex flex-col w-full p-3 cursor-pointer border-b border-gray-400 ${
+                retirement && item.id === selectedGoal.id ? "bg-gray-300 dark:bg-black/50" : car && item.id === selectedGoal.id ? "bg-gray-300 dark:bg-black/50" : ""
+              }`}
               onClick={(e: any) => {
                 if (e.target.tagName !== "path") {
                   if (type === "desktop") {
@@ -71,7 +54,7 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
             >
               {/* Title and Delete Icon */}
               <div className="w-full justify-between items-center flex ">
-                <h1 className="text-[15px] underline">{item?.title}</h1>
+                <h1 className="text-[15px] underline">{item.type === "Retirement" ? item.title : item.name}</h1>
                 <DeleteIcon
                   ref={ref}
                   className="text-[20px]"
@@ -87,15 +70,30 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
 
               {/* Type and Date */}
               <div className="w-full flex justify-between items-center mt-2">
-                <div className="w-auto flex items-center ">
-                  {selectedGoal?.id === item.id && selectedGoal.title === item.title ? (
-                    <CircleIcon className=" text-chartGreen text-[15px] mr-1" />
-                  ) : (
-                    <CircleOutlinedIcon className=" dark:text-gray-300 text-lightText text-[15px] mr-1" />
-                  )}
+                {/* Retirement */}
+                {item.type === "Retirement" && (
+                  <div className="w-auto flex items-center ">
+                    {selectedGoal?.id === item.id && selectedGoal?.type === "Retirement" && selectedGoal?.title === item.title ? (
+                      <CircleIcon className=" text-chartGreen text-[15px] mr-1" />
+                    ) : (
+                      <CircleOutlinedIcon className=" dark:text-gray-300 text-lightText text-[15px] mr-1" />
+                    )}
 
-                  <p className="text-[12.5px]">{item.type}</p>
-                </div>
+                    <p className="text-[12.5px]">{item.type}</p>
+                  </div>
+                )}
+                {/* Car */}
+                {item.type === "Car" && (
+                  <div className="w-auto flex items-center ">
+                    {selectedGoal?.id === item.id && selectedGoal?.type === "Car" && selectedGoal.name === item.name ? (
+                      <CircleIcon className=" text-chartYellow text-[15px] mr-1 mb-[2px]" />
+                    ) : (
+                      <CircleOutlinedIcon className=" dark:text-gray-300 text-lightText text-[15px] mr-1 mb-[2px]" />
+                    )}
+
+                    <p className="text-[12.5px] flex items-center justify-center">{item.type}</p>
+                  </div>
+                )}
                 <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
                 <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
               </div>

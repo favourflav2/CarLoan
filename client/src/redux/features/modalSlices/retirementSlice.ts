@@ -1,15 +1,14 @@
-import {  createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { goal } from "../applicationSlice";
 
 //! Need to add a check to make sure theres no item in array that matches id ... checking for dupilcates before I push into array
 
 export interface RetirementGoals {
   type: "Retirement";
   id: string;
-  age: {
-    currentAge: number;
-    retireAge: number;
-    lifeExpectancy: number;
-  };
+  currentAge: number;
+  retireAge: number;
+  lifeExpectancy: number;
   savings: number;
   monthlyContribution: number;
   budget: number;
@@ -19,15 +18,28 @@ export interface RetirementGoals {
   title: string;
 }
 
+export interface RetirementGoalNoFormat {
+  type: "Retirement";
+  id: string;
+  currentAge: number;
+  retireAge: number;
+  lifeExpectancy: number;
+  savings: string;
+  monthlyContribution: string;
+  budget: string;
+  preRate: string;
+  postRate: string;
+  inflation: string;
+  title: string;
+}
+
 interface InputRetireErrors {
   [key: string]: any;
 }
 
-
 interface RetirementSlice {
   retireGoals: Array<RetirementGoals>;
   errors: InputRetireErrors | null;
- 
 }
 
 const initialState: RetirementSlice = {
@@ -39,12 +51,14 @@ const retirementSlice = createSlice({
   name: "retirementSlice",
   initialState,
   reducers: {
-    addRetireGoal: (state, action) => {
-      const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
-      const formattedData:RetirementGoals = {
+    addRetireGoal: (state, action:PayloadAction<RetirementGoalNoFormat>) => {
+      const { currentAge, lifeExpectancy, type, retireAge, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
+      const formattedData: RetirementGoals = {
         id,
-        type: "Retirement",
-        age: age,
+        type,
+        currentAge, 
+        retireAge,
+        lifeExpectancy,
         budget: parseFloat(budget.replace(/[,%$]/gm, "")),
         preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
         postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
@@ -61,68 +75,36 @@ const retirementSlice = createSlice({
 
       state.retireGoals = state.retireGoals.filter((item) => item.id !== id && item.title !== title);
     },
-    editRetireGoal: (state, action) => {
+    editRetireGoal: (state, action:PayloadAction<{id:string, title:string, goal:RetirementGoals}>) => {
       // This reducer updates the retirment goal in the array
-      const { id, title, name, value } = action.payload;
-
-      const copyData = state.retireGoals.map((val) => {
-        if (val.id === id && val.title === title) {
-          if (name === "age.currentAge") {
-            return {
-              ...val,
-              age: {
-                ...val.age,
-                currentAge: Number(value),
-              },
-            };
-          } else if (name === "age.retireAge") {
-            return {
-              ...val,
-              age: {
-                ...val.age,
-                retireAge: Number(value),
-              },
-            };
-          } else if (name === "age.lifeExpectancy") {
-            return {
-              ...val,
-              age: {
-                ...val.age,
-                lifeExpectancy: Number(value),
-              },
-            };
-          } else {
-            return {
-              ...val,
-              [name]: Number(value),
-            };
-          }
-        } else {
-          return val;
-        }
-      });
-
-      state.retireGoals = copyData;
+      const { id, title, goal } = action.payload;
+      const index = state.retireGoals.findIndex(val => val.id === id && val.title === title)
       
+      if(index >= 0){
+        state.retireGoals[index] = goal
+      }
+
     },
-    editRetireGoalTitle: (state,action) => {
-      const { value, id,} = action.payload
-      const copyData = state.retireGoals.map((item) => {
-        if(item.id === id){
+    editRetireGoalTitle: (state, action:PayloadAction<{goal:goal,newTitle:string,id:string | undefined}>) => {
+      const { goal, id, newTitle } = action.payload;
+
+      if(goal?.type !== "Retirement" || !goal || id === undefined) return
+      
+      const res = state.retireGoals.map(val => {
+        if(val.id === id && val.title === goal.title){
           return {
-            ...item,
-            title: value
+            ...val,
+            title: newTitle
           }
         }else{
-          return item
+          return val
         }
       })
 
-      state.retireGoals = copyData
+      state.retireGoals = res
     },
-    
   },
 });
 
 export default retirementSlice.reducer;
-export const { addRetireGoal, removeRetireItem, editRetireGoal,editRetireGoalTitle } = retirementSlice.actions;
+export const { addRetireGoal, removeRetireItem, editRetireGoal, editRetireGoalTitle } = retirementSlice.actions;

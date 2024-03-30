@@ -13,7 +13,7 @@ const persistConfig = {
   version: 1,
   storage,
   blacklist: ["car"],
-  whitelist: ["page", "app", "retireSlice"],
+  //whitelist: ["page", "app", "retireSlice", "CarModalSlice"],
 };
 
 const reducer = combineReducers({

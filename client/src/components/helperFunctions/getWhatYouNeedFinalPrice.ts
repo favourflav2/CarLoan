@@ -1,11 +1,9 @@
 interface SelectedGoalType {
   type: string;
   id: string;
-  age: {
-    currentAge: number;
-    retireAge: number;
-    lifeExpectancy: number;
-  };
+  currentAge: number;
+  retireAge: number;
+  lifeExpectancy: number;
   savings: number;
   monthlyContribution: number;
   budget: number;
@@ -15,14 +13,8 @@ interface SelectedGoalType {
   title: string;
 }
 
-
 export default function getWhatYouNeedFinalPrice(obj: SelectedGoalType) {
-  const {
-    age: { retireAge, lifeExpectancy },
-    budget,
-    postRate,
-    inflation,
-  } = obj;
+  const { retireAge, lifeExpectancy, budget, postRate, inflation } = obj;
   const newPostRate = postRate / 100;
   const newInflation = inflation / 100;
 

@@ -61,7 +61,7 @@ export default function RetirementPage() {
   } = useForm<FormFields>({
     mode: "onChange",
     defaultValues: {
-      title: selectedGoal?.title ? selectedGoal?.title : "",
+      title: selectedGoal?.type === "Retirement" && selectedGoal?.title ? selectedGoal?.title : "",
     },
     resolver: zodResolver(schema),
   });
@@ -112,8 +112,9 @@ export default function RetirementPage() {
 
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    dispatch(editRetireGoalTitle({ name: "title", id, value: data?.title }));
-    dispatch(editSelectedGoalTitle({ name: "title", value: data?.title, goal: selectedGoal }));
+    dispatch(editRetireGoalTitle({ id, newTitle: data?.title, goal: selectedGoal }));
+
+    dispatch(editSelectedGoalTitle({ title: data?.title, goal: selectedGoal }));
     setEditState(false);
     setSaveBtn(false);
   };
@@ -121,7 +122,7 @@ export default function RetirementPage() {
   //* UseEffect here handles all the math needed for charts
   // link explains that investments and loans typically compound monthly ... so all we do is take the nomial rate / coumponding periods === 12
   React.useEffect(() => {
-    if (selectedGoal) {
+    if (selectedGoal && selectedGoal?.type === "Retirement") {
       setHave(futureValueWhatYouHave(selectedGoal));
       setNeedFinalPrice(getWhatYouNeedFinalPrice(selectedGoal));
       setNeed(futureValueWhatYouWillNeed(selectedGoal));
@@ -132,7 +133,7 @@ export default function RetirementPage() {
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
-    if (selectedGoal && saveBtn === false) {
+    if (selectedGoal && selectedGoal?.type === "Retirement" && saveBtn === false) {
       reset({
         title: selectedGoal?.title ? selectedGoal?.title : "",
       });
@@ -143,17 +144,18 @@ export default function RetirementPage() {
   // Callback version of watch.  It's your responsibility to unsubscribe when done.
   React.useEffect(() => {
     const subscription = watch((data) => {
+      if (selectedGoal?.type !== "Retirement") return;
       if (data?.title === selectedGoal?.title) {
-        setSaveBtn(false);
+        return setSaveBtn(false);
       } else {
-        setSaveBtn(true);
+        return setSaveBtn(true);
       }
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [watch, saveBtn, selectedGoal?.title]);
+  }, [watch, saveBtn, selectedGoal]);
 
   // Function take a string and return upper case at postion [0]
   function upperCaseWords(str: string) {
@@ -177,7 +179,7 @@ export default function RetirementPage() {
     setView("Graph View");
   }, [selectedGoal]);
 
-  if (!selectedGoal) {
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
     dispatch(setSelectedGoal(null));
     return null;
   }
@@ -191,7 +193,19 @@ export default function RetirementPage() {
         }`}
       >
         {/* Left Side Inputs */}
-        <RetirementInputs />
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selectedGoal ? selectedGoal?.title : "empty"}
+            initial={{ y: 10, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="w-full max-h-[900px]"
+          >
+            <RetirementInputs />
+          </motion.div>
+        </AnimatePresence>
+
         {/* Right Side Chart */}
         <AnimatePresence mode="wait">
           <motion.div
@@ -217,7 +231,7 @@ export default function RetirementPage() {
                     }}
                     className="outline-chartGreen dark:outline-none indent-1 h-[30px] text-[16px] border border-gray-300 dark:border-none rounded-md dark:text-black"
                     type="text"
-                    {...register("title", {})}
+                    {...register("title")}
                   />
                 ) : (
                   <motion.h1
@@ -292,7 +306,7 @@ export default function RetirementPage() {
 
             {/* Chart Content */}
             <div className="w-full h-full flex flex-col my-5">
-              <h1 className="text-[19px] font-semibold">Retirement savings at age {selectedGoal?.age?.retireAge}</h1>
+              <h1 className="text-[19px] font-semibold">Retirement savings at age {selectedGoal?.retireAge}</h1>
 
               {/* Numbers */}
               <div className="w-auto flex md:justify-normal justify-around items-center my-5">
@@ -328,7 +342,7 @@ export default function RetirementPage() {
 
                 {view === "Graph View" && <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">{need && have && <RetirementLineChart need={need} have={have} />}</div>}
 
-                {view === "Summary View" &&  (
+                {view === "Summary View" && (
                   <RetirementSummary show={show} setShow={setShow} have={have} need={need} haveRetireBudget={haveRetireBudget} needMonthlyContribution={needMonthlyContribution} />
                 )}
               </div>
@@ -338,7 +352,7 @@ export default function RetirementPage() {
       </div>
 
       {/* Bottom Text Explaining Whats Going on */}
-      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} /> 
+      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} />
     </div>
   );
 }

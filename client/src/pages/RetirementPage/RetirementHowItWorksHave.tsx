@@ -22,13 +22,14 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
     style: "currency",
     currency: `USD`,
   });
-
-  const updatedPreRate = selectedGoal && selectedGoal?.preRate / 100;
-  const time: number | null = selectedGoal && selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge;
-
-  if (!selectedGoal) {
+  if (!selectedGoal || selectedGoal?.type !== "Retirement") {
     return null;
   }
+
+  const updatedPreRate = selectedGoal  && selectedGoal?.preRate / 100;
+  const time: number | null = selectedGoal  && selectedGoal?.retireAge - selectedGoal?.currentAge;
+
+  
   const newPostRate = selectedGoal?.postRate / 100;
   const newInflation = selectedGoal?.inflation / 100;
   const addInflationAndPostRate = (1 + newPostRate) / (1 + newInflation) - 1;
@@ -69,7 +70,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                     Currently you have <span className="font-bold">{USDollar.format(selectedGoal?.savings)}</span> in savings and will start to save{" "}
                     <span className="font-bold">{USDollar.format(selectedGoal?.monthlyContribution)}</span> per month in an account that yields{" "}
                     <span className="font-bold">{selectedGoal?.preRate}%</span> per year. You will make your deposits at the end of each month. You want to know the value of your investment in {""}
-                    <span className="font-bold">{selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge}</span> {""}
+                    <span className="font-bold">{selectedGoal?.retireAge - selectedGoal?.currentAge}</span> {""}
                     <span className="text-[12px]">(Retire Age - Current Age)</span> years.
                   </p>
 
@@ -80,7 +81,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                       Present Value Investment <span className="font-bold">PV</span> = {USDollar.format(selectedGoal?.savings)}
                     </li>
                     <li className="text-[13.5px]">
-                      Number of Periods <span className="font-bold">t</span> = {selectedGoal?.age?.retireAge - selectedGoal?.age?.currentAge} (years)
+                      Number of Periods <span className="font-bold">t</span> = {selectedGoal?.retireAge - selectedGoal?.currentAge} (years)
                     </li>
                     <li className="text-[13.5px]">
                       Rate per Period R = {selectedGoal?.preRate}% (<span className="font-bold">r</span> = {updatedPreRate})
@@ -210,7 +211,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                   <p className="text-[15px]">
                     Our current situation goes like this. You don't know how much you will need in your account to retire if you want to withdraw{" "}
                     <span className="font-bold">{USDollar.format(selectedGoal?.budget)}</span> for a total of{" "}
-                    <span className="font-bold">{selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge}</span> years(life expectancy - retire age), and your retirement account will earn{" "}
+                    <span className="font-bold">{selectedGoal?.lifeExpectancy - selectedGoal?.retireAge}</span> years(life expectancy - retire age), and your retirement account will earn{" "}
                     <span className="font-bold">{selectedGoal?.postRate}%</span> interest and the inflation rate is <span className="font-bold">{selectedGoal?.inflation}%</span>. How much will you
                     need in your account when you retire?
                   </p>
@@ -222,7 +223,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                       Present Value Investment <span className="font-bold">PV</span> = PV (unknown)
                     </li>
                     <li className="text-[13.5px]">
-                      Number of Periods <span className="font-bold">t</span> = {selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge} (years)
+                      Number of Periods <span className="font-bold">t</span> = {selectedGoal?.lifeExpectancy - selectedGoal?.retireAge} (years)
                     </li>
                     <li className="text-[13.5px]">
                       Rate per Period R = {selectedGoal?.postRate}% (<span className="font-bold">r</span> = {selectedGoal?.postRate / 100})
@@ -292,7 +293,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                         <EastIcon className="mx-5" />
 
                         <MathJax className="text-[20px]">{`\\(PV= \\frac{${selectedGoal?.budget} \\ (1 \\ - \\ (1 + \\frac{${addInflationAndPostRate.toFixed(5)}}{12})^{(-${
-                          selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge
+                          selectedGoal?.lifeExpectancy - selectedGoal?.retireAge
                         } * m)})}{\\frac{${addInflationAndPostRate.toFixed(5)}}{12}}\\)`}</MathJax>
 
                         <span className="mx-2">=</span>
@@ -308,7 +309,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                         <ArrowDownwardIcon className="my-3" />
 
                         <MathJax className="text-[13px]">{`\\(PV= \\frac{${selectedGoal?.budget} \\ (1 \\ - \\ (1 + \\frac{${addInflationAndPostRate.toFixed(5)}}{12})^{(-${
-                          selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge
+                          selectedGoal?.lifeExpectancy - selectedGoal?.retireAge
                         } * m)})}{\\frac{${addInflationAndPostRate.toFixed(5)}}{12}}\\)`}</MathJax>
 
                         <ArrowDownwardIcon className="my-3" />
@@ -332,7 +333,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
 
                         <EastIcon className="mx-5" />
 
-                        <MathJax className="">{`\\(PV= ${selectedGoal?.budget} * (${selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge} \\ * \\ 12)\\)`}</MathJax>
+                        <MathJax className="">{`\\(PV= ${selectedGoal?.budget} * (${selectedGoal?.lifeExpectancy - selectedGoal?.retireAge} \\ * \\ 12)\\)`}</MathJax>
 
                         <span className="mx-2">=</span>
                         <h1 className="text-[15px] font-bold"> {USDollar.format(needFinalPrice)} </h1>
@@ -346,7 +347,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
 
                         <ArrowDownwardIcon className="my-3" />
 
-                        <MathJax className="text-[13px]">{`\\(PV= ${selectedGoal?.budget} * (${selectedGoal?.age?.lifeExpectancy - selectedGoal?.age?.retireAge} \\ * \\ 12)\\)`}</MathJax>
+                        <MathJax className="text-[13px]">{`\\(PV= ${selectedGoal?.budget} * (${selectedGoal?.lifeExpectancy - selectedGoal?.retireAge} \\ * \\ 12)\\)`}</MathJax>
 
                         <ArrowDownwardIcon className="my-3" />
                         <h1 className="text-[15px]">

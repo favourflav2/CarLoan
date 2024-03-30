@@ -1,7 +1,8 @@
-import {  createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retirementSlice";
 
 interface CarObjWithFormattedData {
-  type:"Car";
+  type: "Car";
   id: string;
   name: string;
   price: number;
@@ -14,27 +15,20 @@ interface CarObjWithFormattedData {
   modal: string;
 }
 
-export interface RetirementGoals {
+interface UpdateRetire {
   type: "Retirement";
-  id: string;
-  age: {
-    currentAge: number;
-    retireAge: number;
-    lifeExpectancy: number;
-  };
-  savings: number;
-  monthlyContribution: number;
-  budget: number;
-  preRate: number;
-  postRate: number;
-  inflation: number;
-  title: string;
+  currentAge: number;
+  retireAge: number;
+  lifeExpectancy: number;
+  savings: string;
+  monthlyContribution: string;
+  budget: string;
+  preRate: string;
+  postRate: string;
+  inflation: string;
 }
-type goal = RetirementGoals | CarObjWithFormattedData | null
 
-
-
-
+export type goal = RetirementGoals | CarObjWithFormattedData | null;
 
 interface AppSlice {
   lightAndDarkMode: boolean;
@@ -42,13 +36,12 @@ interface AppSlice {
   carModal: boolean;
   currentStepIndex: number;
   steps: number;
-  selectedGoal: RetirementGoals | null
-  shrinkDashboardSidebar:boolean;
+  selectedGoal: RetirementGoals | null | CarObjWithFormattedData;
+  shrinkDashboardSidebar: boolean;
   shrinkRetirementInputs: boolean;
-  showHaveExample:boolean;
-  showNeedExample1:boolean;
-  showNeedExample2:boolean;
-  
+  showHaveExample: boolean;
+  showNeedExample1: boolean;
+  showNeedExample2: boolean;
 }
 
 const initialState: AppSlice = {
@@ -58,12 +51,11 @@ const initialState: AppSlice = {
   steps: 0,
   carModal: false,
   selectedGoal: null,
-  shrinkDashboardSidebar:false,
-  shrinkRetirementInputs:false,
-  showHaveExample:true,
-  showNeedExample1:true,
-  showNeedExample2:true,
- 
+  shrinkDashboardSidebar: false,
+  shrinkRetirementInputs: false,
+  showHaveExample: true,
+  showNeedExample1: true,
+  showNeedExample2: true,
 };
 
 const appSlice = createSlice({
@@ -73,17 +65,17 @@ const appSlice = createSlice({
     setLightAndDarkMode: (state) => {
       state.lightAndDarkMode = !state.lightAndDarkMode;
     },
-    setAnyTypeOfModal: (state, action) => {
-      const {type, value} = action.payload
+    setAnyTypeOfModal: (state, action: PayloadAction<{ type: "Car" | "Retirement"; value: boolean }>) => {
+      const { type, value } = action.payload;
       switch (type) {
         case "Retirement":
-          state.retireModal = value
+          state.retireModal = value;
           break;
         case "Car":
-          state.carModal = value
+          state.carModal = value;
           break;
         default:
-          return
+          return;
       }
     },
     setCurrentStepIndexRedux: (state, action) => {
@@ -102,14 +94,15 @@ const appSlice = createSlice({
     },
     setSelectedGoal: (state, action) => {
       state.selectedGoal = action.payload;
-      console.log("where")
     },
-    setSelectedGoalAfterCreate: (state, action) => {
-      const { age, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
-      const formattedData:RetirementGoals = {
+    setSelectedGoalAfterCreate: (state, action: PayloadAction<RetirementGoalNoFormat>) => {
+      const { budget, preRate, type, postRate, inflation, monthlyContribution, id, savings, title, lifeExpectancy, currentAge, retireAge } = action.payload;
+      const formattedData: RetirementGoals = {
         id,
-        type: "Retirement",
-        age: age,
+        type,
+        currentAge,
+        retireAge,
+        lifeExpectancy,
         budget: parseFloat(budget.replace(/[,%$]/gm, "")),
         preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
         postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
@@ -117,84 +110,102 @@ const appSlice = createSlice({
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
         title,
-      }
-      state.selectedGoal = formattedData
+      };
+      state.selectedGoal = formattedData;
     },
-    editSelectedGoal: (state, action) => {
+    editSelectedGoal: (state, action: PayloadAction<{ goal: RetirementGoals | CarObjWithFormattedData }>) => {
       // This reducer updates the selected goal ... so when you change the number a user sees the update
-      const { goal, value, name } = action.payload;
+      const { goal } = action.payload;
 
       if (!state.selectedGoal) {
         return;
       }
 
-     
-        switch (goal.type) {
-          case "Retirement":
-            if (name === "age.currentAge") {
-              // If what we type is a value we add it to state ... added this because typing backspace was causing problems
-              if (value) {
-                state.selectedGoal.age.currentAge = Number(value);
-              }
-            } else if (name === "age.retireAge") {
-              if (value) {
-                state.selectedGoal.age.retireAge = Number(value);
-              }
-            } else if (name === "age.lifeExpectancy") {
-              if (value) {
-                state.selectedGoal.age.lifeExpectancy = Number(value);
-              }
-            } else {
-              if (value) {
-                (state.selectedGoal[name as keyof RetirementGoals] as number) = Number(value);
-              }
-            }
-            break;
-          default:
-            return
-        }
-      
-    },
-    editSelectedGoalTitle: (state,action) => {
-      const { goal, value} = action.payload;
-      if (!state.selectedGoal) {
-        return;
-      }
-
-      switch (goal.type) {
+      switch (goal?.type) {
         case "Retirement":
-          state.selectedGoal.title = value
+          const objSel = state.selectedGoal;
+          if (goal.type !== "Retirement" || objSel.type !== "Retirement") return;
+          state.selectedGoal = goal;
+
           break;
         default:
-          return
+          return;
       }
+    },
+    editSelectedGoalTitle: (state, action: PayloadAction<{ goal: goal; title: string }>) => {
+      const { goal, title } = action.payload;
+
+      if (!state.selectedGoal) {
+        return;
+      }
+
+      switch (goal?.type) {
+        case "Retirement":
+          if (!state.selectedGoal) return;
+          if (goal.type !== "Retirement" || state.selectedGoal?.type !== "Retirement") return;
+
+          state.selectedGoal.title = title;
+
+          break;
+        case "Car":
+          console.log("car");
+          break;
+        default:
+          return;
+      }
+
+      // switch (goal?.type) {
+      //   case "Retirement":
+      //     const objSel = state.selectedGoal;
+      //     if (goal.type !== "Retirement" || objSel.type !== "Retirement") return;
+
+      //     break;
+      //   default:
+      //     return;
+      // }
+
+      // switch (goal.type) {
+      //   case "Retirement":
+      //     state.selectedGoal.title = value;
+      //     break;
+      //   default:
+      //     return;
+      // }
     },
     setShrinkDashboard: (state) => {
-      state.shrinkDashboardSidebar = !state.shrinkDashboardSidebar
+      state.shrinkDashboardSidebar = !state.shrinkDashboardSidebar;
     },
-    setShowHaveExample: (state,action) => {
-      
-      switch(action.payload){
+    setShowHaveExample: (state, action) => {
+      switch (action.payload) {
         case 0:
-          state.showHaveExample = !state.showHaveExample
+          state.showHaveExample = !state.showHaveExample;
           break;
         case 1:
-          state.showNeedExample1 = !state.showNeedExample1
+          state.showNeedExample1 = !state.showNeedExample1;
           break;
-        case 2: 
-          state.showNeedExample2 = !state.showNeedExample2
+        case 2:
+          state.showNeedExample2 = !state.showNeedExample2;
           break;
-          default:
-            return
+        default:
+          return;
       }
     },
-   
   },
 });
 
 export default appSlice.reducer;
-export const { setLightAndDarkMode, setAnyTypeOfModal, setStepLength, setCurrentStepIndexRedux, setSelectedGoal, editSelectedGoal, editSelectedGoalTitle, setShrinkDashboard, setShowHaveExample, setSelectedGoalAfterCreate } = appSlice.actions;
-
+export const {
+  setLightAndDarkMode,
+  setAnyTypeOfModal,
+  setStepLength,
+  setCurrentStepIndexRedux,
+  setSelectedGoal,
+  editSelectedGoal,
+  editSelectedGoalTitle,
+  setShrinkDashboard,
+  setShowHaveExample,
+  setSelectedGoalAfterCreate,
+} = appSlice.actions;
 
 // switch (goal?.type) {
 //   case "Retirement":

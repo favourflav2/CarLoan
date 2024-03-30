@@ -3,11 +3,9 @@ import getWhatYouNeedFinalPrice from "./getWhatYouNeedFinalPrice";
 interface SelectedGoalType {
   type: string;
   id: string;
-  age: {
-    currentAge: number;
-    retireAge: number;
-    lifeExpectancy: number;
-  };
+  currentAge: number;
+  retireAge: number;
+  lifeExpectancy: number;
   savings: number;
   monthlyContribution: number;
   budget: number;
@@ -37,7 +35,8 @@ const USDollar = new Intl.NumberFormat("en-US", {
 
 export default function futureValueWhatYouWillNeed(obj: SelectedGoalType) {
   const {
-    age: { currentAge, retireAge },
+    currentAge,
+    retireAge,
 
     postRate,
     inflation,
