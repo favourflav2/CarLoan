@@ -30,7 +30,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
 
   // Date
   const date = new Date();
-  const dateFormat = dayjs(date).format("MMM D, YYYY h:mm:ss");
+  const dateFormat = dayjs(date).format("MMM D, YYYY h:mm:ss a");
 
   // Outside Click
   const ref = React.useRef<HTMLDivElement>(null);
@@ -79,6 +79,8 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
       setValue("img", updatedImg);
     }
   }, [updatedImg, setValue]);
+
+
 
   return (
     <form className="w-full h-auto flex flex-col mt-5" onSubmit={handleSubmit(onSubmit)}>

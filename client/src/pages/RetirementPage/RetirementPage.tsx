@@ -13,10 +13,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { editRetireGoalTitle } from "../../redux/features/modalSlices/retirementSlice";
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
-import futureValueWhatYouHave from "../../components/helperFunctions/futureValueWhatYouHave";
-import getWhatYouNeedFinalPrice from "../../components/helperFunctions/getWhatYouNeedFinalPrice";
-import futureValueWhatYouWillNeed from "../../components/helperFunctions/futureValueWhatYouWillNeed";
-import { getMonthlyPaymentForHave, getMonthlyPaymentForNeed } from "../../components/helperFunctions/getMonthlyPaymentForHave";
+import futureValueWhatYouHave from "../../components/helperFunctions/retirementFunctions/futureValueWhatYouHave";
+import getWhatYouNeedFinalPrice from "../../components/helperFunctions/retirementFunctions/getWhatYouNeedFinalPrice";
+import futureValueWhatYouWillNeed from "../../components/helperFunctions/retirementFunctions/futureValueWhatYouWillNeed";
+import { getMonthlyPaymentForHave, getMonthlyPaymentForNeed } from "../../components/helperFunctions/retirementFunctions/getMonthlyPaymentForHave";
 
 interface AgeNum {
   age: number;

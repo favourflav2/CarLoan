@@ -95,7 +95,7 @@ export const carModalSchema = z
       required_error: "Please select a time",
     }),
     id: z.string(),
-    img: z.string().optional()
+    img: z.any().optional()
   })
   .superRefine((values, ctx) => {
     if (values.downPayment >= values.price) {

@@ -7,7 +7,7 @@ import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import { removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
-import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
+import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
 
 export interface IDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,6 +29,26 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
 
   // ref
   const ref = React.useRef(null);
+
+  // Switch function that use selected goal type as case
+  function switchCase( item:RetirementGoals | CarObjWithFormattedData){
+    switch(item?.type){
+      case 'Retirement':
+        if(!item) return
+        if(item.type !== "Retirement") return
+        dispatch(setSelectedGoal(null));
+        dispatch(removeRetireItem(item));
+        break;
+      case "Car":
+        if(!item) return
+        if(item.type !== "Car") return
+        dispatch(setSelectedGoal(null));
+        dispatch(removeCarItem(item));
+        break;
+      default:
+        return
+    }
+  }
 
   return (
     <>
@@ -61,8 +81,7 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
                   onClick={() => {
                     const confirmBox = window.confirm("Do you really want to delete this Crumb?");
                     if (confirmBox === true) {
-                      dispatch(setSelectedGoal(null));
-                      dispatch(removeRetireItem(item));
+                      switchCase(item)
                     }
                   }}
                 />

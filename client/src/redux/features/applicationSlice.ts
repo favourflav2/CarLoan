@@ -15,18 +15,18 @@ interface CarObjWithFormattedData {
   modal: string;
 }
 
-interface UpdateRetire {
-  type: "Retirement";
-  currentAge: number;
-  retireAge: number;
-  lifeExpectancy: number;
-  savings: string;
-  monthlyContribution: string;
-  budget: string;
-  preRate: string;
-  postRate: string;
-  inflation: string;
-}
+// interface UpdateRetire {
+//   type: "Retirement";
+//   currentAge: number;
+//   retireAge: number;
+//   lifeExpectancy: number;
+//   savings: string;
+//   monthlyContribution: string;
+//   budget: string;
+//   preRate: string;
+//   postRate: string;
+//   inflation: string;
+// }
 
 export type goal = RetirementGoals | CarObjWithFormattedData | null;
 
@@ -154,23 +154,6 @@ const appSlice = createSlice({
           return;
       }
 
-      // switch (goal?.type) {
-      //   case "Retirement":
-      //     const objSel = state.selectedGoal;
-      //     if (goal.type !== "Retirement" || objSel.type !== "Retirement") return;
-
-      //     break;
-      //   default:
-      //     return;
-      // }
-
-      // switch (goal.type) {
-      //   case "Retirement":
-      //     state.selectedGoal.title = value;
-      //     break;
-      //   default:
-      //     return;
-      // }
     },
     setShrinkDashboard: (state) => {
       state.shrinkDashboardSidebar = !state.shrinkDashboardSidebar;

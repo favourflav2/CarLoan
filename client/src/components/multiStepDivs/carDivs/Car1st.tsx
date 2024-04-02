@@ -6,7 +6,6 @@ import { setAnyTypeOfModal } from "../../../redux/features/applicationSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import insertCar from "../../../assets/addImg.png";
 import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import Resizer from "react-image-file-resizer";
 import Car1stInputs from "./CarComponets/Car1stInputs";
 import CarImgModal from "./CarComponets/CarImgModal";
 

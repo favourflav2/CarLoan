@@ -15,6 +15,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import CarModal from "../../components/modals/CarModal";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
+import CarPage from "../CarPage/CarPage";
 
 export default function Home() {
   // Redux States
@@ -35,6 +36,8 @@ export default function Home() {
     switch (value?.type) {
       case "Retirement":
         return <RetirementPage />;
+      case "Car":
+        return <CarPage />
       default:
         return (
           <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
@@ -115,17 +118,7 @@ export default function Home() {
         {/* Drawer */}
         <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} />
         <div className=" w-full h-auto">
-          {selectedGoal?.id ? (
-            selectedGoal?.type === "Retirement" ? (
-              <RetirementPage />
-            ) : (
-              <div className="text-lightText dark:text-darkText">
-                Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data
-              </div>
-            )
-          ) : (
-            <div>Theres no selected goal id</div>
-          )}
+        {selectedGoal?.id ? renderSwitch(selectedGoal) : <div>Theres no selected goal id</div>} 
         </div>
       </div>
 

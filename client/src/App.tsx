@@ -6,9 +6,10 @@ import Prac from './components/Prac';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ItemDetails from './pages/itemDetails/ItemDetails';
-import Cars from './pages/Cars/Cars';
+import Cars from './pages/ScrapeCarvanaPage/Cars';
 import { Dispatch, UseSelector } from './redux/store';
 import 'react-image-crop/dist/ReactCrop.css'
+import 'react-range-slider-input/dist/style.css';
 
 
 function App() {

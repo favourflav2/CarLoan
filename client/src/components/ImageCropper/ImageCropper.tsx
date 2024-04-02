@@ -1,6 +1,7 @@
 import * as React from "react";
 import setCanvasPreview from "./setCanvasPreview";
 import ReactCrop, { type Crop, makeAspectCrop, centerCrop, convertToPixelCrop } from "react-image-crop";
+import Resizer from "react-image-file-resizer";
 
 
 const MIN_DIMENSION = 4000;
@@ -77,6 +78,27 @@ export default function ImageCrop({ updateImg, setOpenImgModal }: Props) {
     setCrop(centerProp);
   }
 
+async function resizeImg(file:Blob){
+  try {
+    Resizer.imageFileResizer(
+      file,
+      200,
+      200,
+      "JPEG", //type
+      90, //quality
+      0, // rotate 90 degrees
+      (resizedImage:any) => {
+        // Handle the resized image here
+        updateImg(resizedImage)
+       
+      },
+      "base64"
+    );
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 
 
   return (
@@ -118,11 +140,11 @@ export default function ImageCrop({ updateImg, setOpenImgModal }: Props) {
           onClick={() => {
             if (refImg?.current && refPreview?.current) {
               setCanvasPreview(refImg.current, refPreview.current, convertToPixelCrop(crop, refImg.current.width, refImg.current.height));
-
-               refPreview.current.toBlob((file)=>{
+              //const file = refPreview.current.toDataURL()
+              
+               refPreview.current.toBlob( async (file)=>{
                if(file){
-                const url = URL.createObjectURL(file)
-                updateImg(url)
+                resizeImg(file)
                }
               })
               setOpenImgModal(false);

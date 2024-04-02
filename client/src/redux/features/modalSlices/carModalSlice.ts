@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RetirementGoals } from "./retirementSlice";
 
 interface CarObj {
   id: string;
@@ -9,7 +10,7 @@ interface CarObj {
   interest: string;
   term: number;
   salary: string;
-  img?: string | undefined;
+  img?: Blob | string | undefined;
   modal: string;
 }
 
@@ -22,7 +23,7 @@ export interface CarObjWithFormattedData {
   interest: number;
   term: number;
   salary: number;
-  img?: string | undefined;
+  img?: Blob | string | undefined;
   modal: string;
   type:"Car";
 }
@@ -65,9 +66,15 @@ const carModalSlice = createSlice({
         state.error = "There is duplicate car items"
       }
     },
+    removeCarItem: (state, action:PayloadAction<RetirementGoals | CarObjWithFormattedData>) => {
+      if(action.payload.type !== "Car") return
+      const {id,name} = action.payload
+
+      state.carGoals = state.carGoals.filter(val => val.id !== id && val.name !== name)
+    }
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem } = carModalSlice.actions;
