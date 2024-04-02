@@ -12,8 +12,8 @@ export interface LoanObj {
 // If pur monthly payment is 1000 and our extra payment is 500 ... all we do is add them together to get new monthly payment
 //* 1500 ... then we just solve for how much time it will take
 
-// this function grabs the monthly payment
-export function getMonthlyPayment(obj: LoanObj) {
+// this function grabs the monthly payment ... and adds the the extra payment to the monthlyPayment ... returns an object
+export function getMonthlyPayment(obj: LoanObj, extraPayment:number) {
   if (obj.downPayment > obj.carPrice) return;
 
   const loanAmount = obj.carPrice - obj.downPayment;
@@ -34,35 +34,35 @@ export function getMonthlyPayment(obj: LoanObj) {
   return {
     monthlyPayment: monthlyP,
     totalWithInterest: totalPriceWithInterest,
+    extraMonthlyPayment: monthlyP + extraPayment
   };
 }
 
 // this function envokes the getMonthlyPayment function and adds the the extra payment to the monthlyPayment
-export function getExtraMonthlyPayment(extraPayment: number, obj: LoanObj) {
-  const monthlyPayment = getMonthlyPayment(obj)?.monthlyPayment;
+// export function getExtraMonthlyPayment(extraPayment: number, obj: LoanObj) {
+//   const monthlyPayment = getMonthlyPayment(obj)?.monthlyPayment;
 
-  if (!monthlyPayment) return;
+//   if (!monthlyPayment) return;
 
-  const extraP = monthlyPayment + extraPayment;
-  return extraP;
-}
+//   const extraP = monthlyPayment + extraPayment;
+//   return extraP;
+// }
 
 // This function will return the number of months it will require to pay off loan with extra payments
 export function solveForNumberOfMonths(obj: LoanObj, extraPayment: number) {
   if (obj.downPayment > obj.carPrice) return;
 
   const loanAmount = obj.carPrice - obj.downPayment;
-  const monthlyPayment = getMonthlyPayment(obj)?.monthlyPayment;
+  const monthlyPayment = getMonthlyPayment(obj,extraPayment)?.extraMonthlyPayment;
 
   if (!monthlyPayment) return;
 
-  const extraMonthlyPayment = monthlyPayment + extraPayment;
-
+  
   const rate = obj.rate / 100;
   const discountedRate = rate / 12;
 
   // Top of the fraction
-  const monthlyPDividedByDiscountedRate = extraMonthlyPayment / discountedRate;
+  const monthlyPDividedByDiscountedRate = monthlyPayment / discountedRate;
   const topBottom = monthlyPDividedByDiscountedRate - loanAmount;
 
   const topTop = monthlyPDividedByDiscountedRate / topBottom;
@@ -73,7 +73,7 @@ export function solveForNumberOfMonths(obj: LoanObj, extraPayment: number) {
   const bottomLog = Math.log(bottom);
 
   const numberOfMonths = Number((topLog / bottomLog).toFixed(0));
-  console.log(numberOfMonths)
+  //console.log(numberOfMonths)
   return {
     numberOfMonths: numberOfMonths,
     numberOfMonthsNoRounding: Number((topLog / bottomLog).toFixed(4))
@@ -87,7 +87,7 @@ export function loanAmmortizationWithExtraPayment(obj: LoanObj, extraPayment: nu
 
   let loanAmount = obj.carPrice - obj.downPayment;
   const rate = obj.rate / 100;
-  const monthlyPayment = getExtraMonthlyPayment(extraPayment, obj)
+  const monthlyPayment = getMonthlyPayment(obj,extraPayment)?.extraMonthlyPayment
   const time = solveForNumberOfMonths(obj, extraPayment)?.numberOfMonths
   const res = [];
 
@@ -106,6 +106,7 @@ export function loanAmmortizationWithExtraPayment(obj: LoanObj, extraPayment: nu
   }
   console.log(monthlyPayment)
   console.log(res)
+  return res
 }
 
 

@@ -24,8 +24,8 @@ export default function CarPage(props: ICarPageProps) {
     //getMonthlyPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price})
     //solveForNumberOfMonths({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 500)
     //loanAmmortization({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price})
-    // loanAmmortizationWithExtraPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 2000)
-    // solveForNumberOfMonths({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 2000)
+    //loanAmmortizationWithExtraPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 2000)
+    //solveForNumberOfMonths({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 2000)
     
   },[selectedGoal])
 
