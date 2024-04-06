@@ -34,33 +34,32 @@ export interface ICarPageInputCardProps {
     id: string;
     img?: any;
   };
-  control: Control<
-    {
-      name: string;
-      modal: string;
-      price: string;
-      mileage: string;
-      downPayment: string;
-      interest: string;
-      salary: string;
-      term: number;
-      id: string;
-      img?: any;
-    },
-    any,
-    {
-      name: string;
-      modal: string;
-      price: string;
-      mileage: string;
-      downPayment: string;
-      interest: string;
-      salary: string;
-      term: number;
-      id: string;
-      img?: any;
-    }
-  >;
+  control: Control<{
+    mileage: string;
+    price: string;
+    downPayment: string;
+    interest: string;
+    id: string;
+    name: string;
+    term: number;
+    salary: string;
+    modal: string;
+    extraPayment: string;
+    img?: any;
+}, any, {
+    mileage: string;
+    price: string;
+    downPayment: string;
+    interest: string;
+    id: string;
+    name: string;
+    term: number;
+    salary: string;
+    modal: string;
+    extraPayment: string;
+    img?: any;
+}>
+
 
   updateList: string[]
 }

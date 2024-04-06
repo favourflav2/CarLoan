@@ -95,10 +95,11 @@ export const carModalSchema = z
       required_error: "Please select a time",
     }),
     id: z.string(),
+    extraPayment: z.string(),
     img: z.any().optional()
   })
   .superRefine((values, ctx) => {
-    if (values.downPayment >= values.price) {
+    if (parseInt(values.downPayment) >= parseInt(values.price)) {
       ctx.addIssue({
         message: "Your down payment should not be greater the car price.",
         code: z.ZodIssueCode.custom,

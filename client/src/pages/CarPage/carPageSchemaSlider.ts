@@ -63,6 +63,7 @@ export const carPageSchemaSlider = z
       message: "Please enter a number greater than or equal 36 months",
     }),
     id: z.string(),
+    extraPayment: z.string(),
     img: z.any().optional()
   })
   .superRefine((values, ctx) => {

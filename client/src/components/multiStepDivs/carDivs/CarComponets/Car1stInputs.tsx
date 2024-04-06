@@ -48,6 +48,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
     mode: "all",
     defaultValues: {
       term: 60,
+      extraPayment:""
     },
     resolver: zodResolver(carModalSchema),
   });

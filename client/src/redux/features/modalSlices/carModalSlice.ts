@@ -12,6 +12,7 @@ export interface CarObj {
   salary: string;
   img?:  string | undefined;
   modal: string;
+  extraPayment: string;
 }
 
 export interface CarObjWithFormattedData {
@@ -26,6 +27,7 @@ export interface CarObjWithFormattedData {
   img?:  string | undefined;
   modal: string;
   type:"Car";
+  extraPayment: number
 }
 
 interface CarData {
@@ -55,7 +57,8 @@ const carModalSlice = createSlice({
         salary: parseFloat(salary.replace(/[,%$]/gm, "")),
         img: img ? img : undefined,
         modal,
-        type:"Car"
+        type:"Car",
+        extraPayment:0
       };
 
       const index = state.carGoals.findIndex((item) => item.id === id);
