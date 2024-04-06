@@ -1,19 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retirementSlice";
+import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 
-interface CarObjWithFormattedData {
-  type: "Car";
-  id: string;
-  name: string;
-  price: number;
-  mileage: number;
-  downPayment: number;
-  interest: number;
-  term: number;
-  salary: number;
-  img?: string | undefined;
-  modal: string;
-}
 
 // interface UpdateRetire {
 //   type: "Retirement";
@@ -127,6 +115,12 @@ const appSlice = createSlice({
           if (goal.type !== "Retirement" || objSel.type !== "Retirement") return;
           state.selectedGoal = goal;
 
+          break;
+        case "Car":
+          
+          if (goal.type !== "Car" || state.selectedGoal.type !== "Car") return;
+
+          state.selectedGoal = goal
           break;
         default:
           return;

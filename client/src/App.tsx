@@ -9,7 +9,7 @@ import ItemDetails from './pages/itemDetails/ItemDetails';
 import Cars from './pages/ScrapeCarvanaPage/Cars';
 import { Dispatch, UseSelector } from './redux/store';
 import 'react-image-crop/dist/ReactCrop.css'
-import 'react-range-slider-input/dist/style.css';
+
 
 
 function App() {

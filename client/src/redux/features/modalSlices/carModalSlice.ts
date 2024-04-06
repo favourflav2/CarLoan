@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./retirementSlice";
 
-interface CarObj {
+export interface CarObj {
   id: string;
   name: string;
   price: string;
@@ -10,7 +10,7 @@ interface CarObj {
   interest: string;
   term: number;
   salary: string;
-  img?: Blob | string | undefined;
+  img?:  string | undefined;
   modal: string;
 }
 
@@ -23,7 +23,7 @@ export interface CarObjWithFormattedData {
   interest: number;
   term: number;
   salary: number;
-  img?: Blob | string | undefined;
+  img?:  string | undefined;
   modal: string;
   type:"Car";
 }
@@ -71,10 +71,20 @@ const carModalSlice = createSlice({
       const {id,name} = action.payload
 
       state.carGoals = state.carGoals.filter(val => val.id !== id && val.name !== name)
+    },
+    editCarGoal: (state,action:PayloadAction<{id:string,
+    goal:CarObjWithFormattedData}>) => {
+      const {id, goal} = action.payload
+
+      const index = state.carGoals.findIndex(val => val.id === id)
+
+      if(index >= 0){
+        state.carGoals[index] = goal
+      }
     }
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal, removeCarItem } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem, editCarGoal } = carModalSlice.actions;

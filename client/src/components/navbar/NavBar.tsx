@@ -47,9 +47,10 @@ function handleClickOutside(e: any) {
   
 
   // w-full h-[75px] sticky top-0 z-10  backdrop-blur-lg bg-gray-50 border border-b
+  // backdrop-blur-lg
 
   return (
-    <div className="w-full h-[75px] sticky top-0 z-20  backdrop-blur-lg border-b border-gray-300 dark:border-gray-800">
+    <div className="w-full h-[75px] sticky top-0 z-20 bg-inherit border-b border-gray-300 dark:border-gray-800">
       {/* Content */}
       <div className="w-full h-full flex items-center justify-between px-4 dark:text-homeText text-lightSmallNavBarBg">
         <h1 className="text-[19px]">Finance Tracker</h1>
