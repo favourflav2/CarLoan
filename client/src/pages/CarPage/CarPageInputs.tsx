@@ -7,6 +7,7 @@ import { carPageSchemaSlider } from "./carPageSchemaSlider";
 import { CarObj, CarObjWithFormattedData, editCarGoal } from "../../redux/features/modalSlices/carModalSlice";
 import CarPageInputCard from "./CarPageInputCard";
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
+import { motion, AnimatePresence, easeInOut } from "framer-motion";
 
 export interface ICarPageInputsProps {
   executeScroll: () => void;
@@ -53,7 +54,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
     resolver: zodResolver(carPageSchemaSlider),
   });
 
-  function resetInputs(){
+  function resetInputs() {
     if (selectedGoal && selectedGoal.type === "Car") {
       reset({
         price: selectedGoal.price.toString(),
@@ -67,6 +68,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         mileage: selectedGoal.mileage.toString(),
         id: selectedGoal.id,
       });
+      executeScroll();
     }
   }
 
@@ -255,8 +257,30 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
           control={control}
         />
 
-        {showUpadateBtn && <button type="button" className="w-auto p-2 rounded-lg border-black bg-gray-200  dark:bg-gray-500/30 border dark:border-darkText mt-4" onClick={resetInputs}>Reset</button>}
-        {showUpadateBtn && <button className="w-auto p-2 rounded-lg bg-chartGreen  mt-4">Update</button>}
+        <AnimatePresence>
+          {showUpadateBtn && (
+            <div className="w-auto flex flex-col mb-[100px]">
+              <motion.button
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                type="button"
+                className="w-auto p-2 rounded-lg border-black bg-gray-200  dark:bg-gray-500/30 border dark:border-darkText my-4"
+                onClick={resetInputs}
+              >
+                Reset
+              </motion.button>
+              <motion.button
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                className="w-auto p-2 rounded-lg bg-chartGreen "
+              >
+                Update
+              </motion.button>
+            </div>
+          )}
+        </AnimatePresence>
       </form>
     </div>
   );
