@@ -9,6 +9,7 @@ import CarPageInputCard from "./CarPageInputCard";
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 
+
 export interface ICarPageInputsProps {
   executeScroll: () => void;
 }
