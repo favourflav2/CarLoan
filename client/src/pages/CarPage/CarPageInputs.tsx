@@ -260,7 +260,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
 
         <AnimatePresence>
           {showUpadateBtn && (
-            <div className="w-auto flex flex-col mb-[100px]">
+            <div className="w-auto flex flex-col">
               <motion.button
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}

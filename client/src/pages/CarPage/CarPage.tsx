@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
-import { getMonthlyPayment, loanAmmortization, loanAmmortizationWithExtraPayment, solveForNumberOfMonths } from "../../components/helperFunctions/loanfunctions/LoanFunction";
+import { LoanJSType, MonthlyPayment, getMonthlyPayment, loanAmmortization, loanAmmortizationWithExtraPayment, solveForNumberOfMonths, LoanAmmortizationType } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import CarPageInputs from "./CarPageInputs";
 import Sticky from "react-sticky-el";
+import { ConstructionOutlined } from "@mui/icons-material";
+import CarHouseChart from "../../components/charts/CarHouseChart";
 
 export interface ICarPageProps {}
 
@@ -11,6 +13,10 @@ export default function CarPage(props: ICarPageProps) {
   // Redux States
   const { selectedGoal, lightAndDarkMode } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
+
+  // Chart States
+  const [monthlyPayment, setMonthlyPayment] = React.useState<MonthlyPayment>()
+  const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>()
 
   // ref to get to top of page on update
   const executeScroll = () => {
@@ -24,12 +30,16 @@ export default function CarPage(props: ICarPageProps) {
 
   React.useEffect(() => {
     if (!selectedGoal || selectedGoal.type !== "Car") return;
-    //getMonthlyPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price})
+    setMonthlyPayment(getMonthlyPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price},0))
+    
     //solveForNumberOfMonths({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 500)
-    //loanAmmortization({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price})
+    setRegualrLoanAmmortization(loanAmmortization({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}))
     //loanAmmortizationWithExtraPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 2000)
     //solveForNumberOfMonths({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, 2000)
   }, [selectedGoal]);
+
+  //console.log(monthlyPayment,'aklfjalskfklsfjdkl')
+  console.log(regualrLoanAmmortization)
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
@@ -80,8 +90,13 @@ export default function CarPage(props: ICarPageProps) {
           </div>
         </div>
 
+        {/* Chart */}
+        {regualrLoanAmmortization?.myLoan && <CarHouseChart regualarLoan={regualrLoanAmmortization} type="Car" />}
+
         {/* Inputs & Slider */}
         <CarPageInputs executeScroll={executeScroll} />
+
+        
       </div>
     </div>
   );
