@@ -3,18 +3,6 @@ import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retiremen
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 
 
-// interface UpdateRetire {
-//   type: "Retirement";
-//   currentAge: number;
-//   retireAge: number;
-//   lifeExpectancy: number;
-//   savings: string;
-//   monthlyContribution: string;
-//   budget: string;
-//   preRate: string;
-//   postRate: string;
-//   inflation: string;
-// }
 
 export type goal = RetirementGoals | CarObjWithFormattedData | null;
 

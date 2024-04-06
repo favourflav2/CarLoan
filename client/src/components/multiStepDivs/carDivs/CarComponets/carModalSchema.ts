@@ -95,10 +95,13 @@ export const carModalSchema = z
       required_error: "Please select a time",
     }),
     id: z.string(),
-    img: z.any().optional()
+    img: z.any().optional(),
+    extraDownPayment: z.string({
+      required_error: "Please enter a number between 0% and 39%",
+    })
   })
   .superRefine((values, ctx) => {
-    if (values.downPayment >= values.price) {
+    if (parseInt(values.downPayment) >= parseInt(values.price)) {
       ctx.addIssue({
         message: "Your down payment should not be greater the car price.",
         code: z.ZodIssueCode.custom,
@@ -110,4 +113,18 @@ export const carModalSchema = z
         path: ["price"],
       });
     }
-  });
+  })
+  .superRefine((values, ctx) => {
+    if (parseInt(values.extraDownPayment) >= parseInt(values.price)) {
+      ctx.addIssue({
+        message: "new error.",
+        code: z.ZodIssueCode.custom,
+        path: ["downPayment"],
+      });
+      ctx.addIssue({
+        message: "new error.",
+        code: z.ZodIssueCode.custom,
+        path: ["price"],
+      });
+    }
+  })

@@ -96,6 +96,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
       modal,
       term,
       img: img ? img : "",
+      extraDownPayment: 0
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));
@@ -154,6 +155,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         modal,
         term,
         img: img ? img : "",
+        extraDownPayment: 0
       };
 
       updateListFunction(select, obj);
