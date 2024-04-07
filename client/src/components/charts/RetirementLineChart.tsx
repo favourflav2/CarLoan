@@ -52,6 +52,7 @@ export default function RetirementLineChart({ have, need }: IRetirementLineChart
           return item.value;
         }),
         borderColor: "#FFAA33",
+        backgroundColor: "#FFAA33",
         tension: 0.6,
         pointRadius: 1,
       },

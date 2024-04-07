@@ -41,6 +41,11 @@ export interface LoanAmmortizationType {
   thirdPartyLoan:LoanJSType;
 }
 
+export interface ExtraNumberMonths {
+  numberOfMonths: number;
+  numberOfMonthsNoRounding: number;
+}
+
 //* To solve for extra payments all we do is add the extra payment amount to the original payment
 // If pur monthly payment is 1000 and our extra payment is 500 ... all we do is add them together to get new monthly payment
 //* 1500 ... then we just solve for how much time it will take
@@ -140,8 +145,8 @@ export function loanAmmortizationWithExtraPayment(obj: LoanObj, extraPayment: nu
       });
     }
   }
-  console.log(monthlyPayment);
-  console.log(res);
+  //console.log(monthlyPayment);
+  //console.log(res);
   return res;
 }
 

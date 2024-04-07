@@ -14,7 +14,7 @@ export interface ICarPageInputsProps {
   executeScroll: () => void;
 }
 
-export type IndexNames = "mileage" | "price" | "downPayment" | "interest" | "term" | "salary";
+export type IndexNames = "mileage" | "price" | "downPayment" | "interest" | "term" | "salary" | "extraPayment";
 
 type FormFields = z.infer<typeof carPageSchemaSlider>;
 
@@ -51,6 +51,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
       img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal.img : "",
       mileage: selectedGoal?.type === "Car" && selectedGoal?.mileage ? selectedGoal.mileage.toString() : "0",
       id: selectedGoal?.type === "Car" && selectedGoal?.id ? selectedGoal.id : "",
+      extraPayment: selectedGoal?.type === "Car" && selectedGoal?.extraPayment ? selectedGoal.extraPayment.toString() : "",
     },
     resolver: zodResolver(carPageSchemaSlider),
   });
@@ -68,6 +69,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         img: selectedGoal.img,
         mileage: selectedGoal.mileage.toString(),
         id: selectedGoal.id,
+        extraPayment: selectedGoal?.type === "Car" && selectedGoal?.extraPayment ? selectedGoal.extraPayment.toString() : "",
       });
       executeScroll();
     }
@@ -82,7 +84,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
   };
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { img, id, price, mileage, term, name, modal, downPayment, interest, salary } = data;
+    const { img, id, price, mileage, term, name, modal, downPayment, interest, salary, extraPayment } = data;
 
     const newObj: CarObjWithFormattedData = {
       id,
@@ -96,7 +98,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
       modal,
       term,
       img: img ? img : "",
-      extraPayment:0
+      extraPayment:parseFloat(extraPayment.replace(/[,%$]/gm, "")),
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));
@@ -141,7 +143,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
     function checkValid(select: CarObjWithFormattedData, inputStates: CarObj | any) {
       if (!select) return false;
 
-      const { img, id, price, mileage, term, name, modal, downPayment, interest, salary } = inputStates;
+      const { img, id, price, mileage, term, name, modal, downPayment, interest, salary, extraPayment } = inputStates;
 
       const obj: CarObjWithFormattedData = {
         id,
@@ -155,7 +157,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         modal,
         term,
         img: img ? img : "",
-        extraPayment:0
+        extraPayment:parseFloat(extraPayment.replace(/[,%$]/gm, "")),
       };
 
       updateListFunction(select, obj);
@@ -180,9 +182,12 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         img: selectedGoal.img,
         mileage: selectedGoal.mileage.toString(),
         id: selectedGoal.id,
+        extraPayment: selectedGoal.extraPayment.toString() 
       });
     }
   }, [selectedGoal, reset]);
+
+
 
   if (!selectedGoal || selectedGoal.type !== "Car") return null;
   return (
@@ -214,9 +219,22 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
           label="Down Payment"
           indexName="downPayment"
           min={0}
-          max={750000}
+          max={selectedGoal.price}
           allInputData={allInputData}
           handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "downPayment")}
+          errors={errors}
+          control={control}
+        />
+
+        {/* Extra Monthly Payment */}
+        <CarPageInputCard
+          updateList={updateList}
+          label="Extra Monthly Payment"
+          indexName="extraPayment"
+          min={0}
+          max={selectedGoal.price * .30}
+          allInputData={allInputData}
+          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "extraPayment")}
           errors={errors}
           control={control}
         />

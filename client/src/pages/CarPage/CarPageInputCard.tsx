@@ -9,7 +9,7 @@ export interface ICarPageInputCardProps {
   min: number;
   max: number;
   indexName: IndexNames;
-  handleSliderChange: (event: Event, newValue: number | number[], name: "mileage" | "price" | "downPayment" | "interest" | "term" | "salary") => void;
+  handleSliderChange: (event: Event, newValue: number | number[], name: "mileage" | "price" | "downPayment" | "interest" | "term" | "salary" | "extraPayment") => void;
   errors: FieldErrors<{
     mileage: string;
     price: string;

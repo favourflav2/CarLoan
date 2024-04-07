@@ -1,20 +1,29 @@
 import * as React from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, LogarithmicScale, ChartOptions, TooltipItem } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { Filler } from "chart.js";
 import { UseSelector } from "../../redux/store";
+import { Filler } from "chart.js";
 import { LoanAmmortizationType, MyLoanForLoop } from "../helperFunctions/loanfunctions/LoanFunction";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
 export interface ICarHouseChartProps {
     type: "Car" | "House"
     regualarLoan: LoanAmmortizationType
+    extraLoan: MyLoanForLoop[]
    
 }
 
-export default function CarHouseChart ({type, regualarLoan}: ICarHouseChartProps) {
+export default function CarHouseChart ({type, regualarLoan, extraLoan}: ICarHouseChartProps) {
       // Redux States
   const { lightAndDarkMode } = UseSelector((state) => state.app);
   const {myLoan} = regualarLoan
+
+  const USDollar = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: `USD`,
+  });
+
 
   const data = {
     labels: myLoan.map((item: MyLoanForLoop) => {
@@ -22,7 +31,7 @@ export default function CarHouseChart ({type, regualarLoan}: ICarHouseChartProps
     }),
     datasets: [
       {
-        label: "Monthly Payment",
+        label: "Remaining Balance",
         data: myLoan.map((item: MyLoanForLoop) => {
           return item.price;
         }),
@@ -31,15 +40,16 @@ export default function CarHouseChart ({type, regualarLoan}: ICarHouseChartProps
         tension: 0.6,
         pointRadius: 1,
       },
-    //   {
-    //     label: "What you'll need",
-    //     data: need.data.map((item: Data) => {
-    //       return item.value;
-    //     }),
-    //     borderColor: "#FFAA33",
-    //     tension: 0.6,
-    //     pointRadius: 1,
-    //   },
+      {
+        label: "Remaining Balance",
+        data: extraLoan.map((item: MyLoanForLoop) => {
+          return item.price;
+        }),
+        borderColor: "#FFAA33",
+        backgroundColor: "#FFAA33",
+        tension: 0.6,
+        pointRadius: 1,
+      },
     ],
   };
 
@@ -67,6 +77,18 @@ export default function CarHouseChart ({type, regualarLoan}: ICarHouseChartProps
     },
   ];
 
+  const titleTooltip = (tooltipItems: TooltipItem<"line">[]) => {
+    const label = tooltipItems.map((item: any) => item.label).slice(0, 1);
+  
+    return `Month: ${label}`;
+  };
+
+  function labelTooltip(item: any) {
+    return `${item.datasetIndex === 0 ? "Remaining:" : "Remaining:"} ${USDollar.format(item.raw.toFixed(2))}`;
+  }
+
+  
+
   const options: ChartOptions<"line"> = {
     responsive: true,
     maintainAspectRatio: false,
@@ -87,10 +109,10 @@ export default function CarHouseChart ({type, regualarLoan}: ICarHouseChartProps
         bodyColor: `${lightAndDarkMode ? "white" : "black"}`,
         padding: 10,
         usePointStyle: true,
-        // callbacks: {
-        //   title: titleTooltip,
-        //   label: labelTooltip,
-        // },
+         callbacks: {
+           title: titleTooltip,
+           label: labelTooltip,
+         },
       },
     },
     scales: {
