@@ -50,10 +50,7 @@ export default function CarPage(props: ICarPageProps) {
     
   }, [selectedGoal]);
 
-  //console.log(monthlyPayment,'aklfjalskfklsfjdkl')
-  // console.log(regualrLoanAmmortization);
-   //console.log(monthlyPayment)
-   //console.log(extraNumberOfMonths)
+
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
@@ -125,6 +122,11 @@ export default function CarPage(props: ICarPageProps) {
 
               <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">{selectedGoal?.extraPayment === 0 ? "-" : USDollar.format(Number(monthlyPayment?.extraMonthlyPayment.toFixed(2)))}</h1>
             </div>
+          </div>
+
+          {/* Total Amount */}
+          <div className="w-full flex justify-center items-center my-2">
+              <h1>Total Amount Paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment?.totalAmountPaid.toFixed(2)))}</span></h1>
           </div>
 
           {/* Charts Go Here */}
