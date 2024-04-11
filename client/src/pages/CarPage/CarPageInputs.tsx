@@ -9,7 +9,6 @@ import CarPageInputCard from "./CarPageInputCard";
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 
-
 export interface ICarPageInputsProps {
   executeScroll: () => void;
 }
@@ -98,7 +97,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
       modal,
       term,
       img: img ? img : "",
-      extraPayment:parseFloat(extraPayment.replace(/[,%$]/gm, "")),
+      extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));
@@ -157,7 +156,7 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         modal,
         term,
         img: img ? img : "",
-        extraPayment:parseFloat(extraPayment.replace(/[,%$]/gm, "")),
+        extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
       };
 
       updateListFunction(select, obj);
@@ -182,127 +181,128 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         img: selectedGoal.img,
         mileage: selectedGoal.mileage.toString(),
         id: selectedGoal.id,
-        extraPayment: selectedGoal.extraPayment.toString() 
+        extraPayment: selectedGoal.extraPayment.toString(),
       });
     }
   }, [selectedGoal, reset]);
 
-
-
   if (!selectedGoal || selectedGoal.type !== "Car") return null;
   return (
-    <div className="w-full h-auto flex flex-col -z-0">
-      {/* Title */}
-      <div className="w-auto flex flex-col my-4">
-        <h1 className="font-bold">Refine your results</h1>
-        <p className="text-[15px] mt-1">Use the sliders to play with the numbers and find your ideal plan.</p>
+    <div className="w-full h-auto flex flex-col">
+      {/* Content */}
+      <div className="w-full h-auto flex flex-col">
+        {/* Title */}
+        <div className="w-auto flex flex-col my-4">
+          <h1 className="font-bold">Refine your results</h1>
+          <p className="text-[15px] mt-1">Use the sliders to play with the numbers and find your ideal plan.</p>
+        </div>
+
+        {/* Form */}
+        <form className="w-full h-auto flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+          {/* Price */}
+          <CarPageInputCard
+            updateList={updateList}
+            label="Price"
+            indexName="price"
+            min={1000}
+            max={750000}
+            allInputData={allInputData}
+            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "price")}
+            errors={errors}
+            control={control}
+          />
+
+          {/* Down Payment */}
+          <CarPageInputCard
+            updateList={updateList}
+            label="Down Payment"
+            indexName="downPayment"
+            min={0}
+            max={selectedGoal.price}
+            allInputData={allInputData}
+            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "downPayment")}
+            errors={errors}
+            control={control}
+          />
+
+          {/* Extra Monthly Payment */}
+          <CarPageInputCard
+            updateList={updateList}
+            label="Extra Monthly Payment"
+            indexName="extraPayment"
+            min={0}
+            max={selectedGoal.price * 0.3}
+            allInputData={allInputData}
+            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "extraPayment")}
+            errors={errors}
+            control={control}
+          />
+
+          {/* Interest */}
+          <CarPageInputCard
+            updateList={updateList}
+            label="Interest"
+            indexName="interest"
+            min={0}
+            max={40}
+            allInputData={allInputData}
+            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "interest")}
+            errors={errors}
+            control={control}
+          />
+
+          {/* Term */}
+          <CarPageInputCard
+            updateList={updateList}
+            label="Term"
+            indexName="term"
+            min={36}
+            max={120}
+            allInputData={allInputData}
+            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "term")}
+            errors={errors}
+            control={control}
+          />
+
+          {/* Salary */}
+          <CarPageInputCard
+            updateList={updateList}
+            label="Salary"
+            indexName="salary"
+            min={0}
+            max={1000000}
+            allInputData={allInputData}
+            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "salary")}
+            errors={errors}
+            control={control}
+          />
+
+          <AnimatePresence>
+            {showUpadateBtn && (
+              <div className="w-auto flex flex-col">
+                <motion.button
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                  exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                  type="button"
+                  className="w-auto p-2 rounded-lg border-black bg-gray-200  dark:bg-gray-500/30 border dark:border-darkText my-4"
+                  onClick={resetInputs}
+                >
+                  Reset
+                </motion.button>
+                <motion.button
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                  exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                  className="w-auto p-2 rounded-lg bg-chartGreen "
+                >
+                  Update
+                </motion.button>
+              </div>
+            )}
+          </AnimatePresence>
+        </form>
       </div>
-
-      {/* Form */}
-      <form className="w-full h-auto flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-        {/* Price */}
-        <CarPageInputCard
-          updateList={updateList}
-          label="Price"
-          indexName="price"
-          min={1000}
-          max={750000}
-          allInputData={allInputData}
-          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "price")}
-          errors={errors}
-          control={control}
-        />
-
-        {/* Down Payment */}
-        <CarPageInputCard
-          updateList={updateList}
-          label="Down Payment"
-          indexName="downPayment"
-          min={0}
-          max={selectedGoal.price}
-          allInputData={allInputData}
-          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "downPayment")}
-          errors={errors}
-          control={control}
-        />
-
-        {/* Extra Monthly Payment */}
-        <CarPageInputCard
-          updateList={updateList}
-          label="Extra Monthly Payment"
-          indexName="extraPayment"
-          min={0}
-          max={selectedGoal.price * .30}
-          allInputData={allInputData}
-          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "extraPayment")}
-          errors={errors}
-          control={control}
-        />
-
-        {/* Interest */}
-        <CarPageInputCard
-          updateList={updateList}
-          label="Interest"
-          indexName="interest"
-          min={0}
-          max={40}
-          allInputData={allInputData}
-          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "interest")}
-          errors={errors}
-          control={control}
-        />
-
-        {/* Term */}
-        <CarPageInputCard
-          updateList={updateList}
-          label="Term"
-          indexName="term"
-          min={36}
-          max={120}
-          allInputData={allInputData}
-          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "term")}
-          errors={errors}
-          control={control}
-        />
-
-        {/* Salary */}
-        <CarPageInputCard
-          updateList={updateList}
-          label="Salary"
-          indexName="salary"
-          min={0}
-          max={1000000}
-          allInputData={allInputData}
-          handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "salary")}
-          errors={errors}
-          control={control}
-        />
-
-        <AnimatePresence>
-          {showUpadateBtn && (
-            <div className="w-auto flex flex-col">
-              <motion.button
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
-                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
-                type="button"
-                className="w-auto p-2 rounded-lg border-black bg-gray-200  dark:bg-gray-500/30 border dark:border-darkText my-4"
-                onClick={resetInputs}
-              >
-                Reset
-              </motion.button>
-              <motion.button
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
-                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
-                className="w-auto p-2 rounded-lg bg-chartGreen "
-              >
-                Update
-              </motion.button>
-            </div>
-          )}
-        </AnimatePresence>
-      </form>
     </div>
   );
 }

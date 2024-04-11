@@ -21,6 +21,7 @@ export default function Home() {
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar, retireModal, carModal } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
+  const { carGoals } = UseSelector((state) => state.carModalSlice);
   const dispatch = Dispatch();
 
   // Media Breakpoint
@@ -47,10 +48,10 @@ export default function Home() {
 
   //If theres no saved goals ... going to set selected goal to null
   React.useEffect(() => {
-    if (retireGoals.length === 0) {
+    if (retireGoals.length === 0 && carGoals.length === 0 ) {
       dispatch(setSelectedGoal(null));
     }
-  }, [dispatch, retireGoals]);
+  }, [dispatch, retireGoals, carGoals]);
 
   // If the breakpoint hit/pass 900px we close mobile drawer
   React.useEffect(() => {

@@ -9,6 +9,8 @@ import ItemDetails from './pages/itemDetails/ItemDetails';
 import Cars from './pages/ScrapeCarvanaPage/Cars';
 import { Dispatch, UseSelector } from './redux/store';
 import 'react-image-crop/dist/ReactCrop.css'
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 
 

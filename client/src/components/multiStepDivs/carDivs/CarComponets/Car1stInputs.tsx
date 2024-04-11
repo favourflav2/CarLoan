@@ -19,7 +19,7 @@ export interface ICar1stInputsProps {
 
 type FormFields = z.infer<typeof carModalSchema>;
 
-const termArr = [36, 48, 60, 72, 84];
+export const termArr = [36, 48, 60, 72, 84, 96, 108, 120];
 
 export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   // Redux States

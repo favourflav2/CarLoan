@@ -33,11 +33,13 @@ export interface CarObjWithFormattedData {
 interface CarData {
   carGoals: Array<CarObjWithFormattedData>;
   error: string;
+  singleOrGridView: boolean;
 }
 
 const initialState: CarData = {
   carGoals: [],
   error: "",
+  singleOrGridView:false,
 };
 
 const carModalSlice = createSlice({
@@ -84,10 +86,13 @@ const carModalSlice = createSlice({
       if(index >= 0){
         state.carGoals[index] = goal
       }
+    },
+    setSingleOrGridView: (state) => {
+      state.singleOrGridView = !state.singleOrGridView
     }
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal, removeCarItem, editCarGoal } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView } = carModalSlice.actions;

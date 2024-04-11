@@ -2,7 +2,6 @@ import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import {
-  LoanJSType,
   MonthlyPayment,
   getMonthlyPayment,
   loanAmmortization,
@@ -13,53 +12,59 @@ import {
   MyLoanForLoop,
 } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import CarPageInputs from "./CarPageInputs";
-import Sticky from "react-sticky-el";
-import { ConstructionOutlined } from "@mui/icons-material";
 import CarHouseChart from "../../components/charts/CarHouseChart";
 import { Divider } from "@mui/material";
+import CarPageSummary from "./CarPageSummary";
 
 export interface ICarPageProps {}
 
+
+export const USDollar = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: `USD`,
+});
+
 export default function CarPage(props: ICarPageProps) {
   // Redux States
-  const { selectedGoal, lightAndDarkMode } = UseSelector((state) => state.app);
+  const { selectedGoal } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   // Chart States
   const [monthlyPayment, setMonthlyPayment] = React.useState<MonthlyPayment>();
   const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
-  const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberMonths>()
-  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>()
+  const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberMonths>();
+  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
+
+  // Chart State and Summary State
+  const [view, setView] = React.useState<string>("Graph View");
 
   // ref to get to top of page on update
   const executeScroll = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const USDollar = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: `USD`,
-  });
+
 
   React.useEffect(() => {
     if (!selectedGoal || selectedGoal.type !== "Car") return;
     setMonthlyPayment(getMonthlyPayment({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }, selectedGoal.extraPayment));
-    setExtraNumberOfMonths(solveForNumberOfMonths({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, selectedGoal.extraPayment))
+    setExtraNumberOfMonths(
+      solveForNumberOfMonths({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }, selectedGoal.extraPayment)
+    );
     setRegualrLoanAmmortization(loanAmmortization({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }));
-    setExtraLoanAmmortization(loanAmmortizationWithExtraPayment({rate:selectedGoal.interest,time: selectedGoal.term,downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price}, selectedGoal.extraPayment))
-    
+    setExtraLoanAmmortization(
+      loanAmmortizationWithExtraPayment({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }, selectedGoal.extraPayment)
+    );
   }, [selectedGoal]);
-
-
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
     return null;
   }
   return (
-    <div className="w-full h-full flex flex-col p-4 text-lightText dark:text-darkText">
+    <div className="w-full h-full flex flex-col min-[900px]:justify-center justify-normal min-[900px]:items-center p-4 text-lightText dark:text-darkText pb-5">
       {/* Content */}
-      <div className="w-full flex flex-col h-full ">
+      <div className="min-[900px]:w-[95%] w-full flex flex-col h-full p-5">
         {/* title */}
         <h1 className="text-[19px]  font-bold">
           {selectedGoal.modal} {selectedGoal.name}
@@ -120,32 +125,40 @@ export default function CarPage(props: ICarPageProps) {
             <div className="w-full flex justify-center flex-col items-center ">
               <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">Monthly payment with extra payment</h1>
 
-              <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">{selectedGoal?.extraPayment === 0 ? "-" : USDollar.format(Number(monthlyPayment?.extraMonthlyPayment.toFixed(2)))}</h1>
+              <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">
+                {selectedGoal?.extraPayment === 0 ? "-" : USDollar.format(Number(monthlyPayment?.extraMonthlyPayment.toFixed(2)))}
+              </h1>
             </div>
           </div>
 
           {/* Total Amount */}
-          <div className="w-full flex justify-center items-center my-2">
-              <h1>Total Amount Paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment?.totalAmountPaid.toFixed(2)))}</span></h1>
+          <div className="w-full flex justify-center items-center mb-4">
+            <h1>
+              Total Amount Paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment?.totalAmountPaid.toFixed(2)))}</span>
+            </h1>
           </div>
 
           {/* Charts Go Here */}
           <div className="w-full h-auto flex flex-col ">
-            <div className="flex items-center w-full justify-center h-auto my-2">
-              <h1 className={`mr-8 cursor-pointer ${true  ? "underline text-chartGreen font-bold" : "text-gray-400"}`} >
+            <div className="flex items-center w-full justify-center h-auto">
+              <h1 className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Graph View")}>
                 Graph View
               </h1>
-              <h1 className={` cursor-pointer ${true ? "underline text-chartGreen font-bold" : "text-gray-400"}`} >
+              <h1 className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Summary View")}>
                 Summary View
               </h1>
             </div>
 
             <hr className="border my-2 border-gray-300" />
-            {regualrLoanAmmortization?.myLoan && extraLoanAmmortization && <CarHouseChart regualarLoan={regualrLoanAmmortization} extraLoan={extraLoanAmmortization}  type="Car" />}
-            
+
+            {view === "Graph View" && regualrLoanAmmortization?.myLoan && extraLoanAmmortization && (
+              <CarHouseChart regualarLoan={regualrLoanAmmortization} extraLoan={extraLoanAmmortization} type="Car" />
+            )}
+            {view === "Summary View" && regualrLoanAmmortization?.myLoan && extraLoanAmmortization && (
+              <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths}/>
+            )}
           </div>
         </div>
-        
 
         {/* Inputs & Slider */}
         <CarPageInputs executeScroll={executeScroll} />
