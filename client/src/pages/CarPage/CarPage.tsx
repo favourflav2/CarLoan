@@ -18,7 +18,6 @@ import CarPageSummary from "./CarPageSummary";
 
 export interface ICarPageProps {}
 
-
 export const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: `USD`,
@@ -42,8 +41,6 @@ export default function CarPage(props: ICarPageProps) {
   const executeScroll = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-
 
   React.useEffect(() => {
     if (!selectedGoal || selectedGoal.type !== "Car") return;
@@ -73,14 +70,15 @@ export default function CarPage(props: ICarPageProps) {
         <hr className="border-[1px] border-lightText dark:border-darkText mb-5 mt-1" />
 
         {/* First Box Img & About Car */}
-        <div className={`w-auto flex items-center `}>
+        <div className={`w-auto flex`}>
           <img src={selectedGoal.img} alt="" />
 
           {/* About Car */}
-          <div className="w-auto flex flex-col ml-4 ">
+          <div className="w-auto grid grid-cols-3 gap-4 ml-10 border dark:border-gray-300 border-black p-4 rounded-lg">
             <h1 className="text-[15px]">
               <span className="font-bold text-[15px]">Car Name/Modal:</span> {selectedGoal.modal} {selectedGoal.name}
             </h1>
+
             <h1 className="text-[15px]">
               <span className="font-bold text-[15px]">Price:</span> {USDollar.format(selectedGoal.price)}
             </h1>
@@ -100,11 +98,33 @@ export default function CarPage(props: ICarPageProps) {
               <span className="font-bold text-[15px]">Interest Rate:</span> {selectedGoal.interest}%{" "}
             </h1>
 
-            <h1 className="text-[15px] mt-3">
+            <h1 className="text-[15px] ">
               <span className="font-bold text-[15px]">Loan Amount:</span> {USDollar.format(selectedGoal.price - selectedGoal.downPayment)}
             </h1>
           </div>
         </div>
+
+        {/* <div className="w-[300px] flex flex-col rounded-lg border-2 border-black justify-center items-center">
+         
+          <img src={selectedGoal.img} alt="" className="w-[200px] h-[200px]" />
+
+          <div className="w-full h-auto flex flex-col p-3">
+            
+            <h1 className="text-[16px]">
+              {selectedGoal.modal} {selectedGoal.name}
+            </h1>
+            <h1 className="text-[15px]">{selectedGoal.mileage.toLocaleString()} miles</h1>
+
+           
+            <div className="w-full flex justify-between items-center">
+              <h1 className="text-[15px]">{USDollar.format(selectedGoal.price)}</h1>
+              <div className="w-auto flex flex-col">
+                <h1 className="text-[13px]">{monthlyPayment?.monthlyPayment ? USDollar.format(Number(monthlyPayment.monthlyPayment.toFixed(2))) : "-"}/mo</h1>
+                <h1 className="text-[13px]">{USDollar.format(selectedGoal.downPayment)} cash down</h1>
+              </div>
+            </div>
+          </div>
+        </div> */}
 
         {/* Chart Content */}
         <div className="w-full h-full flex flex-col mb-5 mt-[60px] justify-center items-center">
@@ -155,7 +175,7 @@ export default function CarPage(props: ICarPageProps) {
               <CarHouseChart regualarLoan={regualrLoanAmmortization} extraLoan={extraLoanAmmortization} type="Car" />
             )}
             {view === "Summary View" && regualrLoanAmmortization?.myLoan && extraLoanAmmortization && (
-              <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths}/>
+              <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />
             )}
           </div>
         </div>

@@ -174,6 +174,7 @@ export default function RetirementInputs() {
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
+
         <form className="w-full h-auto flex flex-col ">
           {/* Current Age */}
           <div className="w-auto flex flex-col mb-3">
@@ -475,6 +476,8 @@ export default function RetirementInputs() {
             )}
           </AnimatePresence>
         </form>
+
+        
       </div>
     </div>
   );
