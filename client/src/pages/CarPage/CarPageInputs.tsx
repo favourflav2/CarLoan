@@ -2,35 +2,34 @@ import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler,Controller } from "react-hook-form";
 import { carPageSchemaSlider } from "./carPageSchemaSlider";
 import { CarObj, CarObjWithFormattedData, editCarGoal } from "../../redux/features/modalSlices/carModalSlice";
-import CarPageInputCard from "./CarPageInputCard";
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
+import { NumericFormat } from "react-number-format";
+import _ from "lodash";
 
 export interface ICarPageInputsProps {
-  executeScroll: () => void;
+  //executeScroll: () => void;
 }
 
 export type IndexNames = "mileage" | "price" | "downPayment" | "interest" | "term" | "salary" | "extraPayment";
 
 type FormFields = z.infer<typeof carPageSchemaSlider>;
 
-export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
+export default function CarPageInputs(props: ICarPageInputsProps) {
   // Redux States
   const { selectedGoal } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   // Show Update Btn
-  const [updateList, setUpdateList] = React.useState<Array<string>>([]);
-  const showUpadateBtn = updateList.length > 0;
+  const [showUpadateBtn, setShowUpdateBtn] = React.useState<boolean>(false);
 
   // Form Feilds
   const {
     control,
     reset,
-    setValue,
     handleSubmit,
     watch,
     formState: { errors },
@@ -55,32 +54,9 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
     resolver: zodResolver(carPageSchemaSlider),
   });
 
-  function resetInputs() {
-    if (selectedGoal && selectedGoal.type === "Car") {
-      reset({
-        price: selectedGoal.price.toString(),
-        downPayment: selectedGoal.downPayment.toString(),
-        interest: selectedGoal.interest.toString(),
-        term: selectedGoal.term,
-        salary: selectedGoal.salary.toString(),
-        modal: selectedGoal.modal,
-        name: selectedGoal.name,
-        img: selectedGoal.img,
-        mileage: selectedGoal.mileage.toString(),
-        id: selectedGoal.id,
-        extraPayment: selectedGoal?.type === "Car" && selectedGoal?.extraPayment ? selectedGoal.extraPayment.toString() : "",
-      });
-      executeScroll();
-    }
-  }
+  
 
-  const handleSliderChange = (event: any, newValue: number | number[], name: IndexNames) => {
-    if (name !== "term") {
-      setValue(name, newValue.toString());
-    } else {
-      setValue(name, newValue as number);
-    }
-  };
+
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const { img, id, price, mileage, term, name, modal, downPayment, interest, salary, extraPayment } = data;
@@ -103,40 +79,12 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
     dispatch(editSelectedGoal({ goal: newObj }));
     dispatch(editCarGoal({ id, goal: newObj }));
 
-    executeScroll();
+   
   };
 
-  const allInputData = watch();
+  const errorsArray = Object.keys(errors);
 
-  //* This function pushes a string into an array ... any value a user changes that is not equal to the selected goal ... allows me to add styling to the slidebar
-  function updateListFunction(select: CarObjWithFormattedData, obj: CarObjWithFormattedData) {
-    // Loop over both objects
-    for (let key in obj) {
-      for (let selectedGoalKey in select) {
-        // if the key in our input object mathces the key in the selected goal we continue
-        if (key === selectedGoalKey) {
-          //* if the value where the input obj matches the selected goal obj doesnt match ... this means the user has attempted to update a value
-          // so we push what they updated to an array
-          if (obj[key as keyof CarObjWithFormattedData] !== select[selectedGoalKey as keyof CarObjWithFormattedData]) {
-            setUpdateList((item) => {
-              const index = item.findIndex((value) => value === key);
-              if (index === -1) {
-                return [...item, key];
-              } else {
-                return [...item];
-              }
-            });
-          } else {
-            //* If theres no match or theres a refresh or a user set a value back to where it now matches the selected goal obj we remove the update from the array
-            setUpdateList((item) => {
-              const newArr = item.filter((val) => val !== key);
-              return newArr;
-            });
-          }
-        }
-      }
-    }
-  }
+ 
 
   React.useEffect(() => {
     function checkValid(select: CarObjWithFormattedData, inputStates: CarObj | any) {
@@ -159,7 +107,14 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
         extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
       };
 
-      updateListFunction(select, obj);
+      const isTheSame = _.isEqual(obj, select);
+      if (isTheSame) {
+        setShowUpdateBtn(false);
+        return false;
+      } else {
+        setShowUpdateBtn(true);
+        return true;
+      }
     }
     const subscription = watch((data) => {
       if (!selectedGoal || selectedGoal?.type !== "Car") return;
@@ -188,121 +143,192 @@ export default function CarPageInputs({ executeScroll }: ICarPageInputsProps) {
 
   if (!selectedGoal || selectedGoal.type !== "Car") return null;
   return (
-    <div className="w-full h-auto flex flex-col">
-      {/* Content */}
-      <div className="w-full h-auto flex flex-col">
-        {/* Title */}
-        <div className="w-auto flex flex-col my-4">
-          <h1 className="font-bold">Refine your results</h1>
-          <p className="text-[15px] mt-1">Use the sliders to play with the numbers and find your ideal plan.</p>
+    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
+    {/* Content */}
+    <div className="w-full flex flex-col">
+
+      <form className="w-full h-auto flex flex-col " onSubmit={handleSubmit(onSubmit)}>
+        {/* Current Age */}
+        {/* <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
+            Car Name
+          </label>
+          <input
+            {...register("name", {
+            })}
+            className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.name && "border-2 border-red-500"}`}
+          />
+          {errors?.name && <p className="text-red-500 text-[13px] ">{errors?.name?.message}</p>}
+        </div> */}
+
+        {/* Price*/}
+        <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
+            Price
+            {/* <Tooltip
+              placement="top"
+              title={<h1 className="text-[12.5px]">This is the total of all your retirement savings, including your 401(k) and IRA balances plus other savings earmarked for retirement.</h1>}
+            >
+              <HelpOutlineIcon className="!text-[15px] ml-[2px]" />
+            </Tooltip> */}
+          </label>
+
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <NumericFormat
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.price && "border-2 border-red-500"}`}
+                prefix="$"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                autoComplete="off"
+                allowNegative={false}
+                onValueChange={(v) => {
+                  onChange(v.value);
+                }}
+                value={value}
+              />
+            )}
+            name="price"
+            control={control}
+          />
+
+          {errors?.price && <p className="text-red-500 text-[13px] ">{errors?.price?.message}</p>}
         </div>
 
-        {/* Form */}
-        <form className="w-full h-auto flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-          {/* Price */}
-          <CarPageInputCard
-            updateList={updateList}
-            label="Price"
-            indexName="price"
-            min={1000}
-            max={750000}
-            allInputData={allInputData}
-            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "price")}
-            errors={errors}
-            control={control}
-          />
+        {/* Down Payment */}
+        <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
+            Down Payment
+          </label>
 
-          {/* Down Payment */}
-          <CarPageInputCard
-            updateList={updateList}
-            label="Down Payment"
-            indexName="downPayment"
-            min={0}
-            max={selectedGoal.price}
-            allInputData={allInputData}
-            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "downPayment")}
-            errors={errors}
-            control={control}
-          />
-
-          {/* Extra Monthly Payment */}
-          <CarPageInputCard
-            updateList={updateList}
-            label="Extra Monthly Payment"
-            indexName="extraPayment"
-            min={0}
-            max={selectedGoal.price * 0.3}
-            allInputData={allInputData}
-            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "extraPayment")}
-            errors={errors}
-            control={control}
-          />
-
-          {/* Interest */}
-          <CarPageInputCard
-            updateList={updateList}
-            label="Interest"
-            indexName="interest"
-            min={0}
-            max={40}
-            allInputData={allInputData}
-            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "interest")}
-            errors={errors}
-            control={control}
-          />
-
-          {/* Term */}
-          <CarPageInputCard
-            updateList={updateList}
-            label="Term"
-            indexName="term"
-            min={36}
-            max={120}
-            allInputData={allInputData}
-            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "term")}
-            errors={errors}
-            control={control}
-          />
-
-          {/* Salary */}
-          <CarPageInputCard
-            updateList={updateList}
-            label="Salary"
-            indexName="salary"
-            min={0}
-            max={1000000}
-            allInputData={allInputData}
-            handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, "salary")}
-            errors={errors}
-            control={control}
-          />
-
-          <AnimatePresence>
-            {showUpadateBtn && (
-              <div className="w-auto flex flex-col">
-                <motion.button
-                  initial={{ x: -100, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
-                  exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
-                  type="button"
-                  className="w-auto p-2 rounded-lg border-black bg-gray-200  dark:bg-gray-500/30 border dark:border-darkText my-4"
-                  onClick={resetInputs}
-                >
-                  Reset
-                </motion.button>
-                <motion.button
-                  initial={{ x: -100, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
-                  exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
-                  className="w-auto p-2 rounded-lg bg-chartGreen "
-                >
-                  Update
-                </motion.button>
-              </div>
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <NumericFormat
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.downPayment && "border-2 border-red-500"}`}
+                prefix="$"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                autoComplete="off"
+                allowNegative={false}
+                onValueChange={(v) => {
+                  onChange(v.value);
+                }}
+                value={value}
+              />
             )}
-          </AnimatePresence>
-        </form>
-      </div>
+            name="downPayment"
+            control={control}
+          />
+          {errors?.downPayment && <p className="text-red-500 text-[13px] ">{errors?.downPayment?.message}</p>}
+        </div>
+
+        {/* Interest Rate */}
+        <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
+            Interest Rate
+          </label>
+
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <NumericFormat
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.interest && "border-2 border-red-500"}`}
+                suffix="%"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                autoComplete="off"
+                allowNegative={false}
+                onValueChange={(v) => {
+                  onChange(v.value);
+                }}
+                value={value}
+              />
+            )}
+            name="interest"
+            control={control}
+          />
+          {errors?.interest && <p className="text-red-500 text-[13px] ">{errors?.interest?.message}</p>}
+        </div>
+
+        {/* Term DropDown */}
+
+        {/* Mileage */}
+        <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
+            Mileage
+          </label>
+
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <NumericFormat
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.mileage && "border-2 border-red-500"}`}
+                prefix="$"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                autoComplete="off"
+                allowNegative={false}
+                onValueChange={(v) => {
+                  onChange(v.value);
+                }}
+                value={value}
+              />
+            )}
+            name="mileage"
+            control={control}
+          />
+          {errors?.mileage && <p className="text-red-500 text-[13px] ">{errors?.mileage?.message}</p>}
+        </div>
+
+        {/* Income */}
+        <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
+            Income
+          </label>
+
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <NumericFormat
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.salary && "border-2 border-red-500"}`}
+                prefix="$"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                autoComplete="off"
+                allowNegative={false}
+                onValueChange={(v) => {
+                  onChange(v.value);
+                }}
+                value={value}
+              />
+            )}
+            name="salary"
+            control={control}
+          />
+          {errors?.salary && <p className="text-red-500 text-[13px] ">{errors?.salary?.message}</p>}
+        </div>
+
+        
+
+      
+        <AnimatePresence>
+          {selectedGoal && showUpadateBtn && (
+            <motion.button
+              className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"}`}
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+              exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+            >
+              Update
+            </motion.button>
+          )}
+        </AnimatePresence>
+      </form>
+
+      
     </div>
+  </div>
   );
 }

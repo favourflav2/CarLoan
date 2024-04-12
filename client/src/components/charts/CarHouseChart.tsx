@@ -4,17 +4,21 @@ import { Line } from "react-chartjs-2";
 import { UseSelector } from "../../redux/store";
 import { Filler } from "chart.js";
 import { LoanAmmortizationType, MyLoanForLoop } from "../helperFunctions/loanfunctions/LoanFunction";
+import { MonthlyPayment } from "../helperFunctions/loanfunctions/LoanFunction";
+import { ExtraNumberMonths } from "../helperFunctions/loanfunctions/LoanFunction";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
 export interface ICarHouseChartProps {
     type: "Car" | "House"
     regualarLoan: LoanAmmortizationType
-    extraLoan: MyLoanForLoop[]
-   
+    extraLoan: MyLoanForLoop[];
+    monthlyPayment: MonthlyPayment;
+    extraNumberOfMonths: ExtraNumberMonths 
+    downPayment:number;
 }
 
-export default function CarHouseChart ({type, regualarLoan, extraLoan}: ICarHouseChartProps) {
+export default function CarHouseChart ({type, regualarLoan, extraLoan,monthlyPayment,extraNumberOfMonths,downPayment}: ICarHouseChartProps) {
       // Redux States
   const { lightAndDarkMode } = UseSelector((state) => state.app);
   const {myLoan} = regualarLoan
@@ -163,6 +167,9 @@ export default function CarHouseChart ({type, regualarLoan, extraLoan}: ICarHous
     },
   };
 
+  const extraPTotalAmountPaid = (Number(((monthlyPayment.extraMonthlyPayment * extraNumberOfMonths.numberOfMonthsNoRounding) + downPayment)))
+
+
   return (
     <div className="w-full h-auto flex flex-col">
       {/* Legend */}
@@ -181,6 +188,24 @@ export default function CarHouseChart ({type, regualarLoan, extraLoan}: ICarHous
       </div>
       {/* Chart */}
       <div className="w-full min-[900px]:h-[500px] h-[350px]  flex flex-col">{myLoan ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>
+
+      <div className="w-full h-auto flex flex-col mb-4 mt-7">
+        {/* Content */}
+        <div className="w-full flex sm:justify-around flex-col sm:flex-row">
+
+          <div className="w-auto flex flex-col sm:mb-0 mb-4">
+            <h1 className=" font-bold underline">Monthly Payment</h1>
+            <h1 className="text-[15px] mt-[1px]">Total amount paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span> </h1>
+          </div>
+
+          <div className="w-auto flex flex-col">
+            <h1 className=" font-bold underline">Extra Monthly Payment</h1>
+            <h1 className="text-[15px]  mt-[1px]">Total amount paid: <span className="font-bold text-chartGreen ">{USDollar.format(Number(extraPTotalAmountPaid.toFixed(2)))}</span> </h1>
+            <h1 className="text-[15px] ">Pay off date: <span className="font-bold text-chartGreen "> Approx {(Number(extraNumberOfMonths.numberOfMonthsNoRounding.toFixed(2)))} months</span> </h1>
+            <h1 className="text-[15px] ">You save: <span className="font-bold text-chartGreen "> {USDollar.format(Number((Math.abs(monthlyPayment.totalAmountPaid - extraPTotalAmountPaid)).toFixed(2)))} </span> </h1>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

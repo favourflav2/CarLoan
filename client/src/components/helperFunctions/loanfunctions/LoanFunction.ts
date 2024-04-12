@@ -1,4 +1,5 @@
 import { Loan } from "loanjs";
+import { USDollar } from "../../../pages/CarPage/CarPage";
 
 export interface LoanObj {
   rate: number;
@@ -189,4 +190,18 @@ export function loanAmmortization(obj: LoanObj) {
     thirdPartyLoan:loan,
     myLoan:res
   }
+}
+
+export function getExtraPaymentTotalPaid(months: number, monthlyP: number, downPayment: number, carPrice: number) {
+  if (!months || !monthlyP! || !downPayment === undefined || !carPrice) return { nonFormattedValue: 0, formattedValue: "", interestNonFormattedValue: "", interestFormattedValue: 0 };
+
+  const value = months * monthlyP + downPayment;
+  const value2 = Number(Math.abs(value - carPrice));
+
+  return {
+    nonFormattedValue: value,
+    formattedValue: USDollar.format(Number(value.toFixed(2))),
+    interestNonFormattedValue: value2,
+    interestFormattedValue: USDollar.format(Number(value2.toFixed(2))),
+  };
 }

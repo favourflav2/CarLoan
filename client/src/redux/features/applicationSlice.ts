@@ -113,7 +113,7 @@ const appSlice = createSlice({
           return;
       }
     },
-    editSelectedGoalTitle: (state, action: PayloadAction<{ goal: goal; title: string }>) => {
+    editSelectedGoalTitle: (state, action: PayloadAction<{ goal: goal, title: string, modal?:string }>) => {
       const { goal, title } = action.payload;
 
       if (!state.selectedGoal) {
@@ -129,7 +129,13 @@ const appSlice = createSlice({
 
           break;
         case "Car":
-          console.log("car");
+          if (!state.selectedGoal) return;
+          if(!action.payload.modal) return;
+          if (goal.type !== "Car" || state.selectedGoal?.type !== "Car") return;
+
+          state.selectedGoal.name = title;
+          state.selectedGoal.modal = action.payload.modal
+
           break;
         default:
           return;

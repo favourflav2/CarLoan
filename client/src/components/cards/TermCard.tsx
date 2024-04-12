@@ -31,7 +31,8 @@ export default function TermCard ({currentInterestSum,currentMonthlyPayment,curr
       <div className="w-full h-auto flex flex-col items-center justify-center">
         {/* Total number of payments */}
         <div className="w-auto flex items-center mb-1">
-          <h1>Total number of {obj.term} payments:</h1>
+          <h1 className='hidden lg:block'>Total number of {obj.term} payments:</h1>
+          <h1 className='block lg:hidden'> {obj.term} payments:</h1>
           <div className={`w-auto flex items-center ml-[1px] ${currentTotalAmountPaid > obj.totalAmountPaid ? "text-chartGreen" : "text-red-500"}`}>
             {currentTotalAmountPaid > obj.totalAmountPaid ? <ArrowDropDownIcon className="p-0 m-0 text-[17px]" /> : <ArrowDropUpIcon />}
             <h1 className="font-bold">{USDollar.format(Number(obj.totalAmountPaid.toFixed(2)))}</h1>

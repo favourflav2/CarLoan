@@ -89,10 +89,30 @@ const carModalSlice = createSlice({
     },
     setSingleOrGridView: (state) => {
       state.singleOrGridView = !state.singleOrGridView
+    },
+    editCarGoalTitle: (state,action:PayloadAction<{id:string, goal:CarObjWithFormattedData, name:string, modal:string}>) => {
+      const {id,goal,modal,name} = action.payload
+      
+      if(goal.type !== "Car") return
+
+      const res = state.carGoals.map(val => {
+        if(val.id === id){
+          return {
+            ...val,
+            modal:modal,
+            name:name
+          }
+        }else{
+          return val
+        }
+      })
+
+      state.carGoals = res
+
     }
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle } = carModalSlice.actions;

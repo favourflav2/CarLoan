@@ -26,15 +26,15 @@ export default function TermSlider({ data, monthlyPayment }: ITermSliderProps) {
   return (
     <div className="w-full h-auto  flex items-center justify-center flex-col ">
       <div className="w-full h-auto mb-1  flex justify-center items-center">
-        <div className="w-[70%] flex  justify-end ">
+        <div className="lg:w-[70%] w-full flex  justify-end ">
           <NavigateBeforeIcon className="text-[30px] mr-1 cursor-pointer" onClick={sliderRef?.slickPrev}/>
           <NavigateNextIcon className="text-[30px] ml-1 cursor-pointer" onClick={sliderRef?.slickNext}/>
         </div>
       </div>
 
-      <Slider {...settings} className="w-[70%] h-auto" ref={setSliderRef}>
+      <Slider {...settings} className="lg:w-[70%] w-full h-auto" ref={setSliderRef}>
         {data?.map((obj: AllMonths, index: number) => (
-          <TermCard currentMonthlyPayment={currentMonthlyPayment} currentInterestSum={currentInterestSum} currentTotalAmountPaid={currentTotalAmountPaid} obj={obj}/>
+          <TermCard key={index} currentMonthlyPayment={currentMonthlyPayment} currentInterestSum={currentInterestSum} currentTotalAmountPaid={currentTotalAmountPaid} obj={obj}/>
         ))}
       </Slider>
     </div>

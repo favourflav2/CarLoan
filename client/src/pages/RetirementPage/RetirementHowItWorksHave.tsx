@@ -26,10 +26,9 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
     return null;
   }
 
-  const updatedPreRate = selectedGoal  && selectedGoal?.preRate / 100;
-  const time: number | null = selectedGoal  && selectedGoal?.retireAge - selectedGoal?.currentAge;
+  const updatedPreRate = selectedGoal && selectedGoal?.preRate / 100;
+  const time: number | null = selectedGoal && selectedGoal?.retireAge - selectedGoal?.currentAge;
 
-  
   const newPostRate = selectedGoal?.postRate / 100;
   const newInflation = selectedGoal?.inflation / 100;
   const addInflationAndPostRate = (1 + newPostRate) / (1 + newInflation) - 1;
@@ -136,14 +135,16 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                       Calculating Future Value of Payments (<span className="text-[12.5px]">PMT {USDollar.format(selectedGoal?.monthlyContribution)}</span>)
                     </h1>
                     {/* Desktop Version */}
-                    <div className="w-full md:flex hidden items-center mt-3">
+                    <div className="w-full md:flex hidden items-center mt-3 flex-col justify-center">
                       {/* Calculating Future Value of the Present Value */}
 
-                      <MathJax className="text-[20px]">{"\\(FV=PMT \\frac{((1 + \\frac{r}{m})^{(t * m)} - 1)}{\\frac{r}{m}}\\)"}</MathJax>
+                      <div className="w-full flex items-center justify-center">
+                        <MathJax className="text-[20px]">{"\\(FV=PMT \\frac{((1 + \\frac{r}{m})^{(t * m)} - 1)}{\\frac{r}{m}}\\)"}</MathJax>
 
-                      <EastIcon className="mx-5" />
+                        <EastIcon className="mx-5" />
 
-                      <MathJax className="text-[20px]">{`\\(FV=${selectedGoal?.monthlyContribution} \\frac{((1 + \\frac{${updatedPreRate}}{12})^{(${time} * 12)} - 1)}{\\frac{${updatedPreRate}}{12}}\\)`}</MathJax>
+                        <MathJax className="text-[20px]">{`\\(FV=${selectedGoal?.monthlyContribution} \\frac{((1 + \\frac{${updatedPreRate}}{12})^{(${time} * 12)} - 1)}{\\frac{${updatedPreRate}}{12}}\\)`}</MathJax>
+                      </div>
 
                       <span className="mx-2">=</span>
                       <h1 className="text-[15px]"> Future value of payments </h1>
@@ -201,7 +202,7 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
                   initial={{ x: -100, opacity: 0 }}
                   animate={{ x: 0, opacity: 1, transition: { duration: 0.5, ease: easeInOut } }}
                   exit={{ x: -100, opacity: 0, transition: { duration: 0.5, ease: easeInOut } }}
-                  className="w-full flex flex-col h-auto"
+                  className="w-full flex flex-col h-auto overflow-hidden"
                 >
                   <p className="text-[15px] font-bold mb-2 text-green-700">
                     The first step in calculating what you need is getting the total amount using the payout annuity formula. By understanding you want to withdraw{" "}

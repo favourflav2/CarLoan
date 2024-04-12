@@ -28,9 +28,9 @@ export default function ExtraMonthlyBox({ header, selectedGoal, extraMonthlyPaym
   return (
     <>
       {selectedGoal.extraPayment > 0 && (
-        <div className="grid w-full h-auto grid-cols-[300px,1fr]">
-          {/* Left Side */}
-          <div className="flex w-full flex-col">
+        <div className="w-full h-auto flex flex-col">
+          {/*Top */}
+          <div className="flex w-full flex-col mb-3">
             <h1 className=" italic text-[20px]">{header}</h1>
             <h1 className="text-chartGreen text-[24px]">{USDollar.format(Number(extraMonthlyPayment?.toFixed(2)))}</h1>
           </div>

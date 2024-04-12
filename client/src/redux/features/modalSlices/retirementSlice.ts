@@ -91,7 +91,7 @@ const retirementSlice = createSlice({
       if(goal?.type !== "Retirement" || !goal || id === undefined) return
       
       const res = state.retireGoals.map(val => {
-        if(val.id === id && val.title === goal.title){
+        if(val.id === id){
           return {
             ...val,
             title: newTitle
