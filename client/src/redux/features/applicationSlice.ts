@@ -8,6 +8,7 @@ interface AppSlice {
   lightAndDarkMode: boolean;
   retireModal: boolean;
   carModal: boolean;
+  houseModal:boolean;
   currentStepIndex: number;
   steps: number;
   selectedGoal: RetirementGoals | null | CarObjWithFormattedData;
@@ -30,6 +31,7 @@ const initialState: AppSlice = {
   showHaveExample: true,
   showNeedExample1: true,
   showNeedExample2: true,
+  houseModal:false
 };
 
 const appSlice = createSlice({
@@ -39,7 +41,7 @@ const appSlice = createSlice({
     setLightAndDarkMode: (state) => {
       state.lightAndDarkMode = !state.lightAndDarkMode;
     },
-    setAnyTypeOfModal: (state, action: PayloadAction<{ type: "Car" | "Retirement"; value: boolean }>) => {
+    setAnyTypeOfModal: (state, action: PayloadAction<{ type: "Car" | "Retirement" | "House"; value: boolean }>) => {
       const { type, value } = action.payload;
       switch (type) {
         case "Retirement":
@@ -48,6 +50,9 @@ const appSlice = createSlice({
         case "Car":
           state.carModal = value;
           break;
+        case "House":
+          state.houseModal = value
+        break;
         default:
           return;
       }

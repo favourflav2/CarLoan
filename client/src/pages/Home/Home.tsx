@@ -16,6 +16,7 @@ import CarModal from "../../components/modals/CarModal";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
 import CarPage from "../CarPage/CarPage";
+import HouseModal from "../../components/modals/HouseModal";
 
 export default function Home() {
   // Redux States
@@ -127,7 +128,7 @@ export default function Home() {
       <SelectGoalModal open={firstModal} setOpen={setFirstModal} />
       {retireModal && <RetireModal setFirstModal={setFirstModal} />}
       {carModal && <CarModal setFirstModal={setFirstModal} />}
-      
+      <HouseModal setFirstModal={setFirstModal}/>
     </div>
   );
 }
