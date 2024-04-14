@@ -109,10 +109,29 @@ const carModalSlice = createSlice({
 
       state.carGoals = res
 
-    }
+    },
+    editCarGoalImg: (state,action:PayloadAction<{id:string, goal:CarObjWithFormattedData, img:string}>) => {
+      const {id,goal,img} = action.payload
+      
+      if(goal.type !== "Car") return
+
+      const res = state.carGoals.map(val => {
+        if(val.id === id){
+          return {
+            ...val,
+            img:img
+          }
+        }else{
+          return val
+        }
+      })
+
+      state.carGoals = res
+
+    },
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle,editCarGoalImg } = carModalSlice.actions;

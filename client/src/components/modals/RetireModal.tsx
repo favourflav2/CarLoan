@@ -11,7 +11,7 @@ interface Props {
 
 export default function RetireModal({setFirstModal}:Props) {
   // Redux States
-  const { retireModal, steps } = UseSelector((state) => state.app);
+  const { retireModal} = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   // MultiStep
@@ -54,7 +54,7 @@ export default function RetireModal({setFirstModal}:Props) {
             <></>
           </div>
           <div className="w-auto flex justify-end my-5">
-            {steps > 1 && (
+            {currentStepIndex === 0 && (
               <button className="p-2 dark:bg-gray-300 bg-black dark:text-black text-gray-300  min-w-[100px] rounded-md" onClick={next}>
                 Next
               </button>

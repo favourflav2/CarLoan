@@ -44,7 +44,8 @@ export default function CompareLoanCard({ value, title, compareReg, compareExtra
             {/* Percentage */}
           <div className="w-auto h-full flex items-center mr-3">
             {compareExtra < compareReg ?   <ArrowDropDownIcon /> : <ArrowDropUpIcon />}
-            <p className="text-[13px] ">{(compareReg - compareExtra).toFixed(2)} months faster</p>
+            <p className="text-[13px] sm:block hidden ">{(compareReg - compareExtra).toFixed(2)} months faster</p>
+            <p className="text-[13px] sm:hidden block ">-{(compareReg - compareExtra).toFixed(2)} months</p>
           </div>
 
 

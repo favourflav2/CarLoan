@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 
-
 export type goal = RetirementGoals | CarObjWithFormattedData | null;
 
 interface AppSlice {
@@ -104,16 +103,15 @@ const appSlice = createSlice({
 
           break;
         case "Car":
-          
           if (goal.type !== "Car" || state.selectedGoal.type !== "Car") return;
 
-          state.selectedGoal = goal
+          state.selectedGoal = goal;
           break;
         default:
           return;
       }
     },
-    editSelectedGoalTitle: (state, action: PayloadAction<{ goal: goal, title: string, modal?:string }>) => {
+    editSelectedGoalTitle: (state, action: PayloadAction<{ goal: goal; title: string; modal?: string }>) => {
       const { goal, title } = action.payload;
 
       if (!state.selectedGoal) {
@@ -130,17 +128,37 @@ const appSlice = createSlice({
           break;
         case "Car":
           if (!state.selectedGoal) return;
-          if(!action.payload.modal) return;
+          if (!action.payload.modal) return;
           if (goal.type !== "Car" || state.selectedGoal?.type !== "Car") return;
 
           state.selectedGoal.name = title;
-          state.selectedGoal.modal = action.payload.modal
+          state.selectedGoal.modal = action.payload.modal;
 
           break;
         default:
           return;
       }
+    },
+    editSelectedGoalImg: (state, action: PayloadAction<{ goal: goal; img:string}>) => {
+      const { goal, img } = action.payload;
 
+      if (!state.selectedGoal) {
+        return;
+      }
+
+      switch (goal?.type) {
+        case "Retirement":
+          break;
+        case "Car":
+          if (!state.selectedGoal) return;
+          if (goal.type !== "Car" || state.selectedGoal?.type !== "Car") return;
+
+          state.selectedGoal.img = img
+
+          break;
+        default:
+          return;
+      }
     },
     setShrinkDashboard: (state) => {
       state.shrinkDashboardSidebar = !state.shrinkDashboardSidebar;
@@ -175,6 +193,7 @@ export const {
   setShrinkDashboard,
   setShowHaveExample,
   setSelectedGoalAfterCreate,
+  editSelectedGoalImg
 } = appSlice.actions;
 
 // switch (goal?.type) {

@@ -10,24 +10,23 @@ import { ExtraNumberMonths } from "../helperFunctions/loanfunctions/LoanFunction
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
 export interface ICarHouseChartProps {
-    type: "Car" | "House"
-    regualarLoan: LoanAmmortizationType
-    extraLoan: MyLoanForLoop[];
-    monthlyPayment: MonthlyPayment;
-    extraNumberOfMonths: ExtraNumberMonths 
-    downPayment:number;
+  type: "Car" | "House";
+  regualarLoan: LoanAmmortizationType;
+  extraLoan: MyLoanForLoop[];
+  monthlyPayment: MonthlyPayment;
+  extraNumberOfMonths: ExtraNumberMonths;
+  downPayment: number;
 }
 
-export default function CarHouseChart ({type, regualarLoan, extraLoan,monthlyPayment,extraNumberOfMonths,downPayment}: ICarHouseChartProps) {
-      // Redux States
-  const { lightAndDarkMode } = UseSelector((state) => state.app);
-  const {myLoan} = regualarLoan
+export default function CarHouseChart({ type, regualarLoan, extraLoan, monthlyPayment, extraNumberOfMonths, downPayment }: ICarHouseChartProps) {
+  // Redux States
+  const { lightAndDarkMode, selectedGoal } = UseSelector((state) => state.app);
+  const { myLoan } = regualarLoan;
 
   const USDollar = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: `USD`,
   });
-
 
   const data = {
     labels: myLoan.map((item: MyLoanForLoop) => {
@@ -83,15 +82,13 @@ export default function CarHouseChart ({type, regualarLoan, extraLoan,monthlyPay
 
   const titleTooltip = (tooltipItems: TooltipItem<"line">[]) => {
     const label = tooltipItems.map((item: any) => item.label).slice(0, 1);
-  
+
     return `Month: ${label}`;
   };
 
   function labelTooltip(item: any) {
     return `${item.datasetIndex === 0 ? "Remaining:" : "Remaining:"} ${USDollar.format(item.raw.toFixed(2))}`;
   }
-
-  
 
   const options: ChartOptions<"line"> = {
     responsive: true,
@@ -113,10 +110,10 @@ export default function CarHouseChart ({type, regualarLoan, extraLoan,monthlyPay
         bodyColor: `${lightAndDarkMode ? "white" : "black"}`,
         padding: 10,
         usePointStyle: true,
-         callbacks: {
-           title: titleTooltip,
-           label: labelTooltip,
-         },
+        callbacks: {
+          title: titleTooltip,
+          label: labelTooltip,
+        },
       },
     },
     scales: {
@@ -167,7 +164,7 @@ export default function CarHouseChart ({type, regualarLoan, extraLoan,monthlyPay
     },
   };
 
-  const extraPTotalAmountPaid = (Number(((monthlyPayment.extraMonthlyPayment * extraNumberOfMonths.numberOfMonthsNoRounding) + downPayment)))
+  const extraPTotalAmountPaid = Number(monthlyPayment.extraMonthlyPayment * extraNumberOfMonths.numberOfMonthsNoRounding + downPayment);
 
 
   return (
@@ -192,18 +189,27 @@ export default function CarHouseChart ({type, regualarLoan, extraLoan,monthlyPay
       <div className="w-full h-auto flex flex-col mb-4 mt-7">
         {/* Content */}
         <div className="w-full flex sm:justify-around flex-col sm:flex-row">
-
           <div className="w-auto flex flex-col sm:mb-0 mb-4">
             <h1 className=" font-bold underline">Monthly Payment</h1>
-            <h1 className="text-[15px] mt-[1px]">Total amount paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span> </h1>
+            <h1 className="text-[15px] mt-[1px]">
+              Total amount paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span>{" "}
+            </h1>
           </div>
 
-          <div className="w-auto flex flex-col">
-            <h1 className=" font-bold underline">Extra Monthly Payment</h1>
-            <h1 className="text-[15px]  mt-[1px]">Total amount paid: <span className="font-bold text-chartGreen ">{USDollar.format(Number(extraPTotalAmountPaid.toFixed(2)))}</span> </h1>
-            <h1 className="text-[15px] ">Pay off date: <span className="font-bold text-chartGreen "> Approx {(Number(extraNumberOfMonths.numberOfMonthsNoRounding.toFixed(2)))} months</span> </h1>
-            <h1 className="text-[15px] ">You save: <span className="font-bold text-chartGreen "> {USDollar.format(Number((Math.abs(monthlyPayment.totalAmountPaid - extraPTotalAmountPaid)).toFixed(2)))} </span> </h1>
-          </div>
+          {selectedGoal && selectedGoal.type === "Car" && selectedGoal.extraPayment > 0 && (
+            <div className="w-auto flex flex-col">
+              <h1 className=" font-bold underline">Extra Monthly Payment</h1>
+              <h1 className="text-[15px]  mt-[1px]">
+                Total amount paid: <span className="font-bold text-chartGreen ">{USDollar.format(Number(extraPTotalAmountPaid.toFixed(2)))}</span>{" "}
+              </h1>
+              <h1 className="text-[15px] ">
+                Pay off date: <span className="font-bold text-chartGreen "> Approx {Number(extraNumberOfMonths.numberOfMonthsNoRounding.toFixed(2))} months</span>{" "}
+              </h1>
+              <h1 className="text-[15px] ">
+                You save: <span className="font-bold text-chartGreen "> {USDollar.format(Number(Math.abs(monthlyPayment.totalAmountPaid - extraPTotalAmountPaid).toFixed(2)))} </span>{" "}
+              </h1>
+            </div>
+          )}
         </div>
       </div>
     </div>

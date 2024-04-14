@@ -13,7 +13,7 @@ import {
 } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import CarPageInputs from "./CarPageInputs";
 import CarHouseChart from "../../components/charts/CarHouseChart";
-import { Divider, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import { Divider, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import CarPageSummary from "./CarPageSummary";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -24,6 +24,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { carsArr } from "../../components/multiStepDivs/carDivs/CarComponets/carModalSchema";
 import MonthsSection from "./components/MonthsSection";
 import { editCarGoalTitle } from "../../redux/features/modalSlices/carModalSlice";
+import EditImgModal from "./components/EditImgModal";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
 const schema = z.object({
   name: z
@@ -50,7 +52,6 @@ const schema = z.object({
 });
 
 type FormFields = z.infer<typeof schema>;
-
 
 export const USDollar = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -88,6 +89,16 @@ export default function CarPage() {
     setValue("modal", event.target.value as string);
   };
 
+  // File Uploader
+  const [updatedImg, setUpdatedImg] = React.useState("");
+
+  // Modal States
+  const [openImgModal, setOpenImgModal] = React.useState(false);
+
+  function updateImg(img: string) {
+    setUpdatedImg(img);
+  }
+
   // Chart States
   const [monthlyPayment, setMonthlyPayment] = React.useState<MonthlyPayment>();
   const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
@@ -103,10 +114,10 @@ export default function CarPage() {
 
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    if(!selectedGoal || selectedGoal?.type !== "Car") return
-    dispatch(editCarGoalTitle({ id:selectedGoal.id, name: data?.name, goal: selectedGoal, modal:data?.modal }));
+    if (!selectedGoal || selectedGoal?.type !== "Car") return;
+    dispatch(editCarGoalTitle({ id: selectedGoal.id, name: data?.name, goal: selectedGoal, modal: data?.modal }));
 
-    dispatch(editSelectedGoalTitle({ title: data?.name, goal: selectedGoal, modal:data?.modal }));
+    dispatch(editSelectedGoalTitle({ title: data?.name, goal: selectedGoal, modal: data?.modal }));
     setEditState(false);
     setSaveBtn(false);
   };
@@ -274,6 +285,7 @@ export default function CarPage() {
                       onClick={() => {
                         setEditState(false);
                         setValue("name", selectedGoal?.name);
+                        setValue("modal",selectedGoal.modal)
                       }}
                     />
                   </motion.button>
@@ -317,7 +329,11 @@ export default function CarPage() {
 
             {/* Car Box */}
             <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
-              <img src={selectedGoal.img} alt="" className="w-[200px] h-[200px] rounded-sm" />
+              <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
+                <img src={selectedGoal.img} alt="" className="w-[200px] h-[200px] rounded-md" />
+               
+                <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={()=> setOpenImgModal(true)}><EditNoteIcon className=" " /></button>
+              </div>
 
               {/* About Car */}
               <div className="w-auto flex flex-col sm:ml-4  mt-3 sm:mt-0">
@@ -417,7 +433,8 @@ export default function CarPage() {
 
       {/* In summary page we show all the terms and thier loan amount */}
       {selectedGoal && monthlyPayment && view === "Summary View" && <MonthsSection monthlyPayment={monthlyPayment} selectedGoal={selectedGoal} />}
+
+      <EditImgModal updateImg={updateImg} setOpenImgModal={setOpenImgModal} open={openImgModal} />
     </div>
   );
 }
-

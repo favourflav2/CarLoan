@@ -224,6 +224,34 @@ export default function CarPageInputs(props: ICarPageInputsProps) {
           {errors?.downPayment && <p className="text-red-500 text-[13px] ">{errors?.downPayment?.message}</p>}
         </div>
 
+        {/* Extra Monthly Payment */}
+        <div className="w-auto flex flex-col mb-3">
+          <label htmlFor="extraPayment" className="text-[12px] dark:text-gray-300 text-black">
+            Extra Monthly Payment
+          </label>
+
+          <Controller
+            render={({ field: { onChange, value } }) => (
+              <NumericFormat
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.extraPayment && "border-2 border-red-500"}`}
+                prefix="$"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalScale={2}
+                autoComplete="off"
+                allowNegative={false}
+                onValueChange={(v) => {
+                  onChange(v.value);
+                }}
+                value={value}
+              />
+            )}
+            name="extraPayment"
+            control={control}
+          />
+          {errors?.extraPayment && <p className="text-red-500 text-[13px] ">{errors?.extraPayment?.message}</p>}
+        </div>
+
         {/* Interest Rate */}
         <div className="w-auto flex flex-col mb-3">
           <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">

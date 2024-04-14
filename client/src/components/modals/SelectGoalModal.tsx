@@ -31,7 +31,7 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
             {/* First Box */}
             <div className="w-full justify-between flex items-center">
         <h1 className=" text-[22px] font-medium">Select Your Goal</h1>
-        <CloseOutlinedIcon onClick={()=>setOpen(false)}/>
+        <CloseOutlinedIcon onClick={()=>setOpen(false)} className=" cursor-pointer"/>
             </div>
 
             <hr className="my-2 border dark:border-darkText border-lightText"/>

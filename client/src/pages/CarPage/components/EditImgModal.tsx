@@ -1,18 +1,18 @@
+import * as React from 'react';
 import { Modal } from "@mui/material";
-import * as React from "react";
-import { motion } from "framer-motion";
+import ImageCrop from '../../../components/ImageCropper/ImageCropper';
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import ImageCrop from "../../../ImageCropper/ImageCropper";
+import { motion } from "framer-motion";
 
-export interface ICarImgModalProps {
-  setOpenImgModal: React.Dispatch<React.SetStateAction<boolean>>;
+export interface IEditImgModalProps {
+    setOpenImgModal: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
 
   updateImg(img: string): void;
 }
 
-export default function CarImgModal({ setOpenImgModal, open, updateImg }: ICarImgModalProps) {
-  // ref for scrolling to top
+export default function EditImgModal ({ setOpenImgModal, open, updateImg }: IEditImgModalProps) {
+    // ref for scrolling to top
   const myRef = React.useRef<any>(null);
   const executeScroll = () => myRef?.current?.scrollTo(0, 0);
 
@@ -38,12 +38,12 @@ export default function CarImgModal({ setOpenImgModal, open, updateImg }: ICarIm
           {/* First Box */}
           <div className="w-full justify-between flex items-center ">
             <h1 className=" text-[22px] font-medium">Crop Image</h1>
-            <CloseOutlinedIcon onClick={() => setOpenImgModal(false)}/>
+            <CloseOutlinedIcon onClick={() => setOpenImgModal(false)} className=' cursor-pointer'/>
           </div>
 
           <hr className="my-2 border dark:border-darkText border-lightText" />
 
-          <ImageCrop updateImg={updateImg} setOpenImgModal={setOpenImgModal} type="Create"/>
+          <ImageCrop updateImg={updateImg} setOpenImgModal={setOpenImgModal} type="Edit"/>
         </motion.div>
       </div>
     </Modal>

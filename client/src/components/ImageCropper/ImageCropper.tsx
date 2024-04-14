@@ -2,6 +2,9 @@ import * as React from "react";
 import setCanvasPreview from "./setCanvasPreview";
 import ReactCrop, { type Crop, makeAspectCrop, centerCrop, convertToPixelCrop } from "react-image-crop";
 import Resizer from "react-image-file-resizer";
+import { Dispatch, UseSelector } from "../../redux/store";
+import { editCarGoalImg } from "../../redux/features/modalSlices/carModalSlice";
+import { editSelectedGoalImg } from "../../redux/features/applicationSlice";
 
 
 const MIN_DIMENSION = 4000;
@@ -9,8 +12,15 @@ const MIN_DIMENSION = 4000;
 interface Props {
   updateImg(img: string): void;
   setOpenImgModal: React.Dispatch<React.SetStateAction<boolean>>;
+  type:"Edit" | "Create"
 }
-export default function ImageCrop({ updateImg, setOpenImgModal }: Props) {
+export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
+
+  //Redux States
+  const {selectedGoal} = UseSelector(state => state.app)
+  const dispatch = Dispatch()
+
+
   // File Uploader States
   const [crop, setCrop] = React.useState<Crop | any>();
   const [file, setFile] = React.useState<string>("");
@@ -89,7 +99,16 @@ async function resizeImg(file:Blob){
       0, // rotate 90 degrees
       (resizedImage:any) => {
         // Handle the resized image here
-        updateImg(resizedImage)
+        if(type === "Create"){
+          updateImg(resizedImage)
+        }else if (type === "Edit"){
+
+          if(!selectedGoal || selectedGoal.type !== "Car") return
+          
+          dispatch(editCarGoalImg({id:selectedGoal.id,goal:selectedGoal,img:resizedImage as string}))
+          dispatch(editSelectedGoalImg({goal:selectedGoal,img:resizedImage as string}))
+
+        }
        
       },
       "base64"

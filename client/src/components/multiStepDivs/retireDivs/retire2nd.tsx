@@ -99,6 +99,7 @@ export default function Retire2nd() {
               dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
               dispatch(setCurrentStepIndexRedux("back"));
             }}
+            className=" cursor-pointer"
           />
         </div>
 

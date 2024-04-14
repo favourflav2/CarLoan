@@ -32,7 +32,7 @@ export default function Retire1st(props: IRetire1stProps) {
       {/* First Box */}
       <div className="w-full justify-between flex items-center ">
         <h1 className=" text-[22px] font-medium">Retirement</h1>
-        <CloseOutlinedIcon onClick={() => dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }))} />
+        <CloseOutlinedIcon onClick={() => dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }))} className=" cursor-pointer"/>
       </div>
 
       <hr className="my-2 border dark:border-darkText border-lightText" />
