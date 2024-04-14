@@ -127,6 +127,7 @@ export default function Home() {
       <SelectGoalModal open={firstModal} setOpen={setFirstModal} />
       {retireModal && <RetireModal setFirstModal={setFirstModal} />}
       {carModal && <CarModal setFirstModal={setFirstModal} />}
+      
     </div>
   );
 }

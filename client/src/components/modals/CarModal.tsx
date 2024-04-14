@@ -12,11 +12,11 @@ export interface ICarModalProps {
 export default function CarModal ({setFirstModal}: ICarModalProps) {
 
     // Redux States
-  const { carModal, steps } = UseSelector((state) => state.app);
+  const { carModal } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   // MultiStep
-  const { currentStep, currentStepIndex, next } = useMultiStepForm([<Car1st />]);
+  const { currentStep, currentStepIndex } = useMultiStepForm([<Car1st />]);
 
   // ref for scrolling to top
   const myRef = React.useRef<any>(null);
