@@ -22,9 +22,11 @@ export interface SelectedAddress {
   }>;
 }
 
-export interface IHouseFirstInputsProps {}
+export interface IHouseFirstInputsProps {
+  updatedImg: string
+}
 
-export default function HouseFirstInputs(props: IHouseFirstInputsProps) {
+export default function HouseFirstInputs({updatedImg}: IHouseFirstInputsProps) {
   const [selectedAddress, setSelectedAddress] = React.useState<SelectedAddress>();
 
 
@@ -69,6 +71,14 @@ export default function HouseFirstInputs(props: IHouseFirstInputsProps) {
   React.useEffect(() => {
     setValue("id", dateFormat);
   }, [setValue, dateFormat]);
+
+  React.useEffect(() => {
+    if (updatedImg) {
+      setValue("img", updatedImg);
+    }else{
+      setValue("img", undefined)
+    }
+  }, [updatedImg, setValue]);
 
   const user = true;
 

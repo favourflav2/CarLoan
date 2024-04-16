@@ -78,6 +78,8 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   React.useEffect(() => {
     if (updatedImg) {
       setValue("img", updatedImg);
+    }else{
+      setValue("img", undefined)
     }
   }, [updatedImg, setValue]);
 

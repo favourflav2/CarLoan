@@ -26,6 +26,7 @@ import MonthsSection from "./components/MonthsSection";
 import { editCarGoalTitle } from "../../redux/features/modalSlices/carModalSlice";
 import EditImgModal from "./components/EditImgModal";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import insertCar from '../../assets/addImg.png'
 
 const schema = z.object({
   name: z
@@ -77,7 +78,7 @@ export default function CarPage() {
     defaultValues: {
       name: selectedGoal?.type === "Car" && selectedGoal?.name ? selectedGoal?.name : "",
       modal: selectedGoal?.type === "Car" && selectedGoal?.modal ? selectedGoal?.modal : "",
-      img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : "",
+      img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : undefined,
     },
     resolver: zodResolver(schema),
   });
@@ -90,7 +91,7 @@ export default function CarPage() {
   };
 
   // File Uploader
-  const [updatedImg, setUpdatedImg] = React.useState("");
+  const [updatedImg, setUpdatedImg] = React.useState(""); // eslint-disable-line
 
   // Modal States
   const [openImgModal, setOpenImgModal] = React.useState(false);
@@ -140,7 +141,7 @@ export default function CarPage() {
       reset({
         name: selectedGoal?.name ? selectedGoal?.name : "",
         modal: selectedGoal?.modal ? selectedGoal?.modal : "",
-        img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : "",
+        img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : undefined,
       });
     }
     trigger();
@@ -330,7 +331,7 @@ export default function CarPage() {
             {/* Car Box */}
             <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
               <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
-                <img src={selectedGoal.img} alt="" className="w-[200px] h-[200px] rounded-md" />
+                <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md" />
                
                 <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={()=> setOpenImgModal(true)}><EditNoteIcon className=" " /></button>
               </div>

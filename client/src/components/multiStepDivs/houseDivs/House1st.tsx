@@ -7,6 +7,7 @@ import { Dispatch } from "../../../redux/store";
 import { setAnyTypeOfModal } from "../../../redux/features/applicationSlice";
 import EditIcon from "@mui/icons-material/Edit";
 import HouseFirstInputs from "./houseComponents/House1stInputs";
+import SelectImgModal from "../../modals/SelectImgModal";
 
 export interface IHouse1stProps {}
 
@@ -65,9 +66,10 @@ export default function House1st(props: IHouse1stProps) {
       </div>
 
       {/* Form */}
-       <HouseFirstInputs /> 
-      {/* <Car1stInputs updatedImg={updatedImg} />
-      <CarImgModal open={openImgModal} updateImg={updateImg} setOpenImgModal={setOpenImgModal} /> */}
+       <HouseFirstInputs updatedImg={updatedImg}/> 
+
+       {/* Img Modal */}
+      <SelectImgModal open={openImgModal} updateImg={updateImg} setOpenImgModal={setOpenImgModal} /> 
     </motion.div>
   );
 }
