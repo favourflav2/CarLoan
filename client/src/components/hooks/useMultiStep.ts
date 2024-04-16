@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { setCurrentStepIndexRedux, setStepLength } from "../../redux/features/applicationSlice";
+import { setCurrentStepIndexRedux } from "../../redux/features/applicationSlice";
 
 export function useMultiStepForm(step: ReactElement[]) {
     // Redux States
@@ -21,9 +21,9 @@ export function useMultiStepForm(step: ReactElement[]) {
     // Wanted to save currentIndex and steps in redux so I can you next and back buttons in any component
     React.useEffect(()=>{
         if(steps !== step.length){
-            dispatch(setStepLength(step.length))
+            //dispatch(setStepLength(step.length))
         }
-    },[steps,step,dispatch])
+    },[steps,step])
 
     return {
         currentStepIndex,
