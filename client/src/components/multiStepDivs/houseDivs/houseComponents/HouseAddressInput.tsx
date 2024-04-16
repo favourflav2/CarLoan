@@ -115,7 +115,7 @@ export default function HouseAddressInput({
 
   // Google Autocomplete
   const { placesService, placePredictions, getPlacePredictions, isPlacePredictionsLoading } = usePlacesService({
-    apiKey: "AIzaSyClwUguFSM04c2nLOX45IIPVYyFhZCItpM",
+    apiKey: `${process.env.REACT_APP_GOOGLE_API_KEY}`,
     options: {
       componentRestrictions: { country: "us" },
       types: ["address"],
