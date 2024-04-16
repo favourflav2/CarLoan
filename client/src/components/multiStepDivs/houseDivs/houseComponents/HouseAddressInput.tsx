@@ -11,42 +11,51 @@ export interface IHouseAddressInputProps {
   name: "streetAddress";
   placeholder: string;
   errors: FieldErrors<{
+    streetAddress: string;
     price: string;
     downPayment: string;
     interest: string;
     id: string;
     term: number;
     extraPayment: string;
-    streetAddress: string;
     propertyTax: string;
     insurance: string;
     mortgageInsurance: string;
+    appreciation: string;
+    opportunityCostRate: string;
+    maintenance: string;
     img?: any;
   }>;
   register: UseFormRegister<{
+    streetAddress: string;
     price: string;
     downPayment: string;
     interest: string;
     id: string;
     term: number;
     extraPayment: string;
-    streetAddress: string;
     propertyTax: string;
     insurance: string;
     mortgageInsurance: string;
+    appreciation: string;
+    opportunityCostRate: string;
+    maintenance: string;
     img?: any;
   }>;
   allInputData: {
+    streetAddress: string;
     price: string;
     downPayment: string;
     interest: string;
     id: string;
     term: number;
     extraPayment: string;
-    streetAddress: string;
     propertyTax: string;
     insurance: string;
     mortgageInsurance: string;
+    appreciation: string;
+    opportunityCostRate: string;
+    maintenance: string;
     img?: any;
   };
   setValue: UseFormSetValue<{
@@ -54,40 +63,49 @@ export interface IHouseAddressInputProps {
     price: string;
     downPayment: string;
     interest: string;
-    term: number;
     id: string;
+    term: number;
     extraPayment: string;
     propertyTax: string;
     insurance: string;
     mortgageInsurance: string;
+    appreciation: string;
+    opportunityCostRate: string;
+    maintenance: string;
     img?: any;
   }>;
   control: Control<
     {
+      streetAddress: string;
       price: string;
       downPayment: string;
       interest: string;
-      id: string;
       term: number;
+      id: string;
       extraPayment: string;
-      streetAddress: string;
       propertyTax: string;
       insurance: string;
       mortgageInsurance: string;
+      appreciation: string;
+      opportunityCostRate: string;
+      maintenance: string;
       img?: any;
     },
     any,
     {
+      streetAddress: string;
       price: string;
       downPayment: string;
       interest: string;
-      id: string;
       term: number;
+      id: string;
       extraPayment: string;
-      streetAddress: string;
       propertyTax: string;
       insurance: string;
       mortgageInsurance: string;
+      appreciation: string;
+      opportunityCostRate: string;
+      maintenance: string;
       img?: any;
     }
   >;
@@ -97,20 +115,7 @@ export interface IHouseAddressInputProps {
   googleError: boolean;
 }
 
-export default function HouseAddressInput({
-  errors,
-  name,
-  label,
-  register,
-  placeholder,
-  allInputData,
-  control,
-  setSelectedAddress,
-  setValue,
-  setGoogleError,
-  googleError,
-}: IHouseAddressInputProps) {
- 
+export default function HouseAddressInput({ errors, name, label, register, placeholder, allInputData, control, setSelectedAddress, setValue, setGoogleError, googleError }: IHouseAddressInputProps) {
   const fakeArr = new Array(5).fill("nothing");
 
   // Google Autocomplete
@@ -129,7 +134,7 @@ export default function HouseAddressInput({
     }, 1500);
   }
 
-  function handleClick(item: google.maps.places.AutocompletePrediction){
+  function handleClick(item: google.maps.places.AutocompletePrediction) {
     setValue("streetAddress", item.description);
     placesService?.getDetails(
       {
@@ -141,7 +146,6 @@ export default function HouseAddressInput({
     );
     getPlacePredictions({ input: "" });
   }
-
 
   // If theres any error with the google api i will return null
   React.useEffect(() => {
@@ -162,10 +166,7 @@ export default function HouseAddressInput({
           }
         }
       );
-  }, [placePredictions]);// eslint-disable-line
-
-
-
+  }, [placePredictions]); // eslint-disable-line
 
   if (googleError) return null;
 
@@ -212,7 +213,7 @@ export default function HouseAddressInput({
                     <div
                       key={item.place_id}
                       className="w-full h-[35px] flex flex-col items-center justify-center border-b border-gray-400 cursor-pointer transition ease-in-out delay-150 hover:bg-gray-300 duration-300"
-                      onClick={()=>handleClick(item)}
+                      onClick={() => handleClick(item)}
                     >
                       <h1 className="text-[15px] text-black">{item.description}</h1>
                     </div>

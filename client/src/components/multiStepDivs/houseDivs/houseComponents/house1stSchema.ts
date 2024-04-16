@@ -44,7 +44,18 @@ export const house1stSchema = z
     insurance: z.string({
         required_error: "Please enter home owners insurance",
     }),
-    mortgageInsurance: z.string(),
+    mortgageInsurance: z.string().refine((item)=> parseInt(item) < 10,{
+      message: "Please enter a number between 0% and 10%",
+    }),
+    appreciation: z.string({
+      required_error: "The average home appreciation per year in the United States is between 2-4%, you can choose what you need",
+  }),
+  opportunityCostRate: z.string({
+    required_error: "Please enter a rate",
+  }),
+  maintenance:z.string({
+    required_error: "A common suggestion is to allocate approximately 1% of the property's value per year, on average, to cover maintenance costs.",
+  })
   })
   .superRefine((values, ctx) => {
     if (parseInt(values.downPayment) >= parseInt(values.price)) {
@@ -59,4 +70,17 @@ export const house1stSchema = z
         path: ["price"],
       });
     }
+  })
+  .superRefine((values, ctx) => {
+    const twentyPercentValue = Number(parseInt(values.price) * .20)
+    if(parseInt(values.mortgageInsurance) === 0){
+      if (parseInt(values.downPayment) < twentyPercentValue) {
+        ctx.addIssue({
+          message: "Since your down payment is less than 20%, you will need to pay mortgage insurance",
+          code: z.ZodIssueCode.custom,
+          path: ["mortgageInsurance"],
+        });
+      }
+    }
   });
+ 

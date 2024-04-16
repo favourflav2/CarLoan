@@ -4,7 +4,7 @@ import { house1stSchema } from "./house1stSchema";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import {  MenuItem } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import HouseControllerInput from "./HouseControllerInput";
 import dayjs from "dayjs";
 import HouseAddressInput from "./HouseAddressInput";
@@ -23,12 +23,11 @@ export interface SelectedAddress {
 }
 
 export interface IHouseFirstInputsProps {
-  updatedImg: string
+  updatedImg: string;
 }
 
-export default function HouseFirstInputs({updatedImg}: IHouseFirstInputsProps) {
+export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps) {
   const [selectedAddress, setSelectedAddress] = React.useState<SelectedAddress>();
-
 
   // Error for google api
   const [googleError, setGoogleError] = React.useState(false);
@@ -53,14 +52,30 @@ export default function HouseFirstInputs({updatedImg}: IHouseFirstInputsProps) {
       mortgageInsurance: "0",
       propertyTax: "0",
       insurance: "0",
+      appreciation: "0",
+      maintenance: "0",
+      opportunityCostRate: "0",
     },
     resolver: zodResolver(house1stSchema),
   });
 
   const allInputData = watch();
+  const twentyPercentValue = Number(parseInt(allInputData.price) * .20)
+  const downPayment = watch("downPayment")
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    console.log(data);
+    let dataTwentyPercentValue = Number(parseInt(data.price) * .20)
+
+    // If the down payment is greater than 20% we need to set the mortagage insurance to 0
+    //* if the down payment is not greater than 20% we do nothing 
+    if(parseInt(data.downPayment) > dataTwentyPercentValue){
+      setValue("mortgageInsurance","0")
+      data.mortgageInsurance = "0"
+      
+    }else{
+      console.log(data)
+    }
+    
   };
 
   // Handle Change
@@ -72,15 +87,22 @@ export default function HouseFirstInputs({updatedImg}: IHouseFirstInputsProps) {
     setValue("id", dateFormat);
   }, [setValue, dateFormat]);
 
+  React.useEffect(()=>{
+    
+  },[downPayment,twentyPercentValue])
+
   React.useEffect(() => {
     if (updatedImg) {
       setValue("img", updatedImg);
-    }else{
-      setValue("img", undefined)
+    } else {
+      setValue("img", undefined);
     }
   }, [updatedImg, setValue]);
 
+  // This will not allow google api
   const user = true;
+
+  console.log();
 
   return (
     <div className="my-10">
@@ -165,6 +187,11 @@ export default function HouseFirstInputs({updatedImg}: IHouseFirstInputsProps) {
               </Select>
             </div>
           </div>
+
+          {/* Mortgage Insurance */}
+          {twentyPercentValue > parseInt(downPayment)  && (
+            <HouseControllerInput type="Percent" control={control} errors={errors} name="mortgageInsurance" label="Mortgage Insurance" placeholder="Enter an mortgage nsurancet rate..." />
+          )}
         </div>
 
         <button className="w-full p-2 rounded-lg mt-2 mb-3 bg-chartYellow dark:text-lightText">Save & Continue</button>
