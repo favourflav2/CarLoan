@@ -10,13 +10,7 @@ export default function Retire1st(props: IRetire1stProps) {
   // Redux States
   const dispatch = Dispatch();
 
-  // ref for scrolling to top
-  const myRef = React.useRef<any>(null);
-  const executeScroll = () => myRef?.current?.scrollTo(0, 0);
-
-  React.useEffect(() => {
-    executeScroll();
-  }, []);
+ 
   return (
     <motion.div
       className="w-full h-full  flex flex-col  text-lightText dark:text-darkText"
@@ -27,7 +21,7 @@ export default function Retire1st(props: IRetire1stProps) {
         delay: 0.3,
         ease: [0, 0.71, 0.2, 1.01],
       }}
-      ref={myRef}
+     
     >
       {/* First Box */}
       <div className="w-full justify-between flex items-center ">

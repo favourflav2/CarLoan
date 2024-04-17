@@ -7,6 +7,7 @@ import carStateSlice from "./features/carStateSlice";
 import applicationSlice from "./features/applicationSlice";
 import retirementSlice from "./features/modalSlices/retirementSlice";
 import carModalSlice from "./features/modalSlices/carModalSlice";
+import houseSlice from "./features/modalSlices/houseSlice";
 
 const persistConfig = {
   key: "root",
@@ -21,7 +22,8 @@ const reducer = combineReducers({
   page: carStateSlice,
   app: applicationSlice,
   retireSlice: retirementSlice,
-  carModalSlice: carModalSlice
+  carModalSlice: carModalSlice,
+  houseSlice:houseSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

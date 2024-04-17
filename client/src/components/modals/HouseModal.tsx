@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { Modal } from "@mui/material";
-import { setCurrentStepIndexRedux, setAnyTypeOfModal } from "../../redux/features/applicationSlice";
+import { setAnyTypeOfModal } from "../../redux/features/applicationSlice";
 import { useMultiStepForm } from "../hooks/useMultiStep";
 import House1st from "../multiStepDivs/houseDivs/House1st";
 
@@ -15,7 +15,7 @@ export default function HouseModal ({setFirstModal}: IHouseModalProps) {
   const dispatch = Dispatch();
 
   // MultiStep
-  const { currentStep, currentStepIndex } = useMultiStepForm([<House1st />]);
+  const { currentStep, currentStepIndex } = useMultiStepForm([<House1st />],0);
 
 
   // ref for scrolling to top
@@ -34,7 +34,6 @@ export default function HouseModal ({setFirstModal}: IHouseModalProps) {
     open={houseModal}
     onClose={() => {
       dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
-      dispatch(setCurrentStepIndexRedux("back"));
     }}
   >
     <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[70%] md:w-[60%] xl:w-[50%] 2xl:w-[45%] w-full sm:h-auto h-full  rounded-lg">

@@ -8,6 +8,9 @@ import { MenuItem } from "@mui/material";
 import HouseControllerInput from "./HouseControllerInput";
 import dayjs from "dayjs";
 import HouseAddressInput from "./HouseAddressInput";
+import { Dispatch } from "../../../../redux/store";
+import { addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
+import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
 
 const arr = ["10", "15", "20", "25", "30", "60"];
 
@@ -27,7 +30,9 @@ export interface IHouseFirstInputsProps {
 }
 
 export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps) {
+  // Redux States
   const [selectedAddress, setSelectedAddress] = React.useState<SelectedAddress>();
+  const dispatch = Dispatch()
 
   // Error for google api
   const [googleError, setGoogleError] = React.useState(false);
@@ -71,9 +76,12 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
     if(parseInt(data.downPayment) > dataTwentyPercentValue){
       setValue("mortgageInsurance","0")
       data.mortgageInsurance = "0"
+      dispatch(addHouseGoal(data))
+      dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
       
     }else{
-      console.log(data)
+      dispatch(addHouseGoal(data))
+      dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
     }
     
   };
@@ -102,7 +110,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   // This will not allow google api
   const user = true;
 
-  console.log();
+  
 
   return (
     <div className="my-10">

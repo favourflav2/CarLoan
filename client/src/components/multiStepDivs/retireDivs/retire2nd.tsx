@@ -2,7 +2,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Dispatch } from "../../../redux/store";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import { setCurrentStepIndexRedux, setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../redux/features/applicationSlice";
+import {  setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../redux/features/applicationSlice";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -70,7 +70,6 @@ export default function Retire2nd() {
     }
 
     dispatch(addRetireGoal(objData));
-    dispatch(setCurrentStepIndexRedux("back"));
 
     // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
     dispatch(setSelectedGoalAfterCreate(objData));
@@ -78,6 +77,8 @@ export default function Retire2nd() {
     // Close Modal After Everything is done
     dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
   };
+
+  
 
   return (
     <motion.div
@@ -87,7 +88,8 @@ export default function Retire2nd() {
         duration: 0.3,
         delay: 0.3,
       }}
-      className="w-full sm:max-h-[700px] h-full "
+      className="w-full h-full "
+      
     >
       {/* Content */}
       <div className="w-full h-full flex flex-col dark:text-gray-300 text-black ">
@@ -97,7 +99,6 @@ export default function Retire2nd() {
           <CloseOutlinedIcon
             onClick={() => {
               dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
-              dispatch(setCurrentStepIndexRedux("back"));
             }}
             className=" cursor-pointer"
           />
@@ -414,14 +415,7 @@ export default function Retire2nd() {
             </motion.div>
           )}
 
-          <div className="w-full h-auto grid grid-cols-2 gap-x-2 mt-5 sm:mb-3 mb-3">
-            <button
-              type="button"
-              className="p-2 border dark:border-gray-600 border-gray-400 w-full rounded-md dark:text-gray-300 text-black"
-              onClick={() => dispatch(setCurrentStepIndexRedux("back"))}
-            >
-              Go Back
-            </button>
+          <div className="w-full h-auto my-2">
             <button className="p-2 dark:bg-darkText bg-lightText dark:text-lightText text-darkText  w-full rounded-md">Save And Continue</button>
           </div>
         </form>

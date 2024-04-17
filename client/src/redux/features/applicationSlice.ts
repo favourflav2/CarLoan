@@ -1,17 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
+import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
 
-export type goal = RetirementGoals | CarObjWithFormattedData | null;
+export type goal = RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
 
 interface AppSlice {
   lightAndDarkMode: boolean;
   retireModal: boolean;
   carModal: boolean;
   houseModal:boolean;
-  currentStepIndex: number;
-  steps: number;
-  selectedGoal: RetirementGoals | null | CarObjWithFormattedData;
+  selectedGoal: RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
   shrinkDashboardSidebar: boolean;
   shrinkRetirementInputs: boolean;
   showHaveExample: boolean;
@@ -22,8 +21,7 @@ interface AppSlice {
 const initialState: AppSlice = {
   lightAndDarkMode: false,
   retireModal: false,
-  currentStepIndex: 0,
-  steps: 0,
+
   carModal: false,
   selectedGoal: null,
   shrinkDashboardSidebar: false,
@@ -57,20 +55,7 @@ const appSlice = createSlice({
           return;
       }
     },
-    setCurrentStepIndexRedux: (state, action) => {
-      if (action.payload === "next") {
-        if (state.currentStepIndex < state.steps) {
-          state.currentStepIndex = state.currentStepIndex + 1;
-        }
-      } else {
-        if (state.currentStepIndex > 0) {
-          state.currentStepIndex = state.currentStepIndex - 1;
-        }
-      }
-    },
-    setStepLength: (state, action) => {
-      state.steps = action.payload;
-    },
+   
     setSelectedGoal: (state, action) => {
       state.selectedGoal = action.payload;
     },
@@ -190,8 +175,6 @@ export default appSlice.reducer;
 export const {
   setLightAndDarkMode,
   setAnyTypeOfModal,
-  setStepLength,
-  setCurrentStepIndexRedux,
   setSelectedGoal,
   editSelectedGoal,
   editSelectedGoalTitle,
@@ -201,27 +184,4 @@ export const {
   editSelectedGoalImg
 } = appSlice.actions;
 
-// switch (goal?.type) {
-//   case "Retirement":
-//     if (name === "age.currentAge") {
-//       // If what we type is a value we add it to state ... added this because typing backspace was causing problems
-//       if (value) {
-//         state.selectedGoal.age.currentAge = Number(value);
-//       }
-//     } else if (name === "age.retireAge") {
-//       if (value) {
-//         state.selectedGoal.age.retireAge = Number(value);
-//       }
-//     } else if (name === "age.lifeExpectancy") {
-//       if (value) {
-//         state.selectedGoal.age.lifeExpectancy = Number(value);
-//       }
-//     } else {
-//       if (value) {
-//         (state.selectedGoal[name as keyof RetirementGoals] as number) = Number(value);
-//       }
-//     }
-//     break;
-//   default:
-//     return
-// }
+

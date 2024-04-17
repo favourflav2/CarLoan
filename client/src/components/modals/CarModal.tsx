@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { Modal } from "@mui/material";
-import { setCurrentStepIndexRedux, setAnyTypeOfModal } from "../../redux/features/applicationSlice";
+import { setAnyTypeOfModal } from "../../redux/features/applicationSlice";
 import { useMultiStepForm } from "../hooks/useMultiStep";
 import Car1st from "../multiStepDivs/carDivs/Car1st";
 
@@ -16,7 +16,7 @@ export default function CarModal ({setFirstModal}: ICarModalProps) {
   const dispatch = Dispatch();
 
   // MultiStep
-  const { currentStep, currentStepIndex } = useMultiStepForm([<Car1st />]);
+  const { currentStep, currentStepIndex } = useMultiStepForm([<Car1st />],0);
 
   // ref for scrolling to top
   const myRef = React.useRef<any>(null);
@@ -36,12 +36,11 @@ export default function CarModal ({setFirstModal}: ICarModalProps) {
     open={carModal}
     onClose={() => {
       dispatch(setAnyTypeOfModal({ value: false, type: "Car" }));
-      dispatch(setCurrentStepIndexRedux("back"));
     }}
   >
-    <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[70%] md:w-[60%] xl:w-[50%] 2xl:w-[45%] w-full sm:h-auto h-full  rounded-lg">
+    <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[70%] md:w-[60%] xl:w-[50%] 2xl:w-[45%] w-full sm:h-auto h-full  rounded-lg" ref={myRef}>
       {/* Content */}
-      <div className="w-full h-full flex flex-col p-4 overflow-y-auto no-scrollbar" ref={myRef}>
+      <div className="w-full h-full flex flex-col p-4 overflow-y-auto no-scrollbar" >
         <div>{currentStep}</div>
         <div className="w-full flex items-center justify-between">
           <div className="w-full h-auto">

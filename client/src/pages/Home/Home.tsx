@@ -17,6 +17,7 @@ import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlic
 import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
 import CarPage from "../CarPage/CarPage";
 import HouseModal from "../../components/modals/HouseModal";
+import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 
 export default function Home() {
   // Redux States
@@ -34,12 +35,14 @@ export default function Home() {
   // Drawer State Mobile Devices
   const [open, setOpen] = React.useState(false);
 
-  function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData) {
+  function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (value?.type) {
       case "Retirement":
         return <RetirementPage />;
       case "Car":
         return <CarPage />
+      case "House":
+        return <div>Hosue Page</div>
       default:
         return (
           <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>

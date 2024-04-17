@@ -23,13 +23,7 @@ export default function Car1st() {
     setUpdatedImg(img);
   }
 
-  // ref for scrolling to top
-  const myRef = React.useRef<any>(null);
-  const executeScroll = () => myRef?.current?.scrollTo(0, 0);
 
-  React.useEffect(() => {
-    executeScroll();
-  }, []);
 
 
 
@@ -45,7 +39,7 @@ export default function Car1st() {
         delay: 0.3,
         ease: [0, 0.71, 0.2, 1.01],
       }}
-      ref={myRef}
+
     >
       {/* First Box */}
       <div className="w-full justify-between flex items-center ">
