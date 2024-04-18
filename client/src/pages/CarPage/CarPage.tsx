@@ -13,20 +13,18 @@ import {
 } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import CarPageInputs from "./CarPageInputs";
 import CarHouseChart from "../../components/charts/CarHouseChart";
-import { Divider, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { Divider, SelectChangeEvent } from "@mui/material";
 import CarPageSummary from "./CarPageSummary";
-import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from "@mui/icons-material/Close";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { carsArr } from "../../components/multiStepDivs/carDivs/CarComponets/carModalSchema";
 import MonthsSection from "./components/MonthsSection";
 import { editCarGoalTitle } from "../../redux/features/modalSlices/carModalSlice";
 import EditImgModal from "./components/EditImgModal";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import insertCar from '../../assets/addImg.png'
+import EditNameAndModal from "./EditNameAndModal";
 
 const schema = z.object({
   name: z
@@ -106,7 +104,7 @@ export default function CarPage() {
   const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberMonths>();
   const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
 
-  // Edit State
+  // Edit State and Save Btn
   const [editState, setEditState] = React.useState(false);
   const [saveBtn, setSaveBtn] = React.useState(false);
 
@@ -199,134 +197,8 @@ export default function CarPage() {
             transition={{ duration: 0.25 }}
             className="w-full flex flex-col dark:text-gray-300 text-black p-4"
           >
-            <div className="w-auto flex flex-col">
-              {/* Edit Title Container */}
-              <div className="w-auto h-auto flex  relative">
-                {editState ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    className="w-auto flex flex-col mb-4"
-                  >
-                    {/* Modal Select */}
-                    <div className="w-auto flex flex-col mb-2">
-                      <label htmlFor="modal" className="text-[12px]">
-                        Modal
-                      </label>
-                      <Select
-                        label="Modal"
-                        MenuProps={{ PaperProps: { sx: { maxHeight: 150 } } }}
-                        sx={{
-                          boxShadow: "none",
-                          ".MuiOutlinedInput-notchedOutline": { border: 0 },
-                          "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                            border: 0,
-                          },
-                          "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                            border: 0,
-                          },
-                        }}
-                        className="outline-none h-[30px] text-[16px] border border-gray-300 dark:border-none rounded-md dark:text-black bg-white"
-                        onChange={handleChange}
-                        value={allInputData.modal}
-                      >
-                        {carsArr.map((item: string, index: number) => (
-                          <MenuItem key={item} value={item}>
-                            {item}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </div>
-
-                    {/* Car Name */}
-                    <div className="w-auto flex flex-col">
-                      <label htmlFor="name" className="text-[12px]">
-                        Name
-                      </label>
-                      <input
-                        className="outline-chartGreen dark:outline-none indent-4 h-[30px] text-[16px] border border-gray-300 dark:border-none rounded-md dark:text-black"
-                        type="text"
-                        {...register("name")}
-                      />
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.h1
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    className="text-[19px] font-semibold underline inline-block align-bottom"
-                  >
-                    {selectedGoal.modal} {selectedGoal.name}
-                  </motion.h1>
-                )}
-
-                {editState ? (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    className=" absolute left-[180px]"
-                  >
-                    <CloseIcon
-                      className="ml-2 text-[22px] cursor-pointer"
-                      onClick={() => {
-                        setEditState(false);
-                        setValue("name", selectedGoal?.name);
-                        setValue("modal",selectedGoal.modal)
-                      }}
-                    />
-                  </motion.button>
-                ) : (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                  >
-                    <EditIcon className="ml-2 text-[22px] cursor-pointer" onClick={() => setEditState(true)} />
-                  </motion.button>
-                )}
-              </div>
-              {errors?.name && <p className="text-red-500 text-[13px] ">{errors?.name?.message}</p>}
-
-              {/* Save Button */}
-              <AnimatePresence>
-                {saveBtn && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 0.97 }}
-                    transition={{
-                      duration: 0.3,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    className="w-[100px] text-[14px] mt-2 rounded-lg border-2 border-chartGreen dark:text-white text-black"
-                    onClick={handleSubmit(onSubmit)}
-                  >
-                    Save
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Name and Modal Inputs on Edit */}
+           <EditNameAndModal handleChange={handleChange} onSubmit={onSubmit} handleSubmit={handleSubmit} saveBtn={saveBtn} register={register} errors={errors} allInputData={allInputData} setValue={setValue} setEditState={setEditState} editState={editState}/>
 
             {/* Car Box */}
             <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
