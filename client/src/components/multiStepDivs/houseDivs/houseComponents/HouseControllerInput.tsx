@@ -5,7 +5,7 @@ import { NumericFormat } from "react-number-format";
 
 export interface IHouseControllerInputProps {
   label: string;
-  name: "price" | "downPayment" | "interest" | "mortgageInsurance";
+  name: "price" | "downPayment" | "interest" | "mortgageInsurance" | "extraPayment" | "propertyTax" | "insurance"
   placeholder: string;
   type: "Number" | "Percent";
   errors: FieldErrors<{
@@ -103,6 +103,7 @@ export default function HouseControllerInput({ errors, control, name, label, pla
         control={control}
       />
       {errors?.[name as keyof FormFields] && <p className="text-red-500 text-[13px] ">{errors?.[name]?.message}</p>}
+      {!errors?.[name as keyof FormFields] && name === "mortgageInsurance" && <p className="text-orange-800 dark:text-orange-400 text-[13px] mt-[1px] ">Since your down payment is less than 20%, you will need to pay mortgage insurance</p>}
     </div>
   );
 }

@@ -8,7 +8,7 @@ export interface HouseObj {
   interest: string;
   term: number;
   extraPayment: string;
-  img?: string | undefined;
+  img?: string;
   propertyTax: string;
   insurance: string;
   mortgageInsurance: string;
@@ -25,7 +25,7 @@ export interface HouseObjWithFormattedData {
   interest: number;
   term: number;
   extraPayment: number;
-  img?: string | undefined;
+  img?: string;
   propertyTax: number;
   insurance: number;
   mortgageInsurance: number;
@@ -61,7 +61,7 @@ const houseSlice = createSlice({
         interest: parseFloat(interest.replace(/[,%$]/gm, "")),
         term,
         extraPayment: 0,
-        img: img ? img : undefined,
+        img: img ? img : "",
         propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
         insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
         mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
@@ -80,9 +80,16 @@ const houseSlice = createSlice({
         state.error = "There is duplicate car items";
       }
     },
+    removeHouseGoal: (state,action: PayloadAction<HouseObjWithFormattedData>) => {
+        if(action.payload.type !== "House") return
+
+        const {id, streetAddress} = action.payload
+
+        state.houseGoals = state.houseGoals.filter(item => item.id !== id && item.streetAddress !== streetAddress)
+    }
   },
 });
 
 export default houseSlice.reducer;
 
-export const {addHouseGoal} = houseSlice.actions;
+export const {addHouseGoal,removeHouseGoal} = houseSlice.actions;

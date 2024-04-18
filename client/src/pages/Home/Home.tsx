@@ -18,12 +18,14 @@ import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carMod
 import CarPage from "../CarPage/CarPage";
 import HouseModal from "../../components/modals/HouseModal";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
+import HousePage from "../HousePage/HousePage";
 
 export default function Home() {
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar, retireModal, carModal } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { carGoals } = UseSelector((state) => state.carModalSlice);
+  const { houseGoals } = UseSelector((state) => state.houseSlice);
   const dispatch = Dispatch();
 
   // Media Breakpoint
@@ -42,7 +44,7 @@ export default function Home() {
       case "Car":
         return <CarPage />
       case "House":
-        return <div>Hosue Page</div>
+        return <HousePage />
       default:
         return (
           <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
@@ -52,10 +54,10 @@ export default function Home() {
 
   //If theres no saved goals ... going to set selected goal to null
   React.useEffect(() => {
-    if (retireGoals.length === 0 && carGoals.length === 0 ) {
+    if (retireGoals.length === 0 && carGoals.length === 0 && houseGoals.length === 0 ) {
       dispatch(setSelectedGoal(null));
     }
-  }, [dispatch, retireGoals, carGoals]);
+  }, [dispatch, retireGoals, carGoals,houseGoals]);
 
   // If the breakpoint hit/pass 900px we close mobile drawer
   React.useEffect(() => {

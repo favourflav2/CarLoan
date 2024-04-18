@@ -12,7 +12,7 @@ import { Dispatch } from "../../../../redux/store";
 import { addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
 import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
 
-const arr = ["10", "15", "20", "25", "30", "60"];
+export const houseTerms = ["10", "15", "20", "25", "30", "60"];
 
 type FormFields = z.infer<typeof house1stSchema>;
 
@@ -51,15 +51,16 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
     formState: { errors },
   } = useForm<FormFields>({
     mode: "all",
+    // the average annual cost of homeowners insurance in the U.S. is $2,511.25
     defaultValues: {
       term: 30,
       extraPayment: "0",
-      mortgageInsurance: "0",
-      propertyTax: "0",
-      insurance: "0",
-      appreciation: "0",
-      maintenance: "0",
-      opportunityCostRate: "0",
+      //mortgageInsurance: "1",
+      propertyTax: "1.11",
+      insurance: "209.27",
+      appreciation: "2",
+      maintenance: "1",
+      opportunityCostRate: "7",
     },
     resolver: zodResolver(house1stSchema),
   });
@@ -95,15 +96,13 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
     setValue("id", dateFormat);
   }, [setValue, dateFormat]);
 
-  React.useEffect(()=>{
-    
-  },[downPayment,twentyPercentValue])
+
 
   React.useEffect(() => {
     if (updatedImg) {
       setValue("img", updatedImg);
     } else {
-      setValue("img", undefined);
+      setValue("img", "");
     }
   }, [updatedImg, setValue]);
 
@@ -187,7 +186,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
                 onChange={handleChange}
                 value={allInputData.term.toString()}
               >
-                {arr.map((item: string) => (
+                {houseTerms.map((item: string) => (
                   <MenuItem key={item} value={item}>
                     {item}
                   </MenuItem>

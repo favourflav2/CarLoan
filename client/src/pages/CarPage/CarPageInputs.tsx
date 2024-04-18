@@ -148,29 +148,12 @@ export default function CarPageInputs(props: ICarPageInputsProps) {
     <div className="w-full flex flex-col">
 
       <form className="w-full h-auto flex flex-col " onSubmit={handleSubmit(onSubmit)}>
-        {/* Current Age */}
-        {/* <div className="w-auto flex flex-col mb-3">
-          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
-            Car Name
-          </label>
-          <input
-            {...register("name", {
-            })}
-            className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.name && "border-2 border-red-500"}`}
-          />
-          {errors?.name && <p className="text-red-500 text-[13px] ">{errors?.name?.message}</p>}
-        </div> */}
+       
 
         {/* Price*/}
         <div className="w-auto flex flex-col mb-3">
           <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
             Price
-            {/* <Tooltip
-              placement="top"
-              title={<h1 className="text-[12.5px]">This is the total of all your retirement savings, including your 401(k) and IRA balances plus other savings earmarked for retirement.</h1>}
-            >
-              <HelpOutlineIcon className="!text-[15px] ml-[2px]" />
-            </Tooltip> */}
           </label>
 
           <Controller

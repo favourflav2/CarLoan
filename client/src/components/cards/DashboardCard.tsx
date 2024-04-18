@@ -8,7 +8,7 @@ import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import { removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
-import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
+import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
 
 export interface IDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +25,7 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
   const { houseGoals } = UseSelector((state) => state.houseSlice);
   const dispatch = Dispatch();
 
-  const concatData: Array<RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData> = [...retireGoals, ...carGoals,...houseGoals];
+  const concatData: Array<RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData> = [...retireGoals, ...carGoals, ...houseGoals];
 
   // ref
   const ref = React.useRef(null);
@@ -36,14 +36,21 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
       case "Retirement":
         if (!item) return;
         if (item.type !== "Retirement") return;
-        dispatch(setSelectedGoal(null));
         dispatch(removeRetireItem(item));
+        dispatch(setSelectedGoal(null));
+
         break;
       case "Car":
         if (!item) return;
         if (item.type !== "Car") return;
-        dispatch(setSelectedGoal(null));
         dispatch(removeCarItem(item));
+        dispatch(setSelectedGoal(null));
+
+        break;
+      case "House":
+        
+        dispatch(removeHouseGoal(item));
+        dispatch(setSelectedGoal(null));
         break;
       default:
         return;
@@ -82,7 +89,6 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
     }
   }
 
-  
   return (
     <>
       {retireGoals.length > 0 || carGoals.length > 0 || houseGoals.length > 0 ? (
@@ -169,4 +175,3 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
     </>
   );
 }
-
