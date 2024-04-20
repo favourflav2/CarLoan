@@ -7,9 +7,10 @@ import _ from "lodash";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { UseSelector } from "../../redux/store";
 import HouseControllerInput from "../../components/multiStepDivs/houseDivs/houseComponents/HouseControllerInput";
-import {  HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
+import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { houseTerms } from "../../components/multiStepDivs/houseDivs/houseComponents/House1stInputs";
+
 
 export interface IHousePageInputsProps {}
 type FormFields = z.infer<typeof house1stSchema>;
@@ -60,6 +61,10 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
 
   const allInputData = watch();
 
+
+  console.log(Number(parseInt(allInputData.price)) * .2)
+  console.log(selectedGoal && selectedGoal.type === "House" && Number(selectedGoal.price) * .2)
+
   // Handle Change
   const handleChange = (event: SelectChangeEvent) => {
     setValue("term", Number(event.target.value) as number);
@@ -78,7 +83,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
         id,
         streetAddress,
         type: "House",
-        price ,
+        price,
         downPayment,
         interest,
         extraPayment,
@@ -119,19 +124,15 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
         insurance: insurance ? parseFloat(insurance.replace(/[,%$]/gm, "")) : 209.27,
         mortgageInsurance: mortgageInsurance ? parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")) : 1,
         appreciation: appreciation ? parseFloat(appreciation.replace(/[,%$]/gm, "")) : 2,
-        maintenance: maintenance ?parseFloat(maintenance.replace(/[,%$]/gm, "")) : 1,
+        maintenance: maintenance ? parseFloat(maintenance.replace(/[,%$]/gm, "")) : 1,
         opportunityCostRate: opportunityCostRate ? parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")) : 1,
-        type:"House"
+        type: "House",
       };
 
       checkValid(selectedGoal, newData);
     });
     return () => subscription.unsubscribe();
   }, [watch, selectedGoal]);
-
-  
-
-
 
   // Checking if the down payment is less than or greater than 20% ... so we can show mortgage insurance .. ON RENDER HERE
   React.useEffect(() => {
@@ -167,14 +168,12 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     //     data.mortgageInsurance = "0"
     //     dispatch(addHouseGoal(data))
     //     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
-        
+
     //   }else{
     //     dispatch(addHouseGoal(data))
     //     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
     //   }
   };
-
-
 
   if (!selectedGoal || selectedGoal.type !== "House") return null;
   return (
@@ -243,19 +242,18 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
             )}
           </AnimatePresence>
 
-        
-
           {/* Update Button */}
           <AnimatePresence>
             {selectedGoal && showUpadateBtn && (
-              <motion.button
-                className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"}`}
+              <motion.div
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
                 exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                className="w-full flex flex-col"
               >
-                Update
-              </motion.button>
+                <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>Update</button>
+                {(Number(parseInt(allInputData.downPayment))) > (Number(parseInt(allInputData.price)) * .2) && <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.</p>}
+              </motion.div>
             )}
           </AnimatePresence>
         </form>
