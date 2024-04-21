@@ -32,7 +32,7 @@ export interface IHouseFirstInputsProps {
 export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps) {
   // Redux States
   const [selectedAddress, setSelectedAddress] = React.useState<SelectedAddress>();
-  const dispatch = Dispatch()
+  const dispatch = Dispatch();
 
   // Error for google api
   const [googleError, setGoogleError] = React.useState(false);
@@ -47,6 +47,8 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
     handleSubmit,
     watch,
     setValue,
+    setError,
+    clearErrors,
     control,
     formState: { errors },
   } = useForm<FormFields>({
@@ -55,7 +57,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
     defaultValues: {
       term: 30,
       extraPayment: "0",
-      //mortgageInsurance: "1",
+      mortgageInsurance: "0",
       propertyTax: "1.11",
       insurance: "209.27",
       appreciation: "2",
@@ -66,26 +68,37 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   });
 
   const allInputData = watch();
-  const twentyPercentValue = Number(parseInt(allInputData.price) * .20)
-  const downPayment = watch("downPayment")
+  const twentyPercentValue = Number(parseInt(allInputData.price) * 0.2);
+  const downPayment = watch("downPayment");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    let dataTwentyPercentValue = Number(parseInt(data.price) * .20)
+    dispatch(addHouseGoal(data))
+    dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
 
-    // If the down payment is greater than 20% we need to set the mortagage insurance to 0
-    //* if the down payment is not greater than 20% we do nothing 
-    if(parseInt(data.downPayment) > dataTwentyPercentValue){
-      setValue("mortgageInsurance","0")
-      data.mortgageInsurance = "0"
-      dispatch(addHouseGoal(data))
-      dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
-      
-    }else{
-      dispatch(addHouseGoal(data))
-      dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
-    }
-    
   };
+
+  function SubmitValidation(e:any){
+    e.preventDefault()
+    if(!downPayment || !twentyPercentValue || !allInputData.mortgageInsurance) return
+
+    // If the down payment is less than 20%
+    if(parseFloat(downPayment) < twentyPercentValue){
+
+      // if the mortgage insurance is less than or equal to 0 ... and a user clicks we show and error ... else we continue
+      if(parseFloat(allInputData.mortgageInsurance) <= 0){
+        setError("mortgageInsurance",{type:"custom", message:"Please enter a value greater than 0%"})
+      }else{
+        handleSubmit(onSubmit)()
+      }
+    }else{
+      // if the down payment is not less than 20% ... then we dont have mortgage insurance
+      clearErrors("mortgageInsurance")
+      setValue("mortgageInsurance","0")
+      handleSubmit(onSubmit)()
+    }
+  }
+
+
 
   // Handle Change
   const handleChange = (event: SelectChangeEvent) => {
@@ -95,6 +108,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   React.useEffect(() => {
     setValue("id", dateFormat);
   }, [setValue, dateFormat]);
+
 
 
 
@@ -109,11 +123,13 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   // This will not allow google api
   const user = true;
 
-  
 
   return (
     <div className="my-10">
-      <form className="w-full h-auto flex flex-col mt-5" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="w-full h-auto flex flex-col mt-5"
+        onSubmit={(e)=>SubmitValidation(e)}
+      >
         {/* Input Container */}
         <div className="w-full h-auto flex flex-col">
           {/* 1st Row with address and price */}
@@ -196,7 +212,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
           </div>
 
           {/* Mortgage Insurance */}
-          {twentyPercentValue > parseInt(downPayment)  && (
+          {twentyPercentValue > parseInt(downPayment) && (
             <HouseControllerInput type="Percent" control={control} errors={errors} name="mortgageInsurance" label="Mortgage Insurance" placeholder="Enter an mortgage nsurancet rate..." />
           )}
         </div>

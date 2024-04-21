@@ -62,8 +62,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   const allInputData = watch();
 
 
-  console.log(Number(parseInt(allInputData.price)) * .2)
-  console.log(selectedGoal && selectedGoal.type === "House" && Number(selectedGoal.price) * .2)
+
 
   // Handle Change
   const handleChange = (event: SelectChangeEvent) => {
@@ -174,6 +173,8 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     //     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
     //   }
   };
+
+ 
 
   if (!selectedGoal || selectedGoal.type !== "House") return null;
   return (

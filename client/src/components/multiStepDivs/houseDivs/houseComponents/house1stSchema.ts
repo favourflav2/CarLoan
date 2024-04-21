@@ -50,9 +50,6 @@ export const house1stSchema = z
       })
       .refine((item) => parseInt(item) < 10, {
         message: "Please enter a number between 1% and 10%",
-      })
-      .refine((item) => Number(item) > 0, {
-        message: "Please enter a number between 0.1% and 10%",
       }),
     appreciation: z.string({
       required_error: "The average home appreciation per year in the United States is between 2-4%, you can choose what you need",
