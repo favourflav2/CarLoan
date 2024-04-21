@@ -48,7 +48,7 @@ export const house1stSchema = z
       .string({
         required_error: "Please enter a mortgage insurance rate",
       })
-      .refine((item) => parseInt(item) < 10, {
+      .refine((item) => parseFloat(item) < 10, {
         message: "Please enter a number between 1% and 10%",
       }),
     appreciation: z.string({
@@ -62,7 +62,7 @@ export const house1stSchema = z
     }),
   })
   .superRefine((values, ctx) => {
-    if (parseInt(values.downPayment) >= parseInt(values.price)) {
+    if (parseFloat(values.downPayment) >= parseFloat(values.price)) {
       ctx.addIssue({
         message: "Your down payment should not be greater the house price.",
         code: z.ZodIssueCode.custom,
@@ -76,8 +76,8 @@ export const house1stSchema = z
     }
   });
 // .superRefine((values, ctx) => {
-//   const twentyPercentValue = Number(parseInt(values.price) * 0.2);
-//   if (parseInt(values.downPayment) < twentyPercentValue) {
+//   const twentyPercentValue = Number(parseFloat(values.price) * 0.2);
+//   if (parseFloat(values.downPayment) < twentyPercentValue) {
 //     ctx.addIssue({
 //       message: "Since your down payment is less than 20%, you will need to pay mortgage insurance",
 //       code: z.ZodIssueCode.custom,

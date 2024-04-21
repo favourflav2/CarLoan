@@ -148,9 +148,9 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   // Checking if the down payment is less than or greater than 20% ... so we can show mortgage insurance .. ON USER INPUT/TYPE
   React.useEffect(() => {
     const subscription = watch((value) => {
-      const twentyPercentValue = Number(parseInt(value.price as string) * 0.2);
+      const twentyPercentValue = Number(parseFloat(value.price as string) * 0.2);
 
-      if (parseInt(value.downPayment as string) < twentyPercentValue) {
+      if (parseFloat(value.downPayment as string) < twentyPercentValue) {
         setShowMIP(true);
       } else {
         setShowMIP(false);
@@ -162,7 +162,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     console.log(data);
 
-    // if(parseInt(data.downPayment) > dataTwentyPercentValue){
+    // if(parseFloat(data.downPayment) > dataTwentyPercentValue){
     //     setValue("mortgageInsurance","0")
     //     data.mortgageInsurance = "0"
     //     dispatch(addHouseGoal(data))
@@ -253,7 +253,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
                 className="w-full flex flex-col"
               >
                 <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>Update</button>
-                {(Number(parseInt(allInputData.downPayment))) > (Number(parseInt(allInputData.price)) * .2) && <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.</p>}
+                {(Number(parseFloat(allInputData.downPayment))) > (Number(parseFloat(allInputData.price)) * .2) && <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.</p>}
               </motion.div>
             )}
           </AnimatePresence>

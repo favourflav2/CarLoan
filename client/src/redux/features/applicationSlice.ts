@@ -3,6 +3,7 @@ import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retiremen
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
 
+
 export type goal = RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
 
 interface AppSlice {

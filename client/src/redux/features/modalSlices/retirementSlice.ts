@@ -3,6 +3,7 @@ import { goal } from "../applicationSlice";
 
 //! Need to add a check to make sure theres no item in array that matches id ... checking for dupilcates before I push into array
 
+
 export interface RetirementGoals {
   type: "Retirement";
   id: string;

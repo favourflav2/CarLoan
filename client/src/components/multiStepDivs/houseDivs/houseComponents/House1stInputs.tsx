@@ -68,7 +68,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   });
 
   const allInputData = watch();
-  const twentyPercentValue = Number(parseInt(allInputData.price) * 0.2);
+  const twentyPercentValue = Number(parseFloat(allInputData.price) * 0.2);
   const downPayment = watch("downPayment");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
@@ -212,7 +212,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
           </div>
 
           {/* Mortgage Insurance */}
-          {twentyPercentValue > parseInt(downPayment) && (
+          {twentyPercentValue > parseFloat(downPayment) && (
             <HouseControllerInput type="Percent" control={control} errors={errors} name="mortgageInsurance" label="Mortgage Insurance" placeholder="Enter an mortgage nsurancet rate..." />
           )}
         </div>

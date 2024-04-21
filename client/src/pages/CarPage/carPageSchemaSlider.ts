@@ -24,9 +24,9 @@ export const carPageSchemaSlider = z
       }),
     price: z.string({
       required_error: "Please enter a price",
-    }).refine((item) => parseInt(item) >= 1000, {
+    }).refine((item) => parseFloat(item) >= 1000, {
       message:"Please enter a price greater than or equal to $1,000"
-    }).refine((item) => parseInt(item) <= 750000, {
+    }).refine((item) => parseFloat(item) <= 750000, {
       message:"Please enter a price less than or equal to $750,000"
     }),
     mileage: z.string({
@@ -51,7 +51,7 @@ export const carPageSchemaSlider = z
       }),
     salary: z.string({
       required_error: "Please enter your salary",
-    }).refine((item) => parseInt(item) <= 1000000, {
+    }).refine((item) => parseFloat(item) <= 1000000, {
       message: "Please enter an income/salary less than 1,000,000"
     }),
     term: z.number({
@@ -67,7 +67,7 @@ export const carPageSchemaSlider = z
     img: z.any().optional()
   })
   .superRefine((values, ctx) => {
-    if (parseInt(values.downPayment) >= parseInt(values.price)) {
+    if (parseFloat(values.downPayment) >= parseFloat(values.price)) {
       ctx.addIssue({
         message: "Your down payment should not be greater the car price.",
         code: z.ZodIssueCode.custom,

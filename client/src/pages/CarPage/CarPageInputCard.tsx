@@ -171,7 +171,7 @@ export default function CarPageInputCard({ label, min, max, handleSliderChange, 
       <div className="w-full flex items-center">
         <p className="text-gray-500 dark:text-gray-400 text-[15px] mr-1">{maxAndMinSwitch(indexName,min,max).min}</p>
         <CustomSlider
-          value={parseInt(allInputData[indexName as keyof ControlType])}
+          value={parseFloat(allInputData[indexName as keyof ControlType])}
           handleSliderChange={(e: any) => handleSliderChange(e, e.target.value, `${indexName}`)}
           indexName={indexName}
           max={max}
