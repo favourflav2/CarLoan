@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { setSelectedGoal } from "../../redux/features/applicationSlice";
+import { editShowTaxForHouse, setSelectedGoal } from "../../redux/features/applicationSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
@@ -8,7 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import HousePageInputs from "./HousePageInputs";
 import EditNameHouseBox from "./EditNameHouseBox";
 import HouseImgAndNum from "./HouseImgAndNum";
-import { getMonthlyPaymentForHouse } from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
+import { ExtraNumberYears, HouseMonthlyPayment, getMonthlyPaymentForHouse, loanAmmortizationForHouse, loanAmmortizationWithExtraPaymentForHouse, solveForNumberOfMonthsForHouse } from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
+import { updateShowTax } from "../../redux/features/modalSlices/houseSlice";
+import { ExtraNumberMonths, LoanAmmortizationType, MyLoanForLoop, loanAmmortizationWithExtraPayment } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 
 export interface IHousePageProps {}
 
@@ -56,10 +58,21 @@ export default function HousePage(props: IHousePageProps) {
   // Modal States
   const [openImgModal, setOpenImgModal] = React.useState(false);
 
+    // Chart States
+    const [monthlyPayment, setMonthlyPayment] = React.useState<HouseMonthlyPayment>();
+    const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
+    const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberYears>();
+    const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
+
   React.useEffect(() => {
     if (!selectedGoal || selectedGoal.type !== "House") return;
     const { interest, downPayment, insurance, mortgageInsurance, propertyTax, price, term } = selectedGoal;
-    getMonthlyPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, 0);
+    const twentyPercentValue = price * .20
+    const isNotGreaterThan20 = downPayment < twentyPercentValue ? true : false
+    setMonthlyPayment(getMonthlyPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment,isNotGreaterThan20))
+    setRegualrLoanAmmortization(loanAmmortizationForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance },isNotGreaterThan20))
+    setExtraNumberOfMonths(solveForNumberOfMonthsForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment,isNotGreaterThan20))
+    setExtraLoanAmmortization(loanAmmortizationWithExtraPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment,isNotGreaterThan20))
   }, [selectedGoal]);
 
   // Handle Submit
@@ -69,6 +82,8 @@ export default function HousePage(props: IHousePageProps) {
     // setEditState(false);
     // setSaveBtn(false);
   };
+
+  
 
   if (!selectedGoal || selectedGoal.type !== "House") {
     dispatch(setSelectedGoal(null));
@@ -120,6 +135,11 @@ export default function HousePage(props: IHousePageProps) {
 
             {/* House Img and Numbers */}
             <HouseImgAndNum selectedGoal={selectedGoal} setOpenImgModal={setOpenImgModal} />
+
+            <button className="bg-purple-400 p-2 rounded-lg" onClick={()=>{
+              dispatch(editShowTaxForHouse(selectedGoal))
+              dispatch(updateShowTax({id:selectedGoal.id}))
+            }}>Currently: {selectedGoal.showTax}</button>
           </motion.div>
         </AnimatePresence>
       </div>

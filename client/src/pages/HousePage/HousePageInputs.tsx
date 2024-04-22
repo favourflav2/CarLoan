@@ -25,6 +25,8 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   // Show mortgage insurance
   const [showMIP, setShowMIP] = React.useState(false);
 
+ 
+
   // Form Feilds
   const {
     control,
@@ -51,7 +53,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
       extraPayment: selectedGoal?.type === "House" && selectedGoal?.extraPayment ? selectedGoal.extraPayment.toString() : "0",
       propertyTax: selectedGoal?.type === "House" && selectedGoal?.propertyTax ? selectedGoal.propertyTax.toString() : "1.11",
       insurance: selectedGoal?.type === "House" && selectedGoal?.insurance ? selectedGoal.insurance.toString() : "209.27",
-      mortgageInsurance: selectedGoal?.type === "House" && selectedGoal?.mortgageInsurance ? selectedGoal.mortgageInsurance.toString() : "1",
+      mortgageInsurance: selectedGoal?.type === "House" && selectedGoal?.mortgageInsurance && selectedGoal.downPayment < (selectedGoal.price * .20) ? selectedGoal.mortgageInsurance.toString() : "0",
       appreciation: selectedGoal?.type === "House" && selectedGoal?.appreciation ? selectedGoal.appreciation.toString() : "2",
       maintenance: selectedGoal?.type === "House" && selectedGoal?.maintenance ? selectedGoal.maintenance.toString() : "1",
       opportunityCostRate: selectedGoal?.type === "House" && selectedGoal?.opportunityCostRate ? selectedGoal.opportunityCostRate.toString() : "1",
@@ -94,7 +96,10 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
         maintenance,
         term,
         img: img ? img : "",
+        showTax: select.showTax
       };
+
+     
 
       const isTheSame = _.isEqual(obj, select);
 
@@ -121,11 +126,12 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
         extraPayment: extraPayment ? parseFloat(extraPayment.replace(/[,%$]/gm, "")) : 0,
         propertyTax: propertyTax ? parseFloat(propertyTax.replace(/[,%$]/gm, "")) : 1.11,
         insurance: insurance ? parseFloat(insurance.replace(/[,%$]/gm, "")) : 209.27,
-        mortgageInsurance: mortgageInsurance ? parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")) : 1,
+        mortgageInsurance: mortgageInsurance && downPayment && price && parseFloat(downPayment) < (parseFloat(price) * .20) ? parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")) : 0,
         appreciation: appreciation ? parseFloat(appreciation.replace(/[,%$]/gm, "")) : 2,
         maintenance: maintenance ? parseFloat(maintenance.replace(/[,%$]/gm, "")) : 1,
         opportunityCostRate: opportunityCostRate ? parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")) : 1,
         type: "House",
+        showTax: selectedGoal.showTax
       };
 
       checkValid(selectedGoal, newData);

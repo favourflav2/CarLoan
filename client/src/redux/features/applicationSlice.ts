@@ -169,6 +169,11 @@ const appSlice = createSlice({
           return;
       }
     },
+    editShowTaxForHouse: (state,action:PayloadAction<HouseObjWithFormattedData>) => {
+     if(!state.selectedGoal || action.payload.type !== "House" || state.selectedGoal.type !== "House") return
+
+     state.selectedGoal.showTax = state.selectedGoal.showTax === "monthlyPaymentWithTax" ? state.selectedGoal.showTax = "monthlyPaymentWithNoTax" : state.selectedGoal.showTax = "monthlyPaymentWithTax"
+    }
   },
 });
 
@@ -182,7 +187,8 @@ export const {
   setShrinkDashboard,
   setShowHaveExample,
   setSelectedGoalAfterCreate,
-  editSelectedGoalImg
+  editSelectedGoalImg,
+  editShowTaxForHouse
 } = appSlice.actions;
 
 

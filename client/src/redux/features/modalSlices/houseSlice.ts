@@ -33,6 +33,7 @@ export interface HouseObjWithFormattedData {
   opportunityCostRate: number;
   maintenance: number;
   type: "House";
+  showTax:"monthlyPaymentWithTax" | "monthlyPaymentWithNoTax"
 }
 
 interface HouseData {
@@ -69,7 +70,7 @@ const houseSlice = createSlice({
         opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
         maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
         type: "House",
-        
+        showTax:"monthlyPaymentWithTax"
       };
 
       const index = state.houseGoals.findIndex((item) => item.id === id);
@@ -83,13 +84,24 @@ const houseSlice = createSlice({
     removeHouseGoal: (state,action: PayloadAction<HouseObjWithFormattedData>) => {
         if(action.payload.type !== "House") return
 
-        const {id, streetAddress} = action.payload
+        const {id} = action.payload
 
-        state.houseGoals = state.houseGoals.filter(item => item.id !== id && item.streetAddress !== streetAddress)
+        //console.log(id)
+
+        state.houseGoals = state.houseGoals.filter(item => item.id !== id)
+    },
+    updateShowTax: (state,action: PayloadAction<{id:string}>) => {
+      const {id} = action.payload
+
+      const index = state.houseGoals.findIndex(item => item.id === id)
+
+      if(index >= 0){
+        state.houseGoals[index].showTax = state.houseGoals[index].showTax === "monthlyPaymentWithTax" ? state.houseGoals[index].showTax = "monthlyPaymentWithNoTax" : state.houseGoals[index].showTax = "monthlyPaymentWithTax"
+      }
     }
   },
 });
 
 export default houseSlice.reducer;
 
-export const {addHouseGoal,removeHouseGoal} = houseSlice.actions;
+export const {addHouseGoal,removeHouseGoal,updateShowTax} = houseSlice.actions;
