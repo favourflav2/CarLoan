@@ -98,10 +98,19 @@ const houseSlice = createSlice({
       if(index >= 0){
         state.houseGoals[index].showTax = state.houseGoals[index].showTax === "monthlyPaymentWithTax" ? state.houseGoals[index].showTax = "monthlyPaymentWithNoTax" : state.houseGoals[index].showTax = "monthlyPaymentWithTax"
       }
+    },
+    editHouseGoal: (state, action: PayloadAction<{id:string, goal: HouseObjWithFormattedData}>) => {
+      const {id, goal} = action.payload
+
+      const index = state.houseGoals.findIndex(item => item.id === id)
+
+      if(index >= 0){
+        state.houseGoals[index] = goal
+      }
     }
   },
 });
 
 export default houseSlice.reducer;
 
-export const {addHouseGoal,removeHouseGoal,updateShowTax} = houseSlice.actions;
+export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal} = houseSlice.actions;

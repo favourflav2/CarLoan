@@ -9,8 +9,7 @@ import { ExtraNumberMonths } from "../helperFunctions/loanfunctions/LoanFunction
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
-export interface ICarHouseChartProps {
-  type: "Car" | "House";
+export interface ICarChartProps {
   regualarLoan: LoanAmmortizationType;
   extraLoan: MyLoanForLoop[];
   monthlyPayment: MonthlyPayment;
@@ -18,7 +17,7 @@ export interface ICarHouseChartProps {
   downPayment: number;
 }
 
-export default function CarHouseChart({ type, regualarLoan, extraLoan, monthlyPayment, extraNumberOfMonths, downPayment }: ICarHouseChartProps) {
+export default function CarChart({ regualarLoan, extraLoan, monthlyPayment, extraNumberOfMonths, downPayment }: ICarChartProps) {
   // Redux States
   const { lightAndDarkMode, selectedGoal } = UseSelector((state) => state.app);
   const { myLoan } = regualarLoan;

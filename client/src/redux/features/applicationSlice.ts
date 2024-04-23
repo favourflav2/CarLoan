@@ -3,14 +3,13 @@ import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retiremen
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
 
-
 export type goal = RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
 
 interface AppSlice {
   lightAndDarkMode: boolean;
   retireModal: boolean;
   carModal: boolean;
-  houseModal:boolean;
+  houseModal: boolean;
   selectedGoal: RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
   shrinkDashboardSidebar: boolean;
   shrinkRetirementInputs: boolean;
@@ -30,7 +29,7 @@ const initialState: AppSlice = {
   showHaveExample: true,
   showNeedExample1: true,
   showNeedExample2: true,
-  houseModal:false
+  houseModal: false,
 };
 
 const appSlice = createSlice({
@@ -50,13 +49,13 @@ const appSlice = createSlice({
           state.carModal = value;
           break;
         case "House":
-          state.houseModal = value
-        break;
+          state.houseModal = value;
+          break;
         default:
           return;
       }
     },
-   
+
     setSelectedGoal: (state, action) => {
       state.selectedGoal = action.payload;
     },
@@ -78,7 +77,7 @@ const appSlice = createSlice({
       };
       state.selectedGoal = formattedData;
     },
-    editSelectedGoal: (state, action: PayloadAction<{ goal: RetirementGoals | CarObjWithFormattedData }>) => {
+    editSelectedGoal: (state, action: PayloadAction<{ goal: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData }>) => {
       // This reducer updates the selected goal ... so when you change the number a user sees the update
       const { goal } = action.payload;
 
@@ -96,6 +95,11 @@ const appSlice = createSlice({
         case "Car":
           if (goal.type !== "Car" || state.selectedGoal.type !== "Car") return;
 
+          state.selectedGoal = goal;
+          break;
+
+        case "House":
+          if (goal.type !== "House" || state.selectedGoal.type !== "House") return;
           state.selectedGoal = goal;
           break;
         default:
@@ -130,7 +134,7 @@ const appSlice = createSlice({
           return;
       }
     },
-    editSelectedGoalImg: (state, action: PayloadAction<{ goal: goal; img:string}>) => {
+    editSelectedGoalImg: (state, action: PayloadAction<{ goal: goal; img: string }>) => {
       const { goal, img } = action.payload;
 
       if (!state.selectedGoal) {
@@ -144,7 +148,7 @@ const appSlice = createSlice({
           if (!state.selectedGoal) return;
           if (goal.type !== "Car" || state.selectedGoal?.type !== "Car") return;
 
-          state.selectedGoal.img = img
+          state.selectedGoal.img = img;
 
           break;
         default:
@@ -169,11 +173,12 @@ const appSlice = createSlice({
           return;
       }
     },
-    editShowTaxForHouse: (state,action:PayloadAction<HouseObjWithFormattedData>) => {
-     if(!state.selectedGoal || action.payload.type !== "House" || state.selectedGoal.type !== "House") return
+    editShowTaxForHouse: (state, action: PayloadAction<HouseObjWithFormattedData>) => {
+      if (!state.selectedGoal || action.payload.type !== "House" || state.selectedGoal.type !== "House") return;
 
-     state.selectedGoal.showTax = state.selectedGoal.showTax === "monthlyPaymentWithTax" ? state.selectedGoal.showTax = "monthlyPaymentWithNoTax" : state.selectedGoal.showTax = "monthlyPaymentWithTax"
-    }
+      state.selectedGoal.showTax =
+        state.selectedGoal.showTax === "monthlyPaymentWithTax" ? (state.selectedGoal.showTax = "monthlyPaymentWithNoTax") : (state.selectedGoal.showTax = "monthlyPaymentWithTax");
+    },
   },
 });
 
@@ -188,7 +193,5 @@ export const {
   setShowHaveExample,
   setSelectedGoalAfterCreate,
   editSelectedGoalImg,
-  editShowTaxForHouse
+  editShowTaxForHouse,
 } = appSlice.actions;
-
-

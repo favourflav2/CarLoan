@@ -71,7 +71,7 @@ export function getMonthlyPaymentForHouse(obj: HouseLoanObj, extraPayment: numbe
     
       monthlyPayment:monthlyP,
       totalWithInterest:  totalPriceWithInterest,
-      extraMonthlyPayment:monthlyP + extraPayment, 
+      extraMonthlyPayment: extraPayment > 0 ? monthlyP + extraPayment : 0, 
       interestSum: interestAmount,
       // Total amount payed totalPriceWithInterest + down payment
       totalAmountPaid: totalPriceWithInterest + obj.downPayment,
@@ -102,6 +102,8 @@ export function loanAmmortizationForHouse(obj: HouseLoanObj, isNotGreaterThan20:
   const monthlyPayment = getMonthlyPaymentForHouse(obj, 0, isNotGreaterThan20)?.monthlyPayment
   const rate = obj.rate / 100;
   const res = [];
+  let years = 0
+  let months = 0
 
   if (!monthlyPayment) return;
 
@@ -111,11 +113,20 @@ export function loanAmmortizationForHouse(obj: HouseLoanObj, isNotGreaterThan20:
       let moneyTowardsPrincipal = monthlyPayment - loanAmountTimesRate;
       loanAmount = loanAmount - moneyTowardsPrincipal;
 
-      res.push({
-        time: i,
-        price: loanAmount >= 0 ? (loanAmount.toString().includes("e") ? 0 : loanAmount) : 0,
-      });
+      if(i % 12 === 0){
+        res.push({
+          time: years += 1,
+          price: loanAmount >= 0 ? (loanAmount.toString().includes("e") ? 0 : loanAmount) : 0,
+        })
+      }
+
+      // res.push({
+      //   time: i,
+      //   price: loanAmount >= 0 ? (loanAmount.toString().includes("e") ? 0 : loanAmount) : 0,
+      // });
     }
+
+    
   }
 
   //return loan
@@ -166,24 +177,30 @@ export function loanAmmortizationWithExtraPaymentForHouse(obj: HouseLoanObj, ext
   const monthlyPayment = getMonthlyPaymentForHouse(obj, extraPayment,isNotGreaterThan20)?.extraMonthlyPayment;
   const numberOfYears = solveForNumberOfMonthsForHouse(obj, extraPayment,isNotGreaterThan20)?.numberOfYears;
   const res = [];
+  let years = 0
 
   if (!monthlyPayment || !numberOfYears) return;
 
   // Need to turn number of years into months
-  const time = numberOfYears * 12
+  const time = (Math.ceil(numberOfYears) * 12)
 
   for (let i = 0; i <= time; i++) {
     if (i >= 1) {
       let loanAmountTimesRate = (loanAmount * rate) / 12;
       let moneyTowardsPrincipal = monthlyPayment - loanAmountTimesRate;
       loanAmount = loanAmount - moneyTowardsPrincipal;
-      res.push({
-        time: i,
-        price: loanAmount >= 0 ? (loanAmount.toString().includes("e") ? 0 : loanAmount) : 0,
-      });
+
+      if(i % 12 === 0){
+        res.push({
+          time: years += 1,
+          price: loanAmount >= 0 ? (loanAmount.toString().includes("e") ? 0 : loanAmount) : 0,
+        })
+
+        
+      }
+     
     }
   }
-  //console.log(monthlyPayment);
-  //console.log(res);
+ 
   return res;
 }

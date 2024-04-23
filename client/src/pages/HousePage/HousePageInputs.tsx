@@ -3,13 +3,14 @@ import { house1stSchema } from "../../components/multiStepDivs/houseDivs/houseCo
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
-import _ from "lodash";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { UseSelector } from "../../redux/store";
+import { Dispatch, UseSelector } from "../../redux/store";
 import HouseControllerInput from "../../components/multiStepDivs/houseDivs/houseComponents/HouseControllerInput";
-import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
+import { HouseObjWithFormattedData, editHouseGoal } from "../../redux/features/modalSlices/houseSlice";
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { houseTerms } from "../../components/multiStepDivs/houseDivs/houseComponents/House1stInputs";
+import { editSelectedGoal } from "../../redux/features/applicationSlice";
+import { isTheSameCheck } from "./components/utils/isTheSameCheck";
 
 
 export interface IHousePageInputsProps {}
@@ -18,9 +19,7 @@ type FormFields = z.infer<typeof house1stSchema>;
 export default function HousePageInputs(props: IHousePageInputsProps) {
   // Redux States
   const { selectedGoal } = UseSelector((state) => state.app);
-
-  // Show Update Btn
-  const [showUpadateBtn, setShowUpdateBtn] = React.useState<boolean>(false);
+  const dispatch = Dispatch()
 
   // Show mortgage insurance
   const [showMIP, setShowMIP] = React.useState(false);
@@ -35,6 +34,8 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     watch,
     //trigger,
     setValue,
+    setError,
+    clearErrors,
     formState: { errors },
   } = useForm<FormFields>({
     mode: "all",
@@ -62,6 +63,59 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   });
 
   const allInputData = watch();
+  const twentyPercentValue = Number(parseFloat(allInputData.price) * 0.2);
+  const downPayment = watch("downPayment");
+
+  const onSubmit: SubmitHandler<FormFields> = (data) => {
+    if(!selectedGoal || selectedGoal.type !== "House") return
+   const {id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance} = data
+
+   const newObj:HouseObjWithFormattedData = {
+    id,
+    streetAddress,
+    price: parseFloat(price.replace(/[,%$]/gm, "")),
+    downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
+    interest: parseFloat(interest.replace(/[,%$]/gm, "")),
+    term,
+    extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
+    img: img ?img : "",
+    propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
+    insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
+    mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
+    appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
+    opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
+    maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
+    type: "House",
+    showTax: selectedGoal.showTax
+   }
+
+   dispatch(editSelectedGoal({goal:newObj}))
+   dispatch(editHouseGoal({goal:newObj, id}))
+
+  };
+
+  function SubmitValidation(e:any){
+    e.preventDefault()
+    if(!downPayment || !twentyPercentValue || !allInputData.mortgageInsurance) return
+
+    // If the down payment is less than 20%
+    if(parseFloat(downPayment) < twentyPercentValue){
+
+      // if the mortgage insurance is less than or equal to 0 ... and a user clicks we show and error ... else we continue
+      if(parseFloat(allInputData.mortgageInsurance) <= 0){
+        setError("mortgageInsurance",{type:"custom", message:"Please enter a value greater than 0%"})
+      }else{
+        handleSubmit(onSubmit)()
+      }
+    }else{
+      // if the down payment is not less than 20% ... then we dont have mortgage insurance
+      clearErrors("mortgageInsurance")
+      setValue("mortgageInsurance","0")
+      handleSubmit(onSubmit)()
+    }
+  }
+
+  console.log(errors)
 
 
 
@@ -72,72 +126,13 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   };
 
   const errorsArray = Object.keys(errors);
-
   // Using loadash to compare object ... if the selected goal doesnt match the currnet inputs on the page ... we show an update button
-  React.useEffect(() => {
-    function checkValid(select: HouseObjWithFormattedData, inputStates: HouseObjWithFormattedData) {
-      if (!select) return false;
 
-      const { img, id, price, term, downPayment, interest, extraPayment, streetAddress, appreciation, propertyTax, maintenance, opportunityCostRate, mortgageInsurance, insurance } = inputStates;
 
-      const obj: HouseObjWithFormattedData = {
-        id,
-        streetAddress,
-        type: "House",
-        price,
-        downPayment,
-        interest,
-        extraPayment,
-        propertyTax,
-        insurance,
-        mortgageInsurance,
-        appreciation,
-        opportunityCostRate,
-        maintenance,
-        term,
-        img: img ? img : "",
-        showTax: select.showTax
-      };
 
-     
+ 
 
-      const isTheSame = _.isEqual(obj, select);
-
-      if (isTheSame) {
-        setShowUpdateBtn(false);
-        return false;
-      } else {
-        setShowUpdateBtn(true);
-        return true;
-      }
-    }
-    const subscription = watch((data) => {
-      if (!selectedGoal || selectedGoal?.type !== "House") return;
-      if (!data) return;
-      const { img, id, price, term, downPayment, interest, extraPayment, streetAddress, appreciation, propertyTax, maintenance, opportunityCostRate, mortgageInsurance, insurance } = data;
-      const newData: HouseObjWithFormattedData = {
-        price: price ? parseFloat(price.replace(/[,%$]/gm, "")) : 0,
-        downPayment: downPayment ? parseFloat(downPayment.replace(/[,%$]/gm, "")) : 0,
-        interest: interest ? parseFloat(interest.replace(/[,%$]/gm, "")) : 0,
-        term: term ? term : 30,
-        streetAddress: streetAddress ? streetAddress : "",
-        img: img ? img : "",
-        id: id ? id : "",
-        extraPayment: extraPayment ? parseFloat(extraPayment.replace(/[,%$]/gm, "")) : 0,
-        propertyTax: propertyTax ? parseFloat(propertyTax.replace(/[,%$]/gm, "")) : 1.11,
-        insurance: insurance ? parseFloat(insurance.replace(/[,%$]/gm, "")) : 209.27,
-        mortgageInsurance: mortgageInsurance && downPayment && price && parseFloat(downPayment) < (parseFloat(price) * .20) ? parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")) : 0,
-        appreciation: appreciation ? parseFloat(appreciation.replace(/[,%$]/gm, "")) : 2,
-        maintenance: maintenance ? parseFloat(maintenance.replace(/[,%$]/gm, "")) : 1,
-        opportunityCostRate: opportunityCostRate ? parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")) : 1,
-        type: "House",
-        showTax: selectedGoal.showTax
-      };
-
-      checkValid(selectedGoal, newData);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, selectedGoal]);
+ 
 
   // Checking if the down payment is less than or greater than 20% ... so we can show mortgage insurance .. ON RENDER HERE
   React.useEffect(() => {
@@ -165,20 +160,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     return () => subscription.unsubscribe();
   }, [watch, selectedGoal]);
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    console.log(data);
 
-    // if(parseFloat(data.downPayment) > dataTwentyPercentValue){
-    //     setValue("mortgageInsurance","0")
-    //     data.mortgageInsurance = "0"
-    //     dispatch(addHouseGoal(data))
-    //     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
-
-    //   }else{
-    //     dispatch(addHouseGoal(data))
-    //     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
-    //   }
-  };
 
  
 
@@ -187,7 +169,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
-        <form className="w-full h-auto flex flex-col " onSubmit={handleSubmit(onSubmit)}>
+        <form className="w-full h-auto flex flex-col " onSubmit={(e)=>SubmitValidation(e)}>
           {/* Price */}
           <HouseControllerInput errors={errors} control={control} name="price" label="Price" placeholder="" type="Number" />
 
@@ -251,7 +233,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
 
           {/* Update Button */}
           <AnimatePresence>
-            {selectedGoal && showUpadateBtn && (
+            {selectedGoal && isTheSameCheck(selectedGoal,allInputData) && (
               <motion.div
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}

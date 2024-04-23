@@ -12,7 +12,7 @@ import {
   MyLoanForLoop,
 } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import CarPageInputs from "./CarPageInputs";
-import CarHouseChart from "../../components/charts/CarHouseChart";
+import CarChart from "../../components/charts/CarChart";
 import { Divider, SelectChangeEvent } from "@mui/material";
 import CarPageSummary from "./CarPageSummary";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,7 +23,7 @@ import MonthsSection from "./components/MonthsSection";
 import { editCarGoalTitle } from "../../redux/features/modalSlices/carModalSlice";
 import EditImgModal from "./components/EditImgModal";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import insertCar from '../../assets/addImg.png'
+import insertCar from "../../assets/addImg.png";
 import EditNameAndModal from "./EditNameAndModal";
 
 const schema = z.object({
@@ -198,14 +198,27 @@ export default function CarPage() {
             className="w-full flex flex-col dark:text-gray-300 text-black p-4"
           >
             {/* Name and Modal Inputs on Edit */}
-           <EditNameAndModal handleChange={handleChange} onSubmit={onSubmit} handleSubmit={handleSubmit} saveBtn={saveBtn} register={register} errors={errors} allInputData={allInputData} setValue={setValue} setEditState={setEditState} editState={editState}/>
+            <EditNameAndModal
+              handleChange={handleChange}
+              onSubmit={onSubmit}
+              handleSubmit={handleSubmit}
+              saveBtn={saveBtn}
+              register={register}
+              errors={errors}
+              allInputData={allInputData}
+              setValue={setValue}
+              setEditState={setEditState}
+              editState={editState}
+            />
 
             {/* Car Box */}
             <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
               <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
                 <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md" />
-               
-                <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={()=> setOpenImgModal(true)}><EditNoteIcon className=" " /></button>
+
+                <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={() => setOpenImgModal(true)}>
+                  <EditNoteIcon className=" " />
+                </button>
               </div>
 
               {/* About Car */}
@@ -281,10 +294,9 @@ export default function CarPage() {
                 {view === "Graph View" && (
                   <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">
                     {regualrLoanAmmortization?.myLoan && extraLoanAmmortization && monthlyPayment && extraNumberOfMonths && selectedGoal && (
-                      <CarHouseChart
+                      <CarChart
                         regualarLoan={regualrLoanAmmortization}
                         extraLoan={extraLoanAmmortization}
-                        type="Car"
                         monthlyPayment={monthlyPayment}
                         extraNumberOfMonths={extraNumberOfMonths}
                         downPayment={selectedGoal.downPayment}

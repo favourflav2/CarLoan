@@ -74,7 +74,18 @@ export const house1stSchema = z
         path: ["price"],
       });
     }
-  });
+  })
+  .superRefine((values, ctx) => {
+    const thirtyPercentOfPrice = parseFloat(values.price) * .30
+    if (parseFloat(values.extraPayment) > thirtyPercentOfPrice) {
+      ctx.addIssue({
+        message: "Your extra payment can't exceed 30% of the house price",
+        code: z.ZodIssueCode.custom,
+        path: ["extraPayment"],
+      });
+      
+    }
+  })
 // .superRefine((values, ctx) => {
 //   const twentyPercentValue = Number(parseFloat(values.price) * 0.2);
 //   if (parseFloat(values.downPayment) < twentyPercentValue) {

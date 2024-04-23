@@ -8,9 +8,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import HousePageInputs from "./HousePageInputs";
 import EditNameHouseBox from "./EditNameHouseBox";
 import HouseImgAndNum from "./HouseImgAndNum";
-import { ExtraNumberYears, HouseMonthlyPayment, getMonthlyPaymentForHouse, loanAmmortizationForHouse, loanAmmortizationWithExtraPaymentForHouse, solveForNumberOfMonthsForHouse } from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
+import {
+  ExtraNumberYears,
+  HouseMonthlyPayment,
+  getMonthlyPaymentForHouse,
+  loanAmmortizationForHouse,
+  loanAmmortizationWithExtraPaymentForHouse,
+  solveForNumberOfMonthsForHouse,
+} from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
 import { updateShowTax } from "../../redux/features/modalSlices/houseSlice";
-import { ExtraNumberMonths, LoanAmmortizationType, MyLoanForLoop, loanAmmortizationWithExtraPayment } from "../../components/helperFunctions/loanfunctions/LoanFunction";
+import {  LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/LoanFunction";
+import { USDollar } from "../CarPage/CarPage";
+import { Divider } from "@mui/material";
+import HouseChart from "../../components/charts/HouseChart";
 
 export interface IHousePageProps {}
 
@@ -39,9 +49,9 @@ export default function HousePage(props: IHousePageProps) {
     register,
     handleSubmit,
     setValue,
-    watch,
-    reset,
-    trigger,
+    // watch,
+    // reset,
+    // trigger,
     formState: { errors },
   } = useForm<FormFields>({
     mode: "onChange",
@@ -58,21 +68,28 @@ export default function HousePage(props: IHousePageProps) {
   // Modal States
   const [openImgModal, setOpenImgModal] = React.useState(false);
 
-    // Chart States
-    const [monthlyPayment, setMonthlyPayment] = React.useState<HouseMonthlyPayment>();
-    const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
-    const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberYears>();
-    const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
+  // Chart State and Summary State
+  const [view, setView] = React.useState<string>("Graph View");
+
+  // Chart States
+  const [monthlyPayment, setMonthlyPayment] = React.useState<HouseMonthlyPayment>();
+  const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
+  const [extraNumberOfYears, setExtraNumberOfYears] = React.useState<ExtraNumberYears>();
+  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
+
+
 
   React.useEffect(() => {
     if (!selectedGoal || selectedGoal.type !== "House") return;
     const { interest, downPayment, insurance, mortgageInsurance, propertyTax, price, term } = selectedGoal;
-    const twentyPercentValue = price * .20
-    const isNotGreaterThan20 = downPayment < twentyPercentValue ? true : false
-    setMonthlyPayment(getMonthlyPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment,isNotGreaterThan20))
-    setRegualrLoanAmmortization(loanAmmortizationForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance },isNotGreaterThan20))
-    setExtraNumberOfMonths(solveForNumberOfMonthsForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment,isNotGreaterThan20))
-    setExtraLoanAmmortization(loanAmmortizationWithExtraPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment,isNotGreaterThan20))
+    const twentyPercentValue = price * 0.2;
+    const isNotGreaterThan20 = downPayment < twentyPercentValue ? true : false;
+    setMonthlyPayment(getMonthlyPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment, isNotGreaterThan20));
+    setRegualrLoanAmmortization(loanAmmortizationForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, isNotGreaterThan20));
+    setExtraNumberOfYears(solveForNumberOfMonthsForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment, isNotGreaterThan20));
+    setExtraLoanAmmortization(
+      loanAmmortizationWithExtraPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment, isNotGreaterThan20)
+    );
   }, [selectedGoal]);
 
   // Handle Submit
@@ -83,7 +100,9 @@ export default function HousePage(props: IHousePageProps) {
     // setSaveBtn(false);
   };
 
-  
+ 
+
+
 
   if (!selectedGoal || selectedGoal.type !== "House") {
     dispatch(setSelectedGoal(null));
@@ -136,10 +155,75 @@ export default function HousePage(props: IHousePageProps) {
             {/* House Img and Numbers */}
             <HouseImgAndNum selectedGoal={selectedGoal} setOpenImgModal={setOpenImgModal} />
 
-            <button className="bg-purple-400 p-2 rounded-lg" onClick={()=>{
-              dispatch(editShowTaxForHouse(selectedGoal))
-              dispatch(updateShowTax({id:selectedGoal.id}))
-            }}>Currently: {selectedGoal.showTax}</button>
+            {/* Chart Content */}
+            <div className="w-full h-full flex flex-col my-5">
+              <h1 className="text-[19px] font-semibold">Retirement savings at age </h1>
+
+              {/* Numbers */}
+              <div className="w-auto flex md:justify-normal justify-around items-center my-5">
+                {/* What You Have Number */}
+                <div>
+                  <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">Monthly Payment</h1>
+
+                  <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartGreen">
+                    {monthlyPayment?.monthlyPayment ? USDollar.format(Number(monthlyPayment.monthlyPayment.toFixed(2))) : "-"}
+                  </h1>
+                </div>
+
+                <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8" />
+
+                {/* What You Need Number */}
+                <div>
+                  <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">Extra Monthly Payment</h1>
+
+                  <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">
+                    {selectedGoal?.extraPayment === 0 ? "-" : USDollar.format(Number(monthlyPayment?.extraMonthlyPayment.toFixed(2)))}
+                  </h1>
+                </div>
+              </div>
+
+              {/* Charts Go Here */}
+              <div className="w-full h-auto flex flex-col ">
+                <div className="flex items-center w-auto h-auto">
+                  <h1 className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Graph View")}>
+                    Graph View
+                  </h1>
+                  <h1 className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Summary View")}>
+                    Summary View
+                  </h1>
+                </div>
+
+                <hr className="border my-2 border-gray-300" />
+
+                {view === "Graph View" && (
+                  <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">
+                    {regualrLoanAmmortization?.myLoan  && monthlyPayment && selectedGoal && (
+                      <HouseChart
+                        regualarLoan={regualrLoanAmmortization}
+                        extraLoan={extraLoanAmmortization}
+                        monthlyPayment={monthlyPayment}
+                        extraNumberOfYears={extraNumberOfYears}
+                        downPayment={selectedGoal.downPayment}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {view === "Summary View" && regualrLoanAmmortization?.myLoan  && (
+                  <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 overflow-hidden">House summary</div>
+                )}
+              </div>
+            </div>
+
+            <button
+              className="bg-purple-400 p-2 rounded-lg"
+              onClick={() => {
+                dispatch(editShowTaxForHouse(selectedGoal));
+                dispatch(updateShowTax({ id: selectedGoal.id }));
+              }}
+            >
+              Currently: {selectedGoal.showTax}
+            </button>
           </motion.div>
         </AnimatePresence>
       </div>
