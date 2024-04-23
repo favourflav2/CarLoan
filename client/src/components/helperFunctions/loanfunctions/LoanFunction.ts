@@ -74,7 +74,7 @@ export function getMonthlyPayment(obj: LoanObj, extraPayment: number) {
   return {
     monthlyPayment: monthlyP,
     totalWithInterest: totalPriceWithInterest,
-    extraMonthlyPayment: monthlyP + extraPayment,
+    extraMonthlyPayment: extraPayment > 0 ? monthlyP + extraPayment : 0, 
     interestSum: interestAmount,
     // Total amount payed totalPriceWithInterest + down payment
   totalAmountPaid: totalPriceWithInterest + obj.downPayment

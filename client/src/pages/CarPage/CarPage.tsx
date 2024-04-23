@@ -101,8 +101,8 @@ export default function CarPage() {
   // Chart States
   const [monthlyPayment, setMonthlyPayment] = React.useState<MonthlyPayment>();
   const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
-  const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberMonths>();
-  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
+  const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberMonths | undefined>();
+  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop> | undefined>();
 
   // Edit State and Save Btn
   const [editState, setEditState] = React.useState(false);
@@ -160,6 +160,7 @@ export default function CarPage() {
       subscription.unsubscribe();
     };
   }, [watch, saveBtn, selectedGoal]);
+
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
@@ -293,7 +294,7 @@ export default function CarPage() {
 
                 {view === "Graph View" && (
                   <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">
-                    {regualrLoanAmmortization?.myLoan && extraLoanAmmortization && monthlyPayment && extraNumberOfMonths && selectedGoal && (
+                    {regualrLoanAmmortization?.myLoan &&  monthlyPayment &&  selectedGoal && (
                       <CarChart
                         regualarLoan={regualrLoanAmmortization}
                         extraLoan={extraLoanAmmortization}

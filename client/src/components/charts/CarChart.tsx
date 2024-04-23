@@ -11,9 +11,9 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 export interface ICarChartProps {
   regualarLoan: LoanAmmortizationType;
-  extraLoan: MyLoanForLoop[];
+  extraLoan: MyLoanForLoop[] | undefined;
   monthlyPayment: MonthlyPayment;
-  extraNumberOfMonths: ExtraNumberMonths;
+  extraNumberOfMonths: ExtraNumberMonths | undefined;
   downPayment: number;
 }
 
@@ -44,9 +44,12 @@ export default function CarChart({ regualarLoan, extraLoan, monthlyPayment, extr
       },
       {
         label: "Remaining Balance",
-        data: extraLoan.map((item: MyLoanForLoop) => {
-          return item.price;
-        }),
+        data:
+          monthlyPayment.extraMonthlyPayment > 0 && extraLoan
+            ? extraLoan.map((item: MyLoanForLoop) => {
+                return item.price;
+              })
+            : null,
         borderColor: "#FFAA33",
         backgroundColor: "#FFAA33",
         tension: 0.6,
@@ -163,7 +166,9 @@ export default function CarChart({ regualarLoan, extraLoan, monthlyPayment, extr
     },
   };
 
-  const extraPTotalAmountPaid = Number(monthlyPayment.extraMonthlyPayment * extraNumberOfMonths.numberOfMonthsNoRounding + downPayment);
+
+
+  const extraPTotalAmountPaid = extraNumberOfMonths &&  Number(monthlyPayment.extraMonthlyPayment * extraNumberOfMonths.numberOfMonthsNoRounding + downPayment);
 
 
   return (
@@ -195,7 +200,7 @@ export default function CarChart({ regualarLoan, extraLoan, monthlyPayment, extr
             </h1>
           </div>
 
-          {selectedGoal && selectedGoal.type === "Car" && selectedGoal.extraPayment > 0 && (
+          {selectedGoal && selectedGoal.type === "Car" && selectedGoal.extraPayment > 0 && extraPTotalAmountPaid && extraNumberOfMonths && (
             <div className="w-auto flex flex-col">
               <h1 className=" font-bold underline">Extra Monthly Payment</h1>
               <h1 className="text-[15px]  mt-[1px]">

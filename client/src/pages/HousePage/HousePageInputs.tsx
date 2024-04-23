@@ -115,7 +115,6 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     }
   }
 
-  console.log(errors)
 
 
 

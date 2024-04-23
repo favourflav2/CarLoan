@@ -103,7 +103,6 @@ export function loanAmmortizationForHouse(obj: HouseLoanObj, isNotGreaterThan20:
   const rate = obj.rate / 100;
   const res = [];
   let years = 0
-  let months = 0
 
   if (!monthlyPayment) return;
 
