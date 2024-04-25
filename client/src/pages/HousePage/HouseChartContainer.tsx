@@ -83,7 +83,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
       </div>
 
       {/* Numbers */}
-      <div className="w-auto flex md:justify-normal justify-around  my-5">
+      <div className="w-auto flex sm:flex-row flex-col md:justify-normal justify-around  my-5">
         {/* What You Have Number */}
         <div className="w-auto flex flex-col">
           <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">
@@ -95,7 +95,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
               {showTax === "monthlyPaymentWithNoTax" ? USDollar.format(Number(monthlyPayment.monthlyPayment.toFixed(2))) : addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment}
             </h1>
             { mortgageInsurance > 0 && <Tooltip title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment)}`} placement="top">
-              <p className="cursor-pointer text-[18px] ml-[2px]">*</p>
+              <p className="cursor-pointer text-[18px] ml-[2px] sm:block hidden">*</p>
             </Tooltip>}
           </div>
 
@@ -157,9 +157,10 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
               </motion.div>
             )}
           </AnimatePresence>
+
         </div>
 
-        <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8" />
+        <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8 sm:my-0 my-3" />
 
         {/* What You Need Number */}
         <div className="w-auto flex flex-col">
@@ -176,7 +177,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
               : addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment}
           </h1>
           {mortgageInsurance > 0 && <Tooltip title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment)}`} placement="top">
-              <p className="cursor-pointer text-[18px] ml-[2px]">*</p>
+              <p className="cursor-pointer text-[18px] ml-[2px] sm:block hidden">*</p>
             </Tooltip>}
           </div>
 
@@ -239,7 +240,12 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
             )}
           </AnimatePresence>
         </div>
+
       </div>
+
+      {showTax === "monthlyPaymentWithTax" && <div className="w-auto flex flex-col mb-4">
+            <h1 className="text-[12.5px] text-red-400">- When you have 22% equity in your home your mortgage insurance is removed, your new <span className=" font-bold dark:text-darkText text-lightText"> monthly payment will be {returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment)}</span> and <span className=" font-bold dark:text-darkText text-lightText">extra monthly payment will be {returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment)}</span></h1>
+      </div>}
 
       {/* Charts Go Here */}
       <div className="w-full h-auto flex flex-col ">

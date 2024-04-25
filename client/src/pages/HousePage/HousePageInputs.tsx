@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Dispatch, UseSelector } from "../../redux/store";
+import { Dispatch } from "../../redux/store";
 import HouseControllerInput from "../../components/multiStepDivs/houseDivs/houseComponents/HouseControllerInput";
 import { HouseObjWithFormattedData, editHouseGoal } from "../../redux/features/modalSlices/houseSlice";
 import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
@@ -12,53 +12,52 @@ import { houseTerms } from "../../components/multiStepDivs/houseDivs/houseCompon
 import { editSelectedGoal } from "../../redux/features/applicationSlice";
 import { isTheSameCheck } from "./components/utils/isTheSameCheck";
 
-
-export interface IHousePageInputsProps {}
+export interface IHousePageInputsProps {
+  selectedGoal: HouseObjWithFormattedData;
+}
 type FormFields = z.infer<typeof house1stSchema>;
 
-export default function HousePageInputs(props: IHousePageInputsProps) {
+export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps) {
   // Redux States
-  const { selectedGoal } = UseSelector((state) => state.app);
-  const dispatch = Dispatch()
+  const dispatch = Dispatch();
 
   // Show mortgage insurance
   const [showMIP, setShowMIP] = React.useState(false);
 
- 
-
   // Form Feilds
   const {
     control,
-    //reset,
+    reset,
     handleSubmit,
     watch,
-    //trigger,
     setValue,
     setError,
     clearErrors,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<FormFields>({
     mode: "all",
     resetOptions: {
       keepErrors: true, // input errors will be retained with value update
     },
     //the average annual cost of homeowners insurance in the U.S. is $2,511.25 ... / 12 === 209
-    defaultValues: {
-      price: selectedGoal?.type === "House" && selectedGoal?.price ? selectedGoal.price.toString() : "0",
-      downPayment: selectedGoal?.type === "House" && selectedGoal?.downPayment ? selectedGoal.downPayment.toString() : "0",
-      interest: selectedGoal?.type === "House" && selectedGoal?.interest ? selectedGoal.interest.toString() : "0",
-      term: selectedGoal?.type === "House" && selectedGoal?.term ? selectedGoal.term : 30,
-      streetAddress: selectedGoal?.type === "House" && selectedGoal?.streetAddress ? selectedGoal.streetAddress : "",
-      img: selectedGoal?.type === "House" && selectedGoal?.img ? selectedGoal.img : "",
-      id: selectedGoal?.type === "House" && selectedGoal?.id ? selectedGoal.id : "",
-      extraPayment: selectedGoal?.type === "House" && selectedGoal?.extraPayment ? selectedGoal.extraPayment.toString() : "0",
-      propertyTax: selectedGoal?.type === "House" && selectedGoal?.propertyTax ? selectedGoal.propertyTax.toString() : "1.11",
-      insurance: selectedGoal?.type === "House" && selectedGoal?.insurance ? selectedGoal.insurance.toString() : "209.27",
-      mortgageInsurance: selectedGoal?.type === "House" && selectedGoal?.mortgageInsurance && selectedGoal.downPayment < (selectedGoal.price * .20) ? selectedGoal.mortgageInsurance.toString() : "0",
-      appreciation: selectedGoal?.type === "House" && selectedGoal?.appreciation ? selectedGoal.appreciation.toString() : "2",
-      maintenance: selectedGoal?.type === "House" && selectedGoal?.maintenance ? selectedGoal.maintenance.toString() : "1",
-      opportunityCostRate: selectedGoal?.type === "House" && selectedGoal?.opportunityCostRate ? selectedGoal.opportunityCostRate.toString() : "1",
-    },
+    defaultValues: React.useMemo(() => {
+      return {
+        price: selectedGoal.price.toString(),
+        downPayment: selectedGoal.downPayment.toString(),
+        interest: selectedGoal.interest.toString(),
+        term: selectedGoal.term,
+        streetAddress: selectedGoal.streetAddress,
+        img: selectedGoal.img,
+        id: selectedGoal.id,
+        extraPayment: selectedGoal.extraPayment.toString(),
+        propertyTax: selectedGoal.propertyTax.toString(),
+        insurance: selectedGoal.insurance.toString(),
+        mortgageInsurance: selectedGoal.downPayment < selectedGoal.price * 0.2 ? selectedGoal.mortgageInsurance.toString() : "0",
+        appreciation: selectedGoal.appreciation.toString(),
+        maintenance: selectedGoal.maintenance.toString(),
+        opportunityCostRate: selectedGoal.opportunityCostRate.toString(),
+      };
+    }, [selectedGoal]),
     resolver: zodResolver(house1stSchema),
   });
 
@@ -67,57 +66,50 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   const downPayment = watch("downPayment");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    if(!selectedGoal || selectedGoal.type !== "House") return
-   const {id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance} = data
+    const { id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance } = data;
 
-   const newObj:HouseObjWithFormattedData = {
-    id,
-    streetAddress,
-    price: parseFloat(price.replace(/[,%$]/gm, "")),
-    downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
-    interest: parseFloat(interest.replace(/[,%$]/gm, "")),
-    term,
-    extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
-    img: img ?img : "",
-    propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
-    insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
-    mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
-    appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
-    opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
-    maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
-    type: "House",
-    showTax: selectedGoal.showTax
-   }
+    const newObj: HouseObjWithFormattedData = {
+      id,
+      streetAddress,
+      price: parseFloat(price.replace(/[,%$]/gm, "")),
+      downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
+      interest: parseFloat(interest.replace(/[,%$]/gm, "")),
+      term,
+      extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
+      img: img ? img : "",
+      propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
+      insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
+      mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
+      appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
+      opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
+      maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
+      type: "House",
+      showTax: selectedGoal.showTax,
+    };
 
-   dispatch(editSelectedGoal({goal:newObj}))
-   dispatch(editHouseGoal({goal:newObj, id}))
-
+    dispatch(editSelectedGoal({ goal: newObj }));
+    dispatch(editHouseGoal({ goal: newObj, id }));
   };
 
-  function SubmitValidation(e:any){
-    e.preventDefault()
-    if(!downPayment || !twentyPercentValue || !allInputData.mortgageInsurance) return
+  function SubmitValidation(e: any) {
+    e.preventDefault();
+    if (!downPayment || !twentyPercentValue || !allInputData.mortgageInsurance) return;
 
     // If the down payment is less than 20%
-    if(parseFloat(downPayment) < twentyPercentValue){
-
+    if (parseFloat(downPayment) < twentyPercentValue) {
       // if the mortgage insurance is less than or equal to 0 ... and a user clicks we show and error ... else we continue
-      if(parseFloat(allInputData.mortgageInsurance) <= 0){
-        setError("mortgageInsurance",{type:"custom", message:"Please enter a value greater than 0%"})
-      }else{
-        handleSubmit(onSubmit)()
+      if (parseFloat(allInputData.mortgageInsurance) <= 0) {
+        setError("mortgageInsurance", { type: "custom", message: "Please enter a value greater than 0%" });
+      } else {
+        handleSubmit(onSubmit)();
       }
-    }else{
+    } else {
       // if the down payment is not less than 20% ... then we dont have mortgage insurance
-      clearErrors("mortgageInsurance")
-      setValue("mortgageInsurance","0")
-      handleSubmit(onSubmit)()
+      clearErrors("mortgageInsurance");
+      setValue("mortgageInsurance", "0");
+      handleSubmit(onSubmit)();
     }
   }
-
-
-
-
 
   // Handle Change
   const handleChange = (event: SelectChangeEvent) => {
@@ -127,15 +119,8 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
   const errorsArray = Object.keys(errors);
   // Using loadash to compare object ... if the selected goal doesnt match the currnet inputs on the page ... we show an update button
 
-
-
- 
-
- 
-
   // Checking if the down payment is less than or greater than 20% ... so we can show mortgage insurance .. ON RENDER HERE
   React.useEffect(() => {
-    if (!selectedGoal || selectedGoal?.type !== "House") return;
     const twentyPercentValue = Number(selectedGoal.price * 0.2);
 
     if (selectedGoal.downPayment < twentyPercentValue) {
@@ -159,16 +144,31 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
     return () => subscription.unsubscribe();
   }, [watch, selectedGoal]);
 
+  // Makes Sure inputs match selected goal on page refresh
+  React.useEffect(() => {
+    reset({
+      price: selectedGoal.price.toString(),
+      downPayment: selectedGoal.downPayment.toString(),
+      interest: selectedGoal.interest.toString(),
+      term: selectedGoal.term,
+      streetAddress: selectedGoal.streetAddress,
+      img: selectedGoal.img,
+      id: selectedGoal.id,
+      extraPayment: selectedGoal.extraPayment.toString(),
+      propertyTax: selectedGoal.propertyTax.toString(),
+      insurance: selectedGoal.insurance.toString(),
+      mortgageInsurance: selectedGoal.downPayment < selectedGoal.price * 0.2 ? selectedGoal.mortgageInsurance.toString() : "0",
+      appreciation: selectedGoal.appreciation.toString(),
+      maintenance: selectedGoal.maintenance.toString(),
+      opportunityCostRate: selectedGoal.opportunityCostRate.toString(),
+    });
+  }, [selectedGoal, isSubmitSuccessful]); // eslint-disable-line
 
-
- 
-
-  if (!selectedGoal || selectedGoal.type !== "House") return null;
   return (
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
-        <form className="w-full h-auto flex flex-col " onSubmit={(e)=>SubmitValidation(e)}>
+        <form className="w-full h-auto flex flex-col " onSubmit={(e) => SubmitValidation(e)}>
           {/* Price */}
           <HouseControllerInput errors={errors} control={control} name="price" label="Price" placeholder="" type="Number" />
 
@@ -232,7 +232,7 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
 
           {/* Update Button */}
           <AnimatePresence>
-            {selectedGoal && isTheSameCheck(selectedGoal,allInputData) && (
+            {selectedGoal && isTheSameCheck(selectedGoal, allInputData) && (
               <motion.div
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
@@ -240,7 +240,11 @@ export default function HousePageInputs(props: IHousePageInputsProps) {
                 className="w-full flex flex-col"
               >
                 <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>Update</button>
-                {(Number(parseFloat(allInputData.downPayment))) > (Number(parseFloat(allInputData.price)) * .2) && <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.</p>}
+                {Number(parseFloat(allInputData.downPayment)) > Number(parseFloat(allInputData.price)) * 0.2 && (
+                  <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">
+                    If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.
+                  </p>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

@@ -125,7 +125,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
 
 
   return (
-    <div className="my-10">
+    <div className="mb-2">
       <form
         className="w-full h-auto flex flex-col mt-5"
         onSubmit={(e)=>SubmitValidation(e)}
@@ -217,7 +217,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
           )}
         </div>
 
-        <button className="w-full p-2 rounded-lg mt-2 mb-3 bg-chartYellow dark:text-lightText">Save & Continue</button>
+        <button className="w-full p-2 rounded-lg mt-2  bg-chartYellow dark:text-lightText">Save & Continue</button>
       </form>
     </div>
   );

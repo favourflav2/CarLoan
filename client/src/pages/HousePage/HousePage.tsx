@@ -16,11 +16,7 @@ import {
   loanAmmortizationWithExtraPaymentForHouse,
   solveForNumberOfMonthsForHouse,
 } from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
-import { updateShowTax } from "../../redux/features/modalSlices/houseSlice";
 import {  LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/LoanFunction";
-import { USDollar } from "../CarPage/CarPage";
-import { Divider } from "@mui/material";
-import HouseChart from "../../components/charts/HouseChart";
 import HouseChartContainer from "./HouseChartContainer";
 
 export interface IHousePageProps {}
@@ -93,6 +89,8 @@ export default function HousePage(props: IHousePageProps) {
     );
   }, [selectedGoal]);
 
+ 
+
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     // dispatch(editRetireGoalTitle({ id, newTitle: data?.title, goal: selectedGoal }));
@@ -127,7 +125,7 @@ export default function HousePage(props: IHousePageProps) {
             transition={{ duration: 0.25 }}
             className="w-full max-h-[900px]"
           >
-            <HousePageInputs />
+            <HousePageInputs selectedGoal={selectedGoal}/>
           </motion.div>
         </AnimatePresence>
 
