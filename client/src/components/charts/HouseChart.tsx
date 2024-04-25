@@ -4,17 +4,18 @@ import { Line } from "react-chartjs-2";
 import { UseSelector } from "../../redux/store";
 import { Filler } from "chart.js";
 import { LoanAmmortizationType, MyLoanForLoop } from "../helperFunctions/loanfunctions/LoanFunction";
-import { MonthlyPayment } from "../helperFunctions/loanfunctions/LoanFunction";
 import { ExtraNumberYears } from "../helperFunctions/loanfunctions/HouseLoanFuntion";
+import { HouseMonthlyPayment } from "../helperFunctions/loanfunctions/HouseLoanFuntion";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
 export interface IHouseChartProps {
   regualarLoan: LoanAmmortizationType;
   extraLoan: MyLoanForLoop[] | undefined;
-  monthlyPayment: MonthlyPayment;
+  monthlyPayment:  HouseMonthlyPayment;
   extraNumberOfYears: ExtraNumberYears | undefined;
   downPayment: number;
+
 }
 
 export default function HouseChart({ regualarLoan, extraLoan, monthlyPayment, extraNumberOfYears, downPayment }: IHouseChartProps) {
@@ -184,6 +185,8 @@ function returnYears(value:ExtraNumberYears | undefined){
 
 
 
+
+
   return (
     <div className="w-full h-auto flex flex-col">
       {/* Legend */}
@@ -202,7 +205,6 @@ function returnYears(value:ExtraNumberYears | undefined){
       </div>
       {/* Chart */}
       <div className="w-full min-[900px]:h-[500px] h-[350px]  flex flex-col">{myLoan.length ? <Line options={options} data={data} plugins={hoverLine} /> : null}</div>
-      <h1>hey</h1>
 
       <div className="w-full h-auto flex flex-col mb-4 mt-7">
         {/* Content */}
@@ -211,8 +213,9 @@ function returnYears(value:ExtraNumberYears | undefined){
           <div className="w-auto flex flex-col sm:mb-0 mb-4">
             <h1 className=" font-bold underline">Monthly Payment</h1>
             <h1 className="text-[15px] mt-[1px]">
-              Total amount paid: <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span>{" "}
+              Total amount paid w/ no taxes  <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span>{" "}
             </h1>
+            
           </div>
 
           {selectedGoal && selectedGoal.type === "House" && selectedGoal.extraPayment > 0 && extraPTotalAmountPaid && (

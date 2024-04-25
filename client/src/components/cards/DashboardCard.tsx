@@ -48,7 +48,8 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
 
         break;
       case "House":
-        
+        if (!item) return;
+        if (item.type !== "House") return;
         dispatch(removeHouseGoal(item));
         dispatch(setSelectedGoal(null));
         break;
