@@ -48,16 +48,15 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
     dispatch(updateShowTax({ id: selectedGoal.id }));
   }
 
-  function returnMonthlyPaymentMinusMIP(value: HouseMonthlyPayment, totalM:string){
+  function returnMonthlyPaymentMinusMIP(value: HouseMonthlyPayment, totalM: string) {
     const { mortgageInsurance } = value;
 
-    let res = parseFloat(totalM.replace(/[,%$]/gm, ""))
+    let res = parseFloat(totalM.replace(/[,%$]/gm, ""));
 
-    res = res - mortgageInsurance
+    res = res - mortgageInsurance;
 
-    return USDollar.format(Number((res).toFixed(2)))
+    return USDollar.format(Number(res.toFixed(2)));
   }
-
 
   return (
     <div className="w-full h-full flex flex-col my-5">
@@ -94,9 +93,17 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
             <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartGreen">
               {showTax === "monthlyPaymentWithNoTax" ? USDollar.format(Number(monthlyPayment.monthlyPayment.toFixed(2))) : addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment}
             </h1>
-            { mortgageInsurance > 0 && <Tooltip title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment)}`} placement="top">
-              <p className="cursor-pointer text-[18px] ml-[2px] sm:block hidden">*</p>
-            </Tooltip>}
+            {mortgageInsurance > 0 && (
+              <Tooltip
+                title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(
+                  monthlyPayment,
+                  addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment
+                )}`}
+                placement="top"
+              >
+                <p className="cursor-pointer text-[18px] ml-[2px] sm:block hidden">*</p>
+              </Tooltip>
+            )}
           </div>
 
           {/*Total Amount Paid with Taxes Monthly P */}
@@ -157,7 +164,6 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
               </motion.div>
             )}
           </AnimatePresence>
-
         </div>
 
         <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8 sm:my-0 my-3" />
@@ -169,16 +175,24 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
           </h1>
 
           <div className="w-auto flex ">
-          <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">
-            {extraPayment <= 0
-              ? "-"
-              : showTax === "monthlyPaymentWithNoTax"
-              ? USDollar.format(Number(monthlyPayment.extraMonthlyPayment.toFixed(2)))
-              : addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment}
-          </h1>
-          {mortgageInsurance > 0 && <Tooltip title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment)}`} placement="top">
-              <p className="cursor-pointer text-[18px] ml-[2px] sm:block hidden">*</p>
-            </Tooltip>}
+            <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">
+              {extraPayment <= 0
+                ? "-"
+                : showTax === "monthlyPaymentWithNoTax"
+                ? USDollar.format(Number(monthlyPayment.extraMonthlyPayment.toFixed(2)))
+                : addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment}
+            </h1>
+            {mortgageInsurance > 0 && (
+              <Tooltip
+                title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(
+                  monthlyPayment,
+                  addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment
+                )}`}
+                placement="top"
+              >
+                <p className="cursor-pointer text-[18px] ml-[2px] sm:block hidden">*</p>
+              </Tooltip>
+            )}
           </div>
 
           {/*Total Amount Paid with Taxes Extra P */}
@@ -240,12 +254,19 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
             )}
           </AnimatePresence>
         </div>
-
       </div>
 
-      {showTax === "monthlyPaymentWithTax" && <div className="w-auto flex flex-col mb-4">
-            <h1 className="text-[12.5px] text-red-400">- When you have 22% equity in your home your mortgage insurance is removed, your new <span className=" font-bold dark:text-darkText text-lightText"> monthly payment will be {returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment)}</span> and <span className=" font-bold dark:text-darkText text-lightText">extra monthly payment will be {returnMonthlyPaymentMinusMIP(monthlyPayment,addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment)}</span></h1>
-      </div>}
+      {showTax === "monthlyPaymentWithTax" && (
+        <div className="w-auto flex flex-col mb-4 sm:hidden">
+          <h1 className="text-[12.5px] text-red-400">
+            - When you have 22% equity in your home your mortgage insurance is removed, your new{" "}
+            <span className=" font-bold underline"> monthly payment will be {returnMonthlyPaymentMinusMIP(monthlyPayment, addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment)}</span>{" "}
+           {extraPayment > 0 && <span className=" font-bold underline">
+           and extra monthly payment will be {returnMonthlyPaymentMinusMIP(monthlyPayment, addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment)}
+            </span>}
+          </h1>
+        </div>
+      )}
 
       {/* Charts Go Here */}
       <div className="w-full h-auto flex flex-col ">
