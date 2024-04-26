@@ -162,6 +162,8 @@ export default function CarPage() {
   }, [watch, saveBtn, selectedGoal]);
 
 
+
+
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
     return null;
@@ -215,7 +217,7 @@ export default function CarPage() {
             {/* Car Box */}
             <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
               <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
-                <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md" />
+                <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md object-cover" />
 
                 <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={() => setOpenImgModal(true)}>
                   <EditNoteIcon className=" " />

@@ -57,7 +57,7 @@ const carModalSlice = createSlice({
         interest: parseFloat(interest.replace(/[,%$]/gm, "")),
         term,
         salary: parseFloat(salary.replace(/[,%$]/gm, "")),
-        img: img ? img : undefined,
+        img: img ? img : "",
         modal,
         type:"Car",
         extraPayment:0

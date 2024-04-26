@@ -57,7 +57,7 @@ export default function House1st(props: IHouse1stProps) {
       {/* Add House */}
       <div className="w-auto flex flex-col h-auto ">
         <div className="w-[240px] h-[205px] relative flex items-center">
-          <img src={updatedImg ? updatedImg : insertCar} alt="" className="w-[200px] h-[200px] " />
+          <img src={updatedImg ? updatedImg : insertCar} alt="" className="w-[200px] h-[200px] object-cover rounded-md" />
           {/* Add Photo and Edit Icon */}
           <div className={`${updatedImg ? "right-[30px] top-[1px]" : "right-8 bottom-0"} absolute  bg-gray-600 text-white rounded-full p-[2px] cursor-pointer`} onClick={() => setOpenImgModal(true)}>
             {updatedImg ? <EditIcon className="p-[2px]" /> : <AddAPhotoIcon className="p-[4px]" />}

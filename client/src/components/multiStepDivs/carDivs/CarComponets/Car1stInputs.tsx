@@ -79,7 +79,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
     if (updatedImg) {
       setValue("img", updatedImg);
     }else{
-      setValue("img", undefined)
+      setValue("img", "")
     }
   }, [updatedImg, setValue]);
 
