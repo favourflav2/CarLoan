@@ -13,6 +13,7 @@ export interface CarObj {
   img?:  string | undefined;
   modal: string;
   extraPayment: string;
+  showInputs:boolean;
 }
 
 export interface CarObjWithFormattedData {
@@ -27,7 +28,8 @@ export interface CarObjWithFormattedData {
   img?:  string | undefined;
   modal: string;
   type:"Car";
-  extraPayment: number
+  extraPayment: number;
+  showInputs:boolean;
 }
 
 interface CarData {
@@ -47,7 +49,7 @@ const carModalSlice = createSlice({
   initialState,
   reducers: {
     addCarGoal: (state, action: PayloadAction<CarObj>) => {
-      const { name, id, mileage, term, salary, interest, downPayment, img, price, modal } = action.payload;
+      const { name, id, mileage, term, salary, interest, downPayment, img, price, modal,showInputs } = action.payload;
       const formattedData:CarObjWithFormattedData = {
         id,
         name,
@@ -60,7 +62,8 @@ const carModalSlice = createSlice({
         img: img ? img : "",
         modal,
         type:"Car",
-        extraPayment:0
+        extraPayment:0,
+        showInputs
       };
 
       const index = state.carGoals.findIndex((item) => item.id === id);
@@ -129,9 +132,17 @@ const carModalSlice = createSlice({
       state.carGoals = res
 
     },
+    carShowInput: (state,action:PayloadAction<{id:string, value:boolean}>) => {
+      const {id,value} = action.payload
+      const index = state.carGoals.findIndex(item => item.id === id)
+
+      if(index >= 0){
+        state.carGoals[index].showInputs = value
+      }
+    },
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle,editCarGoalImg } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle,editCarGoalImg, carShowInput } = carModalSlice.actions;

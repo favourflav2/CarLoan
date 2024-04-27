@@ -6,11 +6,13 @@ import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Dispatch } from "../../redux/store";
 import HouseControllerInput from "../../components/multiStepDivs/houseDivs/houseComponents/HouseControllerInput";
-import { HouseObjWithFormattedData, editHouseGoal } from "../../redux/features/modalSlices/houseSlice";
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { HouseObjWithFormattedData, editHouseGoal, houseShowInput } from "../../redux/features/modalSlices/houseSlice";
+import { MenuItem, Select, SelectChangeEvent, useMediaQuery } from "@mui/material";
 import { houseTerms } from "../../components/multiStepDivs/houseDivs/houseComponents/House1stInputs";
-import { editSelectedGoal } from "../../redux/features/applicationSlice";
+import { editSelectedGoal, selectedShowInput } from "../../redux/features/applicationSlice";
 import { isTheSameCheck } from "./components/utils/isTheSameCheck";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 export interface IHousePageInputsProps {
   selectedGoal: HouseObjWithFormattedData;
@@ -20,9 +22,13 @@ type FormFields = z.infer<typeof house1stSchema>;
 export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps) {
   // Redux States
   const dispatch = Dispatch();
+  const { showInputs } = selectedGoal;
 
   // Show mortgage insurance
   const [showMIP, setShowMIP] = React.useState(false);
+
+  // Show Inputs on mobile states
+  const matches = useMediaQuery("(min-width:1024px)");
 
   // Form Feilds
   const {
@@ -85,6 +91,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
       maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
       type: "House",
       showTax: selectedGoal.showTax,
+      showInputs,
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));
@@ -164,91 +171,138 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
     });
   }, [selectedGoal, isSubmitSuccessful]); // eslint-disable-line
 
+  React.useEffect(() => {
+    if (showInputs === false) {
+      if (matches) {
+        dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
+        dispatch(houseShowInput({ id: selectedGoal.id, value: true }));
+      }
+    }
+  }, [matches, showInputs, selectedGoal]); // eslint-disable-line
+
+  
+
   return (
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
       {/* Content */}
       <div className="w-full flex flex-col">
-        <form className="w-full h-auto flex flex-col " onSubmit={(e) => SubmitValidation(e)}>
-          {/* Price */}
-          <HouseControllerInput errors={errors} control={control} name="price" label="Price" placeholder="" type="Number" />
 
-          {/* Down Payment*/}
-          <HouseControllerInput errors={errors} control={control} name="downPayment" label="Down Payment" placeholder="" type="Number" />
-
-          {/* Extra Monthly Payment */}
-          <HouseControllerInput errors={errors} control={control} name="extraPayment" label="Extra Monthly Payment" placeholder="" type="Number" />
-
-          {/* Interest */}
-          <HouseControllerInput errors={errors} control={control} name="interest" label="Interest" placeholder="" type="Percent" />
-
-          {/* Loan Term */}
-          <div className="w-auto flex flex-col mb-2">
-            <label htmlFor="term" className="text-[12px]">
-              Loan Term (Years)
-            </label>
-            <Select
-              label="Loan Term"
-              MenuProps={{ PaperProps: { sx: { maxHeight: 150 } } }}
-              sx={{
-                boxShadow: "none",
-                ".MuiOutlinedInput-notchedOutline": { border: 0 },
-                "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
-                  border: 0,
-                },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                  border: 0,
-                },
+        {/* Expand and Shrink Input Section Btn */}
+        <div className="flex items-end justify-end w-full h-auto lg:hidden">
+          {showInputs ? (
+            <KeyboardArrowUpIcon
+              className="text-[28px] cursor-pointer"
+              onClick={() => {
+                dispatch(selectedShowInput({ goal: selectedGoal, value: false }));
+                dispatch(houseShowInput({ id: selectedGoal.id, value: false }));
               }}
-              className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${errors.term && "border-2 border-red-500"}`}
-              onChange={handleChange}
-              value={allInputData.term.toString()}
+            />
+          ) : (
+            <KeyboardArrowDownIcon
+              className="text-[28px] cursor-pointer"
+              onClick={() => {
+                dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
+                dispatch(houseShowInput({ id: selectedGoal.id, value: true }));
+              }}
+            />
+          )}
+        </div>
+        
+        {showInputs ? (
+          <form className="w-full h-auto flex flex-col " onSubmit={(e) => SubmitValidation(e)}>
+            {/* Price */}
+            <HouseControllerInput errors={errors} control={control} name="price" label="Price" placeholder="" type="Number" />
+
+            {/* Down Payment*/}
+            <HouseControllerInput errors={errors} control={control} name="downPayment" label="Down Payment" placeholder="" type="Number" />
+
+            {/* Extra Monthly Payment */}
+            <HouseControllerInput errors={errors} control={control} name="extraPayment" label="Extra Monthly Payment" placeholder="" type="Number" />
+
+            {/* Interest */}
+            <HouseControllerInput errors={errors} control={control} name="interest" label="Interest" placeholder="" type="Percent" />
+
+            {/* Loan Term */}
+            <div className="w-auto flex flex-col mb-2">
+              <label htmlFor="term" className="text-[12px]">
+                Loan Term (Years)
+              </label>
+              <Select
+                label="Loan Term"
+                MenuProps={{ PaperProps: { sx: { maxHeight: 150 } } }}
+                sx={{
+                  boxShadow: "none",
+                  ".MuiOutlinedInput-notchedOutline": { border: 0 },
+                  "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                    border: 0,
+                  },
+                  "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    border: 0,
+                  },
+                }}
+                className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${errors.term && "border-2 border-red-500"}`}
+                onChange={handleChange}
+                value={allInputData.term.toString()}
+              >
+                {houseTerms.map((item: string) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+
+            {/* Property Tax */}
+            <HouseControllerInput errors={errors} control={control} name="propertyTax" label="Property Tax" placeholder="" type="Percent" />
+
+            {/* Insurance */}
+            <HouseControllerInput errors={errors} control={control} name="insurance" label="Insurance" placeholder="" type="Number" />
+
+            {/* MIP */}
+            <AnimatePresence>
+              {showMIP && (
+                <motion.div
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                  exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                >
+                  <HouseControllerInput errors={errors} control={control} name="mortgageInsurance" label="Mortgage Insurance" placeholder="" type="Percent" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Update Button */}
+            <AnimatePresence>
+              {selectedGoal && isTheSameCheck(selectedGoal, allInputData) && (
+                <motion.div
+                  initial={{ x: -100, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
+                  exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
+                  className="w-full flex flex-col"
+                >
+                  <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>Update</button>
+                  {Number(parseFloat(allInputData.downPayment)) > Number(parseFloat(allInputData.price)) * 0.2 && (
+                    <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">
+                      If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.
+                    </p>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </form>
+        ) : (
+          <div className="flex items-end justify-end w-full h-auto">
+            <p
+              className="text-[12.5px] underline cursor-pointer"
+              onClick={() => {
+                dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
+                dispatch(houseShowInput({ id: selectedGoal.id, value: true }));
+              }}
             >
-              {houseTerms.map((item: string) => (
-                <MenuItem key={item} value={item}>
-                  {item}
-                </MenuItem>
-              ))}
-            </Select>
+              Show more
+            </p>
           </div>
-
-          {/* Property Tax */}
-          <HouseControllerInput errors={errors} control={control} name="propertyTax" label="Property Tax" placeholder="" type="Percent" />
-
-          {/* Insurance */}
-          <HouseControllerInput errors={errors} control={control} name="insurance" label="Insurance" placeholder="" type="Number" />
-
-          {/* MIP */}
-          <AnimatePresence>
-            {showMIP && (
-              <motion.div
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
-                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
-              >
-                <HouseControllerInput errors={errors} control={control} name="mortgageInsurance" label="Mortgage Insurance" placeholder="" type="Percent" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Update Button */}
-          <AnimatePresence>
-            {selectedGoal && isTheSameCheck(selectedGoal, allInputData) && (
-              <motion.div
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
-                exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
-                className="w-full flex flex-col"
-              >
-                <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>Update</button>
-                {Number(parseFloat(allInputData.downPayment)) > Number(parseFloat(allInputData.price)) * 0.2 && (
-                  <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">
-                    If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.
-                  </p>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </form>
+        )}
       </div>
     </div>
   );

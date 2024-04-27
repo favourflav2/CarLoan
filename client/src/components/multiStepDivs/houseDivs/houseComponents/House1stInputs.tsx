@@ -9,7 +9,7 @@ import HouseControllerInput from "./HouseControllerInput";
 import dayjs from "dayjs";
 import HouseAddressInput from "./HouseAddressInput";
 import { Dispatch } from "../../../../redux/store";
-import { addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
+import { HouseObj, addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
 import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
 
 export const houseTerms = ["10", "15", "20", "25", "30", "60"];
@@ -72,33 +72,48 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   const downPayment = watch("downPayment");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    dispatch(addHouseGoal(data))
-    dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
+    const { id, price, downPayment, interest, term, extraPayment, streetAddress, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, img } = data;
 
+    const newObj:HouseObj = {
+      id,
+      price,
+      downPayment,
+      interest,
+      term,
+      extraPayment,
+      streetAddress,
+      propertyTax,
+      insurance,
+      mortgageInsurance,
+      appreciation,
+      opportunityCostRate,
+      maintenance,
+      img:img ? img : "",
+      showInputs:true
+    }
+    dispatch(addHouseGoal(newObj));
+    dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
   };
 
-  function SubmitValidation(e:any){
-    e.preventDefault()
-    if(!downPayment || !twentyPercentValue || !allInputData.mortgageInsurance) return
+  function SubmitValidation(e: any) {
+    e.preventDefault();
+    if (!downPayment || !twentyPercentValue || !allInputData.mortgageInsurance) return;
 
     // If the down payment is less than 20%
-    if(parseFloat(downPayment) < twentyPercentValue){
-
+    if (parseFloat(downPayment) < twentyPercentValue) {
       // if the mortgage insurance is less than or equal to 0 ... and a user clicks we show and error ... else we continue
-      if(parseFloat(allInputData.mortgageInsurance) <= 0){
-        setError("mortgageInsurance",{type:"custom", message:"Please enter a value greater than 0%"})
-      }else{
-        handleSubmit(onSubmit)()
+      if (parseFloat(allInputData.mortgageInsurance) <= 0) {
+        setError("mortgageInsurance", { type: "custom", message: "Please enter a value greater than 0%" });
+      } else {
+        handleSubmit(onSubmit)();
       }
-    }else{
+    } else {
       // if the down payment is not less than 20% ... then we dont have mortgage insurance
-      clearErrors("mortgageInsurance")
-      setValue("mortgageInsurance","0")
-      handleSubmit(onSubmit)()
+      clearErrors("mortgageInsurance");
+      setValue("mortgageInsurance", "0");
+      handleSubmit(onSubmit)();
     }
   }
-
-
 
   // Handle Change
   const handleChange = (event: SelectChangeEvent) => {
@@ -108,9 +123,6 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   React.useEffect(() => {
     setValue("id", dateFormat);
   }, [setValue, dateFormat]);
-
-
-
 
   React.useEffect(() => {
     if (updatedImg) {
@@ -123,13 +135,9 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   // This will not allow google api
   const user = true;
 
-
   return (
     <div className="mb-2">
-      <form
-        className="w-full h-auto flex flex-col mt-5"
-        onSubmit={(e)=>SubmitValidation(e)}
-      >
+      <form className="w-full h-auto flex flex-col mt-5" onSubmit={(e) => SubmitValidation(e)}>
         {/* Input Container */}
         <div className="w-full h-auto flex flex-col">
           {/* 1st Row with address and price */}

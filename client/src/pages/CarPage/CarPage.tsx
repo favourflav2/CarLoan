@@ -186,7 +186,7 @@ export default function CarPage() {
             transition={{ duration: 0.25 }}
             className="w-full max-h-[900px]"
           >
-            <CarPageInputs />
+            <CarPageInputs selectedGoal={selectedGoal}/>
           </motion.div>
         </AnimatePresence>
 

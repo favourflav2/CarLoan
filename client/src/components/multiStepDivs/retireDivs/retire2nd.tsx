@@ -66,7 +66,8 @@ export default function Retire2nd() {
       budget,
       title,
       inflation,
-      type: "Retirement" as RetirementGoalNoFormat['type']
+      type: "Retirement" as RetirementGoalNoFormat['type'],
+      showInputs:true
     }
 
     dispatch(addRetireGoal(objData));

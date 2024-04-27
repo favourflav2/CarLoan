@@ -60,7 +60,7 @@ const appSlice = createSlice({
       state.selectedGoal = action.payload;
     },
     setSelectedGoalAfterCreate: (state, action: PayloadAction<RetirementGoalNoFormat>) => {
-      const { budget, preRate, type, postRate, inflation, monthlyContribution, id, savings, title, lifeExpectancy, currentAge, retireAge } = action.payload;
+      const { budget, preRate, type, postRate, inflation, monthlyContribution, id, savings, title, lifeExpectancy, currentAge, retireAge, showInputs } = action.payload;
       const formattedData: RetirementGoals = {
         id,
         type,
@@ -74,6 +74,7 @@ const appSlice = createSlice({
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
         title,
+        showInputs,
       };
       state.selectedGoal = formattedData;
     },
@@ -179,6 +180,25 @@ const appSlice = createSlice({
       state.selectedGoal.showTax =
         state.selectedGoal.showTax === "monthlyPaymentWithTax" ? (state.selectedGoal.showTax = "monthlyPaymentWithNoTax") : (state.selectedGoal.showTax = "monthlyPaymentWithTax");
     },
+    selectedShowInput: (state, action: PayloadAction<{ goal: goal, value:boolean }>) => {
+      const { goal,value } = action.payload;
+      switch (goal?.type) {
+        case "Car":
+          if (!state.selectedGoal || state.selectedGoal.type !== "Car") return;
+          state.selectedGoal.showInputs = value
+          break;
+        case "House":
+          if (!state.selectedGoal || state.selectedGoal.type !== "House") return;
+          state.selectedGoal.showInputs = value
+          break;
+        case "Retirement":
+          if (!state.selectedGoal || state.selectedGoal.type !== "Retirement") return;
+          state.selectedGoal.showInputs = value
+          break;
+        default:
+          break;
+      }
+    },
   },
 });
 
@@ -194,4 +214,5 @@ export const {
   setSelectedGoalAfterCreate,
   editSelectedGoalImg,
   editShowTaxForHouse,
+  selectedShowInput
 } = appSlice.actions;

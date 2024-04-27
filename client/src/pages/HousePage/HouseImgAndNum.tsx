@@ -11,7 +11,7 @@ export interface IHouseImgAndNumProps {
 
 export default function HouseImgAndNum({ selectedGoal, setOpenImgModal }: IHouseImgAndNumProps) {
   const twentyPercentValue = Number(selectedGoal.price * 0.2);
- 
+
   return (
     <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
       <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
@@ -34,23 +34,25 @@ export default function HouseImgAndNum({ selectedGoal, setOpenImgModal }: IHouse
           <span className="font-bold text-[15px]">Down Payment:</span> <span className="text-red-500 font-bold"> {USDollar.format(selectedGoal.downPayment)}</span>
         </h1>
 
-        <h1 className="text-[15px]">
-          <span className="font-bold text-[15px]">Term:</span> {selectedGoal.term} years
-        </h1>
-        <h1 className="text-[15px]">
-          <span className="font-bold text-[15px]">Interest Rate:</span> {selectedGoal.interest}%{" "}
-        </h1>
-        <h1 className="text-[15px]">
-          <span className="font-bold text-[15px]">Property Tax:</span> {selectedGoal.propertyTax}%{" "}
-        </h1>
-        <h1 className="text-[15px]">
-          <span className="font-bold text-[15px]">Monthly Insurance:</span> {USDollar.format(selectedGoal.insurance)}
-        </h1>
-        {selectedGoal.downPayment < twentyPercentValue && (
+        <div className="w-auto sm:flex flex-col h-auto hidden">
           <h1 className="text-[15px]">
-            <span className="font-bold text-[15px]">Mortgagae Insurance:</span> {selectedGoal.mortgageInsurance}%{" "}
+            <span className="font-bold text-[15px]">Term:</span> {selectedGoal.term} years
           </h1>
-        )}
+          <h1 className="text-[15px]">
+            <span className="font-bold text-[15px]">Interest Rate:</span> {selectedGoal.interest}%{" "}
+          </h1>
+          <h1 className="text-[15px]">
+            <span className="font-bold text-[15px]">Property Tax:</span> {selectedGoal.propertyTax}%{" "}
+          </h1>
+          <h1 className="text-[15px]">
+            <span className="font-bold text-[15px]">Monthly Insurance:</span> {USDollar.format(selectedGoal.insurance)}
+          </h1>
+          {selectedGoal.downPayment < twentyPercentValue && (
+            <h1 className="text-[15px]">
+              <span className="font-bold text-[15px]">Mortgagae Insurance:</span> {selectedGoal.mortgageInsurance}%{" "}
+            </h1>
+          )}
+        </div>
 
         <h1 className="text-[15px]">
           <span className="font-bold text-[15px]">Loan Amount:</span> <span className="text-chartGreen font-bold">{USDollar.format(selectedGoal.price - selectedGoal.downPayment)}</span>

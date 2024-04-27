@@ -10,7 +10,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Tooltip } from "@mui/material";
 import { carModalSchema } from "./carModalSchema";
 import dayjs from "dayjs";
-import { addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
+import { CarObj, addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
 import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
 import { carsArr } from "./carModalSchema";
 export interface ICar1stInputsProps {
@@ -48,14 +48,30 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
     mode: "all",
     defaultValues: {
       term: 60,
-      extraPayment:""
+      extraPayment: "",
     },
     resolver: zodResolver(carModalSchema),
   });
   const watchModal = watch("modal", "Select A Car Modal...");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    dispath(addCarGoal(data));
+    const { price, downPayment, interest, term, id, extraPayment, mileage, name, salary, modal, img } = data;
+
+    const newObj:CarObj = {
+      price,
+      downPayment,
+      interest,
+      term,
+      id,
+      extraPayment,
+      mileage,
+      name,
+      salary,
+      modal,
+      img: img ? img : "",
+      showInputs:true
+    }
+    dispath(addCarGoal(newObj));
     dispath(setAnyTypeOfModal({ value: false, type: "Car" }));
   };
 
@@ -78,12 +94,10 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   React.useEffect(() => {
     if (updatedImg) {
       setValue("img", updatedImg);
-    }else{
-      setValue("img", "")
+    } else {
+      setValue("img", "");
     }
   }, [updatedImg, setValue]);
-
-
 
   return (
     <form className="w-full h-auto flex flex-col mt-5" onSubmit={handleSubmit(onSubmit)}>

@@ -22,6 +22,8 @@ export function isTheSameCheck(select:HouseObjWithFormattedData | RetirementGoal
     if(!select || select.type !== "House" || !inputs) return
   
     const {id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance} = inputs
+
+    const {showInputs} = select
   
     const newObj:HouseObjWithFormattedData = {
       id,
@@ -39,7 +41,8 @@ export function isTheSameCheck(select:HouseObjWithFormattedData | RetirementGoal
       opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
       maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
       type: "House",
-      showTax: select.showTax
+      showTax: select.showTax,
+      showInputs
      }
   
    return _.isEqual(select,newObj) ? false : true

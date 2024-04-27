@@ -66,7 +66,7 @@ export default function RetirementInputs() {
       inputStates:any
     ) {
       if (!select) return false;
-      const { title, id, type } = select;
+      const { title, id, type, showInputs } = select;
      
       const {
         age: { lifeExpectancy, currentAge, retireAge },
@@ -91,6 +91,7 @@ export default function RetirementInputs() {
         inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+        showInputs
       };
 
       const isTheSame = _.isEqual(obj, select);
@@ -144,7 +145,7 @@ export default function RetirementInputs() {
       budget,
       savings,
     } = allInputData;
-    const { title, id, type } = selectedGoal;
+    const { title, id, type, showInputs } = selectedGoal;
     const newObj: RetirementGoals = {
       id,
       title,
@@ -158,6 +159,7 @@ export default function RetirementInputs() {
       inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
       monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
       savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+      showInputs
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));

@@ -17,6 +17,7 @@ export interface RetirementGoals {
   postRate: number;
   inflation: number;
   title: string;
+  showInputs: boolean;
 }
 
 export interface RetirementGoalNoFormat {
@@ -32,6 +33,7 @@ export interface RetirementGoalNoFormat {
   postRate: string;
   inflation: string;
   title: string;
+  showInputs:boolean;
 }
 
 interface InputRetireErrors {
@@ -53,7 +55,7 @@ const retirementSlice = createSlice({
   initialState,
   reducers: {
     addRetireGoal: (state, action:PayloadAction<RetirementGoalNoFormat>) => {
-      const { currentAge, lifeExpectancy, type, retireAge, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title } = action.payload;
+      const { currentAge, lifeExpectancy, type, retireAge, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title, showInputs } = action.payload;
       const formattedData: RetirementGoals = {
         id,
         type,
@@ -67,6 +69,7 @@ const retirementSlice = createSlice({
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
         title,
+        showInputs
       };
 
       state.retireGoals = [...state.retireGoals, formattedData];
