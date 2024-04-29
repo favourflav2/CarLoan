@@ -76,7 +76,7 @@ export default function CarPage() {
     defaultValues: {
       name: selectedGoal?.type === "Car" && selectedGoal?.name ? selectedGoal?.name : "",
       modal: selectedGoal?.type === "Car" && selectedGoal?.modal ? selectedGoal?.modal : "",
-      img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : undefined,
+      img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : "",
     },
     resolver: zodResolver(schema),
   });
@@ -139,7 +139,7 @@ export default function CarPage() {
       reset({
         name: selectedGoal?.name ? selectedGoal?.name : "",
         modal: selectedGoal?.modal ? selectedGoal?.modal : "",
-        img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : undefined,
+        img: selectedGoal?.type === "Car" && selectedGoal?.img ? selectedGoal?.img : "",
       });
     }
     trigger();

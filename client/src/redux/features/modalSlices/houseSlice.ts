@@ -72,7 +72,7 @@ const houseSlice = createSlice({
         opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
         maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
         type: "House",
-        showTax:"monthlyPaymentWithTax",
+        showTax:"monthlyPaymentWithNoTax",
         showInputs
       };
 
@@ -111,6 +111,44 @@ const houseSlice = createSlice({
         state.houseGoals[index] = goal
       }
     },
+    editHouseGoalImg: (state,action:PayloadAction<{id:string, goal:HouseObjWithFormattedData, img:string}>) => {
+      const {id,goal,img} = action.payload
+      
+      if(goal.type !== "House") return
+
+      const res = state.houseGoals.map(val => {
+        if(val.id === id){
+          return {
+            ...val,
+            img:img
+          }
+        }else{
+          return val
+        }
+      })
+
+      state.houseGoals = res
+
+    },
+    editHouseGoalTitle: (state,action:PayloadAction<{id:string, goal:HouseObjWithFormattedData, newAddress:string}>) => {
+      const {id,goal,newAddress} = action.payload
+      
+      if(goal.type !== "House") return
+
+      const res = state.houseGoals.map(val => {
+        if(val.id === id){
+          return {
+            ...val,
+            streetAddress:newAddress
+          }
+        }else{
+          return val
+        }
+      })
+
+      state.houseGoals = res
+
+    },
     houseShowInput: (state,action:PayloadAction<{id:string, value:boolean}>) => {
       const {id,value} = action.payload
       const index = state.houseGoals.findIndex(item => item.id === id)
@@ -124,4 +162,4 @@ const houseSlice = createSlice({
 
 export default houseSlice.reducer;
 
-export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal, houseShowInput} = houseSlice.actions;
+export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal, houseShowInput, editHouseGoalImg, editHouseGoalTitle} = houseSlice.actions;

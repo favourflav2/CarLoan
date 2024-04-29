@@ -1,12 +1,10 @@
 import * as React from 'react';
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
-import { useForm, SubmitHandler,UseFormRegister,UseFormHandleSubmit,UseFormSetValue,FieldErrors } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Divider } from "@mui/material";
+import {  SubmitHandler,UseFormRegister,UseFormHandleSubmit,UseFormSetValue,FieldErrors } from "react-hook-form";
+
 import { motion, AnimatePresence } from "framer-motion";
-import { Dispatch, UseSelector } from '../../redux/store';
+import { UseSelector } from '../../redux/store';
 
 export interface IEditNameHouseBoxProps {
   editState:boolean;
@@ -35,7 +33,7 @@ export default function EditNameHouseBox ({editState,register,setEditState,onSub
 
   // Redux States
   const {selectedGoal} = UseSelector(state => state.app)
-  const dispatch = Dispatch()
+
 
 
 
@@ -70,7 +68,7 @@ export default function EditNameHouseBox ({editState,register,setEditState,onSub
             delay: 0.2,
             ease: [0, 0.71, 0.2, 1.01],
           }}
-          className="outline-chartGreen dark:outline-none indent-1 h-[30px] text-[14px] border border-gray-300 dark:border-none rounded-md dark:text-black"
+          className="outline-chartGreen w-[280px] dark:outline-none indent-1 h-[30px] text-[14px] border border-gray-300 dark:border-none rounded-md dark:text-black"
           type="text"
           {...register("streetAddress")}
         />

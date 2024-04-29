@@ -131,6 +131,15 @@ const appSlice = createSlice({
           state.selectedGoal.modal = action.payload.modal;
 
           break;
+          case "House":
+            if (!state.selectedGoal) return;
+          
+            if (goal.type !== "House" || state.selectedGoal?.type !== "House") return;
+  
+            state.selectedGoal.streetAddress = title;
+          
+  
+            break;
         default:
           return;
       }
@@ -149,6 +158,12 @@ const appSlice = createSlice({
           if (!state.selectedGoal) return;
           if (goal.type !== "Car" || state.selectedGoal?.type !== "Car") return;
 
+          state.selectedGoal.img = img;
+
+          break;
+        case "House":
+          if (!state.selectedGoal) return;
+          if (goal.type !== "House" || state.selectedGoal?.type !== "House") return;
           state.selectedGoal.img = img;
 
           break;

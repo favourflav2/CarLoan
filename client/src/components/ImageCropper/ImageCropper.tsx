@@ -3,6 +3,7 @@ import Resizer from "react-image-file-resizer";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { editCarGoalImg } from "../../redux/features/modalSlices/carModalSlice";
 import { editSelectedGoalImg } from "../../redux/features/applicationSlice";
+import { editHouseGoalImg } from "../../redux/features/modalSlices/houseSlice";
 
 
 interface Props {
@@ -61,7 +62,10 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
             setOpenImgModal(false);
             break;
           case "House":
-            alert("Go to imageCropper to add event");
+            if (selectedGoal.type !== "House") return;
+            dispatch(editHouseGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }));
+            dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
+            setOpenImgModal(false);
             break;
           default:
             break;

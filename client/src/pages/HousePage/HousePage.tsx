@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { editShowTaxForHouse, setSelectedGoal } from "../../redux/features/applicationSlice";
+import { editSelectedGoalTitle, setSelectedGoal } from "../../redux/features/applicationSlice";
 import { motion, AnimatePresence } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
@@ -18,6 +18,8 @@ import {
 } from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
 import {  LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import HouseChartContainer from "./HouseChartContainer";
+import EditImgModal from "../CarPage/components/EditImgModal";
+import { editHouseGoalTitle } from "../../redux/features/modalSlices/houseSlice";
 
 export interface IHousePageProps {}
 
@@ -46,9 +48,9 @@ export default function HousePage(props: IHousePageProps) {
     register,
     handleSubmit,
     setValue,
-    // watch,
-    // reset,
-    // trigger,
+     watch,
+   reset,
+     trigger,
     formState: { errors },
   } = useForm<FormFields>({
     mode: "onChange",
@@ -61,6 +63,13 @@ export default function HousePage(props: IHousePageProps) {
   // Edit State
   const [editState, setEditState] = React.useState(false);
   const [saveBtn, setSaveBtn] = React.useState(false);
+
+  // File Uploader
+  const [updatedImg, setUpdatedImg] = React.useState(""); // eslint-disable-line
+
+  function updateImg(img: string) {
+    setUpdatedImg(img);
+  }
 
   // Modal States
   const [openImgModal, setOpenImgModal] = React.useState(false);
@@ -89,14 +98,41 @@ export default function HousePage(props: IHousePageProps) {
     );
   }, [selectedGoal]);
 
+  // Callback version of watch.  It's your responsibility to unsubscribe when done.
+  React.useEffect(() => {
+    const subscription = watch((data) => {
+      if (selectedGoal?.type !== "House") return;
+      if (data?.streetAddress !== selectedGoal?.streetAddress) {
+        setSaveBtn(true);
+      } else {
+        setSaveBtn(false);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [watch, saveBtn, selectedGoal]);
+
+  // Makes Sure inputs match selected goal on page refresh
+  React.useEffect(() => {
+    if (selectedGoal && selectedGoal?.type === "House" && saveBtn === false) {
+      reset({
+        streetAddress: selectedGoal && selectedGoal.type === "House" ? selectedGoal.streetAddress : "",
+      });
+    }
+    trigger();
+  }, [selectedGoal, reset]); // eslint-disable-line
+
  
 
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    // dispatch(editRetireGoalTitle({ id, newTitle: data?.title, goal: selectedGoal }));
-    // dispatch(editSelectedGoalTitle({ title: data?.title, goal: selectedGoal }));
-    // setEditState(false);
-    // setSaveBtn(false);
+    if (!selectedGoal || selectedGoal?.type !== "House") return;
+    dispatch(editHouseGoalTitle({ id:selectedGoal.id, newAddress: data.streetAddress, goal: selectedGoal }));
+    dispatch(editSelectedGoalTitle({ title: data.streetAddress, goal: selectedGoal }));
+    setEditState(false);
+    setSaveBtn(false);
   };
 
  
@@ -157,7 +193,7 @@ export default function HousePage(props: IHousePageProps) {
             {/* Chart Content */}
             {selectedGoal && monthlyPayment && <HouseChartContainer view={view} setView={setView} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} regualrLoanAmmortization={regualrLoanAmmortization} extraNumberOfYears={extraNumberOfYears} extraLoanAmmortization={extraLoanAmmortization}/>}
 
-           
+            <EditImgModal updateImg={updateImg} setOpenImgModal={setOpenImgModal} open={openImgModal} />
           </motion.div>
         </AnimatePresence>
       </div>

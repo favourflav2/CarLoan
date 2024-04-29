@@ -37,7 +37,7 @@ export default function EditImgModal ({ setOpenImgModal, open, updateImg }: IEdi
         >
           {/* First Box */}
           <div className="w-full justify-between flex items-center ">
-            <h1 className=" text-[22px] font-medium">Crop Image</h1>
+            <h1 className=" text-[22px] font-medium">Select New Image</h1>
             <CloseOutlinedIcon onClick={() => setOpenImgModal(false)} className=' cursor-pointer'/>
           </div>
 
