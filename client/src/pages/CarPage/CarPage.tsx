@@ -161,10 +161,13 @@ export default function CarPage() {
     };
   }, [watch, saveBtn, selectedGoal]);
 
-
-
-
-
+  // Scroll to top on render
+  React.useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+    });
+  }, []);
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
@@ -188,7 +191,7 @@ export default function CarPage() {
             transition={{ duration: 0.25 }}
             className="w-full max-h-[900px]"
           >
-            <CarPageInputs selectedGoal={selectedGoal}/>
+            <CarPageInputs selectedGoal={selectedGoal} />
           </motion.div>
         </AnimatePresence>
 
@@ -298,7 +301,7 @@ export default function CarPage() {
 
                 {view === "Graph View" && (
                   <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">
-                    {regualrLoanAmmortization?.myLoan &&  monthlyPayment &&  selectedGoal && (
+                    {regualrLoanAmmortization?.myLoan && monthlyPayment && selectedGoal && (
                       <CarChart
                         regualarLoan={regualrLoanAmmortization}
                         extraLoan={extraLoanAmmortization}
@@ -310,13 +313,11 @@ export default function CarPage() {
                   </div>
                 )}
 
-                {view === "Summary View" && regualrLoanAmmortization?.myLoan &&(
+                {view === "Summary View" && regualrLoanAmmortization?.myLoan && (
                   <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 overflow-hidden">
-                    { monthlyPayment && <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />}
+                    {monthlyPayment && <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />}
                   </div>
                 )}
-
-               
               </div>
             </div>
           </motion.div>

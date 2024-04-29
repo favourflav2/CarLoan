@@ -69,6 +69,14 @@ export default function RetirementPage() {
   // Id
   const id = selectedGoal?.id;
 
+  // Scroll to top on render
+  React.useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+    });
+  }, []);
+
   // Edit State
   const [editState, setEditState] = React.useState(false);
   const [saveBtn, setSaveBtn] = React.useState(false);
@@ -216,7 +224,6 @@ export default function RetirementPage() {
             transition={{ duration: 0.25 }}
             className="w-full flex flex-col dark:text-gray-300 text-black p-4"
           >
-            {/* <h1 className='text-[19px] font-semibold'>Retirement savings at age {selectedGoal?.age?.retireAge}</h1> */}
             <div className="w-auto flex flex-col">
               {/* Edit Title Container */}
               <div className="w-auto h-auto flex items-center ">
@@ -347,8 +354,6 @@ export default function RetirementPage() {
                 )}
               </div>
             </div>
-
-            
           </motion.div>
         </AnimatePresence>
       </div>

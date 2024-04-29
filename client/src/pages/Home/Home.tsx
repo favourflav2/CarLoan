@@ -37,6 +37,8 @@ export default function Home() {
   // Drawer State Mobile Devices
   const [open, setOpen] = React.useState(false);
 
+  
+
   function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (value?.type) {
       case "Retirement":
@@ -66,7 +68,7 @@ export default function Home() {
     }
   }, [matches]);
   return (
-    <div className="w-full min-h-screen flex flex-col">
+    <div className="w-full min-h-screen flex flex-col" >
       {/* desktop content */}
       <div className="min-[900px]:block hidden">
         <div className={`  ${shrinkDashboardSidebar ? "w-[40px]" : "w-[280px]"} h-full fixed z-10 top-[75px] left-0 overscroll-x-none`}>

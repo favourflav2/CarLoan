@@ -83,6 +83,14 @@ export default function HousePage(props: IHousePageProps) {
   const [extraNumberOfYears, setExtraNumberOfYears] = React.useState<ExtraNumberYears>();
   const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
 
+  // Scroll to top on render
+  React.useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+    });
+  }, []);
+
 
 
   React.useEffect(() => {
