@@ -10,18 +10,24 @@ export interface IExtraMonthlyBoxProps {
   extraMonthlyPayment: number;
   numberOfMonths: number;
   monthlyPayment: MonthlyPayment;
-  getExtraPaymentTotalPaid(months: number, monthlyP: number, downPayment: number, carPrice: number): {
-    nonFormattedValue: number;
-    formattedValue: string;
-    interestNonFormattedValue: string;
-    interestFormattedValue: number;
-} | {
-    nonFormattedValue: number;
-    formattedValue: string;
-    interestNonFormattedValue: number;
-    interestFormattedValue: string;
-}
- 
+  getExtraPaymentTotalPaid(
+    months: number,
+    monthlyP: number,
+    downPayment: number,
+    carPrice: number
+  ):
+    | {
+        nonFormattedValue: number;
+        formattedValue: string;
+        interestNonFormattedValue: string;
+        interestFormattedValue: number;
+      }
+    | {
+        nonFormattedValue: number;
+        formattedValue: string;
+        interestNonFormattedValue: number;
+        interestFormattedValue: string;
+      };
 }
 
 export default function ExtraMonthlyBox({ header, selectedGoal, extraMonthlyPayment, numberOfMonths, monthlyPayment, getExtraPaymentTotalPaid }: IExtraMonthlyBoxProps) {
@@ -32,7 +38,7 @@ export default function ExtraMonthlyBox({ header, selectedGoal, extraMonthlyPaym
           {/*Top */}
           <div className="flex w-full flex-col mb-3">
             <h1 className=" italic text-[20px]">{header}</h1>
-            <h1 className="text-chartGreen text-[24px]">{USDollar.format(Number(extraMonthlyPayment?.toFixed(2)))}</h1>
+            <h1 className=" text-[24px] underline">{USDollar.format(Number(extraMonthlyPayment?.toFixed(2)))}</h1>
           </div>
 
           <div className="w-full flex flex-col">
@@ -47,21 +53,23 @@ export default function ExtraMonthlyBox({ header, selectedGoal, extraMonthlyPaym
             </div>
 
             {/* Total Interest */}
-              <CompareLoamCard
-               value={getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment,selectedGoal.price)?.interestFormattedValue}
+            <CompareLoamCard
+              type="Car"
+              value={getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment, selectedGoal.price)?.interestFormattedValue}
               title="Total Interest"
-              compareExtra={Number(getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment,selectedGoal.price)?.interestNonFormattedValue)}
+              compareExtra={Number(getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment, selectedGoal.price)?.interestNonFormattedValue)}
               compareReg={monthlyPayment?.interestSum}
-            />  
+            />
 
             {/* Term */}
-            {<CompareLoamCard value={numberOfMonths} title="New Term (months)" compareExtra={numberOfMonths} compareReg={selectedGoal?.term} />}
+            {<CompareLoamCard type="Car" value={numberOfMonths} title="Term (months)" compareExtra={numberOfMonths} compareReg={selectedGoal?.term} />}
 
             {/* Total Amount Paid*/}
             <CompareLoamCard
-              value={getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment,selectedGoal.price)?.formattedValue}
+              type="Car"
+              value={getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment, selectedGoal.price)?.formattedValue}
               title="Total Amount Paid"
-              compareExtra={getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment,selectedGoal.price)?.nonFormattedValue}
+              compareExtra={getExtraPaymentTotalPaid(numberOfMonths, extraMonthlyPayment, selectedGoal.downPayment, selectedGoal.price)?.nonFormattedValue}
               compareReg={monthlyPayment?.totalAmountPaid}
             />
           </div>

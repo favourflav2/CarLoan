@@ -1,15 +1,14 @@
 import * as React from "react";
-import { CarObjWithFormattedData,  } from "../../redux/features/modalSlices/carModalSlice";
-import { ExtraNumberMonths,  } from "../../components/helperFunctions/loanfunctions/LoanFunction";
+import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
+import { ExtraNumberMonths } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import { MonthlyPayment } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import { USDollar } from "./CarPage";
 import MonthlyPaymentBox from "./components/MonthlyPaymentBox";
 import ExtraMonthlyBox from "./components/ExtraMonthlyBox";
 
-
 export interface ICarPageSummaryProps {
   selectedGoal: CarObjWithFormattedData;
-  monthlyPayment: MonthlyPayment | undefined;
+  monthlyPayment: MonthlyPayment;
   extraNumberOfMonths: ExtraNumberMonths | undefined;
 }
 
@@ -18,18 +17,17 @@ export interface AllMonths extends MonthlyPayment {
 }
 
 export default function CarPageSummary({ selectedGoal, monthlyPayment, extraNumberOfMonths }: ICarPageSummaryProps) {
-
   // values obj destructure
   const numberOfMonths = extraNumberOfMonths?.numberOfMonths ? extraNumberOfMonths.numberOfMonthsNoRounding : 0;
   const extraMonthlyPayment = monthlyPayment?.extraMonthlyPayment ? monthlyPayment?.extraMonthlyPayment : 0;
-
-  
 
   function getExtraPaymentTotalPaid(months: number, monthlyP: number, downPayment: number, carPrice: number) {
     if (!months || !monthlyP! || !downPayment === undefined || !carPrice) return { nonFormattedValue: 0, formattedValue: "", interestNonFormattedValue: "", interestFormattedValue: 0 };
 
     const value = months * monthlyP + downPayment;
-    const value2 = Number(Math.abs(value - carPrice));
+    const loanAmount = carPrice - downPayment
+    const totalAmountPaidWithNoDownPayment = (monthlyP * months)
+    const value2 = Number(Math.abs(totalAmountPaidWithNoDownPayment - loanAmount));
 
     return {
       nonFormattedValue: value,
@@ -39,36 +37,26 @@ export default function CarPageSummary({ selectedGoal, monthlyPayment, extraNumb
     };
   }
 
-  if (!monthlyPayment || !extraNumberOfMonths) return null;
-
   return (
     <div className="w-full h-auto">
       {/* Content */}
       <div className="w-full h-full flex flex-col">
         <h1 className="my-3 font-semibold">Your Loan Estimate</h1>
 
-        {/* 1st Box */}
-        <MonthlyPaymentBox header="Monthly Payment" selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />
+        <div className="w-auto grid md:grid-cols-2 md:gap-x-10 grid-cols-1 gap-y-7">
+          {/* 1st Box */}
+          <MonthlyPaymentBox header="Monthly Payment" selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />
 
-        {selectedGoal.extraPayment > 0 && (
-          <div className="w-full h-auto items-center justify-center flex my-10">
-            <h1 className="text-[24px]">VS</h1>
-          </div>
-        )}
-
-        {/* 2nd Box Extra Monthly Payment */}
-        <ExtraMonthlyBox
-          header="Extra Monthly Payment"
-          selectedGoal={selectedGoal}
-          extraMonthlyPayment={extraMonthlyPayment}
-          numberOfMonths={numberOfMonths}
-          monthlyPayment={monthlyPayment}
-          getExtraPaymentTotalPaid={getExtraPaymentTotalPaid}
-        />
-
-        
-
-        
+          {/* 2nd Box Extra Monthly Payment */}
+          <ExtraMonthlyBox
+            header="Extra Monthly Payment"
+            selectedGoal={selectedGoal}
+            extraMonthlyPayment={extraMonthlyPayment}
+            numberOfMonths={numberOfMonths}
+            monthlyPayment={monthlyPayment}
+            getExtraPaymentTotalPaid={getExtraPaymentTotalPaid}
+          />
+        </div>
       </div>
     </div>
   );

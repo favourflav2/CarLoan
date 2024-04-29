@@ -164,6 +164,8 @@ export default function CarPage() {
 
 
 
+
+
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));
     return null;
@@ -308,11 +310,13 @@ export default function CarPage() {
                   </div>
                 )}
 
-                {view === "Summary View" && regualrLoanAmmortization?.myLoan && extraLoanAmmortization && (
+                {view === "Summary View" && regualrLoanAmmortization?.myLoan &&(
                   <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 overflow-hidden">
-                    <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />
+                    { monthlyPayment && <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />}
                   </div>
                 )}
+
+               
               </div>
             </div>
           </motion.div>

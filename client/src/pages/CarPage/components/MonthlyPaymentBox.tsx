@@ -2,10 +2,11 @@ import * as React from "react";
 import { CarObjWithFormattedData } from "../../../redux/features/modalSlices/carModalSlice";
 import { USDollar } from "../CarPage";
 import { MonthlyPayment } from "../../../components/helperFunctions/loanfunctions/LoanFunction";
+import { HouseObjWithFormattedData } from "../../../redux/features/modalSlices/houseSlice";
 
 export interface IMonthlyPaymentBoxProps {
   header: string;
-  selectedGoal: CarObjWithFormattedData;
+  selectedGoal: CarObjWithFormattedData | HouseObjWithFormattedData;
   monthlyPayment: MonthlyPayment;
 }
 
@@ -16,7 +17,7 @@ export default function MonthlyPaymentBox({ header, selectedGoal, monthlyPayment
       {/* Top */}
       <div className="flex w-full flex-col mb-3">
         <h1 className=" italic text-[20px]">{header}</h1>
-        <h1 className={` text-[24px]  ${selectedGoal.extraPayment > 0 ? "text-red-500" : "text-chartGreen"}`}>{USDollar.format(Number(monthlyPayment?.monthlyPayment.toFixed(2)))}</h1>
+        <h1 className={` text-[24px] underline  `}>{USDollar.format(Number(monthlyPayment?.monthlyPayment.toFixed(2)))}</h1>
       </div>
 
       {/* Bottom */}
@@ -44,8 +45,8 @@ export default function MonthlyPaymentBox({ header, selectedGoal, monthlyPayment
         {/* Term */}
         <div className="w-full flex flex-col h-auto">
           <div className="w-full justify-between items-center flex">
-            <h1 className="text-[15px]">Term (months)</h1>
-            <h1 className={` text-[15px] font-semibold ${selectedGoal.extraPayment > 0 ? "text-red-500" : "text-chartGreen"}`}>{selectedGoal.term} months</h1>
+            <h1 className="text-[15px]">{selectedGoal.type === "Car" ? 'Term (months)' : 'Term (years)'}</h1>
+            <h1 className={` text-[15px] font-semibold ${selectedGoal.extraPayment > 0 ? "text-red-500" : "text-chartGreen"}`}>{selectedGoal.type === "Car" ? `${selectedGoal.term} months` : `${selectedGoal.term} years`}</h1>
           </div>
 
           <hr className="border border-gray-300 mt-1 mb-2" />

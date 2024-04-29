@@ -10,6 +10,7 @@ import { MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/Lo
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { Dispatch } from "../../redux/store";
 import { editShowTaxForHouse } from "../../redux/features/applicationSlice";
+import HousePageSummary from "./HousePageSummary";
 
 export interface IHouseChartContainerProps {
   monthlyPayment: HouseMonthlyPayment;
@@ -182,7 +183,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
                 ? USDollar.format(Number(monthlyPayment.extraMonthlyPayment.toFixed(2)))
                 : addMonthlyPaymentWithTaxes(monthlyPayment).totalExtraMonthlyPayment}
             </h1>
-            {mortgageInsurance > 0 && (
+            {mortgageInsurance > 0 && extraPayment > 0 && (
               <Tooltip
                 title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(
                   monthlyPayment,
@@ -295,7 +296,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
           </div>
         )}
 
-        {view === "Summary View" && regualrLoanAmmortization?.myLoan && <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 overflow-hidden">House summary</div>}
+        {view === "Summary View" && regualrLoanAmmortization?.myLoan && <HousePageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfYears={extraNumberOfYears}/>}
       </div>
     </div>
   );
