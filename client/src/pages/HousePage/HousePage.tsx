@@ -20,6 +20,7 @@ import {  LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFu
 import HouseChartContainer from "./HouseChartContainer";
 import EditImgModal from "../CarPage/components/EditImgModal";
 import { editHouseGoalTitle } from "../../redux/features/modalSlices/houseSlice";
+import OpportunityCost from "./OpportunityCost";
 
 export interface IHousePageProps {}
 
@@ -201,10 +202,15 @@ export default function HousePage(props: IHousePageProps) {
             {/* Chart Content */}
             {selectedGoal && monthlyPayment && <HouseChartContainer view={view} setView={setView} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} regualrLoanAmmortization={regualrLoanAmmortization} extraNumberOfYears={extraNumberOfYears} extraLoanAmmortization={extraLoanAmmortization}/>}
 
+           
+
             <EditImgModal updateImg={updateImg} setOpenImgModal={setOpenImgModal} open={openImgModal} />
           </motion.div>
         </AnimatePresence>
       </div>
+
+       {/* Opportunity Cost */}
+       <OpportunityCost />
     </div>
   );
 }

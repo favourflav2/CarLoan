@@ -167,7 +167,7 @@ export default function HouseChart({ regualarLoan, extraLoan, monthlyPayment, ex
     },
   };
 
-  const extraPTotalAmountPaid = extraNumberOfYears && Number(monthlyPayment.extraMonthlyPayment * extraNumberOfYears.numberOfYearsNoRounding + downPayment);
+  const extraPTotalAmountPaid = extraNumberOfYears && Number(((monthlyPayment.extraMonthlyPayment * extraNumberOfYears.numberOfYearsNoRounding) * 12)+ downPayment);
 
   function returnMonths(value:ExtraNumberYears | undefined) {
     if(!value?.numberOfYearsNoRounding) return null
@@ -182,6 +182,7 @@ function returnYears(value:ExtraNumberYears | undefined){
     if(!value?.numberOfYears) return null
     return Math.trunc(value.numberOfYears)
 }
+
 
 
 
@@ -212,11 +213,16 @@ function returnYears(value:ExtraNumberYears | undefined){
             {/* Monthly Payment */}
           <div className="w-auto flex flex-col sm:mb-0 mb-4">
             <h1 className=" font-bold underline">Monthly Payment</h1>
-            <h1 className="text-[15px] mt-[1px]">
-              Total amount paid w/ no taxes  <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span>{" "}
+            <h1 className="text-[15px] my-[1px]">
+              Total amount paid w/ no taxes:  <span className="font-bold">{USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)))}</span>{" "}
+            </h1>
+            <h1 className="text-[15px] my-[1px]">
+              Total Interest:  <span className="font-bold">{USDollar.format(Number(monthlyPayment.interestSum.toFixed(2)))}</span>{" "}
             </h1>
             
           </div>
+
+         
 
           {selectedGoal && selectedGoal.type === "House" && selectedGoal.extraPayment > 0 && extraPTotalAmountPaid && (
             <div className="w-auto flex flex-col">
