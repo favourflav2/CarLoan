@@ -184,7 +184,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
         <div className="w-full h-auto flex flex-col items-center justify-center mt-2">
           {/* 5% Rule Number */}
           <div className="w-auto flex mb-1">
-            <h1 className="text-[16px]">
+            <h1 className="text-[14.5px] sm:text-[16px]">
               Simple Rule: <span className="font-bold">{getBreakEvenNumber(selectedGoal).rulePercentFormatted}%</span>
             </h1>
             <Tooltip title="Property Tax + Maintenance Cost + Cost of Capital" placement="top-end">
@@ -194,14 +194,16 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
 
           {/* Break Even Point Per Month */}
           <div className="w-auto flex">
-            <h1 className="text-[16px]">
+            <h1 className="text-[14.5px] sm:text-[16px]">
               Break Even Point Per Month: <span className="font-bold">{getBreakEvenNumber(selectedGoal).resultFormatted}</span>
             </h1>
-            <Tooltip title="If its rent is cheaper than this number, the math then favors renting" placement="top-end">
+            <Tooltip title="If rent is cheaper than this number, the math then favors renting" placement="top-end">
               <HelpOutlineIcon className="text-[12.5px] ml-[2px]" />
             </Tooltip>
           </div>
         </div>
+
+        <p className="text-[12px] sm:hidden block mt-1">~ If rent is cheaper than this number, the math then favors renting</p>
 
         {/* Update Button */}
         <AnimatePresence>

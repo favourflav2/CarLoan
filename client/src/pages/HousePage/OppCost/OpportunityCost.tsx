@@ -22,6 +22,7 @@ export default function OpportunityCost({ selectedGoal }: Props) {
     <div className={`mt-8 h-auto w-full   flex flex-col items-center justify-center text-black dark:text-gray-300`}>
       {/* Content */}
       <div className="w-full h-full flex flex-col ">
+
         {/* Own Vs Rent && 5% Rule Box */}
         <div className="h-auto justify-center items-center flex flex-col w-full">
           <div className="min-[900px]:w-[80%] w-[90%] h-full flex flex-col">
@@ -33,7 +34,7 @@ export default function OpportunityCost({ selectedGoal }: Props) {
             {/* Owning vs Renting */}
             <OwnVsRent />
 
-            {/* Owning vs Renting */}
+            {/* 5% Rule */}
             <FivePercentRule />
           </div>
         </div>
@@ -49,6 +50,8 @@ export default function OpportunityCost({ selectedGoal }: Props) {
             </div>
           </div>
         </div>
+
+
       </div>
     </div>
   );
