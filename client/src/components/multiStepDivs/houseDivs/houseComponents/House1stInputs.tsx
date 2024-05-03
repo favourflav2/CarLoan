@@ -63,6 +63,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
       appreciation: "2",
       maintenance: "1",
       opportunityCostRate: "7",
+      rent:"1515"
     },
     resolver: zodResolver(house1stSchema),
   });
@@ -72,7 +73,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   const downPayment = watch("downPayment");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { id, price, downPayment, interest, term, extraPayment, streetAddress, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, img } = data;
+    const { id, price, downPayment, interest, term, extraPayment, streetAddress, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, img, rent } = data;
 
     const newObj:HouseObj = {
       id,
@@ -85,6 +86,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
       propertyTax,
       insurance,
       mortgageInsurance,
+      rent,
       appreciation,
       opportunityCostRate,
       maintenance,

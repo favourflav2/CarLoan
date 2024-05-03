@@ -16,6 +16,7 @@ export interface HouseObj {
   opportunityCostRate: string;
   maintenance: string;
   showInputs:boolean;
+  rent:string;
 }
 
 export interface HouseObjWithFormattedData {
@@ -36,6 +37,7 @@ export interface HouseObjWithFormattedData {
   type: "House";
   showTax:"monthlyPaymentWithTax" | "monthlyPaymentWithNoTax";
   showInputs:boolean;
+  rent:number
 }
 
 interface HouseData {
@@ -55,7 +57,7 @@ const houseSlice = createSlice({
   initialState,
   reducers: {
     addHouseGoal: (state, action: PayloadAction<HouseObj>) => {
-      const {id, streetAddress, price, downPayment,interest, term, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate,maintenance, showInputs } = action.payload;
+      const {id, streetAddress, price, downPayment,interest, term, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate,maintenance, showInputs, rent } = action.payload;
       const formattedData: HouseObjWithFormattedData = {
         id,
         streetAddress,
@@ -71,6 +73,7 @@ const houseSlice = createSlice({
         appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
         opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
         maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
+        rent: parseFloat(rent.replace(/[,%$]/gm, "")),
         type: "House",
         showTax:"monthlyPaymentWithNoTax",
         showInputs

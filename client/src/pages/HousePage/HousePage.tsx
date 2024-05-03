@@ -16,11 +16,11 @@ import {
   loanAmmortizationWithExtraPaymentForHouse,
   solveForNumberOfMonthsForHouse,
 } from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
-import {  LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/LoanFunction";
+import { LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import HouseChartContainer from "./HouseChartContainer";
 import EditImgModal from "../CarPage/components/EditImgModal";
 import { editHouseGoalTitle } from "../../redux/features/modalSlices/houseSlice";
-import OpportunityCost from "./OpportunityCost";
+import OpportunityCost from "./OppCost/OpportunityCost";
 
 export interface IHousePageProps {}
 
@@ -49,9 +49,9 @@ export default function HousePage(props: IHousePageProps) {
     register,
     handleSubmit,
     setValue,
-     watch,
-   reset,
-     trigger,
+    watch,
+    reset,
+    trigger,
     formState: { errors },
   } = useForm<FormFields>({
     mode: "onChange",
@@ -92,8 +92,6 @@ export default function HousePage(props: IHousePageProps) {
     });
   }, []);
 
-
-
   React.useEffect(() => {
     if (!selectedGoal || selectedGoal.type !== "House") return;
     const { interest, downPayment, insurance, mortgageInsurance, propertyTax, price, term } = selectedGoal;
@@ -133,20 +131,14 @@ export default function HousePage(props: IHousePageProps) {
     trigger();
   }, [selectedGoal, reset]); // eslint-disable-line
 
- 
-
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     if (!selectedGoal || selectedGoal?.type !== "House") return;
-    dispatch(editHouseGoalTitle({ id:selectedGoal.id, newAddress: data.streetAddress, goal: selectedGoal }));
+    dispatch(editHouseGoalTitle({ id: selectedGoal.id, newAddress: data.streetAddress, goal: selectedGoal }));
     dispatch(editSelectedGoalTitle({ title: data.streetAddress, goal: selectedGoal }));
     setEditState(false);
     setSaveBtn(false);
   };
-
- 
-
-
 
   if (!selectedGoal || selectedGoal.type !== "House") {
     dispatch(setSelectedGoal(null));
@@ -170,7 +162,7 @@ export default function HousePage(props: IHousePageProps) {
             transition={{ duration: 0.25 }}
             className="w-full max-h-[900px]"
           >
-            <HousePageInputs selectedGoal={selectedGoal}/>
+            <HousePageInputs selectedGoal={selectedGoal} />
           </motion.div>
         </AnimatePresence>
 
@@ -200,17 +192,25 @@ export default function HousePage(props: IHousePageProps) {
             <HouseImgAndNum selectedGoal={selectedGoal} setOpenImgModal={setOpenImgModal} />
 
             {/* Chart Content */}
-            {selectedGoal && monthlyPayment && <HouseChartContainer view={view} setView={setView} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} regualrLoanAmmortization={regualrLoanAmmortization} extraNumberOfYears={extraNumberOfYears} extraLoanAmmortization={extraLoanAmmortization}/>}
-
-           
+            {selectedGoal && monthlyPayment && (
+              <HouseChartContainer
+                view={view}
+                setView={setView}
+                selectedGoal={selectedGoal}
+                monthlyPayment={monthlyPayment}
+                regualrLoanAmmortization={regualrLoanAmmortization}
+                extraNumberOfYears={extraNumberOfYears}
+                extraLoanAmmortization={extraLoanAmmortization}
+              />
+            )}
 
             <EditImgModal updateImg={updateImg} setOpenImgModal={setOpenImgModal} open={openImgModal} />
           </motion.div>
         </AnimatePresence>
       </div>
 
-       {/* Opportunity Cost */}
-       <OpportunityCost />
+      {/* Opportunity Cost */}
+      {selectedGoal && <OpportunityCost selectedGoal={selectedGoal} />}
     </div>
   );
 }

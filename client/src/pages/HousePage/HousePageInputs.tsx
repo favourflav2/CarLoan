@@ -52,6 +52,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
         downPayment: selectedGoal.downPayment.toString(),
         interest: selectedGoal.interest.toString(),
         term: selectedGoal.term,
+        rent: selectedGoal.rent.toString(),
         streetAddress: selectedGoal.streetAddress,
         img: selectedGoal.img,
         id: selectedGoal.id,
@@ -72,7 +73,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
   const downPayment = watch("downPayment");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance } = data;
+    const { id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent } = data;
 
     const newObj: HouseObjWithFormattedData = {
       id,
@@ -89,6 +90,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
       appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
       opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
       maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
+      rent: parseFloat(rent.replace(/[,%$]/gm, "")),
       type: "House",
       showTax: selectedGoal.showTax,
       showInputs,
@@ -168,6 +170,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
       appreciation: selectedGoal.appreciation.toString(),
       maintenance: selectedGoal.maintenance.toString(),
       opportunityCostRate: selectedGoal.opportunityCostRate.toString(),
+      rent: selectedGoal.rent.toString()
     });
   }, [selectedGoal, isSubmitSuccessful]); // eslint-disable-line
 

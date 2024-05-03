@@ -60,6 +60,10 @@ export const house1stSchema = z
     maintenance: z.string({
       required_error: "A common suggestion is to allocate approximately 1% of the property's value per year, on average, to cover maintenance costs.",
     }),
+    rent: z
+      .string({
+        required_error: "Please enter a rent you would like to compare with",
+      })
   })
   .superRefine((values, ctx) => {
     if (parseFloat(values.downPayment) >= parseFloat(values.price)) {
@@ -76,16 +80,15 @@ export const house1stSchema = z
     }
   })
   .superRefine((values, ctx) => {
-    const thirtyPercentOfPrice = parseFloat(values.price) * .30
+    const thirtyPercentOfPrice = parseFloat(values.price) * 0.3;
     if (parseFloat(values.extraPayment) > thirtyPercentOfPrice) {
       ctx.addIssue({
         message: "Your extra payment can't exceed 30% of the house price",
         code: z.ZodIssueCode.custom,
         path: ["extraPayment"],
       });
-      
     }
-  })
+  });
 // .superRefine((values, ctx) => {
 //   const twentyPercentValue = Number(parseFloat(values.price) * 0.2);
 //   if (parseFloat(values.downPayment) < twentyPercentValue) {

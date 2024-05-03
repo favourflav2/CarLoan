@@ -24,6 +24,7 @@ export interface IHouseAddressInputProps {
     appreciation: string;
     opportunityCostRate: string;
     maintenance: string;
+    rent:string;
     img?: any;
   }>;
   register: UseFormRegister<{
@@ -40,6 +41,7 @@ export interface IHouseAddressInputProps {
     appreciation: string;
     opportunityCostRate: string;
     maintenance: string;
+    rent:string;
     img?: any;
   }>;
   allInputData: {
@@ -72,6 +74,7 @@ export interface IHouseAddressInputProps {
     appreciation: string;
     opportunityCostRate: string;
     maintenance: string;
+    rent: string;
     img?: any;
   }>;
   control: Control<
@@ -89,6 +92,7 @@ export interface IHouseAddressInputProps {
       appreciation: string;
       opportunityCostRate: string;
       maintenance: string;
+      rent:string;
       img?: any;
     },
     any,
@@ -106,6 +110,7 @@ export interface IHouseAddressInputProps {
       appreciation: string;
       opportunityCostRate: string;
       maintenance: string;
+      rent:string;
       img?: any;
     }
   >;

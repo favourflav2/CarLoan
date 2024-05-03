@@ -22,6 +22,7 @@ export interface IHouseControllerInputProps {
     appreciation: string;
     opportunityCostRate: string;
     maintenance: string;
+    rent:string;
     img?: any;
 }>
   control: Control<{
@@ -38,6 +39,7 @@ export interface IHouseControllerInputProps {
     appreciation: string;
     opportunityCostRate: string;
     maintenance: string;
+    rent:string;
     img?: any;
 }, any, {
     streetAddress: string;
@@ -53,6 +55,7 @@ export interface IHouseControllerInputProps {
     appreciation: string;
     opportunityCostRate: string;
     maintenance: string;
+    rent:string;
     img?: any;
 }>
 }
@@ -71,6 +74,7 @@ type FormFields = {
   appreciation: string;
   opportunityCostRate: string;
   maintenance: string;
+  rent:string;
   img?: any;
 }
 
