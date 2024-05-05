@@ -145,7 +145,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
         />
 
         {/* Interest */}
-        <OppCostInputCard errors={errors} control={control} name="interest" label="Interest" placeholder="" type="Percent" tooltip="Mortgage Interest Rate" />
+        <OppCostInputCard errors={errors} control={control} name="interest" label="Mortgage Interest Rate" placeholder="" type="Percent" tooltip="Mortgage Interest Rate" />
 
         {/* Rent */}
         <OppCostInputCard
@@ -163,7 +163,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
           errors={errors}
           control={control}
           name="appreciation"
-          label="Appreciation"
+          label="Expected Home Appreciation"
           placeholder=""
           type="Percent"
           tooltip="Historically speaking, homes in the U.S. generally only appreciate by 2–3% per year on average. Futhermore, this will help get a better estimate on the future value of your home. And help provide a more accurate break even point per month."

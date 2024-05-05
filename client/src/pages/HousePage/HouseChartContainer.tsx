@@ -94,7 +94,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
             <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartGreen">
               {showTax === "monthlyPaymentWithNoTax" ? USDollar.format(Number(monthlyPayment.monthlyPayment.toFixed(2))) : addMonthlyPaymentWithTaxes(monthlyPayment).totalMonthlyPayment}
             </h1>
-            {mortgageInsurance > 0 && (
+            {mortgageInsurance > 0 &&  (
               <Tooltip
                 title={`When you have 22% equity in your home, legally your mortgage insurance will be removed. When your mortgage insurance is removed, your new monthly payment will be ${returnMonthlyPaymentMinusMIP(
                   monthlyPayment,
@@ -257,7 +257,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
         </div>
       </div>
 
-      {showTax === "monthlyPaymentWithTax" && (
+      {showTax === "monthlyPaymentWithTax" && mortgageInsurance > 0 && (
         <div className="w-auto flex flex-col mb-4 sm:hidden">
           <h1 className="text-[12.5px] text-red-400">
             - When you have 22% equity in your home your mortgage insurance is removed, your new{" "}

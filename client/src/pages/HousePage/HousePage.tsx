@@ -144,6 +144,8 @@ export default function HousePage(props: IHousePageProps) {
     dispatch(setSelectedGoal(null));
     return null;
   }
+
+
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
       {/* Top Section Chart and Inputs */}
@@ -210,7 +212,7 @@ export default function HousePage(props: IHousePageProps) {
       </div>
 
       {/* Opportunity Cost */}
-      {selectedGoal && <OpportunityCost selectedGoal={selectedGoal} />}
+      {selectedGoal && monthlyPayment &&  <OpportunityCost selectedGoal={selectedGoal} monthlyPayment={monthlyPayment}/>}
     </div>
   );
 }
