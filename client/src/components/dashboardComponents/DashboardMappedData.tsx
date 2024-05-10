@@ -1,4 +1,7 @@
 import * as React from "react";
+import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
+import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
+import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { motion } from "framer-motion";
@@ -12,10 +15,15 @@ export interface IDashboardMappedDataProps {
 
   // Passing this props from Home... This is for mobile dashboard drawer state
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
+
+  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
+  retireGoals: RetirementGoals[]
+  houseGoals: HouseObjWithFormattedData[];
+  carGoals: CarObjWithFormattedData[];
   
 }
 
-export default function DashboardMappedData({ setFirstModal, type, setOpen }: IDashboardMappedDataProps) {
+export default function DashboardMappedData({ setFirstModal, type, setOpen, selectedGoal, retireGoals, houseGoals, carGoals }: IDashboardMappedDataProps) {
   
 
   return (
@@ -38,7 +46,7 @@ export default function DashboardMappedData({ setFirstModal, type, setOpen }: ID
       </motion.div>
       {/* Container For Mapped Data */}
       <div>
-        <DashboardCard type={type} setOpen={setOpen}/>
+        <DashboardCard type={type} setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
       </div>
     </div>
   );

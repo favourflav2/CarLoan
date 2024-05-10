@@ -67,6 +67,8 @@ export default function Home() {
       setOpen(false);
     }
   }, [matches]);
+
+
   return (
     <div className="w-full min-h-screen flex flex-col" >
       {/* desktop content */}
@@ -106,7 +108,7 @@ export default function Home() {
 
               {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
               <div className="w-full h-[600px] overflow-y-auto ">
-                <DashboardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} />
+                <DashboardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
               </div>
             </motion.div>
           )}
@@ -125,7 +127,7 @@ export default function Home() {
           <MenuIcon className=" dark:text-darkText text-lightText " onClick={() => setOpen(true)} />
         </div>
         {/* Drawer */}
-        <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} />
+        <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
         <div className=" w-full h-auto">
         {selectedGoal?.id ? renderSwitch(selectedGoal) : <div>Theres no selected goal id</div>} 
         </div>

@@ -22,6 +22,9 @@ export const opportunityCostSchema = z
       })
       .refine((item) => item.length > 0, {
         message: "Please enter a number",
+      })
+      .refine((item) => parseFloat(item) > 0, {
+        message: "Please enter a number greater than 0",
       }),
     appreciation: z
       .string({

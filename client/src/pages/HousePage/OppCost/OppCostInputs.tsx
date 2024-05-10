@@ -30,6 +30,8 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
     control,
     reset,
     handleSubmit,
+    setError,
+    clearErrors,
     watch,
     formState: { errors, isSubmitSuccessful },
   } = useForm<FormFields>({
@@ -55,6 +57,11 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
   const houseDownPayment = USDollar.format(Number(downPayment.toFixed(2)));
 
   const errorsArray = Object.keys(errors);
+
+  // Break Even Point Per Month
+  const breakEvenPerMonth = getBreakEvenNumber(selectedGoal).resultNoFormat;
+
+
 
  
 
@@ -86,6 +93,23 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
      dispatch(editHouseGoal({ goal: newObj, id:selectedGoal.id }));
   };
 
+  function SubmitValidation(e: any) {
+    e.preventDefault();
+    if (!allInputData.rent || !breakEvenPerMonth) return;
+
+    // if the newly typed rent value is less than the break even per month we show an error
+    if (parseFloat(allInputData.rent) >= breakEvenPerMonth) {
+     
+        setError("rent", { type: "custom", message: "If the rent is greater than or equal to the break even per month, it would make sense to just buy. However, in order for us to compare the rent to the total cost of homeownership we need the rent to be less than the break even per month." });
+        console.log(allInputData.rent, "sss", breakEvenPerMonth)
+      
+    } else {
+      // if the newly typed rent value is less than the break even per month we clear the error and submit
+      clearErrors("rent");
+      handleSubmit(onSubmit)();
+    }
+  }
+
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
     reset({
@@ -103,7 +127,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
   return (
     <div className="w-full h-auto flex flex-col">
       {/* Content */}
-      <form className="w-full flex flex-col h-full" onSubmit={handleSubmit(onSubmit)}>
+      <form className="w-full flex flex-col h-full" onSubmit={(e) => SubmitValidation(e)}>
         {/* House Price */}
         <div className="w-full  flex flex-col mb-3">
           <label htmlFor="price" className="text-[12px] dark:text-gray-300 text-black">

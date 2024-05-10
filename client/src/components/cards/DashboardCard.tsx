@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dispatch, UseSelector } from "../../redux/store";
+import { Dispatch } from "../../redux/store";
 import CircleIcon from "@mui/icons-material/Circle";
 import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,16 +13,15 @@ import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features
 export interface IDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
+  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
+  retireGoals: RetirementGoals[];
+  houseGoals: HouseObjWithFormattedData[];
+  carGoals: CarObjWithFormattedData[];
 }
 
 // trying to figure out how to concat and do a switch case
 
-export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
-  // Redux States
-  const { retireGoals } = UseSelector((state) => state.retireSlice);
-  const { selectedGoal } = UseSelector((state) => state.app);
-  const { carGoals } = UseSelector((state) => state.carModalSlice);
-  const { houseGoals } = UseSelector((state) => state.houseSlice);
+export default function DashboardCard({ type, setOpen, selectedGoal, retireGoals, houseGoals, carGoals }: IDashboardCardProps) {
   const dispatch = Dispatch();
 
   const concatData: Array<RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData> = [...retireGoals, ...carGoals, ...houseGoals];
@@ -36,22 +35,36 @@ export default function DashboardCard({ type, setOpen }: IDashboardCardProps) {
       case "Retirement":
         if (!item) return;
         if (item.type !== "Retirement") return;
-        dispatch(removeRetireItem(item));
-        dispatch(setSelectedGoal(null));
+
+        if (selectedGoal?.id === item.id) {
+          dispatch(setSelectedGoal(null));
+          dispatch(removeRetireItem(item));
+        } else {
+          dispatch(removeRetireItem(item));
+        }
 
         break;
       case "Car":
         if (!item) return;
         if (item.type !== "Car") return;
-        dispatch(removeCarItem(item));
-        dispatch(setSelectedGoal(null));
+        if (selectedGoal?.id === item.id) {
+          dispatch(setSelectedGoal(null));
+          dispatch(removeCarItem(item));
+        } else {
+          dispatch(removeCarItem(item));
+        }
 
         break;
       case "House":
         if (!item) return;
         if (item.type !== "House") return;
-        dispatch(removeHouseGoal(item));
-        dispatch(setSelectedGoal(null));
+        if (selectedGoal?.id === item.id) {
+          dispatch(setSelectedGoal(null));
+          dispatch(removeHouseGoal(item));
+        } else {
+          dispatch(removeHouseGoal(item));
+        }
+
         break;
       default:
         return;

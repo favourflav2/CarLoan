@@ -1,9 +1,12 @@
 import * as React from "react";
 import { FTVOppCost } from "../../../components/helperFunctions/oppCostFunctions/oppCostFunction";
 import { HouseObjWithFormattedData } from "../../../redux/features/modalSlices/houseSlice";
-import OppCostChart from "../../../components/charts/OppCostChart";
 import { HouseMonthlyPayment } from "../../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
-import { FormControl, NativeSelect } from "@mui/material";
+import BreakEvenSection from "./OppCostSectionPages/BreakEvenSection";
+import GraphViewOppCost from "./OppCostSectionPages/GraphViewOppCost";
+import SelectDropDown from "./SelectDropDown";
+import RentSection from "./OppCostSectionPages/RentSection";
+import DiffSection from "./OppCostSectionPages/DiffSection";
 
 export interface IOppCostChartContainerProps {
   breakEvenOppCost: FTVOppCost | undefined;
@@ -14,17 +17,24 @@ export interface IOppCostChartContainerProps {
 }
 
 export default function OppCostChartContainer({ breakEvenOppCost, rentOppCost, diffOppCost, selectedGoal, monthlyPayment }: IOppCostChartContainerProps) {
+
+ 
+
   const [view, setView] = React.useState("Graph View");
 
   const handleChange = (event: { target: { value: string } }) => {
     setView(event.target.value);
   };
 
+  //const totalPaid = USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)));
+  //const totalInterst = USDollar.format(Number(monthlyPayment.interestSum.toFixed(2)));
+
+  //console.log(breakEvenPerMonth)
+
   return (
-    <div className="w-full h-auto flex flex-col">
+    <div className="w-full h-auto flex flex-col xl:mt-0 mt-7">
       {/* Content */}
       <div className="w-full h-full flex flex-col">
-
 
         {/* Select View */}
         <div className=" sm:flex hidden items-center w-auto h-auto">
@@ -54,63 +64,47 @@ export default function OppCostChartContainer({ breakEvenOppCost, rentOppCost, d
           </h1>
         </div>
 
-        <div className="sm:hidden block">
-          <FormControl variant="standard">
-            <NativeSelect
-              id="demo-customized-select-native"
-              value={view}
-              onChange={handleChange}
-              sx={{
-                boxShadow: "none",
-                ".MuiNativeSelect-standard": {
-                  color: "#00A36C",
-                  fontWeight: "bold",
-                  background: "inherit",
-                },
-                "&::after": {
-                  borderColor: "#00A36C",
-                },
-              }}
-              className="mb-[2px]"
-            >
-              <option value={"Graph View"}>Graph View</option>
-              <option value={"Break Even"}>Break Even</option>
-              <option value={"Rent"}>Rent</option>
-              <option value={"Diff."}>Diff.</option>
-              <option value={"Summary View"}>Summary View</option>
-            </NativeSelect>
-          </FormControl>
-        </div>
+        {/* Mobile Select View */}
+        <SelectDropDown view={view} handleChange={handleChange}/>
+
+       
 
         {/* Horizontal Line */}
         <hr className="border my-1 border-gray-300" />
 
-        {/* Chart and Chart content goes here */}
-        <div className="w-full h-auto rounded-lg shadow-[0px_6px_15px_0px_#00000024] flex flex-col p-4">
-          {/* Title */}
-          <div className="flex flex-col w-auto h-auto mb-5">
-            <h1 className="text-[26px] font-bold">Rent vs Owning ?</h1>
-            <h1 className="text-[13px] italic">* The difference in expected returns between property and stocks represents an opportunity cost</h1>
-          </div>
+        {/* View Chart */}
+        {view === "Graph View" && breakEvenOppCost && rentOppCost && diffOppCost && (
+          <GraphViewOppCost breakEvenOppCost={breakEvenOppCost} rentOppCost={rentOppCost} diffOppCost={diffOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />
+        )}
 
-          {/* Explantion */}
-          <div className="w-auto flex flex-col h-auto">
-            <p className="text-[13.5px] mb-2">~ What if instead of paying the break even per month you invested it ?</p>
+        {/* Break Even */}
+        {view === "Break Even" && breakEvenOppCost && <BreakEvenSection breakEvenOppCost={breakEvenOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />}
 
-            <p className="text-[13.5px] mb-2">~ What if you didn't have to pay rent, instead you invested the amount you would pay in rent in the market ? </p>
+        {/* Rent */}
+        {view === "Rent" && rentOppCost && <RentSection rentOppCost={rentOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />}
 
-            <p className="text-[13.5px] mb-2">
-              ~ What if you knew buying wasn’t an option but instead used the 5% rule or something similar and decided to take the monthly cost of owning - the rent you are paying and invested the
-              difference ?
-            </p>
-          </div>
-
-          {/* Chart */}
-          {breakEvenOppCost && rentOppCost && diffOppCost && (
-            <OppCostChart breakEvenOppCost={breakEvenOppCost} rentOppCost={rentOppCost} diffOppCost={diffOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />
-          )}
-        </div>
+         {/* Diff */}
+         {view === "Diff." && diffOppCost && <DiffSection diffOppCost={diffOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />}
       </div>
     </div>
   );
 }
+
+// <OppCostPieChart obj={breakEvenOppCost}/>
+
+// // // <div className="w-auto flex flex-col h-auto">
+// // //     <h1 className=" underline font-bold mb-[4px]">Home Purchase</h1>
+// // //     <p className="text-[15px]">
+// // //       For a <span className="font-bold italic">{USDollar.format(selectedGoal.price)}</span> house you would have paid <span className="font-bold italic">{totalPaid}</span>, and{" "}
+// // //       <span className="font-bold italic">{totalInterst}</span> of that would have been in interest. However, we’ve already discussed in order to compare our mortgage we need to access the
+// // //       total non-recoverable costs of homeownership.
+// // //     </p>
+
+// // //     <p className="text-[15px] mt-2">
+// // //       So for a <span className="font-bold italic">{USDollar.format(selectedGoal.price)}</span> house, implementing the non-recoverable costs of homeownership you would have paid approx.{" "}
+// // //       <span className="font-bold italic">{USDollar.format(Number(oppCostFVWithBreakEvenAsPayment(selectedGoal.term, breakEvenPerMonth, selectedGoal.downPayment).toFixed(2)))}</span> over the
+// // //       course of your mortgage.
+// // //     </p>
+
+// // //     <p>add more here</p>
+// // //   </div>

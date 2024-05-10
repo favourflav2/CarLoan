@@ -3,14 +3,22 @@ import * as React from "react";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import GridViewOutlinedIcon from "@mui/icons-material/GridViewOutlined";
 import DashboardMappedData from "../dashboardComponents/DashboardMappedData";
+import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
+import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
+import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 
 export interface IMobileDrawerProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
+
+  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
+  retireGoals: RetirementGoals[]
+  houseGoals: HouseObjWithFormattedData[];
+  carGoals: CarObjWithFormattedData[];
 }
 
-export default function MobileDrawer({ open, setOpen, setFirstModal }: IMobileDrawerProps) {
+export default function MobileDrawer({ open, setOpen, setFirstModal, selectedGoal, retireGoals, houseGoals, carGoals }: IMobileDrawerProps) {
   return (
     <Drawer onClose={() => setOpen(false)} open={open}>
       {/* Content */}
@@ -33,7 +41,7 @@ export default function MobileDrawer({ open, setOpen, setFirstModal }: IMobileDr
 
           {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
           <div className="w-full max-h-[600px] no-scrollbar overflow-y-auto ">
-            <DashboardMappedData setFirstModal={setFirstModal} type="mobile" setOpen={setOpen}/>
+            <DashboardMappedData setFirstModal={setFirstModal} type="mobile" setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
           </div>
         </div>
       </div>

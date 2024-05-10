@@ -64,3 +64,16 @@ const fvOfPv = pv * Math.pow(1 + rate, years * 12);
 
  return fvOfPv
 }
+
+export function oppCostFVWithBreakEvenAsPayment(years:number,pmt:number,downPayment:number){
+
+  
+
+
+
+    
+    const value = pmt * (years * 12)
+
+
+    return value + downPayment
+}

@@ -1,13 +1,7 @@
 import * as React from "react";
-import { UseSelector } from "../../../redux/store";
 import FivePercentRule from "../components/FivePercentRule";
 import OwnVsRent from "../components/OwnVsRent";
 import { HouseObjWithFormattedData } from "../../../redux/features/modalSlices/houseSlice";
-import { opportunityCostSchema } from "./OpportunityCostSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence, easeInOut } from "framer-motion";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { z } from "zod";
 import OppCostInputs from "./OppCostInputs";
 import { FTVOppCost, futureValueOfOppCost } from "../../../components/helperFunctions/oppCostFunctions/oppCostFunction";
 import { getBreakEvenNumber } from "../components/utils/getBreakEvenNumber";
@@ -22,7 +16,7 @@ interface Props {
 
 
 export default function OpportunityCost({ selectedGoal, monthlyPayment }: Props) {
-  const { interest, maintenance, propertyTax, opportunityCostRate, rent, appreciation } = selectedGoal;
+  //const { interest, maintenance, propertyTax, opportunityCostRate, rent, appreciation } = selectedGoal;
 
   // Chart states
   const [breakEvenOppCost, setBreakEvenOppCost] = React.useState<FTVOppCost>()
@@ -35,7 +29,7 @@ export default function OpportunityCost({ selectedGoal, monthlyPayment }: Props)
     setBreakEvenOppCost(futureValueOfOppCost(selectedGoal,"breakEven",getBreakEvenNumber(selectedGoal).resultNoFormat))
     setRentOppCost(futureValueOfOppCost(selectedGoal,"rent",selectedGoal.rent))
     setDiffOppCost(futureValueOfOppCost(selectedGoal,"oppCost-rent",diffCost))
-  },[selectedGoal])
+  },[selectedGoal]) // eslint-disable-line 
   
 
 

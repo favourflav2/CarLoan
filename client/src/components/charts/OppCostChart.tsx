@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, LogarithmicScale, ChartOptions, TooltipItem } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { FTVOppCost, futureValueOfPresentValue } from "../helperFunctions/oppCostFunctions/oppCostFunction";
+import { FTVOppCost } from "../helperFunctions/oppCostFunctions/oppCostFunction";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 import { USDollar } from "../../pages/CarPage/CarPage";
 import { Filler } from "chart.js";
@@ -170,7 +170,6 @@ export default function OppCostChart({ breakEvenOppCost, rentOppCost, diffOppCos
 //   const totalPaid = USDollar.format(Number(monthlyPayment.totalAmountPaid.toFixed(2)));
 //   const totalInterst = USDollar.format(Number(monthlyPayment.interestSum.toFixed(2)));
 
-  futureValueOfPresentValue(selectedGoal.price, selectedGoal.appreciation, selectedGoal.term);
   return (
     <div className="w-full h-auto flex flex-col mt-2">
       {/* Legend */}
