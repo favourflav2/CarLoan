@@ -32,7 +32,7 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
         200,
         200,
         "JPEG",
-        90,
+        100,
         0,
         (uri) => {
           resolve(uri);

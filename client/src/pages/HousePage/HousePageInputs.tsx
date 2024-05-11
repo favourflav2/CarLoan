@@ -22,7 +22,7 @@ type FormFields = z.infer<typeof house1stSchema>;
 export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps) {
   // Redux States
   const dispatch = Dispatch();
-  const { showInputs } = selectedGoal;
+  const { showInputs, showOppCostInputs } = selectedGoal;
 
   // Show mortgage insurance
   const [showMIP, setShowMIP] = React.useState(false);
@@ -94,6 +94,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
       type: "House",
       showTax: selectedGoal.showTax,
       showInputs,
+      showOppCostInputs
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));
@@ -186,12 +187,12 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
   
 
   return (
-    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
+    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c] text-lightText dark:text-darkText">
       {/* Content */}
       <div className="w-full flex flex-col">
 
         {/* Expand and Shrink Input Section Btn */}
-        <div className="flex items-end justify-end w-full h-auto lg:hidden">
+        <div className="flex items-end justify-end w-full h-auto lg:hidden ">
           {showInputs ? (
             <KeyboardArrowUpIcon
               className="text-[28px] cursor-pointer"

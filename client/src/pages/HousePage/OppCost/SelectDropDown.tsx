@@ -50,7 +50,6 @@ export default function SelectDropDown({ handleChange, view }: ISelectDropDownPr
           <option value={"Break Even"}>Break Even</option>
           <option value={"Rent"}>Rent</option>
           <option value={"Diff."}>Diff.</option>
-          <option value={"Summary View"}>Summary View</option>
         </NativeSelect>
       </FormControl>
     </div>

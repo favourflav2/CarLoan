@@ -15,7 +15,7 @@ export interface IGraphViewOppCostProps {
 
 export default function GraphViewOppCost({ breakEvenOppCost, selectedGoal, monthlyPayment, rentOppCost, diffOppCost }: IGraphViewOppCostProps) {
   return (
-    <div className="w-full h-auto rounded-lg shadow-[0px_6px_15px_0px_#00000024] flex flex-col p-6">
+    <div className="w-full h-auto rounded-lg shadow-[0px_6px_15px_0px_#00000024] dark:shadow-[0px_6px_15px_0px_#271d17] flex flex-col p-6 bg-inherit">
       {/* Title */}
       <div className="flex flex-col w-auto h-auto mb-5">
         <h1 className="text-[26px] font-bold">Rent vs Owning ?</h1>

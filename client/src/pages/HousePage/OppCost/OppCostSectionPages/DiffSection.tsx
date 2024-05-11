@@ -20,7 +20,7 @@ export default function DiffSection({ diffOppCost, selectedGoal, monthlyPayment 
 
   const diff = Math.abs(breakEvenPerMonth - rent)
 
-  console.log(diff)
+
   
 
   const [view, setView] = React.useState("Scenario 1");

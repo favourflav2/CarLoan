@@ -7,44 +7,39 @@ import { FTVOppCost, futureValueOfOppCost } from "../../../components/helperFunc
 import { getBreakEvenNumber } from "../components/utils/getBreakEvenNumber";
 import OppCostChartContainer from "./OppCostChartContainer";
 import { HouseMonthlyPayment } from "../../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
-
+import ThingsToKeepInMind from "../components/ThingsToKeepInMind";
 
 interface Props {
   selectedGoal: HouseObjWithFormattedData;
-  monthlyPayment: HouseMonthlyPayment
+  monthlyPayment: HouseMonthlyPayment;
 }
-
 
 export default function OpportunityCost({ selectedGoal, monthlyPayment }: Props) {
   //const { interest, maintenance, propertyTax, opportunityCostRate, rent, appreciation } = selectedGoal;
 
   // Chart states
-  const [breakEvenOppCost, setBreakEvenOppCost] = React.useState<FTVOppCost>()
-  const [rentOppCost, setRentOppCost] = React.useState<FTVOppCost>()
-  const [diffOppCost, setDiffOppCost] = React.useState<FTVOppCost>()
+  const [breakEvenOppCost, setBreakEvenOppCost] = React.useState<FTVOppCost>();
+  const [rentOppCost, setRentOppCost] = React.useState<FTVOppCost>();
+  const [diffOppCost, setDiffOppCost] = React.useState<FTVOppCost>();
 
-  const diffCost = getBreakEvenNumber(selectedGoal).resultNoFormat - selectedGoal.rent
+  const diffCost = getBreakEvenNumber(selectedGoal).resultNoFormat - selectedGoal.rent;
 
-  React.useEffect(()=>{
-    setBreakEvenOppCost(futureValueOfOppCost(selectedGoal,"breakEven",getBreakEvenNumber(selectedGoal).resultNoFormat))
-    setRentOppCost(futureValueOfOppCost(selectedGoal,"rent",selectedGoal.rent))
-    setDiffOppCost(futureValueOfOppCost(selectedGoal,"oppCost-rent",diffCost))
-  },[selectedGoal]) // eslint-disable-line 
-  
+  React.useEffect(() => {
+    setBreakEvenOppCost(futureValueOfOppCost(selectedGoal, "breakEven", getBreakEvenNumber(selectedGoal).resultNoFormat));
+    setRentOppCost(futureValueOfOppCost(selectedGoal, "rent", selectedGoal.rent));
+    setDiffOppCost(futureValueOfOppCost(selectedGoal, "oppCost-rent", diffCost));
+  }, [selectedGoal]); // eslint-disable-line
 
-
-  
   return (
     <div className={`mt-8 h-auto w-full   flex flex-col items-center justify-center text-black dark:text-gray-300`}>
       {/* Content */}
       <div className="w-full h-full flex flex-col ">
-
         {/* Own Vs Rent && 5% Rule Box */}
         <div className="h-auto justify-center items-center flex flex-col w-full">
           <div className="min-[900px]:w-[80%] w-[90%] h-full flex flex-col">
             {/* Title */}
             <div className=" w-full flex items-center justify-center ">
-              <h1 className="font-bold text-[32px]">Renting vs. buying: A simple calculation to help you decide</h1>
+              <h1 className="font-bold sm:text-[32px] text-[25px]">Renting vs. buying: A simple calculation to help you decide</h1>
             </div>
 
             {/* Owning vs Renting */}
@@ -59,26 +54,32 @@ export default function OpportunityCost({ selectedGoal, monthlyPayment }: Props)
         <div className="w-full h-auto flex mt-10 mb-[100px]  justify-center">
           {/* Adjust Width Div */}
           <div className="min-[900px]:w-[80%] w-[97%] h-full ">
-
-
             {/* Content */}
             <div className={`w-full grid xl:grid-cols-[250px_1fr] grid-cols-1 xl:gap-x-5 gap-y-5 xl:gap-y-0  `}>
               {/* Left Side Inputs */}
-              <OppCostInputs selectedGoal={selectedGoal}/>
+              <OppCostInputs selectedGoal={selectedGoal} />
 
               {/* Right Side Charts */}
-              <OppCostChartContainer breakEvenOppCost={breakEvenOppCost} rentOppCost={rentOppCost} diffOppCost={diffOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment}/>
+              <OppCostChartContainer breakEvenOppCost={breakEvenOppCost} rentOppCost={rentOppCost} diffOppCost={diffOppCost} selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />
             </div>
-
-
-
           </div>
         </div>
 
+        {/* Summary and Ending */}
+        <div className="h-auto justify-center items-center flex flex-col w-full">
+          <div className="min-[900px]:w-[80%] w-[90%] h-full flex flex-col">
+            {/* Title */}
+            <div className=" w-full flex items-center justify-center ">
+              <h1 className="font-bold text-[32px]">Summary</h1>
+            </div>
 
+            {/* Things to keep in mind */}
+            <ThingsToKeepInMind />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-// min-[900px]:w-[80%] w-[90%]
+

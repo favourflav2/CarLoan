@@ -91,7 +91,8 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
       opportunityCostRate,
       maintenance,
       img:img ? img : "",
-      showInputs:true
+      showInputs:true,
+      showOppCostInputs:true
     }
     dispatch(addHouseGoal(newObj));
     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));

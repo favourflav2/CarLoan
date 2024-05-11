@@ -214,6 +214,21 @@ const appSlice = createSlice({
           break;
       }
     },
+    selectedShowOppCostInput: (state, action: PayloadAction<{ goal: goal, value:boolean }>) => {
+      const { goal,value } = action.payload;
+      switch (goal?.type) {
+        case "Car":
+          break;
+        case "House":
+          if (!state.selectedGoal || state.selectedGoal.type !== "House") return;
+          state.selectedGoal.showOppCostInputs = value
+          break;
+        case "Retirement":
+          break;
+        default:
+          break;
+      }
+    }
   },
 });
 
@@ -229,5 +244,6 @@ export const {
   setSelectedGoalAfterCreate,
   editSelectedGoalImg,
   editShowTaxForHouse,
-  selectedShowInput
+  selectedShowInput,
+  selectedShowOppCostInput
 } = appSlice.actions;

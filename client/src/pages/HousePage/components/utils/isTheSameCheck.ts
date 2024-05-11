@@ -45,7 +45,7 @@ export function isTheSameCheck(
 
   const { id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent } = inputs;
 
-  const { showInputs } = select;
+  const { showInputs, showOppCostInputs } = select;
 
   const newObj: HouseObjWithFormattedData = {
     id,
@@ -66,6 +66,7 @@ export function isTheSameCheck(
     type: "House",
     showTax: select.showTax,
     showInputs,
+    showOppCostInputs
   };
 
   return _.isEqual(select, newObj) ? false : true;

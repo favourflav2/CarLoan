@@ -17,6 +17,7 @@ export interface HouseObj {
   maintenance: string;
   showInputs:boolean;
   rent:string;
+  showOppCostInputs:boolean;
 }
 
 export interface HouseObjWithFormattedData {
@@ -37,7 +38,8 @@ export interface HouseObjWithFormattedData {
   type: "House";
   showTax:"monthlyPaymentWithTax" | "monthlyPaymentWithNoTax";
   showInputs:boolean;
-  rent:number
+  rent:number;
+  showOppCostInputs:boolean;
 }
 
 interface HouseData {
@@ -57,7 +59,7 @@ const houseSlice = createSlice({
   initialState,
   reducers: {
     addHouseGoal: (state, action: PayloadAction<HouseObj>) => {
-      const {id, streetAddress, price, downPayment,interest, term, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate,maintenance, showInputs, rent } = action.payload;
+      const {id, streetAddress, price, downPayment,interest, term, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate,maintenance, showInputs, rent, showOppCostInputs } = action.payload;
       const formattedData: HouseObjWithFormattedData = {
         id,
         streetAddress,
@@ -76,7 +78,8 @@ const houseSlice = createSlice({
         rent: parseFloat(rent.replace(/[,%$]/gm, "")),
         type: "House",
         showTax:"monthlyPaymentWithNoTax",
-        showInputs
+        showInputs,
+        showOppCostInputs
       };
 
       const index = state.houseGoals.findIndex((item) => item.id === id);
@@ -160,9 +163,17 @@ const houseSlice = createSlice({
         state.houseGoals[index].showInputs = value
       }
     },
+    houseShowOppCostInput: (state,action:PayloadAction<{id:string, value:boolean}>) => {
+      const {id,value} = action.payload
+      const index = state.houseGoals.findIndex(item => item.id === id)
+
+      if(index >= 0){
+        state.houseGoals[index].showOppCostInputs = value
+      }
+    },
   },
 });
 
 export default houseSlice.reducer;
 
-export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal, houseShowInput, editHouseGoalImg, editHouseGoalTitle} = houseSlice.actions;
+export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal, houseShowInput, editHouseGoalImg, editHouseGoalTitle, houseShowOppCostInput} = houseSlice.actions;
