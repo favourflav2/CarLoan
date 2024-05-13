@@ -1,7 +1,8 @@
 import * as React from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Dispatch } from "../../redux/store";
-import { setMakeAndModalRedux } from "../../redux/features/carStateSlice";
+import { setBoxModal } from "../../redux/features/carStateSlice";
+
 
 export interface IFilterBoxProps {
   item: string;
@@ -12,9 +13,9 @@ export default function FilterBoxMakeAndModal({ item }: IFilterBoxProps) {
 
   return (
     <div
-      className=" bg-black text-white p-1 cursor-pointer rounded-full flex items-center m-1"
+      className=" bg-chartGreen dark:bg-[RGBA(0,163,108,0.2)] text-white  p-2 cursor-pointer rounded-full flex items-center m-1"
       onClick={() => {
-        dispatch(setMakeAndModalRedux(item));
+        dispatch(setBoxModal(item));
       }}
     >
       <h1 className=" pl-1 text-[13px] font-semibold">{item}</h1>

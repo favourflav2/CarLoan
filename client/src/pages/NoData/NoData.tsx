@@ -11,11 +11,12 @@ export interface INoDataProps {}
 
 export default function NoData(props: INoDataProps) {
   const dispatch = Dispatch();
-  const { relatedCars, loading, error } = UseSelector((state) => state.car);
+  const { relatedCars, loading, error,carVana } = UseSelector((state) => state.car);
 
   React.useEffect(() => {
-    if (!relatedCars?.length) {
-      dispatch(relatedCarsRedux());
+    if (!relatedCars?.length && !carVana?.cars?.length) {
+      //dispatch(relatedCarsRedux());
+      //console.log(relatedCars)
     }
   }, []); // eslint-disable-line
 

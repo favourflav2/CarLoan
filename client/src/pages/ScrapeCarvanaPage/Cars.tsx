@@ -1,39 +1,29 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { filterData, searchCars, setSearchedCars } from "../../redux/features/carSlice";
-
+import {  filterData, searchCars, setSearchedCars } from "../../redux/features/carSlice";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SortIcon from "@mui/icons-material/Sort";
-import { Divider, Skeleton, Pagination, TextField, Checkbox, Typography, FormGroup, FormControlLabel, Modal, Badge } from "@mui/material";
+import { Divider, Skeleton, Pagination, Modal } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import CarVanaCard from "../../components/cards/CarVanaCard";
-import { useSearchParams } from "react-router-dom"; // eslint-disable-line
 import CarDotComCard from "../../components/cards/CarDotComCard";
-import { clearAllFilters, setCurrentPage, setMakeAndModalRedux, setMileagePersist, setPricePersist, setSearchState, setSortByState } from "../../redux/features/carStateSlice";
-import { NumericFormat } from "react-number-format";
-import FilterBoxMakeAndModal from "../../components/filterBox/FilterBoxMakeAndModal";
-import FilterBoxPrice from "../../components/filterBox/FilterBoxPrice";
+import {  setCurrentPage } from "../../redux/features/carStateSlice";
 import NoData from "../NoData/NoData";
-import FilterBoxMileage from "../../components/filterBox/FilterBoxMileage";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import TuneIcon from "@mui/icons-material/Tune";
 import ClearIcon from "@mui/icons-material/Clear";
+import CarvanaPageInputs from "./CarvanaPageInputs/CarvanaPageInputs";
+
+import SortByStateMenu from "./components/SortByStateMenu";
 
 export default function Cars() {
   const { carVana, loading, error, searchedCars } = UseSelector((state) => state.car);
-  const { sortByState, currentPage, price, reduxMakeAndModalStates, mileage, searchState } = UseSelector((state) => state.page);
+  const {  currentPage,  searchState, filterStates } = UseSelector((state) => state.page);
   const dispatch = Dispatch();
 
-  // Handle Change for make and modal
-  function handleChangeMakeAndModal(e: any) {
-    dispatch(setMakeAndModalRedux(e.target.name));
-  }
 
-  // React Router Stuff
-  //const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams(); // eslint-disable-line
+
 
   // Filter States Open and Close
   const [priceArrow, setPriceArrow] = React.useState(false);
@@ -54,67 +44,6 @@ export default function Cars() {
     window.scrollTo(0, 0);
   };
 
-  // Helper Functions
-  function returnNameOfFilters(obj: any) {
-    let arr = [];
-    for (let items in obj) {
-      if (obj[items] === true) {
-        arr.push(items);
-      }
-    }
-
-    return arr;
-  }
-
-  function checkPriceFilter(obj: any) {
-    let regularHigh = 1750000;
-    let regularLow = 0;
-
-    let stateHigh = typeof obj.highPrice === "string" ? Number(obj?.highPrice?.replace(/[$,]/g, "")) : obj.highPrice;
-    let stateLow = typeof obj.lowPrice === "string" ? Number(obj?.lowPrice?.replace(/[$,]/g, "")) : obj.lowPrice;
-
-    if (stateHigh !== regularHigh) {
-      return true;
-    } else if (stateLow !== regularLow) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  function checkMileageFilter(obj: any) {
-    let regularHigh = 300000;
-    let regularLow = 0;
-
-    let stateHigh = typeof obj.highMileage === "string" ? Number(obj?.highMileage?.replace(/[,]/g, "")) : obj.highMileage;
-    let stateLow = typeof obj.lowMileage === "string" ? Number(obj?.lowMileage?.replace(/[$,]/g, "")) : obj.lowMileage;
-
-    if (stateHigh !== regularHigh) {
-      return true;
-    } else if (stateLow !== regularLow) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  function getNumberOfFiltersForBagde({ nameFilters, pricefilters, mileageFilter }: any) {
-    let arr = [];
-
-    for (const names of returnNameOfFilters(nameFilters)) {
-      arr.push(names);
-    }
-
-    if (checkPriceFilter(pricefilters) === true) {
-      arr.push("priceTrue");
-    }
-
-    if (checkMileageFilter(mileageFilter) === true) {
-      arr.push("mileTrue");
-    }
-
-    return arr?.length;
-  }
 
   // Outside Click Function
   const refOne = React.useRef<any>(null);
@@ -130,17 +59,9 @@ export default function Cars() {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  React.useEffect(() => {
-    dispatch(
-      filterData({
-        price: price,
-        sortByState,
-        modal: reduxMakeAndModalStates,
-        page: currentPage,
-        mileage,
-      })
-    );
-  }, [reduxMakeAndModalStates, currentPage, price, mileage]); // eslint-disable-line
+   React.useEffect(() => {
+     dispatch(filterData({...filterStates,page:currentPage}))
+   }, [currentPage, filterStates]); // eslint-disable-line
 
   React.useEffect(() => {
     if (error) {
@@ -160,380 +81,15 @@ export default function Cars() {
 
   //! Im going to add a new page for my search bar stuff ... like how I do item details page ... that way when we search we go to a new page with a new state ... this allows me to keep my orginal state intact
 
+
   return (
-    <div className="w-full h-auto lg:px-8 md:px-4 px-2 flex pt-[50px]">
+    <div className="w-full h-auto lg:px-8 md:px-4 px-2 flex pt-[50px] text-lightText dark:text-darkText">
       {/* Desktop Content */}
       <div className="w-full h-auto lg:flex hidden">
         {/* Left Side Sidebars */}
         <div className="w-[28%] overflow-y-auto fixed top-[100px] bottom-0 flex flex-col ">
-          {/* Content */}
-          <div className="w-full h-auto flex flex-col">
-            {/* Filter Box Above Price.... Shows all selected filters */}
-
-            {/* Make and Modal Boxes */}
-            {returnNameOfFilters(reduxMakeAndModalStates)?.length || checkPriceFilter(price) === true || checkMileageFilter(mileage) === true ? (
-              <div className="w-full h-auto flex flex-col py-4 px-4 border border-gray-300 rounded-lg bg-gray-100">
-                {/* Title */}
-                <div className="w-full flex items-center justify-between mb-3">
-                  <h1 className="text-[17px] font-medium">Filters</h1>
-                  <h1
-                    className="text-gray-700 underline cursor-pointer text-[13px]"
-                    onClick={() => {
-                      dispatch(clearAllFilters());
-                    }}
-                  >
-                    Clear All
-                  </h1>
-                </div>
-
-                {/* Mapped Data */}
-                <div className="w-full h-auto flex items-center flex-wrap">
-                  {returnNameOfFilters(reduxMakeAndModalStates)?.length ? (
-                    returnNameOfFilters(reduxMakeAndModalStates)?.map((item: any, index: any) => <FilterBoxMakeAndModal item={item} key={index} />)
-                  ) : (
-                    <></>
-                  )}
-                  {checkPriceFilter(price) === true ? <FilterBoxPrice item={price} /> : <></>}
-                  {checkMileageFilter(mileage) === true ? <FilterBoxMileage item={mileage} /> : <></>}
-                </div>
-              </div>
-            ) : (
-              <></>
-            )}
-
-            {/* Price */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium">Price</h1>
-                <KeyboardArrowUpIcon onClick={() => setPriceArrow((val) => !val)} />
-              </div>
-
-              {/* Price Box */}
-              {priceArrow && (
-                <div className=" flex flex-col w-full py-3 h-auto px-4">
-                  <div className="w-full h-auto flex items-center">
-                    <h1 className="text-[13px]">PRICE RANGE</h1>
-
-                    <NumericFormat
-                      value={price.lowPrice}
-                      customInput={TextField}
-                      onChange={(e) => {
-                        dispatch(setPricePersist({ type: "lowPrice", value: e.target.value }));
-                      }}
-                      prefix={"$"}
-                      thousandSeparator={true}
-                      className=" outline-none border border-gray-400 indent-1 rounded-sm w-[40%] mr-2 "
-                    />
-                    <NumericFormat
-                      value={price.highPrice}
-                      customInput={TextField}
-                      onChange={(e) => {
-                        dispatch(setPricePersist({ type: "highPrice", value: e.target.value }));
-                      }}
-                      prefix={"$"}
-                      thousandSeparator={true}
-                      className=" outline-none border border-gray-400 indent-1 rounded-sm w-[40%] "
-                    />
-                  </div>
-
-                  {/* <button
-                      className="mt-4 p-2 bg-black text-white rounded-lg"
-                      onClick={() => {
-                        dispatch(
-                          filterData({
-                            price: price,
-                            sortByState,
-                            modal: reduxMakeAndModalStates,
-                            page: currentPage,
-                            mileage,
-                          })
-                        );
-                        setSearchParams((searchParams) => {
-                          searchParams.set("price", `${price.lowPrice} ${price.highPrice}`);
-                          return searchParams;
-                        });
-                        setPriceArrow(false);
-                        dispatch(setCurrentPage(1));
-                      }}
-                    >
-                      Search
-                    </button> */}
-                </div>
-              )}
-            </div>
-
-            {/* Make and Modal */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium">Make and Modal</h1>
-                <KeyboardArrowUpIcon onClick={() => setMakeAndModal((val) => !val)} />
-              </div>
-
-              {/* Modal Box */}
-              {makeAndModal && (
-                <div className=" flex flex-col w-full py-3 h-auto px-4">
-                  <div className="w-full h-auto flex justify-start">
-                    <FormGroup>
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Acura}
-                        label={<Typography>Acura</Typography>}
-                        name="Acura"
-                        onChange={(e) => {
-                          handleChangeMakeAndModal(e);
-                        }}
-                      />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.AlfaRomeo}
-                        label={<Typography>Alfa Romeo</Typography>}
-                        name="AlfaRomeo"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Audi} label={<Typography>Audi</Typography>} name="Audi" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.BMW} label={<Typography>BMW</Typography>} name="BMW" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Buick} label={<Typography>Buick</Typography>} name="Buick" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Cadillac}
-                        label={<Typography>Cadillac</Typography>}
-                        name="Cadillac"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Chevrolet}
-                        label={<Typography>Chevrolet</Typography>}
-                        name="Chevrolet"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Chrysler}
-                        label={<Typography>Chrysler</Typography>}
-                        name="Chrysler"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Dodge} label={<Typography>Dodge</Typography>} name="Dodge" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.FIAT} label={<Typography>FIAT</Typography>} name="FIAT" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Ford} label={<Typography>Ford</Typography>} name="Ford" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Genesis} label={<Typography>Genesis</Typography>} name="Genesis" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.GMC} label={<Typography>GMC</Typography>} name="GMC" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Honda} label={<Typography>Honda</Typography>} name="Honda" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Hyundai} label={<Typography>Hyundai</Typography>} name="Hyundai" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.INFINITI}
-                        label={<Typography>INFINITI</Typography>}
-                        name="INFINITI"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Jaguar} label={<Typography>Jaguar</Typography>} name="Jaguar" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Jeep} label={<Typography>Jeep</Typography>} name="Jeep" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Kia} label={<Typography>Kia</Typography>} name="Kia" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.LandRover}
-                        label={<Typography>Land Rover</Typography>}
-                        name="LandRover"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lexus} label={<Typography>Lexus</Typography>} name="Lexus" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lincoln} label={<Typography>Lincoln</Typography>} name="Lincoln" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lucid} label={<Typography>Lucid</Typography>} name="Lucid" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Maserati}
-                        label={<Typography>Maserati</Typography>}
-                        name="Maserati"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Mazada} label={<Typography>Mazada</Typography>} name="Mazada" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.MercedesBenz}
-                        label={<Typography>Mercedes-Benz</Typography>}
-                        name="MercedesBenz"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.MINI} label={<Typography>MINI</Typography>} name="MINI" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Mitsubishi}
-                        label={<Typography>Mitsubishi</Typography>}
-                        name="Mitsubishi"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Nissan} label={<Typography>Nissan</Typography>} name="Nissan" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Polestar}
-                        label={<Typography>Polestar</Typography>}
-                        name="Polestar"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Porsche} label={<Typography>Porsche</Typography>} name="Porsche" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Ram} label={<Typography>Ram</Typography>} name="Ram" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Rivian} label={<Typography>Rivian</Typography>} name="Rivian" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Scion} label={<Typography>Scion</Typography>} name="Scion" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Subaru} label={<Typography>Subaru</Typography>} name="Subaru" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Telsa} label={<Typography>Telsa</Typography>} name="Telsa" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Toyota} label={<Typography>Toyota</Typography>} name="Toyota" onChange={handleChangeMakeAndModal} />
-
-                      <FormControlLabel
-                        control={<Checkbox />}
-                        checked={reduxMakeAndModalStates.Volkswagen}
-                        label={<Typography>Volkswagen</Typography>}
-                        name="Volkswagen"
-                        onChange={handleChangeMakeAndModal}
-                      />
-
-                      <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Volvo} label={<Typography>Volvo</Typography>} name="Volvo" onChange={handleChangeMakeAndModal} />
-                    </FormGroup>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Mileage */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium">Milegae</h1>
-                <KeyboardArrowUpIcon onClick={() => setMileageArrow((val) => !val)} />
-              </div>
-
-              {/* Mileage Box */}
-              {mileageArrow && (
-                <div className=" flex flex-col w-full py-3 h-auto px-4">
-                  <div className="w-full h-auto flex items-center">
-                    <h1 className="text-[13px]">MILEAGE RANGE</h1>
-
-                    <NumericFormat
-                      value={mileage.lowMileage}
-                      customInput={TextField}
-                      onChange={(e) => {
-                        dispatch(setMileagePersist({ type: "lowMileage", value: e.target.value }));
-                      }}
-                      thousandSeparator={true}
-                      className=" outline-none border border-gray-400 indent-1 rounded-sm w-[40%] mr-2 "
-                    />
-                    <NumericFormat
-                      value={mileage.highMileage}
-                      customInput={TextField}
-                      onChange={(e) => {
-                        dispatch(setMileagePersist({ type: "highMileage", value: e.target.value }));
-                      }}
-                      thousandSeparator={true}
-                      className=" outline-none border border-gray-400 indent-1 rounded-sm w-[40%] "
-                    />
-                  </div>
-
-                  {/* <button
-                      className="mt-4 p-2 bg-black text-white rounded-lg"
-                      onClick={() => {
-                        dispatch(
-                          filterData({
-                            price: price,
-                            sortByState,
-                            modal: reduxMakeAndModalStates,
-                            page: currentPage,
-                            mileage,
-                          })
-                        );
-                        setMileageArrow(false);
-                        dispatch(setCurrentPage(1));
-                      }}
-                    >
-                      Search
-                    </button> */}
-                </div>
-              )}
-            </div>
-
-            {/* Great Deals */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium text-gray-300">Great Deals</h1>
-                <KeyboardArrowUpIcon className="text-gray-300" />
-              </div>
-            </div>
-
-            {/* MPG */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium text-gray-300">MPG</h1>
-                <KeyboardArrowUpIcon className="text-gray-300" />
-              </div>
-            </div>
-
-            {/* Features */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium text-gray-300">Features</h1>
-                <KeyboardArrowUpIcon className="text-gray-300" />
-              </div>
-            </div>
-
-            {/* Exterior Colors */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium text-gray-300">Exterior Colors</h1>
-                <KeyboardArrowUpIcon className="text-gray-300" />
-              </div>
-            </div>
-
-            {/* Interior Colors */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium text-gray-300">Interior Colors</h1>
-                <KeyboardArrowUpIcon className="text-gray-300" />
-              </div>
-            </div>
-
-            {/* Seating Capacity */}
-            <div className="w-full h-auto flex flex-col border-b border-gray-300">
-              <div className=" flex justify-between items-center py-4 px-4 h-auto ">
-                <h1 className="text-[19px] font-medium text-gray-300">Seating Capacity</h1>
-                <KeyboardArrowUpIcon className="text-gray-300" />
-              </div>
-            </div>
-          </div>
+          <CarvanaPageInputs />
+          
         </div>
 
         {/* Right Side Content */}
@@ -544,131 +100,7 @@ export default function Cars() {
               <h1 className="text-[13px]  font-medium text italic mb-2">{carVana?.totalCount} results</h1>
 
               {/* Sorting */}
-              <div className="flex justify-between items-center w-full h-auto">
-                <LocationOnIcon />
-
-                <div className="flex items-center">
-                  <div className="flex items-center relative">
-                    <SortIcon className="mr-[8px] text-[20px] cursor-pointer" onClick={() => setOpenSortBy((val) => !val)} />
-                    <span className=" cursor-pointer" onClick={() => setOpenSortBy((val) => !val)}>
-                      Sort By {sortByState}
-                    </span>
-
-                    {/* Dropdown Menu */}
-                    {openSortBy && (
-                      <div className="w-[200px] h-auto border-2 border-gray-300 bg-white absolute top-8 left-[-50px]">
-                        {/* Content */}
-                        <div className="flex flex-col w-full h-full ">
-                          <h1
-                            className={`my-1 text-[14px] mt-2 cursor-pointer transition ease-in-out delay-100 ${
-                              sortByState === "All" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
-                            }  duration-300 group px-2 py-1`}
-                            onClick={() => {
-                              setOpenSortBy(false);
-                              dispatch(setSortByState("All"));
-                              setSearchParams((searchParams) => {
-                                searchParams.set("sort", "All");
-                                return searchParams;
-                              });
-                              dispatch(
-                                filterData({
-                                  page: currentPage,
-                                  price: price,
-                                  sortByState: "All",
-                                  modal: reduxMakeAndModalStates,
-                                  mileage,
-                                })
-                              );
-                              dispatch(setCurrentPage(1));
-                            }}
-                          >
-                            ALL
-                          </h1>
-                          <h1
-                            className={`my-1 text-[14px]  cursor-pointer transition ease-in-out delay-100 ${
-                              sortByState === "Highest Price" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
-                            } duration-300 group px-2 py-1`}
-                            onClick={() => {
-                              setOpenSortBy(false);
-                              dispatch(setSortByState("Highest Price"));
-                              setSearchParams((searchParams) => {
-                                searchParams.set("sort", "Highest Price");
-                                return searchParams;
-                              });
-                              dispatch(
-                                filterData({
-                                  page: currentPage,
-                                  price: price,
-                                  sortByState: "Highest Price",
-                                  modal: reduxMakeAndModalStates,
-                                  mileage,
-                                })
-                              );
-                              dispatch(setCurrentPage(1));
-                            }}
-                          >
-                            HIGHEST PRICE
-                          </h1>
-                          <h1
-                            className={`my-1 text-[14px]  cursor-pointer transition ease-in-out delay-100 ${
-                              sortByState === "Lowest Price" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
-                            } duration-300 group px-2 py-1`}
-                            onClick={() => {
-                              setOpenSortBy(false);
-                              dispatch(setSortByState("Lowest Price"));
-                              setSearchParams((searchParams) => {
-                                searchParams.set("sort", "Lowest Price");
-                                return searchParams;
-                              });
-                              dispatch(
-                                filterData({
-                                  page: currentPage,
-                                  price: price,
-                                  sortByState: "Lowest Price",
-                                  modal: reduxMakeAndModalStates,
-                                  mileage,
-                                })
-                              );
-                              dispatch(setCurrentPage(1));
-                            }}
-                          >
-                            LOWEST PRICE
-                          </h1>
-                          <h1
-                            className={`my-1 text-[14px]  cursor-pointer transition ease-in-out delay-100 ${
-                              sortByState === "Lowest Mileage" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
-                            } duration-300 group px-2 py-1 mb-2`}
-                            onClick={() => {
-                              setOpenSortBy(false);
-                              dispatch(setSortByState("Lowest Mileage"));
-                              setSearchParams((searchParams) => {
-                                searchParams.set("sort", "Lowest Mileage");
-                                return searchParams;
-                              });
-                              dispatch(
-                                filterData({
-                                  page: currentPage,
-                                  price: price,
-                                  sortByState: "Lowest Mileage",
-                                  modal: reduxMakeAndModalStates,
-                                  mileage,
-                                })
-                              );
-                              dispatch(setCurrentPage(1));
-                            }}
-                          >
-                            LOWEST MILEAGE
-                          </h1>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <Divider orientation="vertical" flexItem className="mx-6 text-black" />
-                  <div className="flex items-center text-gray-300">
-                    <FavoriteBorderIcon className="mr-[5px] text-[20px]" /> <span>Save Search</span>
-                  </div>
-                </div>
-              </div>
+              <SortByStateMenu filterStates={filterStates}/>
 
               {/* Mapped Data */}
               {!loading ? (
@@ -709,15 +141,15 @@ export default function Cars() {
               className="md:w-full sm:w-[85%] w-[80%] sm:mr-0 mr-1  border-gray-500 outline-none rounded-sm indent-2 border h-[50px]"
               placeholder="Search for brand, shoe, etc."
               onChange={(e) => {
-                dispatch(setSearchState(e.target.value));
+                //dispatch(setSearchState(e.target.value));
               }}
               value={searchState}
             />
             {/* Filter Btn */}
             <div className="md:w-[13%] sm:w-[15%] lg:w-[20%] flex items-center justify-end ">
-              <Badge badgeContent={getNumberOfFiltersForBagde({ nameFilters: reduxMakeAndModalStates, pricefilters: price, mileageFilter: mileage })} color="primary">
+              {/* <Badge badgeContent={getNumberOfFiltersForBagde({ nameFilters: reduxMakeAndModalStates, pricefilters: price, mileageFilter: mileage })} color="primary">
                 <TuneIcon className=" cursor-pointer" onClick={() => handleOpen()} />
-              </Badge>
+              </Badge> */}
               <h1 className=" cursor-pointer ml-3" onClick={() => handleOpen()}>
                 Filter
               </h1>
@@ -759,111 +191,111 @@ export default function Cars() {
               <div className="flex items-center relative">
                 <SortIcon className="mr-[3px] text-[20px] cursor-pointer" onClick={() => setOpenSortBy((val) => !val)} />
                 <span className="md:text-base text-[12px] cursor-pointer" onClick={() => setOpenSortBy((val) => !val)}>
-                  Sort By {sortByState}
+                   Sort By {filterStates.sortByState} 
                 </span>
 
-                {/* Dropdown Menu */}
+               
                 {openSortBy && (
                   <div className="w-[200px] h-auto border-2 border-gray-300 bg-white absolute top-8 left-[-50px]">
                     {/* Content */}
                     <div className="flex flex-col w-full h-full ">
                       <h1
                         className={`my-1 text-[14px] mt-2 cursor-pointer transition ease-in-out delay-100 ${
-                          sortByState === "All" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
+                          filterStates.sortByState === "All" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
                         }  duration-300 group px-2 py-1`}
-                        onClick={() => {
-                          setOpenSortBy(false);
-                          dispatch(setSortByState("All"));
-                          setSearchParams((searchParams) => {
-                            searchParams.set("sort", "All");
-                            return searchParams;
-                          });
-                          dispatch(
-                            filterData({
-                              page: currentPage,
-                              price: price,
-                              sortByState: "All",
-                              modal: reduxMakeAndModalStates,
-                              mileage,
-                            })
-                          );
-                          dispatch(setCurrentPage(1));
-                        }}
+                        // onClick={() => {
+                        //   setOpenSortBy(false);
+                        //   //dispatch(setSortByState("All"));
+                        //   setSearchParams((searchParams) => {
+                        //     searchParams.set("sort", "All");
+                        //     return searchParams;
+                        //   });
+                        //   dispatch(
+                        //     filterStates({
+                        //       page: currentPage,
+                        //       price: price,
+                        //       sortByState: "All",
+                        //       modal: reduxMakeAndModalStates,
+                        //       mileage,
+                        //     })
+                        //   );
+                        //   dispatch(setCurrentPage(1));
+                        // }}
                       >
                         ALL
                       </h1>
                       <h1
                         className={`my-1 text-[14px]  cursor-pointer transition ease-in-out delay-100 ${
-                          sortByState === "Highest Price" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
+                          filterStates.sortByState === "Highest Price" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
                         } duration-300 group px-2 py-1`}
-                        onClick={() => {
-                          setOpenSortBy(false);
-                          dispatch(setSortByState("Highest Price"));
-                          setSearchParams((searchParams) => {
-                            searchParams.set("sort", "Highest Price");
-                            return searchParams;
-                          });
-                          dispatch(
-                            filterData({
-                              page: currentPage,
-                              price: price,
-                              sortByState: "Highest Price",
-                              modal: reduxMakeAndModalStates,
-                              mileage,
-                            })
-                          );
-                          dispatch(setCurrentPage(1));
-                        }}
+                        // onClick={() => {
+                        //   setOpenSortBy(false);
+                        //   //dispatch(setSortByState("Highest Price"));
+                        //   setSearchParams((searchParams) => {
+                        //     searchParams.set("sort", "Highest Price");
+                        //     return searchParams;
+                        //   });
+                        //   dispatch(
+                        //     filterStates({
+                        //       page: currentPage,
+                        //       price: price,
+                        //       sortByState: "Highest Price",
+                        //       modal: reduxMakeAndModalStates,
+                        //       mileage,
+                        //     })
+                        //   );
+                        //   dispatch(setCurrentPage(1));
+                        // }}
                       >
                         HIGHEST PRICE
                       </h1>
                       <h1
                         className={`my-1 text-[14px]  cursor-pointer transition ease-in-out delay-100 ${
-                          sortByState === "Lowest Price" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
+                          filterStates.sortByState === "Lowest Price" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
                         } duration-300 group px-2 py-1`}
-                        onClick={() => {
-                          setOpenSortBy(false);
-                          dispatch(setSortByState("Lowest Price"));
-                          setSearchParams((searchParams) => {
-                            searchParams.set("sort", "Lowest Price");
-                            return searchParams;
-                          });
-                          dispatch(
-                            filterData({
-                              page: currentPage,
-                              price: price,
-                              sortByState: "Lowest Price",
-                              modal: reduxMakeAndModalStates,
-                              mileage,
-                            })
-                          );
-                          dispatch(setCurrentPage(1));
-                        }}
+                        // onClick={() => {
+                        //   setOpenSortBy(false);
+                        //   //dispatch(setSortByState("Lowest Price"));
+                        //   setSearchParams((searchParams) => {
+                        //     searchParams.set("sort", "Lowest Price");
+                        //     return searchParams;
+                        //   });
+                        //   dispatch(
+                        //     filterStates({
+                        //       page: currentPage,
+                        //       price: price,
+                        //       sortByState: "Lowest Price",
+                        //       modal: reduxMakeAndModalStates,
+                        //       mileage,
+                        //     })
+                        //   );
+                        //   dispatch(setCurrentPage(1));
+                        // }}
                       >
                         LOWEST PRICE
                       </h1>
                       <h1
                         className={`my-1 text-[14px]  cursor-pointer transition ease-in-out delay-100 ${
-                          sortByState === "Lowest Mileage" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
+                          filterStates.sortByState === "Lowest Mileage" ? "bg-teal-400 text-black hover:bg-teal-500" : "hover:bg-black hover:text-white"
                         } duration-300 group px-2 py-1 mb-2`}
-                        onClick={() => {
-                          setOpenSortBy(false);
-                          dispatch(setSortByState("Lowest Mileage"));
-                          setSearchParams((searchParams) => {
-                            searchParams.set("sort", "Lowest Mileage");
-                            return searchParams;
-                          });
-                          dispatch(
-                            filterData({
-                              page: currentPage,
-                              price: price,
-                              sortByState: "Lowest Mileage",
-                              modal: reduxMakeAndModalStates,
-                              mileage,
-                            })
-                          );
-                          dispatch(setCurrentPage(1));
-                        }}
+                        // onClick={() => {
+                        //   setOpenSortBy(false);
+                        //   //dispatch(setSortByState("Lowest Mileage"));
+                        //   setSearchParams((searchParams) => {
+                        //     searchParams.set("sort", "Lowest Mileage");
+                        //     return searchParams;
+                        //   });
+                        //   dispatch(
+                        //     filterStates({
+                        //       page: currentPage,
+                        //       price: price,
+                        //       sortByState: "Lowest Mileage",
+                        //       modal: reduxMakeAndModalStates,
+                        //       mileage,
+                        //     })
+                        //   );
+                        //   dispatch(setCurrentPage(1));
+                        // }}
                       >
                         LOWEST MILEAGE
                       </h1>
@@ -921,7 +353,7 @@ export default function Cars() {
                     </div>
 
                     {/* Price Box */}
-                    {priceArrow && (
+                    {/* {priceArrow && (
                       <div className=" flex flex-col w-full py-3 h-auto px-4">
                         <div className="w-full h-auto flex items-center">
                           <h1 className="text-[13px] mr-2">PRICE RANGE:</h1>
@@ -930,7 +362,7 @@ export default function Cars() {
                             value={price.lowPrice}
                             customInput={TextField}
                             onChange={(e) => {
-                              dispatch(setPricePersist({ type: "lowPrice", value: e.target.value }));
+                              //dispatch(setPricePersist({ type: "lowPrice", value: e.target.value }));
                             }}
                             prefix={"$"}
                             thousandSeparator={true}
@@ -941,7 +373,7 @@ export default function Cars() {
                             value={price.highPrice}
                             customInput={TextField}
                             onChange={(e) => {
-                              dispatch(setPricePersist({ type: "highPrice", value: e.target.value }));
+                              //dispatch(setPricePersist({ type: "highPrice", value: e.target.value }));
                             }}
                             prefix={"$"}
                             thousandSeparator={true}
@@ -949,7 +381,7 @@ export default function Cars() {
                           />
                         </div>
                       </div>
-                    )}
+                    )} */}
                   </div>
 
                   {/* Make and Modal */}
@@ -961,223 +393,224 @@ export default function Cars() {
 
                     {/* Modal Box */}
                     {makeAndModal && (
-                      <div className=" flex flex-col w-full py-3 h-auto px-4 ">
-                        <div className="w-full md:max-h-[500px] flex justify-start ">
-                          <FormGroup>
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Acura}
-                              label={<Typography>Acura</Typography>}
-                              name="Acura"
-                              onChange={(e) => {
-                                handleChangeMakeAndModal(e);
-                              }}
-                            />
+                      // <div className=" flex flex-col w-full py-3 h-auto px-4 ">
+                      //   <div className="w-full md:max-h-[500px] flex justify-start ">
+                      //     <FormGroup>
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Acura}
+                      //         label={<Typography>Acura</Typography>}
+                      //         name="Acura"
+                      //         onChange={(e) => {
+                      //           handleChangeMakeAndModal(e);
+                      //         }}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.AlfaRomeo}
-                              label={<Typography>Alfa Romeo</Typography>}
-                              name="AlfaRomeo"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.AlfaRomeo}
+                      //         label={<Typography>Alfa Romeo</Typography>}
+                      //         name="AlfaRomeo"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Audi} label={<Typography>Audi</Typography>} name="Audi" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Audi} label={<Typography>Audi</Typography>} name="Audi" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.BMW} label={<Typography>BMW</Typography>} name="BMW" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.BMW} label={<Typography>BMW</Typography>} name="BMW" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Buick} label={<Typography>Buick</Typography>} name="Buick" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Buick} label={<Typography>Buick</Typography>} name="Buick" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Cadillac}
-                              label={<Typography>Cadillac</Typography>}
-                              name="Cadillac"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Cadillac}
+                      //         label={<Typography>Cadillac</Typography>}
+                      //         name="Cadillac"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Chevrolet}
-                              label={<Typography>Chevrolet</Typography>}
-                              name="Chevrolet"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Chevrolet}
+                      //         label={<Typography>Chevrolet</Typography>}
+                      //         name="Chevrolet"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Chrysler}
-                              label={<Typography>Chrysler</Typography>}
-                              name="Chrysler"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Chrysler}
+                      //         label={<Typography>Chrysler</Typography>}
+                      //         name="Chrysler"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Dodge} label={<Typography>Dodge</Typography>} name="Dodge" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Dodge} label={<Typography>Dodge</Typography>} name="Dodge" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.FIAT} label={<Typography>FIAT</Typography>} name="FIAT" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.FIAT} label={<Typography>FIAT</Typography>} name="FIAT" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Ford} label={<Typography>Ford</Typography>} name="Ford" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Ford} label={<Typography>Ford</Typography>} name="Ford" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Genesis}
-                              label={<Typography>Genesis</Typography>}
-                              name="Genesis"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Genesis}
+                      //         label={<Typography>Genesis</Typography>}
+                      //         name="Genesis"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.GMC} label={<Typography>GMC</Typography>} name="GMC" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.GMC} label={<Typography>GMC</Typography>} name="GMC" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Honda} label={<Typography>Honda</Typography>} name="Honda" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Honda} label={<Typography>Honda</Typography>} name="Honda" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Hyundai}
-                              label={<Typography>Hyundai</Typography>}
-                              name="Hyundai"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Hyundai}
+                      //         label={<Typography>Hyundai</Typography>}
+                      //         name="Hyundai"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.INFINITI}
-                              label={<Typography>INFINITI</Typography>}
-                              name="INFINITI"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.INFINITI}
+                      //         label={<Typography>INFINITI</Typography>}
+                      //         name="INFINITI"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Jaguar}
-                              label={<Typography>Jaguar</Typography>}
-                              name="Jaguar"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Jaguar}
+                      //         label={<Typography>Jaguar</Typography>}
+                      //         name="Jaguar"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Jeep} label={<Typography>Jeep</Typography>} name="Jeep" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Jeep} label={<Typography>Jeep</Typography>} name="Jeep" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Kia} label={<Typography>Kia</Typography>} name="Kia" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Kia} label={<Typography>Kia</Typography>} name="Kia" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.LandRover}
-                              label={<Typography>Land Rover</Typography>}
-                              name="LandRover"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.LandRover}
+                      //         label={<Typography>Land Rover</Typography>}
+                      //         name="LandRover"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lexus} label={<Typography>Lexus</Typography>} name="Lexus" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lexus} label={<Typography>Lexus</Typography>} name="Lexus" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Lincoln}
-                              label={<Typography>Lincoln</Typography>}
-                              name="Lincoln"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Lincoln}
+                      //         label={<Typography>Lincoln</Typography>}
+                      //         name="Lincoln"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lucid} label={<Typography>Lucid</Typography>} name="Lucid" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Lucid} label={<Typography>Lucid</Typography>} name="Lucid" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Maserati}
-                              label={<Typography>Maserati</Typography>}
-                              name="Maserati"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Maserati}
+                      //         label={<Typography>Maserati</Typography>}
+                      //         name="Maserati"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Mazada}
-                              label={<Typography>Mazada</Typography>}
-                              name="Mazada"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Mazada}
+                      //         label={<Typography>Mazada</Typography>}
+                      //         name="Mazada"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.MercedesBenz}
-                              label={<Typography>Mercedes-Benz</Typography>}
-                              name="MercedesBenz"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.MercedesBenz}
+                      //         label={<Typography>Mercedes-Benz</Typography>}
+                      //         name="MercedesBenz"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.MINI} label={<Typography>MINI</Typography>} name="MINI" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.MINI} label={<Typography>MINI</Typography>} name="MINI" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Mitsubishi}
-                              label={<Typography>Mitsubishi</Typography>}
-                              name="Mitsubishi"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Mitsubishi}
+                      //         label={<Typography>Mitsubishi</Typography>}
+                      //         name="Mitsubishi"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Nissan}
-                              label={<Typography>Nissan</Typography>}
-                              name="Nissan"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Nissan}
+                      //         label={<Typography>Nissan</Typography>}
+                      //         name="Nissan"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Polestar}
-                              label={<Typography>Polestar</Typography>}
-                              name="Polestar"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Polestar}
+                      //         label={<Typography>Polestar</Typography>}
+                      //         name="Polestar"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Porsche}
-                              label={<Typography>Porsche</Typography>}
-                              name="Porsche"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Porsche}
+                      //         label={<Typography>Porsche</Typography>}
+                      //         name="Porsche"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Ram} label={<Typography>Ram</Typography>} name="Ram" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Ram} label={<Typography>Ram</Typography>} name="Ram" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Rivian}
-                              label={<Typography>Rivian</Typography>}
-                              name="Rivian"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Rivian}
+                      //         label={<Typography>Rivian</Typography>}
+                      //         name="Rivian"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Scion} label={<Typography>Scion</Typography>} name="Scion" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Scion} label={<Typography>Scion</Typography>} name="Scion" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Subaru}
-                              label={<Typography>Subaru</Typography>}
-                              name="Subaru"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Subaru}
+                      //         label={<Typography>Subaru</Typography>}
+                      //         name="Subaru"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Telsa} label={<Typography>Telsa</Typography>} name="Telsa" onChange={handleChangeMakeAndModal} />
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Telsa} label={<Typography>Telsa</Typography>} name="Telsa" onChange={handleChangeMakeAndModal} />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Toyota}
-                              label={<Typography>Toyota</Typography>}
-                              name="Toyota"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Toyota}
+                      //         label={<Typography>Toyota</Typography>}
+                      //         name="Toyota"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel
-                              control={<Checkbox />}
-                              checked={reduxMakeAndModalStates.Volkswagen}
-                              label={<Typography>Volkswagen</Typography>}
-                              name="Volkswagen"
-                              onChange={handleChangeMakeAndModal}
-                            />
+                      //       <FormControlLabel
+                      //         control={<Checkbox />}
+                      //         checked={reduxMakeAndModalStates.Volkswagen}
+                      //         label={<Typography>Volkswagen</Typography>}
+                      //         name="Volkswagen"
+                      //         onChange={handleChangeMakeAndModal}
+                      //       />
 
-                            <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Volvo} label={<Typography>Volvo</Typography>} name="Volvo" onChange={handleChangeMakeAndModal} />
-                          </FormGroup>
-                        </div>
-                      </div>
+                      //       <FormControlLabel control={<Checkbox />} checked={reduxMakeAndModalStates.Volvo} label={<Typography>Volvo</Typography>} name="Volvo" onChange={handleChangeMakeAndModal} />
+                      //     </FormGroup>
+                      //   </div>
+                      // </div>
+                      <></>
                     )}
                   </div>
 
@@ -1190,50 +623,51 @@ export default function Cars() {
 
                     {/* Mileage Box */}
                     {mileageArrow && (
-                      <div className=" flex flex-col w-full py-3 h-auto px-4">
-                        <div className="w-full h-auto flex items-center">
-                          <h1 className="text-[13px] mr-2">MILEAGE RANGE:</h1>
+                    // //   <div className=" flex flex-col w-full py-3 h-auto px-4">
+                    // //     <div className="w-full h-auto flex items-center">
+                    // //       <h1 className="text-[13px] mr-2">MILEAGE RANGE:</h1>
 
-                          <NumericFormat
-                            value={mileage.lowMileage}
-                            customInput={TextField}
-                            onChange={(e) => {
-                              dispatch(setMileagePersist({ type: "lowMileage", value: e.target.value }));
-                            }}
-                            thousandSeparator={true}
-                            className=" outline-none border border-gray-400 indent-1 rounded-sm w-[150px] "
-                          />
-                          <span className="mx-2">-</span>
-                          <NumericFormat
-                            value={mileage.highMileage}
-                            customInput={TextField}
-                            onChange={(e) => {
-                              dispatch(setMileagePersist({ type: "highMileage", value: e.target.value }));
-                            }}
-                            thousandSeparator={true}
-                            className=" outline-none border border-gray-400 indent-1 rounded-sm w-[150px] "
-                          />
-                        </div>
+                    // //       <NumericFormat
+                    // //         value={mileage.lowMileage}
+                    // //         customInput={TextField}
+                    // //         onChange={(e) => {
+                    // //           //dispatch(setMileagePersist({ type: "lowMileage", value: e.target.value }));
+                    // //         }}
+                    // //         thousandSeparator={true}
+                    // //         className=" outline-none border border-gray-400 indent-1 rounded-sm w-[150px] "
+                    // //       />
+                    // //       <span className="mx-2">-</span>
+                    // //       <NumericFormat
+                    // //         value={mileage.highMileage}
+                    // //         customInput={TextField}
+                    // //         onChange={(e) => {
+                    // //           //dispatch(setMileagePersist({ type: "highMileage", value: e.target.value }));
+                    // //         }}
+                    // //         thousandSeparator={true}
+                    // //         className=" outline-none border border-gray-400 indent-1 rounded-sm w-[150px] "
+                    // //       />
+                    // //     </div>
 
-                        {/* <button
-                      className="mt-4 p-2 bg-black text-white rounded-lg"
-                      onClick={() => {
-                        dispatch(
-                          filterData({
-                            price: price,
-                            sortByState,
-                            modal: reduxMakeAndModalStates,
-                            page: currentPage,
-                            mileage,
-                          })
-                        );
-                        setMileageArrow(false);
-                        dispatch(setCurrentPage(1));
-                      }}
-                    >
-                      Search
-                    </button> */}
-                      </div>
+                    // //     {/* <button
+                    // //   className="mt-4 p-2 bg-black text-white rounded-lg"
+                    // //   onClick={() => {
+                    // //     dispatch(
+                    // //       filterStates({
+                    // //         price: price,
+                    // //         sortByState,
+                    // //         modal: reduxMakeAndModalStates,
+                    // //         page: currentPage,
+                    // //         mileage,
+                    // //       })
+                    // //     );
+                    // //     setMileageArrow(false);
+                    // //     dispatch(setCurrentPage(1));
+                    // //   }}
+                    // // >
+                    // //   Search
+                    // // </button> */}
+                    // //   </div>
+                    <></>
                     )}
                   </div>
 
@@ -1288,13 +722,13 @@ export default function Cars() {
 
                 {/* Clear All */}
 
-                {getNumberOfFiltersForBagde({ nameFilters: reduxMakeAndModalStates, pricefilters: price, mileageFilter: mileage }) > 0 && (
+                {/* {getNumberOfFiltersForBagde({ nameFilters: reduxMakeAndModalStates, pricefilters: price, mileageFilter: mileage }) > 0 && (
                   <div className=" w-full flex justify-center sticky bottom-0   h-[60px]">
                     <button className="w-full h-[50px] bg-black text-gray-300 rounded-full" onClick={() => dispatch(clearAllFilters())}>
                       Clear All
                     </button>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </Modal>

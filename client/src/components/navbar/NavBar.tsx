@@ -5,7 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Menu, MenuItem, Skeleton, buttonBaseClasses } from "@mui/material";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { setSearchState } from "../../redux/features/carStateSlice";
+//import { setSearchState } from "../../redux/features/carStateSlice";
 import { searchCars, setSearchedCars } from "../../redux/features/carSlice";
 import NightlightOutlinedIcon from '@mui/icons-material/NightlightOutlined';
 import WbSunnyOutlinedIcon from '@mui/icons-material/WbSunnyOutlined';
