@@ -7,9 +7,6 @@ import { allCarData } from "../data/Data.js";
 import { env } from "custom-env";
 env(true);
 
-
-
-
 //* Node Scheduler and Node Mailer For Monthly Updates
 
 puppeteer.use(StealthPlugin());
@@ -42,106 +39,98 @@ const job = schedule.scheduleJob(rule, async () => {
   console.log("Cron job is being ran");
 });
 
-
-
-
-
 //! Function to grab all json data and format them ... next update ... going to format the data before I save it as json data
-async function grabJSONData(req,res){
-  try{
+async function grabJSONData(req, res) {
+  try {
     // TODO    JSON DATA
-const grabData = await promises.readFile("./data/carvanaMockData.json", "utf-8");
-const zero_To_100 = await promises.readFile("./data/carsDotComPage0-101.json", "utf-8");
-const _102_To_206 = await promises.readFile("./data/carsDotComPage102-206.json", "utf-8");
-const _207_To_301 = await promises.readFile("./data/carsDotComPage207-301.json", "utf-8");
-const _301_To_401 = await promises.readFile("./data/carsDotComPage301-401.json", "utf-8");
-const _402_To_601 = await promises.readFile("./data/carsDotComPage402-601.json", "utf-8");
+    const grabData = await promises.readFile("./data/carvanaMockData.json", "utf-8");
+    const zero_To_100 = await promises.readFile("./data/carsDotComPage0-101.json", "utf-8");
+    const _102_To_206 = await promises.readFile("./data/carsDotComPage102-206.json", "utf-8");
+    const _207_To_301 = await promises.readFile("./data/carsDotComPage207-301.json", "utf-8");
+    const _301_To_401 = await promises.readFile("./data/carsDotComPage301-401.json", "utf-8");
+    const _402_To_601 = await promises.readFile("./data/carsDotComPage402-601.json", "utf-8");
 
-// TODO Function determing if car is a good deal
-function typeOfDeal(val) {
-  if (val.price > 0 && val.price <= 5000) {
-    return "Cheap Car";
-  }
-  if (val.price > 5000 && val.price < 10000 && val.mileage <= 80000) {
-    return "Great Deal";
-  }
-  if (val.price > 11000 && val.price < 24000 && val.mileage > 85000) {
-    return "Great Car Price But Higher Mileage";
-  }
-  if (val.price >= 24000 && val.price <= 32000) {
-    return "Average Priced Car";
-  }
-  if (val.price > 32000 && val.price <= 40000) {
-    return "Just Above National Average";
-  }
-  if (val.price > 40000) {
-    return "Higher Priced Cars";
-  }
-}
+    // TODO Function determing if car is a good deal
+    function typeOfDeal(val) {
+      if (val.price > 0 && val.price <= 5000) {
+        return "Cheap Car";
+      }
+      if (val.price > 5000 && val.price < 10000 && val.mileage <= 80000) {
+        return "Great Deal";
+      }
+      if (val.price > 11000 && val.price < 24000 && val.mileage > 85000) {
+        return "Great Car Price But Higher Mileage";
+      }
+      if (val.price >= 24000 && val.price <= 32000) {
+        return "Average Priced Car";
+      }
+      if (val.price > 32000 && val.price <= 40000) {
+        return "Just Above National Average";
+      }
+      if (val.price > 40000) {
+        return "Higher Priced Cars";
+      }
+    }
 
-// TODO Converted Dated
-const carVana = JSON.parse(grabData).map((item) => {
-  return {
-    ...item,
-    mileage: Number(
-      item.mileage
-        .toLowerCase()
-        .replace(/[,]/gm, "")
-        .replace(/([a-z])/gm, "")
-    ),
-    price: Number(item.price.replace(/[$,]/g, "")),
-  };
-});
-let carDotCom = JSON.parse(zero_To_100)
-  .concat(JSON.parse(_102_To_206), JSON.parse(_102_To_206), JSON.parse(_207_To_301), JSON.parse(_301_To_401), JSON.parse(_402_To_601))
-  .map((item) => {
-    return {
-      ...item,
-      mileage: Number(
-        item.mileage
-          .toLowerCase()
-          .replace(/[,]/gm, "")
-          .replace(/([a-z])/gm, "")
-      ),
-      price: Number(item.price.replace(/[$,]/g, "")),
-      type: "Cars.com",
-    };
-  });
+    // TODO Converted Dated
+    const carVana = JSON.parse(grabData).map((item) => {
+      return {
+        ...item,
+        mileage: Number(
+          item.mileage
+            .toLowerCase()
+            .replace(/[,]/gm, "")
+            .replace(/([a-z])/gm, "")
+        ),
+        price: Number(item.price.replace(/[$,]/g, "")),
+      };
+    });
+    let carDotCom = JSON.parse(zero_To_100)
+      .concat(JSON.parse(_102_To_206), JSON.parse(_102_To_206), JSON.parse(_207_To_301), JSON.parse(_301_To_401), JSON.parse(_402_To_601))
+      .map((item) => {
+        return {
+          ...item,
+          mileage: Number(
+            item.mileage
+              .toLowerCase()
+              .replace(/[,]/gm, "")
+              .replace(/([a-z])/gm, "")
+          ),
+          price: Number(item.price.replace(/[$,]/g, "")),
+          type: "Cars.com",
+        };
+      });
 
-let finalDataCarVana = carVana.map((item) => {
-  return {
-    ...item,
-    type: "Carvana Certified",
-    deal: typeOfDeal(item),
-  };
-});
-let finalDataCarDotCom = carDotCom.map((item) => {
-  return {
-    ...item,
-    deal: typeOfDeal(item),
-  };
-});
+    let finalDataCarVana = carVana.map((item) => {
+      return {
+        ...item,
+        type: "Carvana Certified",
+        deal: typeOfDeal(item),
+      };
+    });
+    let finalDataCarDotCom = carDotCom.map((item) => {
+      return {
+        ...item,
+        deal: typeOfDeal(item),
+      };
+    });
 
-let allCarData = finalDataCarVana.concat(finalDataCarDotCom)?.map((item, index) => {
-  return {
-    ...item,
-    index,
-  };
-})
-
-  }catch(e){
-    console.log(e)
+    let allCarData = finalDataCarVana.concat(finalDataCarDotCom)?.map((item, index) => {
+      return {
+        ...item,
+        index,
+      };
+    });
+  } catch (e) {
+    console.log(e);
   }
 }
 function removeDups(arr) {
   const unique = arr.filter((obj, index) => {
-    
-    return index === arr.findIndex(o => obj.name_modal === o.name_modal && obj.type === o.type && obj.price === o.price);
-});
-return unique
+    return index === arr.findIndex((o) => obj.name_modal === o.name_modal && obj.type === o.type && obj.price === o.price);
+  });
+  return unique;
 }
-
-
 
 //* Async Functions
 
@@ -1067,14 +1056,12 @@ export async function carsDotComData(req, res) {
   }
 }
 
-export async function removeDuplicateAndSaveAllData(req,res){
-  try{
-
-    res.send(removeDups(allCarData))
-
-  }catch(e){
-    console.log(e)
-    res.status(400).json({msg:e.message})
+export async function removeDuplicateAndSaveAllData(req, res) {
+  try {
+    res.send(removeDups(allCarData));
+  } catch (e) {
+    console.log(e);
+    res.status(400).json({ msg: e.message });
   }
 }
 
@@ -1082,55 +1069,52 @@ export async function removeDuplicateAndSaveAllData(req,res){
 
 export async function filterData(req, res) {
   try {
-    const { price, sortByState, modal, page, mileage } = req.body;
+    const { price, sortByState, modal, mileage } = req.body;
+    const { lowMileage, highMileage, highPrice, lowPrice, makeAndModalStates, page } = req.body;
     let data = allCarData;
 
-    let newPrice = {
-      ...price,
-      highPrice: typeof price.highPrice === "string" ? Number(price.highPrice.replace(/[$,]/g, "")) : price.highPrice,
-      lowPrice: typeof price.lowPrice === "string" ? Number(price.lowPrice.replace(/[$,]/g, "")) : price.lowPrice,
-    };
-    let newMileage = {
-      ...mileage,
-      lowMileage: typeof mileage.lowMileage === "string" ? Number(mileage.lowMileage.replace(/[,]/g, "")) : mileage.lowMileage,
-      highMileage: typeof mileage.highMileage === "string" ? Number(mileage.highMileage.replace(/[,]/g, "")) : mileage.highMileage,
-    };
+    //! check for long name modal
 
-    // Number(price.lowPrice.replace(/[$]/g, ""))
-    // typeof price.highPrice === "string" ? Number(price.highPrice.replace(/[$]/g, "")) : price.highPrice,
+    //* Filtering Data by price and mileage
+    if (typeof lowMileage !== "number" || typeof lowPrice !== "number" || typeof highMileage !== "number" || typeof highPrice !== "number") {
+      return res.status(400).json({ msg: "There was an error with price or mileage, our backend retreieved a string instead of a number" });
+    }
+    //// data = data.filter((item) => item.price >= lowPrice && item.price <= highPrice);
+    //// data = data.filter((item) => item.mileage >= lowMileage && item.mileage <= highMileage);
 
-    // We are also going to send or price state
-    data = data.filter((item) => item.price >= newPrice.lowPrice && item.price <= newPrice.highPrice);
-
-    // We are also going to filter on mileage
-    data = data.filter((item) => item.mileage >= newMileage.lowMileage && item.mileage <= newMileage.highMileage);
-
-    // We are also going to send our make and modal state ... maybe
+    // We are also going to send our make and modal state
     let newArr = [];
-    for (let items in modal) {
-      if (modal[items] === true) {
-        newArr.push(items);
+    for (let items in makeAndModalStates) {
+      if (makeAndModalStates[items] === true) {
+        newArr.push(items === "LandRover" ? "Land Rover" : items);
       }
     }
-    let filterSection = {
+
+    const filters = {
+      price: (price) => price >= lowPrice && price <= highPrice,
+      mileage: (mileage) => mileage >= lowMileage && mileage <= highMileage,
       name_modal: newArr,
     };
 
     function filterPlainArray(array, filters) {
       const filterKeys = Object.keys(filters);
-      // filterkey === name_modal
       return array.filter((item) => {
         // validates all filter criteria
         return filterKeys.every((key) => {
           // item[key] === 2021 Ford Expedition Limited
           // ignores an empty filter
-          if (!filters[key].length) return true;
-          return filters[key].find((filter) => item[key].includes(filter));
+          if (typeof filters[key] !== "function" && Array.isArray(filters[key]) && filters[key].length) {
+            return filters[key].find((filter) => item[key].includes(filter));
+          } else if (typeof filters[key] !== "function") {
+            return true;
+          } else {
+            return filters[key](item[key]);
+          }
         });
       });
     }
 
-    data = newArr.length ? filterPlainArray(data, filterSection) : data;
+    data = filterPlainArray(data, filters);
 
     // We are always going to send our sortby state ... either sort by lowest price to highest ... or vice versa
     if (sortByState === "Lowest Price") {
@@ -1217,12 +1201,11 @@ export async function getOneCar(req, res) {
     const { id } = req.body;
     let data = allCarData.find((item) => item.index === Number(id));
 
-    if(data){
+    if (data) {
       res.send(data);
-    }else{
-      return res.status(404).json({msg:"Sorry There is No Car with Provided Information"})
+    } else {
+      return res.status(404).json({ msg: "Sorry There is No Car with Provided Information" });
     }
-    
   } catch (e) {
     console.log(e);
     res.status(400).json({ msg: e.message });
@@ -1257,7 +1240,7 @@ export async function similarCars(req, res) {
       let data = allCarData?.filter((item) => item.deal === findOne?.deal);
       let sortedData = shuffle(data);
 
-      res.status(200).json(sortedData?.slice(0,8));
+      res.status(200).json(sortedData?.slice(0, 8));
     } else {
       res.status(404).json({ msg: "There was an error, we couldnt find similar cars" });
     }
@@ -1266,9 +1249,31 @@ export async function similarCars(req, res) {
     res.status(400).json({ msg: e.message });
   }
 }
+// ! Working for filtering by car name
+// let newArr = [];
+//     for (let items in makeAndModalStates) {
+//       if (makeAndModalStates[items] === true) {
+//         console.log(items)
+//         newArr.push(items === "LandRover" ? 'Land Rover': items);
+//       }
+//     }
+//     let filters = {
+//       name_modal: newArr,
+//     };
 
+//     function filterPlainArray(array, filters) {
+//       const filterKeys = Object.keys(filters);
+//       //console.log(filterKeys)
+//       // filterkey === name_modal
+//       return array.filter((item) => {
+//         // validates all filter criteria
+//         return filterKeys.every((key) => {
+//           // item[key] === 2021 Ford Expedition Limited
+//           // ignores an empty filter
+//           if (!filters[key].length) return true;
+//           return filters[key].find((filter) => item[key].includes(filter));
+//         });
+//       });
+//     }
 
-
-
-
-
+//      data = newArr.length ? filterPlainArray(data, filterSection) : data;
