@@ -179,6 +179,7 @@ export default function useFormHook({ states }: FormHook) {
 }
 
 export interface ICarvanaInputCardProps {
+  breakPoint: "Desktop" | "Mobile";
   label: string;
   name: "lowMileage" | "lowPrice" | "highMileage" | "highPrice" | "sortByState";
   placeholder: string;

@@ -12,6 +12,7 @@ import { FilterIsSameCheck } from "../utils/FilterIsSameCheck";
 import { filterData } from "../../../redux/features/carSlice";
 import { updateSearch } from "../utils/updateSearch";
 import FilterBoxContainer from "./FilterBoxContainer";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 type FormFields = z.infer<typeof carvanaSchema>;
 
@@ -62,7 +63,7 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
         <div className=" flex justify-between items-center py-3 px-4 h-auto ">
           <h1 className="text-[19px] font-medium">Price</h1>
 
-          <KeyboardArrowUpIcon onClick={() => setPriceArrow((val) => !val)} />
+          {priceArrow ? <KeyboardArrowDownIcon onClick={() => setPriceArrow((val) => !val)} /> : <KeyboardArrowUpIcon onClick={() => setPriceArrow((val) => !val)} />}
         </div>
 
         {/* Price Box */}
@@ -70,9 +71,9 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
           <div className=" flex flex-col w-full py-3 h-auto px-4">
             <p>Price Range</p>
             <div className={`w-full flex  justify-center ${errors.lowPrice || errors.highPrice ? "" : "items-center"}`}>
-              <CarvanaInputCard errors={errors} control={control} name="lowPrice" label="Low Price" placeholder="" type="Number" />
+              <CarvanaInputCard breakPoint="Desktop" errors={errors} control={control} name="lowPrice" label="Low Price" placeholder="" type="Number" />
               {errors.lowPrice || errors.highPrice ? <span className={`mx-2 `}></span> : <span className={`mx-2 `}>-</span>}
-              <CarvanaInputCard errors={errors} control={control} name="highPrice" label="High Price" placeholder="" type="Number" />
+              <CarvanaInputCard breakPoint="Desktop" errors={errors} control={control} name="highPrice" label="High Price" placeholder="" type="Number" />
             </div>
           </div>
         )}
@@ -82,7 +83,7 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
       <div className="w-full h-auto flex flex-col border-b border-gray-300">
         <div className=" flex justify-between items-center py-4 px-4 h-auto ">
           <h1 className="text-[19px] font-medium">Make and Modal</h1>
-          <KeyboardArrowUpIcon onClick={() => setMakeAndModal((val) => !val)} />
+          {makeAndModal ? <KeyboardArrowDownIcon onClick={() => setMakeAndModal((val) => !val)} /> : <KeyboardArrowUpIcon onClick={() => setMakeAndModal((val) => !val)} />}
         </div>
 
         {/* Modal Box */}
@@ -106,7 +107,7 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
       <div className="w-full h-auto flex flex-col border-b border-gray-300">
         <div className=" flex justify-between items-center py-4 px-4 h-auto ">
           <h1 className="text-[19px] font-medium">Milegae</h1>
-          <KeyboardArrowUpIcon onClick={() => setMileageArrow((val) => !val)} />
+          {mileageArrow ? <KeyboardArrowDownIcon onClick={() => setMileageArrow((val) => !val)} /> : <KeyboardArrowUpIcon onClick={() => setMileageArrow((val) => !val)} />}
         </div>
 
         {/* Mileage Box */}
@@ -114,9 +115,9 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
           <div className=" flex flex-col w-full py-3 h-auto px-4">
             <p>Mileage Range</p>
             <div className={`w-full flex  justify-center ${errors.lowMileage || errors.highMileage ? "" : "items-center"}`}>
-              <CarvanaInputCard errors={errors} control={control} name="lowMileage" label="Low Mileage" placeholder="" type="None" />
+              <CarvanaInputCard breakPoint="Desktop" errors={errors} control={control} name="lowMileage" label="Low Mileage" placeholder="" type="None" />
               {errors.lowMileage || errors.highMileage ? <span className={`mx-2 `}></span> : <span className={`mx-2 `}>-</span>}
-              <CarvanaInputCard errors={errors} control={control} name="highMileage" label="High Mileage" placeholder="" type="None" />
+              <CarvanaInputCard breakPoint="Desktop" errors={errors} control={control} name="highMileage" label="High Mileage" placeholder="" type="None" />
             </div>
           </div>
         )}

@@ -1,9 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-interface Price {
-  lowPrice: number;
-  highPrice: number;
-}
 
 interface LoanObj {
   installments: [
@@ -21,10 +17,6 @@ interface LoanObj {
   sum: number;
 }
 
-interface Mileage {
-  highMileage: number;
-  lowMileage: number;
-}
 
 export interface FilterDataObj {
   lowPrice: number;
@@ -126,7 +118,6 @@ interface PageState {
 
   carBrand: Array<string>;
 
-  searchState: string;
   interestRate: number;
   months: number;
   loanAmount: number;
@@ -195,8 +186,6 @@ const initialState: PageState = {
   currentPage: 1,
 
   carBrand: [],
-
-  searchState: "",
   interestRate: 11.35,
   months: 60,
   loanAmount: 0,

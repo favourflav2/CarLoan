@@ -1,9 +1,23 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { carVana_Data, filter_Data, get_One_Car, related_Cars, search_Cars, similar_Cars } from "../api/carApi";
 
-interface PaginatedData {
-  cars: Array<any>;
-  [prop: string]: any;
+export interface CarVanaDataObj {
+img:string;
+type:string;
+name_modal:string;
+mileage:number;
+price:number;
+deal:string;
+index:number
+}
+
+export interface PaginatedData {
+  cars: Array<CarVanaDataObj>;
+  page:number;
+  limit:number;
+  totalCount:number
+  totalPages:number;
+
 }
 
 export interface FilterDataBackendData {
@@ -72,6 +86,7 @@ interface CarState {
   carVana: null | PaginatedData;
   loading: boolean;
   searchLoading: boolean;
+  searchError:any
   error: any;
   relatedCars: Array<any>;
   searchedCars: Array<any>;
@@ -84,6 +99,7 @@ const initialState: CarState = {
   loading: false,
   searchLoading: false,
   error: "",
+  searchError:"",
   relatedCars: [],
   searchedCars: [],
   singleCar: null,
@@ -120,9 +136,9 @@ export const relatedCarsRedux = createAsyncThunk("relatedCarsRedux", async (_, {
   }
 });
 
-export const searchCars = createAsyncThunk("searchCars", async ({ searchVal }: any, { rejectWithValue }) => {
+export const searchCars = createAsyncThunk("searchCars", async ({searchValue}:{searchValue:string}, { rejectWithValue }) => {
   try {
-    const res = await search_Cars({ searchVal });
+    const res = await search_Cars({searchValue});
     return res.data;
   } catch (e: any) {
     return rejectWithValue(e.response.data.msg);
@@ -157,6 +173,9 @@ const carSlice = createSlice({
     setCarSliceError: (state) => {
       state.error = "";
     },
+    setSearchError: (state) => {
+      state.searchError = ""
+    }
   },
   extraReducers(builder) {
     builder
@@ -210,7 +229,7 @@ const carSlice = createSlice({
       })
       .addCase(searchCars.rejected, (state, action) => {
         state.searchLoading = false;
-        state.error = action.payload;
+        state.searchError = action.payload;
       })
 
       // Get One Car
