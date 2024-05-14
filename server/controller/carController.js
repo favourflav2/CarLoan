@@ -1173,11 +1173,14 @@ export async function relatedCarData(req, res) {
 // Search Data
 
 export async function searchFunction(req, res) {
+ 
   try {
     let data = allCarData;
-    const { searchVal } = req.body;
+    const { searchValue } = req.body;
 
+ 
     function searchGeneretor(mockData, searchVal) {
+      // firstD is checking is the first letter in data matches string from frontend
       let firstD = mockData?.filter((item) => item.name_modal.slice(5, item.name_modal.length).toLowerCase().startsWith(searchVal.toLowerCase()));
       let secondD = mockData?.filter((item) => item.name_modal.toLowerCase().includes(searchVal.toLowerCase()));
 
@@ -1188,7 +1191,7 @@ export async function searchFunction(req, res) {
       }
     }
 
-    res.send(searchGeneretor(data, searchVal).slice(0, 6));
+    searchValue.length ? res.send(searchGeneretor(data, searchValue).slice(0, 6)) : res.send([])
   } catch (e) {
     console.log(e);
     res.status(400).json({ msg: e.message });
