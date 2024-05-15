@@ -13,7 +13,7 @@ export default function NoData(props: INoDataProps) {
       {/* Desktop Content */}
       <div className="w-full h-auto flex flex-col py-10">
         <div className="w-full flex flex-col justify-center items-center py-10 rounded-xl bg-gray-200 border border-gray-500">
-          <h1 className=" font-bold underline">WE DIDN'T FIND ANY EXACT MATCHES</h1>
+          <h1 className=" font-bold underline dark:text-black">WE DIDN'T FIND ANY EXACT MATCHES</h1>
 
           {/* <h1 className="mt-8 text-[15px]">Check Out Other Cars</h1> */}
         </div>

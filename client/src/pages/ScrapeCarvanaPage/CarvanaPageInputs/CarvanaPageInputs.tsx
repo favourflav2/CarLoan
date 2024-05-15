@@ -12,7 +12,7 @@ import { FilterIsSameCheck } from "../utils/FilterIsSameCheck";
 import { filterData } from "../../../redux/features/carSlice";
 import { updateSearch } from "../utils/updateSearch";
 import FilterBoxContainer from "./FilterBoxContainer";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type FormFields = z.infer<typeof carvanaSchema>;
 
@@ -21,6 +21,7 @@ export interface ICarvanaPageInputsProps {}
 export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
   const { filterStates, currentPage } = UseSelector((state) => state.page);
   const { loading, carVana } = UseSelector((state) => state.car);
+  const { lightAndDarkMode } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   // Filter States Open and Close
@@ -48,8 +49,6 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
     setMileageArrow(false);
     window.scrollTo(0, 0);
   };
-
-
 
   return (
     <div className="w-full h-auto flex flex-col dark:text-darkText text-lightText">
@@ -95,7 +94,23 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
                 name={`${item as keyof FormFields}`}
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <FormControlLabel key={item} control={<Checkbox />} checked={value as boolean} label={<Typography>{item}</Typography>} name={`${item}`} onChange={onChange} />
+                  <FormControlLabel
+                    key={item}
+                    control={
+                      <Checkbox
+                        sx={{
+                          color: `${lightAndDarkMode && '#d1d5db'}`,
+                          '&.Mui-checked': {
+                            color: "#00A36C",
+                             },
+                        }}
+                      />
+                    }
+                    checked={value as boolean}
+                    label={<Typography>{item}</Typography>}
+                    name={`${item}`}
+                    onChange={onChange}
+                  />
                 )}
               />
             ))}

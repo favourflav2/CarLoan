@@ -48,7 +48,7 @@ export default function SearchDropDown({ openBox, refOne, setInputVal, inputVal 
                 </div>
               ))
             ) : (
-              <div className=" py-4 px-4  cursor-pointer h-full w-full bg-slate-200">
+              <div className=" py-4 px-4  cursor-pointer h-full w-full text-gray-700 bg-slate-200">
                 <h1 className="text-[15.5px] ">No results for <span className="font-bold italic">{`"${inputVal}"`}</span> </h1>
               </div>
             )}

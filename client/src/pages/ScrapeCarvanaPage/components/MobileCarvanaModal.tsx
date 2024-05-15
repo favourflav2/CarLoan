@@ -8,7 +8,7 @@ import CarvanaInputCard from "../CarvanaPageInputs/CarvanaInputCard";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Controller, SubmitHandler } from "react-hook-form";
 import { FormFields } from "../hooks/useFormHook";
-import { Checkbox, Typography, FormControlLabel } from "@mui/material";
+import { Checkbox, Typography, FormControlLabel, useMediaQuery } from "@mui/material";
 import { Dispatch, UseSelector } from "../../../redux/store";
 import { FilterIsSameCheck } from "../utils/FilterIsSameCheck";
 import { updateSearch } from "../utils/updateSearch";
@@ -28,7 +28,11 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
   // Redux States
   const { loading, carVana } = UseSelector((state) => state.car);
   const { currentPage } = UseSelector((state) => state.page);
+  const { lightAndDarkMode } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
+
+  // Meida Query
+  const lgBreakPoint = useMediaQuery("(min-width:1024px)");
 
   const [priceArrow, setPriceArrow] = React.useState(false);
   const [makeAndModal, setMakeAndModal] = React.useState(false);
@@ -56,11 +60,19 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
     window.scrollTo(0, 0);
   };
 
+  React.useEffect(() => {
+    if (openModal) {
+      if (lgBreakPoint) {
+        setOpenModal(false);
+      }
+    }
+  }, [lgBreakPoint, openModal]); // eslint-disable-line
+
   return (
     <Modal onClose={handleClose} open={openModal}>
-      <div className="w-full h-full flex  absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-gray-50 rouned-sm overflow-y-auto ">
+      <div className={`w-full h-full flex flex-col overflow-y-scroll ${lightAndDarkMode ? " bg-homeBg" : " bg-lightHomeBg"} dark:text-darkText text-lightText  `}>
         {/* Content */}
-        <div className="w-full h-full flex flex-col p-2 flex-wrap relative ">
+        <div className="w-full h-full flex flex-col p-2 relative  ">
           {/* Title */}
           <div className="w-full flex items-center justify-between border-b border-gray-300 py-4 px-4">
             <h1 className="text-[25px] font-medium">Filters</h1>
@@ -68,7 +80,7 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
           </div>
 
           {/* All Filters */}
-          <div className="w-full h-auto flex flex-col">
+          <div className="w-full h-auto flex flex-col ">
             {/* Price */}
             <div className="w-full h-auto flex flex-col border-b border-gray-300">
               <div className=" flex justify-between items-center py-3 px-4 h-auto ">
@@ -105,7 +117,23 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
                       name={`${item as keyof FormFields}`}
                       control={control}
                       render={({ field: { onChange, value } }) => (
-                        <FormControlLabel key={item} control={<Checkbox />} checked={value as boolean} label={<Typography>{item}</Typography>} name={`${item}`} onChange={onChange} />
+                        <FormControlLabel
+                          key={item}
+                          control={
+                            <Checkbox
+                              sx={{
+                                color: `${lightAndDarkMode && "#d1d5db"}`,
+                                "&.Mui-checked": {
+                                  color: "#00A36C",
+                                },
+                              }}
+                            />
+                          }
+                          checked={value as boolean}
+                          label={<Typography>{item}</Typography>}
+                          name={`${item}`}
+                          onChange={onChange}
+                        />
                       )}
                     />
                   ))}
@@ -134,11 +162,12 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
             </div>
           </div>
 
-          {/* Clear All */}
+          {/* Buttons */}
 
+          {/* Clear All */}
           {getNumberOfFiltersForBagde(filterStates) > 0 && (
             <button
-              className="rounded-lg p-2 mt-4 bg-chartYellow"
+              className="rounded-lg p-2 mt-4 bg-chartYellow text-black"
               onClick={() => {
                 dispatch(clearFilters(clearReduxState));
               }}

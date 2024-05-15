@@ -1,4 +1,4 @@
-import { Pagination, Skeleton, Badge } from "@mui/material";
+import { Pagination, Skeleton, Badge, useMediaQuery } from "@mui/material";
 import * as React from "react";
 import { FilterDataObj } from "../../../redux/features/carStateSlice";
 import SortByStateMenu from "./SortByStateMenu";
@@ -24,6 +24,10 @@ export default function MobileCarvana({ handlePageChange, currentPage, setInputV
   // Redux States
   const { loading, carVana } = UseSelector((state) => state.car);
   const { filterStates } = UseSelector((state) => state.page);
+  const { lightAndDarkMode } = UseSelector((state) => state.app);
+
+  // Meida Query
+  const smBreakPoint = useMediaQuery("(min-width:640px)");
 
   // Modal State
   const [openModal, setOpenModal] = React.useState(false);
@@ -96,7 +100,7 @@ export default function MobileCarvana({ handlePageChange, currentPage, setInputV
               value={inputVal}
             />
             {/* Dropdown Search Options */}
-            <SearchDropDown openBox={openBox} refOne={refOne} setInputVal={setInputVal} inputVal={inputVal}/>
+            <SearchDropDown openBox={openBox} refOne={refOne} setInputVal={setInputVal} inputVal={inputVal} />
           </div>
           {/* Filter Btn */}
           <div className="w-[100px] flex items-center justify-end  h-auto ">
@@ -130,8 +134,27 @@ export default function MobileCarvana({ handlePageChange, currentPage, setInputV
         </div>
 
         {/* Pagination */}
-        <div className="w-full h-auto mt-6 mb-10 flex justify-center">
-          <Pagination count={carVana?.totalPages} page={currentPage} onChange={handlePageChange} className="" variant="outlined" size="large" />
+        <div className="w-full h-auto my-10 flex justify-center">
+          <Pagination
+            count={carVana?.totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            className=""
+            variant="outlined"
+            size={`${smBreakPoint ? "medium" : "small"}`}
+            siblingCount={2}
+            boundaryCount={1}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                borderColor: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                color: `${lightAndDarkMode ? "#d1d5db" : "black"}`,
+                "&.Mui-selected": {
+                  background: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                  color: `${lightAndDarkMode ? "black" : "black"}`,
+                },
+              },
+            }}
+          />
         </div>
 
         {/* Modal */}

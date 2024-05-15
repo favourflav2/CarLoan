@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { filterData, searchCars, setSearchedCars } from "../../redux/features/carSlice";
-import {  Skeleton, Pagination } from "@mui/material";
+import { Skeleton, Pagination} from "@mui/material";
 import CarVanaCard from "../../components/cards/CarVanaCard";
 import CarDotComCard from "../../components/cards/CarDotComCard";
 import { setCurrentPage } from "../../redux/features/carStateSlice";
@@ -18,10 +18,14 @@ import SearchDropDown from "./components/SearchDropDown";
 export default function Cars() {
   const { carVana, loading, error } = UseSelector((state) => state.car);
   const { currentPage, filterStates } = UseSelector((state) => state.page);
+  const { lightAndDarkMode } = UseSelector((state) => state.app);
   const dispatch = Dispatch();
 
   // Search State
   const [inputVal, setInputVal] = React.useState("");
+
+
+
 
   const sendRequest = React.useCallback((value: string) => {
     //console.log("Changed value:", value);
@@ -79,7 +83,6 @@ export default function Cars() {
     }
   }, [inputVal]); // eslint-disable-line
 
-  
 
   return (
     <div className="w-full min-h-screen  lg:px-8 md:px-4 px-2 flex pt-[50px] text-lightText dark:text-darkText">
@@ -130,8 +133,25 @@ export default function Cars() {
               )}
 
               {/* Pagination */}
-              <div className="w-full h-auto mt-6 mb-10 flex justify-center">
-                <Pagination count={carVana?.totalPages} page={currentPage} onChange={handlePageChange} className="" variant="outlined" size="large" />
+              <div className="w-full h-auto my-10 flex justify-center">
+                <Pagination
+                  count={carVana?.totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  className=""
+                  variant="outlined"
+                  size="large"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      borderColor: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                      color: `${lightAndDarkMode ? "#d1d5db" : "black"}`,
+                      "&.Mui-selected": {
+                        background: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                        color: `${lightAndDarkMode ? "black" : "black"}`,
+                      },
+                    },
+                  }}
+                />
               </div>
             </div>
           </div>
