@@ -71,7 +71,7 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
 
   return (
     <Modal onClose={handleClose} open={openModal}>
-      <div className={`w-full h-full flex flex-col overflow-y-scroll ${lightAndDarkMode ? " bg-homeBg" : " bg-lightHomeBg"} dark:text-darkText text-lightText  `}>
+      <div className={`w-full h-full flex flex-col overflow-y-auto ${lightAndDarkMode ? " bg-homeBg" : " bg-lightHomeBg"} dark:text-darkText text-lightText  `}>
         {/* Content */}
         <div className="w-full h-full flex flex-col p-2 relative  ">
           {/* Title */}

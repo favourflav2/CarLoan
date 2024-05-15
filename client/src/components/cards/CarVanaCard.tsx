@@ -1,9 +1,10 @@
 import * as React from "react";
 import noImgPlaceHolder from "../../assets/noImg.png";
-import { NumericFormat } from "react-number-format";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "../../redux/store";
 import { resetItemDetailsState } from "../../redux/features/carStateSlice";
+import { USDollar } from "../../pages/CarPage/CarPage";
+
 
 // client/src/assets/noImg.png
 
@@ -11,8 +12,8 @@ export interface ICarVanaCardProps {
   item: {
     img: string;
     type: string;
-    mileage: string;
-    price: string;
+    mileage: number;
+    price: number;
     mileage_name: string;
     name_modal: string;
     deal: string;
@@ -23,6 +24,7 @@ export interface ICarVanaCardProps {
 export default function CarVanaCard({ item }: ICarVanaCardProps) {
   const navigate = useNavigate();
   const dispatch = Dispatch();
+
   return (
     <div
       className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
@@ -54,15 +56,14 @@ export default function CarVanaCard({ item }: ICarVanaCardProps) {
       <div className="w-auto h-auto flex items-center text-[13px] mt-2 italic px-2 my-1">
         <h1 className="">{item.mileage_name}</h1>
         <span className="mx-2">•</span>
-        <NumericFormat value={item.mileage} type="text" suffix=" miles" thousandSeparator={true} />
+          <p>{item.mileage.toLocaleString()} miles</p>  
       </div>
 
       {/* Price */}
       <h1 className=" font-semibold md:text-[19px] text-[17px] my-3 px-2">
-        <NumericFormat value={item.price} prefix={"$"} thousandSeparator={true} />
+        <p>{USDollar.format(item.price)}</p>
       </h1>
     </div>
   );
 }
-// •
-// text-gray-400 md:text-[12px] text-[10px] font-normal my-2 px-2
+

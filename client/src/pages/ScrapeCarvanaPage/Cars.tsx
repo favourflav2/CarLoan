@@ -118,14 +118,14 @@ export default function Cars() {
               {/* Mapped Data */}
               {!loading ? (
                 carVana?.cars?.length ? (
-                  <div className="w-full h-auto grid xl:grid-cols-3  grid-cols-2 gap-3 pt-4">
+                  <div className="w-full h-auto grid xl:grid-cols-3 2xl:grid-cols-4   grid-cols-2 gap-3 pt-4">
                     {carVana?.cars?.map((item: any, index: any) => (item?.type !== "Cars.com" ? <CarVanaCard item={item} key={index} /> : <CarDotComCard item={item} key={index} />))}
                   </div>
                 ) : (
                   <NoData />
                 )
               ) : (
-                <div className="w-full h-auto grid xl:grid-cols-3  grid-cols-2 gap-3 pt-4">
+                <div className="w-full h-auto grid xl:grid-cols-3 2xl:grid-cols-5  grid-cols-2 gap-3 pt-4">
                   {Array.from(Array(18).keys()).map((item: any, index: any) => (
                     <Skeleton key={index} variant="rectangular" className="w-full h-[300px]" />
                   ))}
