@@ -6,6 +6,7 @@ import schedule from "node-schedule";
 import { allCarData } from "../data/Data.js";
 import { env } from "custom-env";
 import { getCarvanaNew } from "../functions/getCarvanaNew.js";
+import { helpFormatCarName } from "../utils/helpFormatCarName.js";
 env(true);
 
 //* Node Scheduler and Node Mailer For Monthly Updates
@@ -52,8 +53,7 @@ export async function getCarVana(req, res) {
 // Main function ... each refresh on frontend will call this function 
 export async function filterData(req, res) {
   try {
-    const { price, sortByState, modal, mileage } = req.body;
-    const { lowMileage, highMileage, highPrice, lowPrice, makeAndModalStates, page } = req.body;
+    const { lowMileage, highMileage, highPrice, lowPrice, makeAndModalStates, page, sortByState } = req.body;
     let data = allCarData;
 
     //! check for long name modal
@@ -73,7 +73,7 @@ export async function filterData(req, res) {
     let newArr = [];
     for (let items in makeAndModalStates) {
       if (makeAndModalStates[items] === true) {
-        newArr.push(items === "LandRover" ? "Land Rover" : items);
+        newArr.push(helpFormatCarName(items));
       }
     }
 

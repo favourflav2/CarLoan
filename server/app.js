@@ -6,6 +6,7 @@ import { env } from "custom-env";
 import helmet from "helmet";
 import carRoutes from "./routes/carRoutes.js";
 import costOfLivingRoutes from "./routes/costOfLivingRoutes.js";
+import { helpFormatCarName } from "./utils/helpFormatCarName.js";
 
 
 env(true);
