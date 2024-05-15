@@ -13,6 +13,7 @@ import { filterData } from "../../../redux/features/carSlice";
 import { updateSearch } from "../utils/updateSearch";
 import FilterBoxContainer from "./FilterBoxContainer";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { helpFormatCarNameClient } from "../utils/helpFormatCarNameClient";
 
 type FormFields = z.infer<typeof carvanaSchema>;
 
@@ -107,7 +108,7 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
                       />
                     }
                     checked={value as boolean}
-                    label={<Typography>{item}</Typography>}
+                    label={<Typography>{helpFormatCarNameClient(item)}</Typography>}
                     name={`${item}`}
                     onChange={onChange}
                   />

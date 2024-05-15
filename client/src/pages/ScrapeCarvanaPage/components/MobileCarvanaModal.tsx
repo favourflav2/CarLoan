@@ -14,6 +14,7 @@ import { FilterIsSameCheck } from "../utils/FilterIsSameCheck";
 import { updateSearch } from "../utils/updateSearch";
 import { filterData } from "../../../redux/features/carSlice";
 import { clearReduxState } from "../utils/clearObjects";
+import { helpFormatCarNameClient } from "../utils/helpFormatCarNameClient";
 
 export interface IMobileCarvanaModalProps {
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -130,7 +131,7 @@ export default function MobileCarvanaModal({ setOpenModal, openModal, handleClos
                             />
                           }
                           checked={value as boolean}
-                          label={<Typography>{item}</Typography>}
+                          label={<Typography>{helpFormatCarNameClient(item)}</Typography>}
                           name={`${item}`}
                           onChange={onChange}
                         />

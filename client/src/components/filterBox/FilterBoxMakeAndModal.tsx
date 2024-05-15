@@ -2,6 +2,7 @@ import * as React from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import { Dispatch } from "../../redux/store";
 import { setBoxModal } from "../../redux/features/carStateSlice";
+import { helpFormatCarNameClient } from "../../pages/ScrapeCarvanaPage/utils/helpFormatCarNameClient";
 
 
 export interface IFilterBoxProps {
@@ -18,7 +19,7 @@ export default function FilterBoxMakeAndModal({ item }: IFilterBoxProps) {
         dispatch(setBoxModal(item));
       }}
     >
-      <h1 className=" pl-1 text-[13px] font-semibold">{item}</h1>
+      <h1 className=" pl-1 text-[13px] font-semibold">{helpFormatCarNameClient(item)}</h1>
       <ClearIcon className="text-[15px] ml-1 mr-1 " />
     </div>
   );
