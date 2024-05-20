@@ -2,7 +2,6 @@ import * as React from "react";
 import noImgPlaceHolder from "../../assets/noImg.png";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "../../redux/store";
-import { resetItemDetailsState } from "../../redux/features/carStateSlice";
 import { USDollar } from "../../pages/CarPage/CarPage";
 
 
@@ -30,7 +29,6 @@ export default function CarVanaCard({ item }: ICarVanaCardProps) {
       className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
       onClick={() => {
         navigate(`/vehicle/${item.index}`);
-        dispatch(resetItemDetailsState());
       }}
     >
       {/* Img */}
@@ -38,7 +36,7 @@ export default function CarVanaCard({ item }: ICarVanaCardProps) {
         src={item?.img ? item?.img : noImgPlaceHolder}
         alt="dominant color placeholder"
         loading="lazy"
-        className="2xl:h-[270px] xl:h-[220px] lg:h-[193px] md:h-[180px] min-[445px]:h-[165px] h-[225px] w-auto rounded-t-lg object-cover"
+        className=" w-auto rounded-t-lg object-cover"
       />
 
       {/* Certified */}
@@ -67,3 +65,4 @@ export default function CarVanaCard({ item }: ICarVanaCardProps) {
   );
 }
 
+// 2xl:h-[270px] xl:h-[220px] lg:h-[193px] md:h-[180px] min-[445px]:h-[165px] h-[225px]

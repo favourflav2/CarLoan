@@ -70,8 +70,7 @@ export interface FilterDataBackendData {
   };
 }
 
-interface DataObj {
-  [prop: string]: any;
+export interface DataObj {
   img: string;
   type: string;
   mileage: string;

@@ -3,7 +3,7 @@ import noImgPlaceHolder from "../../assets/noImg.png";
 import { NumericFormat } from "react-number-format";
 import { useNavigate } from "react-router-dom";
 import { Dispatch } from "../../redux/store";
-import { resetItemDetailsState } from "../../redux/features/carStateSlice";
+
 
 export interface ICarDotComCardProps {
   item: {
@@ -55,7 +55,7 @@ export default function CarDotComCard({ item }: ICarDotComCardProps) {
       className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
       onClick={() => {
         navigate(`/vehicle/${item.index}`);
-        dispatch(resetItemDetailsState());
+      
       }}
     >
       {/* Img */}

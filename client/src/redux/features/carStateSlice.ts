@@ -1,4 +1,5 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice, isAction } from "@reduxjs/toolkit";
+import { FormFieldsItemDetails } from "../../pages/itemDetails/hooks/useItemDetailsFormHook";
 
 
 interface LoanObj {
@@ -109,27 +110,27 @@ export interface MakeAndModal {
   Volvo: false;
 }
 
+export interface ItemDetailsState {
+  price:number;
+  downPayment:number;
+  interest:number;
+  extraPayment:number;
+  term:number
+}
+
 interface PageState {
   loading: boolean;
   error: any;
   filterStates: FilterDataObj;
   currentPage: number;
-  //totalPages:number;
+  itemDetailsState:ItemDetailsState | null
 
-  carBrand: Array<string>;
 
-  interestRate: number;
-  months: number;
-  loanAmount: number;
-  downPayment: number;
-  errorDownPayment: boolean;
-  loanData: LoanObj | null;
+
+
   itemParamsState: string | null;
-  compareData: Array<any> | null;
-  TotalPrice: any;
-  StaticDownPayment: number;
-  StaticInterestRate: number;
-  StaticMonths: number;
+
+
 }
 
 const initialState: PageState = {
@@ -184,20 +185,11 @@ const initialState: PageState = {
     },
   },
   currentPage: 1,
-
-  carBrand: [],
-  interestRate: 11.35,
-  months: 60,
-  loanAmount: 0,
-  downPayment: 0,
-  errorDownPayment: false,
-  loanData: null,
+  itemDetailsState: null,
+  
+  
   itemParamsState: null,
-  compareData: null,
-  TotalPrice: null,
-  StaticDownPayment: 0,
-  StaticInterestRate: 11.35,
-  StaticMonths: 60,
+ 
 };
 
 const carStateSlice = createSlice({
@@ -227,61 +219,16 @@ const carStateSlice = createSlice({
     setBoxModal: (state, action: PayloadAction<string>) => {
       state.filterStates.makeAndModalStates[action.payload as keyof MakeAndModal] = !state.filterStates.makeAndModalStates[action.payload as keyof MakeAndModal];
     },
-    setLoanAmount: (state, action) => {
-      state.loanAmount = Number(action.payload);
+    setItemDetailsState: (state,action: PayloadAction<ItemDetailsState>) => {
+      state.itemDetailsState = action.payload
     },
-    setDownPayment: (state, action) => {
-      let maxVal = action.payload.max - 1;
-
-      if (Number(action.payload.value.replace(/[$,]/g, "")) <= maxVal) {
-        state.errorDownPayment = false;
-        state.downPayment = Number(action.payload.value.replace(/[$,]/g, ""));
-      } else {
-        state.errorDownPayment = true;
-      }
+    clearItemDetailsState: (state) => {
+      state.itemDetailsState = null
     },
-    updateLoanAmount: (state, action) => {
-      const { loan, down } = action.payload;
-      // console.log(loan,"loan")
-      // console.log(down,'down')
-      state.loanAmount = loan - down;
-    },
-    setMonths: (state, action) => {
-      state.months = Number(action.payload);
-    },
-    setInterestRate: (state, action) => {
-      state.interestRate = Number(action.payload.replace(/[%]/g, ""));
-    },
-    setLoanData: (state, action) => {
-      state.loanData = action.payload;
-    },
-    setItemParamsState: (state, action) => {
-      state.itemParamsState = action.payload;
-    },
-    setCompareData: (state, action) => {
-      state.compareData = action.payload;
-    },
-    setTotalPrice: (state, action) => {
-      //console.log(action.payload);
-      const { loan, downPayment } = action.payload;
-      // Format Price
-      let USDollar = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      });
-      state.StaticDownPayment = Number(downPayment);
-      state.TotalPrice = USDollar.format(downPayment + loan?.sum);
-    },
-    resetItemDetailsState: (state) => {
-      state.downPayment = 0;
-      state.StaticDownPayment = 0;
-      state.interestRate = 11.35;
-      state.months = 60;
-      state.StaticInterestRate = 11.35;
-      state.StaticMonths = 60;
-      state.loanData = null;
-      state.compareData = null;
-    },
+    setPageId: (state,action:PayloadAction<string>) => {
+      state.itemParamsState = action.payload
+    }
+    
   },
 });
 
@@ -289,19 +236,12 @@ export default carStateSlice.reducer;
 export const {
   setCurrentPage,
   setFilterStates,
-  setLoanAmount,
-  setDownPayment,
-  updateLoanAmount,
-  setMonths,
-  setInterestRate,
-  setLoanData,
-  setItemParamsState,
-  setCompareData,
-  setTotalPrice,
-  resetItemDetailsState,
   clearFilters,
   setBoxMileage,
   setBoxPrice,
   setBoxModal,
-  setSortByState
+  setSortByState,
+  setItemDetailsState,
+  clearItemDetailsState,
+  setPageId
 } = carStateSlice.actions;

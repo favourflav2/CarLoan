@@ -261,7 +261,7 @@ export default function CarPage() {
 
             {/* Chart Content */}
             <div className="w-full h-full flex flex-col my-5">
-              <h1 className="text-[19px] font-semibold">Retirement savings at age </h1>
+              <h1 className="text-[19px] font-semibold">Auto Loan </h1>
 
               {/* Numbers */}
               <div className="w-auto flex md:justify-normal justify-around items-center my-5">
