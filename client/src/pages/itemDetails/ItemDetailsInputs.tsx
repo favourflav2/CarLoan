@@ -100,9 +100,9 @@ export default function ItemDetailsInputs({ singleCar, errors, allInputData, con
         {/* Expand and Shrink Input Section Btn */}
         <div className="flex items-end justify-end w-full h-auto lg:hidden">
           {close ? (
-            <KeyboardArrowUpIcon className="text-[28px] cursor-pointer" onClick={() => setClose(false)} />
+            <KeyboardArrowUpIcon className="text-[28px] cursor-pointer text-lightText dark:text-darkText" onClick={() => setClose(false)} />
           ) : (
-            <KeyboardArrowDownIcon className="text-[28px] cursor-pointer" onClick={() => setClose(true)} />
+            <KeyboardArrowDownIcon className="text-[28px] cursor-pointer text-lightText dark:text-darkText" onClick={() => setClose(true)} />
           )}
         </div>
         {!close ? (
@@ -137,7 +137,7 @@ export default function ItemDetailsInputs({ singleCar, errors, allInputData, con
             </AnimatePresence>
           </form>
         ) : (
-          <div className="flex items-end justify-end w-full h-auto">
+          <div className="flex items-end justify-end w-full h-auto text-lightText dark:text-darkText">
             <p className="text-[12.5px] underline cursor-pointer" onClick={() => setClose(false)}>
               Show more
             </p>

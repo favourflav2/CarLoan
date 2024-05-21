@@ -1,7 +1,6 @@
 import * as React from "react";
 import noImgPlaceHolder from "../../assets/noImg.png";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from "../../redux/store";
 import { USDollar } from "../../pages/CarPage/CarPage";
 
 
@@ -22,11 +21,11 @@ export interface ICarVanaCardProps {
 
 export default function CarVanaCard({ item }: ICarVanaCardProps) {
   const navigate = useNavigate();
-  const dispatch = Dispatch();
+
 
   return (
     <div
-      className={`w-full h-full flex flex-col cursor-pointer   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
+      className={`w-full h-full flex flex-col cursor-pointer dark:text-darkText text-lightText   rounded-lg ${item.deal === "Great Deal" ? "border-2 border-emerald-300 " : "border-gray-300 border"}`}
       onClick={() => {
         navigate(`/vehicle/${item.index}`);
       }}
@@ -36,7 +35,7 @@ export default function CarVanaCard({ item }: ICarVanaCardProps) {
         src={item?.img ? item?.img : noImgPlaceHolder}
         alt="dominant color placeholder"
         loading="lazy"
-        className=" w-auto rounded-t-lg object-cover"
+        className=" w-auto h-[170px] rounded-t-lg object-cover bg-gray-300"
       />
 
       {/* Certified */}

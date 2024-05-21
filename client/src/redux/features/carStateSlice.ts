@@ -1,22 +1,7 @@
-import { PayloadAction, createSlice, isAction } from "@reduxjs/toolkit";
-import { FormFieldsItemDetails } from "../../pages/itemDetails/hooks/useItemDetailsFormHook";
+import { PayloadAction, createSlice} from "@reduxjs/toolkit";
 
 
-interface LoanObj {
-  installments: [
-    {
-      capital: number;
-      interest: number;
-      installment: number;
-      remain: number;
-    }
-    //...
-  ];
-  amount: number;
-  interestSum: number;
-  capitalSum: number;
-  sum: number;
-}
+
 
 
 export interface FilterDataObj {
@@ -124,12 +109,7 @@ interface PageState {
   filterStates: FilterDataObj;
   currentPage: number;
   itemDetailsState:ItemDetailsState | null
-
-
-
-
   itemParamsState: string | null;
-
 
 }
 

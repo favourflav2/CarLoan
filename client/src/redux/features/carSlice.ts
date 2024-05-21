@@ -7,6 +7,7 @@ type:string;
 name_modal:string;
 mileage:number;
 price:number;
+mileage_name: string;
 deal:string;
 index:number
 }
@@ -91,6 +92,8 @@ interface CarState {
   searchedCars: Array<any>;
   singleCar: DataObj | null;
   similarCarsData: Array<any> | null;
+  similarLoading: boolean;
+  similarError:any
 }
 
 const initialState: CarState = {
@@ -103,6 +106,8 @@ const initialState: CarState = {
   searchedCars: [],
   singleCar: null,
   similarCarsData: null,
+  similarLoading: false,
+  similarError: ""
 };
 
 export const carVanaData = createAsyncThunk("carvanaData", async ({ page }: any, { rejectWithValue }) => {
@@ -153,7 +158,7 @@ export const getOneCar = createAsyncThunk("getOneCar", async ({ id }: any, { rej
   }
 });
 
-export const similarCars = createAsyncThunk("similarCars", async ({ id }: any, { rejectWithValue }) => {
+export const similarCars = createAsyncThunk("similarCars", async ({ id }: {id:string}, { rejectWithValue }) => {
   try {
     const res = await similar_Cars({ id });
     return res.data;
@@ -246,15 +251,15 @@ const carSlice = createSlice({
 
       // Get Similar Cars
       .addCase(similarCars.pending, (state) => {
-        state.loading = true;
+        state.similarLoading = true;
       })
       .addCase(similarCars.fulfilled, (state, action) => {
-        state.loading = false;
+        state.similarLoading = false;
         state.similarCarsData = action.payload;
       })
       .addCase(similarCars.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.similarLoading = false;
+        state.similarError= action.payload;
       });
   },
 });

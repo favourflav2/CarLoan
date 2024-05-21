@@ -30,6 +30,6 @@ export function get_One_Car(data:any){
 }
 
 // Get Similar Cars
-export function similar_Cars(data:any){
+export function similar_Cars(data:{id:string}){
   return API.post("/carData/similar",data)
 }

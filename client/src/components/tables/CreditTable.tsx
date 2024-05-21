@@ -5,11 +5,13 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import { UseSelector } from '../../redux/store';
 
 
 
 
 export default function CreditTable () {
+  const {lightAndDarkMode} = UseSelector(state => state.app)
     const data = [
         {
             score: `Superprime: 781-850`,
@@ -46,7 +48,7 @@ export default function CreditTable () {
                 sx={{
                   "& th": {
                     color: "white",
-                    backgroundColor: "#6699CC",
+                    backgroundColor: "#00A36C",
                     fontWeight: "bold",
                   },
                 }}
@@ -63,6 +65,7 @@ export default function CreditTable () {
                   sx={{
                     "&:last-child td, &:last-child th": { border: 0 },
                     "&:nth-of-type(odd)": { backgroundColor: "#DCDCDC" },
+                    "&:nth-of-type(even)": { backgroundColor: `${lightAndDarkMode ? "white" : ""}` },
                   }}
                 >
                   <TableCell component="th" scope="row" className='lg:text-[16px] text-[13px]'>
