@@ -1,8 +1,8 @@
 import * as React from "react";
-import {useParams } from "react-router-dom";
+import {useNavigate, useParams } from "react-router-dom";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { getOneCar } from "../../redux/features/carSlice";
-import { Divider } from "@mui/material";
+import { Divider, Skeleton } from "@mui/material";
 import { USDollar } from "../CarPage/CarPage";
 import { getMonthlyPayment, loanAmmortization, loanAmmortizationWithExtraPayment, solveForNumberOfMonths } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import { motion, AnimatePresence } from "framer-motion";
@@ -65,6 +65,7 @@ export default function ItemDetails(props: IItemDetailsProps) {
   }, [itemDetailsState, singleCar]);
 
   const dispatch = Dispatch();
+  const navigate = useNavigate()
 
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
@@ -104,19 +105,35 @@ export default function ItemDetails(props: IItemDetailsProps) {
 
 
 
-  if (error) {
+  if (error ) {
     return (
-      <div className="w-full min-h-screen flex flex-col">
-        <div className=" justify-center items-center flex w-full h-auto ">error</div>
+      <div className="w-full min-h-screen flex flex-col sm:p-0 px-4">
+        <div className=" justify-center items-center flex flex-col w-full h-full mt-10">
+          <p>There was an error, we were not able to find the car you selected</p>
+          <p className=" underline cursor-pointer mt-2" onClick={()=>navigate("/cars")}>Please go back.</p>
+        </div>
       </div>
     );
   }
 
   return (
     <>
-      {loading ? (
-        <div className="  w-full min-h-screen grid lg:grid-cols-[280px_1fr] xl:grid-cols-[20%_1fr] 2xl:grid-cols-[17%_1fr] grid-cols-1 lg:px-[50px] sm:px-[30px] sm:gap-y-10  lg:gap-x-10 px-2 ">
-          loading
+      {loading  ? (
+        <div className="w-full min-h-screen flex flex-col lg:px-[50px] sm:px-[30px] px-3">
+          <div className=" w-full h-full grid lg:grid-cols-[280px_1fr] xl:grid-cols-[20%_1fr] 2xl:grid-cols-[17%_1fr] grid-cols-1  sm:gap-y-10  lg:gap-x-10  gap-y-2">
+            <Skeleton variant="rectangular" className="w-full h-[400px]"/>
+            {/* RIght Side */}
+            <div className="w-full h-auto flex flex-col">
+            <Skeleton variant="rectangular" className="h-[350px]"/>
+            <Skeleton variant="rectangular" className="h-[350px] mt-4"/>
+            </div>
+          </div>
+
+          <div className="w-full h-auto flex flex-col sm:mt-10 2xl:px-[180px] xl:px-[100px]">
+          <Skeleton variant="rectangular" className="h-[70px] mt-4"/>
+          <Skeleton variant="rectangular" className="h-[350px] mt-4"/>
+          <Skeleton variant="rectangular" className="h-[350px] mt-4"/>
+          </div>
         </div>
       ) : (
         singleCar && (
