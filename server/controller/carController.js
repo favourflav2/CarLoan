@@ -212,7 +212,7 @@ export async function getOneCar(req, res) {
 }
 
 // Similar Cars
-export async function similarCars(req, res) {
+export async function similarCars(req, res) { 
   try {
     const { id } = req.body;
 
