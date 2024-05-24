@@ -98,10 +98,10 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
               />
             </div>
 
-            <div className="w-auto flex items-center my-3 cursor-pointer">
+            {/* <div className="w-auto flex items-center my-3 cursor-pointer">
               <h1 className="underline text-[17px] font-medium">Other</h1>
               <NavigateNextOutlinedIcon className="text-[19px]" />
-            </div>
+            </div> */}
           </div>
         </motion.div>
       </div>

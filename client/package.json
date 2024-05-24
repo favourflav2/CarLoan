@@ -40,6 +40,7 @@
     "react-image-crop": "^11.0.5",
     "react-image-file-resizer": "^0.4.8",
     "react-lazy-load-image-component": "^1.6.0",
+    "react-medium-image-zoom": "^5.2.4",
     "react-minimal-pie-chart": "^8.4.0",
     "react-number-format": "^5.3.3",
     "react-redux": "^9.0.2",

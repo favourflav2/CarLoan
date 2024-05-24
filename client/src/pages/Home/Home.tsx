@@ -19,6 +19,8 @@ import CarPage from "../CarPage/CarPage";
 import HouseModal from "../../components/modals/HouseModal";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 import HousePage from "../HousePage/HousePage";
+import favour from '../../assets/favour.png'
+import NoSelectedGoal from "./NoSelectedGoal";
 
 export default function Home() {
   // Redux States
@@ -48,9 +50,7 @@ export default function Home() {
       case "House":
         return <HousePage />
       default:
-        return (
-          <div className="text-lightText dark:text-darkText">Going to style dashboard when I have an idea of what to put. So far Ive decided to use csv files from gov finacial page to get data</div>
-        );
+        return <NoSelectedGoal />
     }
   }
 
@@ -116,7 +116,7 @@ export default function Home() {
         <div className={`${shrinkDashboardSidebar ? "ml-[40px]" : "ml-[280px]"}`}>
           {/* Right Side */}
           <div className=" w-full h-full">
-             {selectedGoal?.id ? renderSwitch(selectedGoal) : <div>Theres no selected goal id</div>} 
+             {selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />} 
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function Home() {
         {/* Drawer */}
         <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
         <div className=" w-full h-auto">
-        {selectedGoal?.id ? renderSwitch(selectedGoal) : <div>Theres no selected goal id</div>} 
+        {selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />} 
         </div>
       </div>
 

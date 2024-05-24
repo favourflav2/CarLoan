@@ -88,7 +88,7 @@ export default function CarvanaPageInputs(props: ICarvanaPageInputsProps) {
 
         {/* Modal Box */}
         {makeAndModal && (
-          <div className=" flex flex-col w-full py-3 h-auto px-4">
+          <div className=" flex flex-col w-full py-3 md:max-h-[400px] max-h-[250px] overflow-y-auto px-4">
             {arrayForForms.map((item: string) => (
               <Controller
                 key={item}

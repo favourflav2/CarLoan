@@ -104,7 +104,6 @@ export default function ItemDetails(props: IItemDetailsProps) {
   },[id])
 
 
-
   if (error ) {
     return (
       <div className="w-full min-h-screen flex flex-col sm:p-0 px-4">
