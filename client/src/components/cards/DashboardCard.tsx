@@ -106,7 +106,7 @@ export default function DashboardCard({ type, setOpen, selectedGoal, retireGoals
   return (
     <>
       {retireGoals.length > 0 || carGoals.length > 0 || houseGoals.length > 0 ? (
-        <div className="mt-4 text-lightText dark:text-darkText">
+        <div className=" text-lightText dark:text-darkText">
           {/* Mapped Data */}
           {concatData.map((item) => (
             <div
