@@ -10,7 +10,7 @@ import dayjs from "dayjs";
 import HouseAddressInput from "./HouseAddressInput";
 import { Dispatch } from "../../../../redux/store";
 import { HouseObj, addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
-import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
+import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../../redux/features/applicationSlice";
 
 export const houseTerms = ["10", "15", "20", "25", "30", "60"];
 
@@ -92,9 +92,15 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
       maintenance,
       img:img ? img : "",
       showInputs:true,
-      showOppCostInputs:true
+      showOppCostInputs:true,
+      type:"House"
     }
     dispatch(addHouseGoal(newObj));
+
+     // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
+     dispatch(setSelectedGoalAfterCreate(newObj));
+
+    // Close Modal after everything is done
     dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
   };
 

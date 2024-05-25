@@ -11,7 +11,7 @@ import { Tooltip } from "@mui/material";
 import { carModalSchema } from "./carModalSchema";
 import dayjs from "dayjs";
 import { CarObj, addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
-import { setAnyTypeOfModal } from "../../../../redux/features/applicationSlice";
+import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../../redux/features/applicationSlice";
 import { carsArr } from "./carModalSchema";
 export interface ICar1stInputsProps {
   updatedImg: string;
@@ -23,7 +23,7 @@ export const termArr = [36, 48, 60, 72, 84, 96, 108, 120];
 
 export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   // Redux States
-  const dispath = Dispatch();
+  const dispatch = Dispatch();
 
   // States
   const [openChooseModal, setOpenChooseModal] = React.useState(false);
@@ -69,10 +69,16 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
       salary,
       modal,
       img: img ? img : "",
-      showInputs:true
+      showInputs:true,
+      type:"Car"
     }
-    dispath(addCarGoal(newObj));
-    dispath(setAnyTypeOfModal({ value: false, type: "Car" }));
+    dispatch(addCarGoal(newObj));
+
+    // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
+    dispatch(setSelectedGoalAfterCreate(newObj));
+
+    // Close Modal after everything is done
+    dispatch(setAnyTypeOfModal({ value: false, type: "Car" }));
   };
 
   React.useEffect(() => {

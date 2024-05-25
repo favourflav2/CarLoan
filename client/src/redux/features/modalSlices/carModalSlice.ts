@@ -14,6 +14,7 @@ export interface CarObj {
   modal: string;
   extraPayment: string;
   showInputs:boolean;
+  type: "Car"
 }
 
 export interface CarObjWithFormattedData {

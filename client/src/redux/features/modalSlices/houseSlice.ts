@@ -18,6 +18,7 @@ export interface HouseObj {
   showInputs:boolean;
   rent:string;
   showOppCostInputs:boolean;
+  type: "House"
 }
 
 export interface HouseObjWithFormattedData {

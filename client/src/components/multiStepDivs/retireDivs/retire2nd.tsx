@@ -54,7 +54,7 @@ export default function Retire2nd() {
     data.id = dayjs(date).format("MMM D, YYYY h:mm:ss");
 
     const {age, savings, postRate, preRate, title, id, monthlyContribution,budget,inflation} = data
-    const objData = {
+    const objData:RetirementGoalNoFormat = {
       id,
       retireAge: age.retireAge,
       lifeExpectancy: age.lifeExpectancy,
@@ -66,7 +66,7 @@ export default function Retire2nd() {
       budget,
       title,
       inflation,
-      type: "Retirement" as RetirementGoalNoFormat['type'],
+      type: "Retirement",
       showInputs:true
     }
 

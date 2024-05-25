@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RetirementGoalNoFormat, RetirementGoals } from "./modalSlices/retirementSlice";
-import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
-import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
+import { CarObj, CarObjWithFormattedData } from "./modalSlices/carModalSlice";
+import { HouseObj, HouseObjWithFormattedData } from "./modalSlices/houseSlice";
 
 export type goal = RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
 
@@ -59,24 +59,81 @@ const appSlice = createSlice({
     setSelectedGoal: (state, action) => {
       state.selectedGoal = action.payload;
     },
-    setSelectedGoalAfterCreate: (state, action: PayloadAction<RetirementGoalNoFormat>) => {
-      const { budget, preRate, type, postRate, inflation, monthlyContribution, id, savings, title, lifeExpectancy, currentAge, retireAge, showInputs } = action.payload;
-      const formattedData: RetirementGoals = {
-        id,
-        type,
-        currentAge,
-        retireAge,
-        lifeExpectancy,
-        budget: parseFloat(budget.replace(/[,%$]/gm, "")),
-        preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
-        postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
-        inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
-        monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
-        savings: parseFloat(savings.replace(/[,%$]/gm, "")),
-        title,
-        showInputs,
-      };
-      state.selectedGoal = formattedData;
+    setSelectedGoalAfterCreate: (state, action: PayloadAction<RetirementGoalNoFormat | HouseObj | CarObj>) => {
+      const { type } = action.payload;
+      switch (type) {
+        case "Retirement":
+          if (type !== "Retirement") return;
+          const { budget, preRate, postRate, inflation, monthlyContribution, savings, title, lifeExpectancy, currentAge, retireAge } = action.payload;
+          const retireData: RetirementGoals = {
+            id: action.payload.id,
+            type,
+            currentAge,
+            retireAge,
+            lifeExpectancy,
+            budget: parseFloat(budget.replace(/[,%$]/gm, "")),
+            preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
+            postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
+            inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
+            monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
+            savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+            title,
+            showInputs: true,
+          };
+          state.selectedGoal = retireData;
+          break;
+        case "Car":
+          if (type !== "Car") return;
+          const { name, mileage, salary, modal } = action.payload;
+          const carData: CarObjWithFormattedData = {
+            id: action.payload.id,
+            name,
+            price: parseFloat(action.payload.price.replace(/[,%$]/gm, "")),
+            mileage: parseFloat(mileage.replace(/[,%$]/gm, "")),
+            downPayment: parseFloat(action.payload.downPayment.replace(/[,%$]/gm, "")),
+            interest: parseFloat(action.payload.interest.replace(/[,%$]/gm, "")),
+            term: action.payload.term,
+            salary: parseFloat(salary.replace(/[,%$]/gm, "")),
+            img: action.payload.img ? action.payload.img : "",
+            modal,
+            type: "Car",
+            extraPayment: 0,
+            showInputs: true,
+          };
+          state.selectedGoal = carData;
+          break;
+        case "House":
+          if (type !== "House") return;
+          const { streetAddress, price, downPayment, interest, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent, showOppCostInputs } =
+            action.payload;
+
+          const houseData: HouseObjWithFormattedData = {
+            id: action.payload.id,
+            streetAddress,
+            price: parseFloat(price.replace(/[,%$]/gm, "")),
+            downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
+            interest: parseFloat(interest.replace(/[,%$]/gm, "")),
+            term: action.payload.term,
+            extraPayment: 0,
+            img: img ? img : "",
+            propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
+            insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
+            mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
+            appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
+            opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
+            maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
+            rent: parseFloat(rent.replace(/[,%$]/gm, "")),
+            type: "House",
+            showTax: "monthlyPaymentWithNoTax",
+            showInputs: true,
+            showOppCostInputs,
+          };
+
+          state.selectedGoal = houseData;
+          break;
+        default:
+          return;
+      }
     },
     editSelectedGoal: (state, action: PayloadAction<{ goal: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData }>) => {
       // This reducer updates the selected goal ... so when you change the number a user sees the update
@@ -131,15 +188,14 @@ const appSlice = createSlice({
           state.selectedGoal.modal = action.payload.modal;
 
           break;
-          case "House":
-            if (!state.selectedGoal) return;
-          
-            if (goal.type !== "House" || state.selectedGoal?.type !== "House") return;
-  
-            state.selectedGoal.streetAddress = title;
-          
-  
-            break;
+        case "House":
+          if (!state.selectedGoal) return;
+
+          if (goal.type !== "House" || state.selectedGoal?.type !== "House") return;
+
+          state.selectedGoal.streetAddress = title;
+
+          break;
         default:
           return;
       }
@@ -195,40 +251,40 @@ const appSlice = createSlice({
       state.selectedGoal.showTax =
         state.selectedGoal.showTax === "monthlyPaymentWithTax" ? (state.selectedGoal.showTax = "monthlyPaymentWithNoTax") : (state.selectedGoal.showTax = "monthlyPaymentWithTax");
     },
-    selectedShowInput: (state, action: PayloadAction<{ goal: goal, value:boolean }>) => {
-      const { goal,value } = action.payload;
+    selectedShowInput: (state, action: PayloadAction<{ goal: goal; value: boolean }>) => {
+      const { goal, value } = action.payload;
       switch (goal?.type) {
         case "Car":
           if (!state.selectedGoal || state.selectedGoal.type !== "Car") return;
-          state.selectedGoal.showInputs = value
+          state.selectedGoal.showInputs = value;
           break;
         case "House":
           if (!state.selectedGoal || state.selectedGoal.type !== "House") return;
-          state.selectedGoal.showInputs = value
+          state.selectedGoal.showInputs = value;
           break;
         case "Retirement":
           if (!state.selectedGoal || state.selectedGoal.type !== "Retirement") return;
-          state.selectedGoal.showInputs = value
+          state.selectedGoal.showInputs = value;
           break;
         default:
           break;
       }
     },
-    selectedShowOppCostInput: (state, action: PayloadAction<{ goal: goal, value:boolean }>) => {
-      const { goal,value } = action.payload;
+    selectedShowOppCostInput: (state, action: PayloadAction<{ goal: goal; value: boolean }>) => {
+      const { goal, value } = action.payload;
       switch (goal?.type) {
         case "Car":
           break;
         case "House":
           if (!state.selectedGoal || state.selectedGoal.type !== "House") return;
-          state.selectedGoal.showOppCostInputs = value
+          state.selectedGoal.showOppCostInputs = value;
           break;
         case "Retirement":
           break;
         default:
           break;
       }
-    }
+    },
   },
 });
 
@@ -245,5 +301,5 @@ export const {
   editSelectedGoalImg,
   editShowTaxForHouse,
   selectedShowInput,
-  selectedShowOppCostInput
+  selectedShowOppCostInput,
 } = appSlice.actions;

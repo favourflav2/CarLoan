@@ -19,7 +19,6 @@ import CarPage from "../CarPage/CarPage";
 import HouseModal from "../../components/modals/HouseModal";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 import HousePage from "../HousePage/HousePage";
-import favour from '../../assets/favour.png'
 import NoSelectedGoal from "./NoSelectedGoal";
 
 export default function Home() {
