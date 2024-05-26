@@ -14,8 +14,6 @@ export interface IuseItemDetailsFormHookProps {
 }
 
 export default function useItemDetailsFormHook({ singleCar, itemDetailsState }: IuseItemDetailsFormHookProps) {
-
-  
   const {
     register,
     handleSubmit,
@@ -39,15 +37,24 @@ export default function useItemDetailsFormHook({ singleCar, itemDetailsState }: 
   });
 
   React.useEffect(() => {
-    if (!itemDetailsState) return;
+   
     reset({
+      // using itemDetails to persist the inputs
+
+      // price: singleCar ? singleCar.price.toString() : "0",
+      // downPayment: itemDetailsState.downPayment.toString(),
+      // interest: itemDetailsState.interest.toString(),
+      // term: itemDetailsState.term,
+      // extraPayment: itemDetailsState.extraPayment.toString(),
+
+      //* Instead im going to refresh all the inputs on re render
       price: singleCar ? singleCar.price.toString() : "0",
-      downPayment: itemDetailsState.downPayment.toString(),
-      interest: itemDetailsState.interest.toString(),
-      term: itemDetailsState.term,
-      extraPayment: itemDetailsState.extraPayment.toString(),
+      downPayment: "0",
+      interest: "11",
+      term: 60,
+      extraPayment: "0",
     });
-  }, [itemDetailsState]); // eslint-disable-line
+  }, [singleCar]); // eslint-disable-line
 
   return {
     register,

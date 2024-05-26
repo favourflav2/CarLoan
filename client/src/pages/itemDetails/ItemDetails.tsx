@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { getOneCar } from "../../redux/features/carSlice";
 import { Divider, Skeleton } from "@mui/material";
@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import ItemDetailsInputs from "./ItemDetailsInputs";
 import ItemDetailsCarBox from "./components/ItemDetailsCarBox";
 import useItemDetailsFormHook from "./hooks/useItemDetailsFormHook";
-import { ItemDetailsState, setItemDetailsState } from "../../redux/features/carStateSlice";
+import { ItemDetailsState } from "../../redux/features/carStateSlice";
 import { SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { itemDetailsSchema } from "./itemDetailsSchema";
@@ -30,43 +30,50 @@ export default function ItemDetails(props: IItemDetailsProps) {
   const { errors, control, setValue, watch, handleSubmit } = useItemDetailsFormHook({ singleCar, itemDetailsState });
   const allInputData = watch();
 
+  const [itemDel, setItemDel] = React.useState<ItemDetailsState>({
+    price: singleCar ? singleCar.price : 0,
+    downPayment: 0,
+    interest: 11,
+    term: 60,
+    extraPayment: 0,
+  });
+
   // Chart State and Summary State
   const [view, setView] = React.useState<string>("Graph View");
 
   // UseMemo practice
   const monthlyPaymentMemo = React.useMemo(() => {
-    if (itemDetailsState && singleCar) {
-      return getMonthlyPayment({ rate: itemDetailsState.interest, time: itemDetailsState.term, downPayment: itemDetailsState.downPayment, carPrice: singleCar.price }, itemDetailsState.extraPayment);
+    if ( singleCar) {
+      return getMonthlyPayment({ rate: itemDel.interest, time: itemDel.term, downPayment: itemDel.downPayment, carPrice: singleCar.price }, itemDel.extraPayment);
     }
-  }, [itemDetailsState, singleCar]);
+  }, [itemDel, singleCar]);
 
   const regualrLoanAmmortizationMemo = React.useMemo(() => {
-    if (itemDetailsState && singleCar) {
-      return loanAmmortization({ rate: itemDetailsState.interest, time: itemDetailsState.term, downPayment: itemDetailsState.downPayment, carPrice: singleCar.price });
+    if ( singleCar) {
+      return loanAmmortization({ rate: itemDel.interest, time: itemDel.term, downPayment: itemDel.downPayment, carPrice: singleCar.price });
     }
-  }, [itemDetailsState, singleCar]);
+  }, [itemDel, singleCar]);
 
   const extraNumberOfMonthsMemo = React.useMemo(() => {
-    if (itemDetailsState && singleCar) {
+    if ( singleCar) {
       return solveForNumberOfMonths(
-        { rate: itemDetailsState.interest, time: itemDetailsState.term, downPayment: itemDetailsState.downPayment, carPrice: singleCar.price },
-        itemDetailsState.extraPayment
+        { rate: itemDel.interest, time: itemDel.term, downPayment: itemDel.downPayment, carPrice: singleCar.price },
+        itemDel.extraPayment
       );
     }
-  }, [itemDetailsState, singleCar]);
+  }, [itemDel, singleCar]);
 
   const extraLoanAmmortizationMemo = React.useMemo(() => {
-    if (itemDetailsState && singleCar) {
+    if ( singleCar) {
       return loanAmmortizationWithExtraPayment(
-        { rate: itemDetailsState.interest, time: itemDetailsState.term, downPayment: itemDetailsState.downPayment, carPrice: singleCar.price },
-        itemDetailsState.extraPayment
+        { rate: itemDel.interest, time: itemDel.term, downPayment: itemDel.downPayment, carPrice: singleCar.price },
+        itemDel.extraPayment
       );
     }
-  }, [itemDetailsState, singleCar]);
+  }, [itemDel, singleCar]);
 
   const dispatch = Dispatch();
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const newObj: ItemDetailsState = {
@@ -77,7 +84,7 @@ export default function ItemDetails(props: IItemDetailsProps) {
       term: data.term,
     };
 
-    dispatch(setItemDetailsState(newObj));
+    setItemDel(newObj);
   };
 
   // Since react hook form has default values... on the first render of a new car all inputs except car price will be equal to the default value
@@ -86,30 +93,31 @@ export default function ItemDetails(props: IItemDetailsProps) {
     if (!singleCar) return;
     const newObj: ItemDetailsState = {
       price: singleCar.price,
-      downPayment: parseFloat(allInputData.downPayment.replace(/[,%$]/gm, "")),
-      extraPayment: parseFloat(allInputData.extraPayment.replace(/[,%$]/gm, "")),
-      interest: parseFloat(allInputData.interest.replace(/[,%$]/gm, "")),
-      term: allInputData.term,
+      downPayment: 0,
+      interest: 11,
+      term: 60,
+      extraPayment: 0,
     };
 
-    dispatch(setItemDetailsState(newObj));
+    setItemDel(newObj);
   }, [singleCar]); // eslint-disable-line
 
   React.useEffect(() => {
     dispatch(getOneCar({ id }));
   }, [id]); // eslint-disable-line
 
-  React.useEffect(()=>{
-    window.scrollTo(0,0)
-  },[id])
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
 
-
-  if (error ) {
+  if (error) {
     return (
       <div className="w-full min-h-screen flex flex-col sm:p-0 px-4">
         <div className=" justify-center items-center flex flex-col w-full h-full mt-10">
           <p>There was an error, we were not able to find the car you selected</p>
-          <p className=" underline cursor-pointer mt-2" onClick={()=>navigate("/cars")}>Please go back.</p>
+          <p className=" underline cursor-pointer mt-2" onClick={() => navigate("/cars")}>
+            Please go back.
+          </p>
         </div>
       </div>
     );
@@ -117,21 +125,21 @@ export default function ItemDetails(props: IItemDetailsProps) {
 
   return (
     <>
-      {loading  ? (
+      {loading ? (
         <div className="w-full min-h-screen flex flex-col lg:px-[50px] sm:px-[30px] px-3">
           <div className=" w-full h-full grid lg:grid-cols-[280px_1fr] xl:grid-cols-[20%_1fr] 2xl:grid-cols-[17%_1fr] grid-cols-1  sm:gap-y-10  lg:gap-x-10  gap-y-2">
-            <Skeleton variant="rectangular" className="w-full h-[400px]"/>
+            <Skeleton variant="rectangular" className="w-full h-[400px]" />
             {/* RIght Side */}
             <div className="w-full h-auto flex flex-col">
-            <Skeleton variant="rectangular" className="h-[350px]"/>
-            <Skeleton variant="rectangular" className="h-[350px] mt-4"/>
+              <Skeleton variant="rectangular" className="h-[350px]" />
+              <Skeleton variant="rectangular" className="h-[350px] mt-4" />
             </div>
           </div>
 
           <div className="w-full h-auto flex flex-col sm:mt-10 2xl:px-[180px] xl:px-[100px]">
-          <Skeleton variant="rectangular" className="h-[70px] mt-4"/>
-          <Skeleton variant="rectangular" className="h-[350px] mt-4"/>
-          <Skeleton variant="rectangular" className="h-[350px] mt-4"/>
+            <Skeleton variant="rectangular" className="h-[70px] mt-4" />
+            <Skeleton variant="rectangular" className="h-[350px] mt-4" />
+            <Skeleton variant="rectangular" className="h-[350px] mt-4" />
           </div>
         </div>
       ) : (
@@ -149,7 +157,16 @@ export default function ItemDetails(props: IItemDetailsProps) {
                   transition={{ duration: 0.25 }}
                   className="w-full max-h-[900px]"
                 >
-                  <ItemDetailsInputs singleCar={singleCar} errors={errors} control={control} setValue={setValue} allInputData={allInputData} handleSubmit={handleSubmit} onSubmit={onSubmit} />
+                  <ItemDetailsInputs
+                    singleCar={singleCar}
+                    errors={errors}
+                    control={control}
+                    setValue={setValue}
+                    allInputData={allInputData}
+                    handleSubmit={handleSubmit}
+                    onSubmit={onSubmit}
+                    itemDel={itemDel}
+                  />
                 </motion.div>
               </AnimatePresence>
 
@@ -173,7 +190,7 @@ export default function ItemDetails(props: IItemDetailsProps) {
                     </div>
 
                     {/* About Car */}
-                    {itemDetailsState && <ItemDetailsCarBox singleCar={singleCar} errors={errors} itemDetailsState={itemDetailsState} />}
+                    {<ItemDetailsCarBox singleCar={singleCar} errors={errors} itemDetailsState={itemDel} />}
                   </div>
 
                   {/* Chart Content */}
@@ -198,7 +215,7 @@ export default function ItemDetails(props: IItemDetailsProps) {
                         <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">Extra Monthly Payment</h1>
 
                         <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">
-                          {itemDetailsState?.extraPayment === 0 ? "-" : USDollar.format(Number(monthlyPaymentMemo?.extraMonthlyPayment.toFixed(2)))}
+                          {itemDel?.extraPayment === 0 ? "-" : USDollar.format(Number(monthlyPaymentMemo?.extraMonthlyPayment.toFixed(2)))}
                         </h1>
                       </div>
                     </div>
@@ -218,21 +235,22 @@ export default function ItemDetails(props: IItemDetailsProps) {
 
                       {view === "Graph View" && (
                         <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">
-                          {regualrLoanAmmortizationMemo?.myLoan && monthlyPaymentMemo && itemDetailsState && singleCar && (
+                          {regualrLoanAmmortizationMemo?.myLoan && monthlyPaymentMemo && itemDel && singleCar && (
                             <ItemDetailsCarChart
                               regualarLoan={regualrLoanAmmortizationMemo}
                               extraLoan={extraLoanAmmortizationMemo}
                               monthlyPayment={monthlyPaymentMemo}
                               extraNumberOfMonths={extraNumberOfMonthsMemo}
-                              downPayment={itemDetailsState.downPayment}
+                              downPayment={itemDel.downPayment}
+                              itemDel={itemDel}
                             />
                           )}
                         </div>
                       )}
 
-                      {view === "Summary View" && regualrLoanAmmortizationMemo?.myLoan && itemDetailsState && singleCar && (
+                      {view === "Summary View" && regualrLoanAmmortizationMemo?.myLoan && itemDel && singleCar && (
                         <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 overflow-hidden">
-                          {monthlyPaymentMemo && <ItemDetailsSummary monthlyPayment={monthlyPaymentMemo} extraNumberOfMonths={extraNumberOfMonthsMemo} />}
+                          {monthlyPaymentMemo && <ItemDetailsSummary monthlyPayment={monthlyPaymentMemo} extraNumberOfMonths={extraNumberOfMonthsMemo} itemDel={itemDel}/>}
                         </div>
                       )}
                     </div>
@@ -244,7 +262,7 @@ export default function ItemDetails(props: IItemDetailsProps) {
             <ItemDetailsParagraph />
 
             {/* Similar Cars */}
-            {id && singleCar && <SimilarCars id={id}/>}
+            {id && singleCar && <SimilarCars id={id} />}
           </div>
         )
       )}

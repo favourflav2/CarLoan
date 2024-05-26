@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { UseSelector } from '../../../redux/store';
 import { USDollar } from '../../CarPage/CarPage';
 import MonthlyPaymentBoxItemDetails from './MonthlyPaymentBoxItemDetails';
 import ExtraMonthlyBoxItemDetails from './ExtraMonthlyBoxItemDetails';
+import { ItemDetailsState } from '../../../redux/features/carStateSlice';
 
 export interface IItemDetailsSummaryProps {
     monthlyPayment: {
@@ -15,11 +15,13 @@ export interface IItemDetailsSummaryProps {
     extraNumberOfMonths: {
         numberOfMonths: number;
         numberOfMonthsNoRounding: number;
-    } | undefined
+    } | undefined;
+
+    itemDel: ItemDetailsState
 }
 
-export default function ItemDetailsSummary ({monthlyPayment,extraNumberOfMonths}: IItemDetailsSummaryProps) {
-    const { itemDetailsState } = UseSelector((state) => state.page);
+export default function ItemDetailsSummary ({monthlyPayment,extraNumberOfMonths, itemDel}: IItemDetailsSummaryProps) {
+    
 
     const numberOfMonths = extraNumberOfMonths?.numberOfMonths ? extraNumberOfMonths.numberOfMonthsNoRounding : 0;
   const extraMonthlyPayment = monthlyPayment?.extraMonthlyPayment ? monthlyPayment?.extraMonthlyPayment : 0;
@@ -40,7 +42,7 @@ export default function ItemDetailsSummary ({monthlyPayment,extraNumberOfMonths}
     };
   }
 
-  if(!itemDetailsState) return null
+ 
   return (
     <div className="w-full h-auto">
     {/* Content */}
@@ -49,12 +51,12 @@ export default function ItemDetailsSummary ({monthlyPayment,extraNumberOfMonths}
 
       <div className="w-auto grid md:grid-cols-2 md:gap-x-10 grid-cols-1 gap-y-7">
         {/* 1st Box */}
-        <MonthlyPaymentBoxItemDetails header="Monthly Payment" itemDetailsState={itemDetailsState} monthlyPayment={monthlyPayment} />
+        <MonthlyPaymentBoxItemDetails header="Monthly Payment" itemDetailsState={itemDel} monthlyPayment={monthlyPayment} />
 
         {/* 2nd Box Extra Monthly Payment */}
         <ExtraMonthlyBoxItemDetails
           header="Extra Monthly Payment"
-          itemDetailsState={itemDetailsState}
+          itemDetailsState={itemDel}
           extraMonthlyPayment={extraMonthlyPayment}
           numberOfMonths={numberOfMonths}
           monthlyPayment={monthlyPayment}

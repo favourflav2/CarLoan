@@ -6,6 +6,7 @@ import { Filler } from "chart.js";
 import { LoanAmmortizationType, MyLoanForLoop } from "../helperFunctions/loanfunctions/LoanFunction";
 import { MonthlyPayment } from "../helperFunctions/loanfunctions/LoanFunction";
 import { ExtraNumberMonths } from "../helperFunctions/loanfunctions/LoanFunction";
+import { ItemDetailsState } from "../../redux/features/carStateSlice";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, LogarithmicScale);
 
@@ -15,13 +16,14 @@ export interface IItemDetailsCarChartProps {
     monthlyPayment: MonthlyPayment;
     extraNumberOfMonths: ExtraNumberMonths | undefined;
     downPayment: number;
+    itemDel: ItemDetailsState
 }
 
-export default function ItemDetailsCarChart ({ regualarLoan, extraLoan, monthlyPayment, extraNumberOfMonths, downPayment }: IItemDetailsCarChartProps) {
+export default function ItemDetailsCarChart ({ regualarLoan, extraLoan, monthlyPayment, extraNumberOfMonths, downPayment, itemDel }: IItemDetailsCarChartProps) {
 
       // Redux States
   const { lightAndDarkMode } = UseSelector((state) => state.app);
-  const { itemDetailsState} = UseSelector((state) => state.page);
+  
 
 
 
@@ -205,7 +207,7 @@ export default function ItemDetailsCarChart ({ regualarLoan, extraLoan, monthlyP
               </h1>
             </div>
   
-            {itemDetailsState && itemDetailsState.extraPayment > 0 && extraPTotalAmountPaid && extraNumberOfMonths && (
+            {itemDel.extraPayment > 0 && extraPTotalAmountPaid && extraNumberOfMonths && (
               <div className="w-auto flex flex-col">
                 <h1 className=" font-bold underline">Extra Monthly Payment</h1>
                 <h1 className="text-[15px]  mt-[1px]">

@@ -4,11 +4,11 @@ import { FieldErrors, Control, UseFormSetValue, SubmitHandler, UseFormHandleSubm
 import { DataObj } from "../../redux/features/carSlice";
 import ItemDetailsInputCard from "./components/ItemDetailsInputCard";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
-import { UseSelector } from "../../redux/store";
 import { useMediaQuery } from "@mui/material";
 import { itemDetailsIsSameCheck } from "../ScrapeCarvanaPage/utils/ItemDetailsIsSameCheck";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { ItemDetailsState } from "../../redux/features/carStateSlice";
 
 export interface IItemDetailsInputsProps {
   singleCar: DataObj;
@@ -73,10 +73,11 @@ export interface IItemDetailsInputsProps {
     term: number;
     extraPayment: string;
   }>;
+  itemDel: ItemDetailsState
 }
 
-export default function ItemDetailsInputs({ singleCar, errors, allInputData, control, setValue, handleSubmit, onSubmit }: IItemDetailsInputsProps) {
-  const { itemDetailsState } = UseSelector((state) => state.page);
+export default function ItemDetailsInputs({ singleCar, errors, allInputData, control, setValue, handleSubmit, onSubmit, itemDel }: IItemDetailsInputsProps) {
+  
 
   const [close, setClose] = React.useState(false);
 
@@ -92,6 +93,8 @@ export default function ItemDetailsInputs({ singleCar, errors, allInputData, con
       }
     }
   },[matches,singleCar,close])
+
+  
 
   return (
     <div className="w-full h-full lg:max-h-[600px] lg:py-4 pt-4 pb-8 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
@@ -123,7 +126,7 @@ export default function ItemDetailsInputs({ singleCar, errors, allInputData, con
             <ItemDetailsInputCard errors={errors} control={control} name="interest" label="Interest Rate" placeholder="" type="Percent" setValue={setValue} allInputData={allInputData} />
 
             <AnimatePresence>
-              {itemDetailsState !== undefined && itemDetailsState && itemDetailsIsSameCheck(allInputData, itemDetailsState) && (
+              { itemDetailsIsSameCheck(allInputData,itemDel) && (
                 <motion.button
                   className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"}`}
                   initial={{ x: -100, opacity: 0 }}

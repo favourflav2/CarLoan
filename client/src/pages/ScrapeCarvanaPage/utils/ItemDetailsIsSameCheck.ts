@@ -19,7 +19,10 @@ export function itemDetailsIsSameCheck(
     term: data.term,
   };
 
-  if (newObj.price <= 0) return false;
+  
+
+  if (newObj.price <= 0 || state.price <= 0) return false;
+
 
 
 return _.isEqual(state, newObj) ? false : true;
