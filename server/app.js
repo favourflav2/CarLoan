@@ -7,6 +7,7 @@ import helmet from "helmet";
 import carRoutes from "./routes/carRoutes.js";
 import costOfLivingRoutes from "./routes/costOfLivingRoutes.js";
 import { helpFormatCarName } from "./utils/helpFormatCarName.js";
+import authRoutes from "./routes/authRoutes.js";
 
 
 env(true);
@@ -34,6 +35,7 @@ app.get("/", (req, res) => {
 
 app.use("/carData", carRoutes);
 app.use("/COL",costOfLivingRoutes)
+app.use("/auth",authRoutes)
 
 
 

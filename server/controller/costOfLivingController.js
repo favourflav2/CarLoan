@@ -48,3 +48,4 @@ export async function getCostOfLivingData(req,res){
         res.status(400).json({ msg: e.message });
     }
 }
+
