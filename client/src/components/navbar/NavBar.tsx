@@ -62,7 +62,7 @@ export default function NavBar(props: INavBarProps) {
         <div className="w-full flex items-center justify-between h-full">
           <h1 className="text-[19px]">Finance Tracker</h1>
 
-          <div className="w-auto sm:flex hidden items-center dark:text-homeText text-lightSmallNavBarBg">
+          {/* <div className="w-auto sm:flex hidden items-center dark:text-homeText text-lightSmallNavBarBg">
             <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={() => navigate("/")}>
               Home
             </h1>
@@ -70,7 +70,6 @@ export default function NavBar(props: INavBarProps) {
               Cars
             </h1>
 
-            {/* Sign Up and Login Button */}
             {!userId && (
               <div className="w-auto flex items-center mx-2">
                 <button className="p-2 rounded-sm mr-2 border border-gray-100 dark:shadow-none shadow-lg bg-white w-[80px] text-chartGreen " onClick={() => navigate("/auth/signup")}>
@@ -95,7 +94,7 @@ export default function NavBar(props: INavBarProps) {
                 )}
               </div>
             )}
-          </div>
+          </div> */}
 
           {userId && (
             <div className="w-auto sm:flex hidden items-center">
