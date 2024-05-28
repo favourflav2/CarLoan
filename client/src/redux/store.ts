@@ -8,6 +8,7 @@ import applicationSlice from "./features/applicationSlice";
 import retirementSlice from "./features/modalSlices/retirementSlice";
 import carModalSlice from "./features/modalSlices/carModalSlice";
 import houseSlice from "./features/modalSlices/houseSlice";
+import authSlice from "./features/authSlice";
 
 const persistConfig = {
   key: "root",
@@ -23,7 +24,8 @@ const reducer = combineReducers({
   app: applicationSlice,
   retireSlice: retirementSlice,
   carModalSlice: carModalSlice,
-  houseSlice:houseSlice
+  houseSlice:houseSlice,
+  auth: authSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
