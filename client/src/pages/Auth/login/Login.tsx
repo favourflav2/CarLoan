@@ -61,8 +61,9 @@ export default function Login() {
   React.useEffect(() => {
     if (error) {
       toast.error(error);
+      dispatch(setError())
     }
-  }, [error]);
+  }, [error]); // eslint-disable-line
   return (
     <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
       {/* Content */}

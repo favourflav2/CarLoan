@@ -44,16 +44,24 @@ export const store = configureStore({
 });
 
 type RootState = ReturnType<typeof store.getState>
-type AppDispatch = ReturnType<typeof store.getState>
+type AppDispatch = typeof store.dispatch
 
 // Need this in order to use useDipatch and useSelctor
-export const Dispatch: () => typeof store.dispatch = useDispatch;
+export const Dispatch = useDispatch.withTypes<AppDispatch>()
 export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
+
+// export const Dispatch: () => typeof store.dispatch = useDispatch;
+// export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
 
 
 //listenerMiddleware.startListening({ actionCreator: todoAdded, effect })
-// listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-
-// })
+listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+predicate: (_action, currentState, prevState) => {
+  return currentState.auth.user !== prevState.auth.user
+},
+effect: async (_action, listenerApi) => {
+  console.log("I want to clear all the goals on local storage")
+}
+})
 
 
