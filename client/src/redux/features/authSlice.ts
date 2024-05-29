@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { sign_Up } from "../api/authApi";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { log_In, sign_Up } from "../api/authApi";
 import { NavigateFunction } from "react-router-dom";
 
 export interface SignUpObj {
@@ -7,6 +7,11 @@ export interface SignUpObj {
   email: string;
   password: string;
   confirmPassword: string;
+}
+
+export interface LogInObj {
+  email:string;
+  password:string;
 }
 
 interface User {
@@ -30,6 +35,11 @@ interface ReduxSignUpWithNavigate {
   navigate: NavigateFunction;
 }
 
+interface ReduxLogInNavigate {
+  data:LogInObj;
+  navigate: NavigateFunction;
+}
+
 const initialState: UserState = {
   user: null,
   loading: false,
@@ -39,6 +49,16 @@ const initialState: UserState = {
 export const signUp = createAsyncThunk("signUp", async ({ data, navigate }: ReduxSignUpWithNavigate, { rejectWithValue }) => {
   try {
     const res = await sign_Up(data);
+    navigate("/");
+    return res.data;
+  } catch (e: any) {
+    return rejectWithValue(e.response.data.msg);
+  }
+});
+
+export const logIn = createAsyncThunk("logIn", async ({ data, navigate }: ReduxLogInNavigate, { rejectWithValue }) => {
+  try {
+    const res = await log_In(data);
     navigate("/");
     return res.data;
   } catch (e: any) {
@@ -68,7 +88,7 @@ const authSlice = createSlice({
       .addCase(signUp.pending, (state) => {
         state.loading = true;
       })
-      .addCase(signUp.fulfilled, (state, action) => {
+      .addCase(signUp.fulfilled, (state, action:PayloadAction<User>) => {
         localStorage.setItem("profile", JSON.stringify({ ...action.payload }));
         state.loading = false;
         state.user = action.payload;
@@ -76,21 +96,21 @@ const authSlice = createSlice({
       .addCase(signUp.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
 
-    // // Log In
-    // .addCase(logIn.pending, (state) => {
-    //   state.loading = true;
-    // })
-    // .addCase(logIn.fulfilled, (state, action) => {
-    //   localStorage.setItem("profile", JSON.stringify({ ...action.payload }));
-    //   state.loading = false;
-    //   state.user = action.payload;
-    // })
-    // .addCase(logIn.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // })
+    // Log In
+    .addCase(logIn.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(logIn.fulfilled, (state, action:PayloadAction<User>) => {
+      localStorage.setItem("profile", JSON.stringify({ ...action.payload }));
+      state.loading = false;
+      state.user = action.payload;
+    })
+    .addCase(logIn.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
 
     // // Change User Name
     // .addCase(changeName.pending, (state) => {

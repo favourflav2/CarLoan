@@ -1,4 +1,4 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers, createListenerMiddleware } from "@reduxjs/toolkit";
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import carModalSlice from "./features/modalSlices/carModalSlice";
 import houseSlice from "./features/modalSlices/houseSlice";
 import authSlice from "./features/authSlice";
 
+
 const persistConfig = {
   key: "root",
   version: 1,
@@ -17,6 +18,8 @@ const persistConfig = {
   blacklist: ["car"],
   //whitelist: ["page", "app", "retireSlice", "carModalSlice"],
 };
+
+const listenerMiddleware = createListenerMiddleware()
 
 const reducer = combineReducers({
   car: carSlice,
@@ -37,9 +40,20 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }),
+    }).prepend(listenerMiddleware.middleware),
 });
+
+type RootState = ReturnType<typeof store.getState>
+type AppDispatch = ReturnType<typeof store.getState>
 
 // Need this in order to use useDipatch and useSelctor
 export const Dispatch: () => typeof store.dispatch = useDispatch;
 export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
+
+
+//listenerMiddleware.startListening({ actionCreator: todoAdded, effect })
+// listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+
+// })
+
+

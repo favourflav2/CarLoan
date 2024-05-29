@@ -7,15 +7,10 @@ import { validationCheck } from "../utils/ValidationCheckFunc";
 export interface IValidationBoxProps {
   setHideVal: React.Dispatch<React.SetStateAction<boolean>>;
   hideVal: boolean;
-  allInputData: {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  };
+  password:string
 }
 
-export default function ValidationBox({ setHideVal, hideVal, allInputData }: IValidationBoxProps) {
+export default function ValidationBox({ setHideVal, hideVal, password}: IValidationBoxProps) {
  
 
 
@@ -34,36 +29,36 @@ export default function ValidationBox({ setHideVal, hideVal, allInputData }: IVa
             <div className="w-full h-auto grid grid-cols-1">
               {/* Upper Case */}
               <div className="w-full flex items-center">
-                {validationCheck(allInputData.password).upperCase ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
+                {validationCheck(password).upperCase ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
                 <p className="sm:text-[13px] text-[12px] ml-2">Must have 1 Upper Case Alphabet</p>
               </div>
               {/* Lower Case */}
               <div className="w-full flex items-center">
-                {validationCheck(allInputData.password).lowerCase ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
+                {validationCheck(password).lowerCase ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
                 <p className="sm:text-[13px] text-[12px] ml-2">Must have 1 Lower Case Alphabet</p>
               </div>
 
               {/* Numeral Case */}
               <div className="w-full flex items-center">
-                {validationCheck(allInputData.password).totalNumber ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
+                {validationCheck(password).totalNumber ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
                 <p className="sm:text-[13px] text-[12px] ml-2">Must have 1 Numeral Case Alphabet</p>
               </div>
 
               {/* Min Num */}
               <div className="w-full flex items-center">
-                {validationCheck(allInputData.password).minLength ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
+                {validationCheck(password).minLength ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
                 <p className="sm:text-[13px] text-[12px] ml-2">Minimum 8 characters</p>
               </div>
 
               {/* Max Num */}
               <div className="w-full flex items-center">
-                {validationCheck(allInputData.password).maxLength ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
+                {validationCheck(password).maxLength ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
                 <p className="sm:text-[13px] text-[12px] ml-2">Max 20 characters</p>
               </div>
 
               {/* Special Character */}
               <div className="w-full flex items-center">
-                {validationCheck(allInputData.password).specialCh ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
+                {validationCheck(password).specialCh ? <CheckIcon className="text-green-400 sm:text-base text-[16px]" /> : <CloseIcon className="text-red-500 sm:text-base text-[16px]"/>}
                 <p className="sm:text-[13px] text-[12px] ml-2">Must have 1 Special Character[-@&*^#]</p>
               </div>
             </div>

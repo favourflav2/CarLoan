@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SignUp from "./pages/Auth/signup/SignUp";
 import HideNavBarCheck from "./pages/Auth/PrivateRoutes/HideNavBarCheck";
+import Login from "./pages/Auth/login/Login";
 
 function App() {
   const dispatch = Dispatch();
@@ -32,6 +33,7 @@ function App() {
           <Route path="/path" element={<Prac />} />
           <Route path="/vehicle/:id" element={<ItemDetails />} />
           <Route path="/auth/signup" element={<SignUp />} />
+          <Route path="/auth/login" element={<Login />} />
         </Routes>
       </>
     </div>
