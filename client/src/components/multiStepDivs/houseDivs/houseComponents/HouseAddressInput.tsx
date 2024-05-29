@@ -95,24 +95,7 @@ export interface IHouseAddressInputProps {
       rent:string;
       img?: any;
     },
-    any,
-    {
-      streetAddress: string;
-      price: string;
-      downPayment: string;
-      interest: string;
-      term: number;
-      id: string;
-      extraPayment: string;
-      propertyTax: string;
-      insurance: string;
-      mortgageInsurance: string;
-      appreciation: string;
-      opportunityCostRate: string;
-      maintenance: string;
-      rent:string;
-      img?: any;
-    }
+    any
   >;
   selectedAddress: SelectedAddress | undefined;
   setSelectedAddress: React.Dispatch<React.SetStateAction<SelectedAddress | undefined>>;

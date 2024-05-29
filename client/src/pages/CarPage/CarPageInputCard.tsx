@@ -46,19 +46,7 @@ export interface ICarPageInputCardProps {
     modal: string;
     extraPayment: string;
     img?: any;
-}, any, {
-    mileage: string;
-    price: string;
-    downPayment: string;
-    interest: string;
-    id: string;
-    name: string;
-    term: number;
-    salary: string;
-    modal: string;
-    extraPayment: string;
-    img?: any;
-}>
+}, any>
 
 
   updateList: string[]

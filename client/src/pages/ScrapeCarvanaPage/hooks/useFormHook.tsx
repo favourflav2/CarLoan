@@ -277,52 +277,6 @@ export interface ICarvanaInputCardProps {
       Volkswagen: boolean;
       Volvo: boolean;
     },
-    any,
-    {
-      sortByState: "All" | "Highest Price" | "Lowest Price" | "Lowest Mileage";
-      lowPrice: string;
-      highPrice: string;
-      lowMileage: string;
-      highMileage: string;
-      Acura: boolean;
-      AlfaRomeo: boolean;
-      Audi: boolean;
-      BMW: boolean;
-      Buick: boolean;
-      Cadillac: boolean;
-      Chevrolet: boolean;
-      Chrysler: boolean;
-      Dodge: boolean;
-      FIAT: boolean;
-      Ford: boolean;
-      Genesis: boolean;
-      GMC: boolean;
-      Honda: boolean;
-      Hyundai: boolean;
-      INFINITI: boolean;
-      Jaguar: boolean;
-      Jeep: boolean;
-      Kia: boolean;
-      LandRover: boolean;
-      Lexus: boolean;
-      Lincoln: boolean;
-      Lucid: boolean;
-      Maserati: boolean;
-      Mazada: boolean;
-      MercedesBenz: boolean;
-      MINI: boolean;
-      Mitsubishi: boolean;
-      Nissan: boolean;
-      Polestar: boolean;
-      Porsche: boolean;
-      Ram: boolean;
-      Rivian: boolean;
-      Scion: boolean;
-      Subaru: boolean;
-      Telsa: boolean;
-      Toyota: boolean;
-      Volkswagen: boolean;
-      Volvo: boolean;
-    }
+    any
   >;
 }

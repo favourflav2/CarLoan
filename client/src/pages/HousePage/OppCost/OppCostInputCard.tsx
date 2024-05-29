@@ -27,15 +27,7 @@ export interface IOppCostInputCardProps {
       propertyTax: string;
       interest: string;
     },
-    any,
-    {
-      opportunityCostRate: string;
-      maintenance: string;
-      rent: string;
-      appreciation: string;
-      propertyTax: string;
-      interest: string;
-    }
+    any
   >;
 }
 type FormFields = {

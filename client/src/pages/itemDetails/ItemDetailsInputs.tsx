@@ -27,14 +27,7 @@ export interface IItemDetailsInputsProps {
       term: number;
       extraPayment: string;
     },
-    any,
-    {
-      price: string;
-      downPayment: string;
-      interest: string;
-      term: number;
-      extraPayment: string;
-    }
+    any
   >;
   setValue: UseFormSetValue<{
     price: string;
