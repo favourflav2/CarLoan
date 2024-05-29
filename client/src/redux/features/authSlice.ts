@@ -80,6 +80,9 @@ const authSlice = createSlice({
     setError: (state) => {
       state.error = "";
     },
+    setPrac: () => {
+console.log("listner middleeare stuff")
+    },
   },
   extraReducers(builder) {
     builder
@@ -147,4 +150,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { setUser, setLogout, setError } = authSlice.actions;
+export const { setUser, setLogout, setError, setPrac } = authSlice.actions;

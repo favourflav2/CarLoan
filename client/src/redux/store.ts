@@ -8,7 +8,7 @@ import applicationSlice from "./features/applicationSlice";
 import retirementSlice from "./features/modalSlices/retirementSlice";
 import carModalSlice from "./features/modalSlices/carModalSlice";
 import houseSlice from "./features/modalSlices/houseSlice";
-import authSlice from "./features/authSlice";
+import authSlice, { setPrac } from "./features/authSlice";
 
 
 const persistConfig = {
@@ -55,13 +55,24 @@ export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>
 
 
 //listenerMiddleware.startListening({ actionCreator: todoAdded, effect })
-listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-predicate: (_action, currentState, prevState) => {
-  return currentState.auth.user !== prevState.auth.user
-},
-effect: async (_action, listenerApi) => {
-  console.log("I want to clear all the goals on local storage")
-}
-})
+// listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+// predicate: (_action, currentState, prevState) => {
+//   return currentState.auth.user !== prevState.auth.user
+// },
+// effect: async (_action, listenerApi) => {
+//   console.log("I want to clear all the goals on local storag")
+// }
+// })
+
+
+ listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+ type:'logIn/fulfilled',
+ effect: async (_action, listenerApi) => {
+   console.log("I want to clear all the goals on local storag")
+listenerApi.dispatch(setPrac())
+ }
+ })
+
+
 
 
