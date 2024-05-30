@@ -7,6 +7,8 @@ import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
 import { setLightAndDarkMode } from "../../redux/features/applicationSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { setLogout } from "../../redux/features/authSlice";
+import { isTokenExpired } from "../../redux/utils/isTokenExpired";
 
 export interface INavBarProps {}
 
@@ -21,6 +23,7 @@ export default function NavBar(props: INavBarProps) {
   // user Id
   const userId = user?.userObj.id;
   const name = user?.userObj.name;
+  const token = user?.token
 
   const matches = useMediaQuery('(min-width:640px)');
 
@@ -34,6 +37,12 @@ export default function NavBar(props: INavBarProps) {
     setAnchorEl(null);
   };
 
+  function getFirstName(text: string | undefined) {
+    if (!text) return;
+    const firstName = text.split(" ");
+    return firstName[0];
+  }
+
   // Light And Dark Functionality
   React.useEffect(() => {
     if (lightAndDarkMode) {
@@ -43,16 +52,22 @@ export default function NavBar(props: INavBarProps) {
     }
   }, [lightAndDarkMode]);
 
+  // Jwt Decode
+  React.useEffect(()=>{
+    if(token){
+      if(isTokenExpired(token)){
+        dispatch(setLogout())
+        navigate('/')
+      }
+    }
+  },[token]) // eslint-disable-line
+
   if (pathname === "/auth/login" || pathname === "/auth/signup") {
     return null;
   }
 
 
-  function getFirstName(text: string | undefined) {
-    if (!text) return;
-    const firstName = text.split(" ");
-    return firstName[0];
-  }
+  
 
   return (
     <div className="w-full h-[75px] sticky top-0 z-20 bg-inherit border-b border-gray-300 dark:border-gray-800 dark:text-darkText text-lightText">
@@ -224,7 +239,8 @@ export default function NavBar(props: INavBarProps) {
         </MenuItem>}
         {userId && <MenuItem
           onClick={() => {
-            //navigate("/cars");
+            dispatch(setLogout())
+            navigate("/");
             handleClose();
           }}
         >

@@ -14,7 +14,7 @@ export interface LogInObj {
   password:string;
 }
 
-interface User {
+export interface User {
   token: string;
   userObj: {
     id: string;
@@ -70,7 +70,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action:PayloadAction<null | User>) => {
       state.user = action.payload;
     },
     setLogout: (state) => {

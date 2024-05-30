@@ -7,26 +7,26 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
-import { PieChart as PieChart2 } from "react-minimal-pie-chart";
-import dayjs from "dayjs";
+// import { PieChart as PieChart2 } from "react-minimal-pie-chart";
+// import dayjs from "dayjs";
 
-interface LoanObj {
-    data:{
-        installments  : [
-            {
-              capital     : number,
-              interest    : number,
-              installment : number,
-              remain      : number
-            },
-            //...
-          ],
-          amount        : number,
-          interestSum   : number,
-          capitalSum    : number,
-          sum           : number
-    }
-  }
+// interface LoanObj {
+//     data:{
+//         installments  : [
+//             {
+//               capital     : number,
+//               interest    : number,
+//               installment : number,
+//               remain      : number
+//             },
+//             //...
+//           ],
+//           amount        : number,
+//           interestSum   : number,
+//           capitalSum    : number,
+//           sum           : number
+//     }
+//   }
 
 
 export default function LoanCalculator() {
@@ -58,38 +58,38 @@ export default function LoanCalculator() {
       loanAmount,
     };
   }
-const today = new Date ()
-const formattedDate = dayjs(today).format('MMMM')
+//const today = new Date ()
+//const formattedDate = dayjs(today).format('MMMM')
 
-function getDateIndex(){
-  const month= ["January","February","March","April","May","June","July",
-  "August","September","October","November","December"];
+// function getDateIndex(){
+//   const month= ["January","February","March","April","May","June","July",
+//   "August","September","October","November","December"];
 
-  return month.findIndex(item => item === formattedDate) 
-}
-function returnData(){
-  let res = []
-  for(let i=0; i< 50; i ++){
-    let age = 18
-    let num;
+//   return month.findIndex(item => item === formattedDate) 
+// }
+// function returnData(){
+//   let res = []
+//   for(let i=0; i< 50; i ++){
+//     let age = 18
+//     let num;
     
 
-    const amount = 10000;
-    const time = i + 1
-    const monthlyP = 500;
-    const c = 1
-    const months = 12
-    const rate = 0.06 / c
-    const equivalentPeriodicRate = ((Math.pow(1 + rate, c / months) - 1))
-    const fvOfPv = amount * (Math.pow(1 + equivalentPeriodicRate, time * months))
+//     const amount = 10000;
+//     const time = i + 1
+//     const monthlyP = 500;
+//     const c = 1
+//     const months = 12
+//     const rate = 0.06 / c
+//     const equivalentPeriodicRate = ((Math.pow(1 + rate, c / months) - 1))
+//     const fvOfPv = amount * (Math.pow(1 + equivalentPeriodicRate, time * months))
     
-    const top = monthlyP * (Math.pow(1+ equivalentPeriodicRate, time * 12) - 1)
-    const value = top / equivalentPeriodicRate
-    res.push({
-      age: age + i,
-      value: value + fvOfPv
-    })
-    //console.log(value + fvOfPv)
+//     const top = monthlyP * (Math.pow(1+ equivalentPeriodicRate, time * 12) - 1)
+//     const value = top / equivalentPeriodicRate
+//     res.push({
+//       age: age + i,
+//       value: value + fvOfPv
+//     })
+//     //console.log(value + fvOfPv)
 
    
     
@@ -97,44 +97,38 @@ function returnData(){
     
 
     
-  }
-return res
-}
+//   }
+// return res
+// }
 
-function newReturnData(){
-  let res = []
-  for(let i=0; i< 27; i ++){
-    let age = 68
-    let num;
+// function newReturnData(){
+//   let res = []
+//   for(let i=0; i< 27; i ++){
+//     let age = 68
+//     //let num;
     
 
    
-    const time = i + 1
-    const monthlyP = 2000;
-    const c = 1
-    const months = 12
-    const rate = 0.08 / c
-    const equivalentPeriodicRate = ((Math.pow(1 + rate, c / months) - 1))
+//     const time = i + 1
+//     const monthlyP = 2000;
+//     const c = 1
+//     const months = 12
+//     const rate = 0.08 / c
+//     const equivalentPeriodicRate = ((Math.pow(1 + rate, c / months) - 1))
     
     
-    const top = monthlyP * (Math.pow(1+ equivalentPeriodicRate, time * 12) - 1)
-    const value = top / equivalentPeriodicRate
-    res.push({
-      age: age + i,
-      value: value 
-    })
+//     const top = monthlyP * (Math.pow(1+ equivalentPeriodicRate, time * 12) - 1)
+//     const value = top / equivalentPeriodicRate
+//     res.push({
+//       age: age + i,
+//       value: value 
+//     })
 
-  }
-return res
-}
+//   }
+// return res
+// }
 
-console.log(newReturnData())
 
-  console.log(getDateIndex())
-  // 1063328
-  // 1055703
-  // 1,682,314
-  // 1,856,089
 
 
   return (
@@ -208,6 +202,4 @@ console.log(newReturnData())
   );
 }
 
-// <NumericFormat value={item.remain.toFixed(2)} prefix={"$"} thousandSeparator={true} />
 
-// ${Math.round(grabMonthlyPayments(loan)?.totalInterest / grabMonthlyPayments(loan)?.totalPaid)}
