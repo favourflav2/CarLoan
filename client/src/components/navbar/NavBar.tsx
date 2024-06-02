@@ -1,6 +1,6 @@
 import * as React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
-import {  Menu, MenuItem, useMediaQuery } from "@mui/material";
+import { Menu, MenuItem, useMediaQuery } from "@mui/material";
 import { Dispatch, UseSelector } from "../../redux/store";
 import NightlightOutlinedIcon from "@mui/icons-material/NightlightOutlined";
 import WbSunnyOutlinedIcon from "@mui/icons-material/WbSunnyOutlined";
@@ -23,9 +23,9 @@ export default function NavBar(props: INavBarProps) {
   // user Id
   const userId = user?.userObj.id;
   const name = user?.userObj.name;
-  const token = user?.token
+  const token = user?.token;
 
-  const matches = useMediaQuery('(min-width:640px)');
+  const matches = useMediaQuery("(min-width:640px)");
 
   // Menu Mobile State
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -53,21 +53,18 @@ export default function NavBar(props: INavBarProps) {
   }, [lightAndDarkMode]);
 
   // Jwt Decode
-  React.useEffect(()=>{
-    if(token){
-      if(isTokenExpired(token)){
-        dispatch(setLogout())
-        navigate('/')
+  React.useEffect(() => {
+    if (token) {
+      if (isTokenExpired(token)) {
+        dispatch(setLogout());
+        navigate("/");
       }
     }
-  },[token]) // eslint-disable-line
+  }, [token]); // eslint-disable-line
 
-  if (pathname === "/auth/login" || pathname === "/auth/signup") {
+  if (pathname === "/auth/login" || pathname === "/auth/signup" || pathname === "/auth/forgotPassword" || pathname === "/auth/checkEmail" || pathname === "/auth/resetPassword") {
     return null;
   }
-
-
-  
 
   return (
     <div className="w-full h-[75px] sticky top-0 z-20 bg-inherit border-b border-gray-300 dark:border-gray-800 dark:text-darkText text-lightText">
@@ -113,7 +110,9 @@ export default function NavBar(props: INavBarProps) {
 
           {userId && (
             <div className="w-auto sm:flex hidden items-center">
-              <button className=" hover:underline " onClick={handleClick}>Hi, {getFirstName(name)}</button>
+              <button className=" hover:underline " onClick={handleClick}>
+                Hi, {getFirstName(name)}
+              </button>
               <button onClick={handleClick}>
                 <AccountCircleIcon className="text-chartGreen dark:text-chartGreen/90 text-[24px]" />
               </button>
@@ -168,8 +167,6 @@ export default function NavBar(props: INavBarProps) {
             </div>
           </div>
         )}
-
-
       </div>
 
       {/* Mobile Content */}
@@ -178,90 +175,104 @@ export default function NavBar(props: INavBarProps) {
         <div className="w-full flex items-center justify-between h-full">
           <h1 className="sm:text-[19px] text-base">Finance Tracker</h1>
 
-          {!userId && <div className="w-auto flex items-center">
-            {lightAndDarkMode ? (
-              <button className="dark:text-darkText text-lightText rounded-md   cursor-pointer">
-                <WbSunnyOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
-              </button>
-            ) : (
-              <button className="dark:text-darkText text-lightText rounded-md   cursor-pointer">
-                <NightlightOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
-              </button>
-            )}
-            
+          {!userId && (
+            <div className="w-auto flex items-center">
+              {lightAndDarkMode ? (
+                <button className="dark:text-darkText text-lightText rounded-md   cursor-pointer">
+                  <WbSunnyOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
+                </button>
+              ) : (
+                <button className="dark:text-darkText text-lightText rounded-md   cursor-pointer">
+                  <NightlightOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
+                </button>
+              )}
+
               <button onClick={handleClick} className="ml-4">
                 <MenuIcon />
               </button>
-           
-          </div>}
+            </div>
+          )}
 
           {userId && (
-          <div className="w-auto flex items-center ">
-            <button className=" hover:underline cursor-pointer" onClick={handleClick}>Hi, {getFirstName(name)}</button>
-            
-              <button onClick={handleClick}><AccountCircleIcon className="text-chartGreen dark:text-chartGreen/90 text-[24px]" /></button>
-          
+            <div className="w-auto flex items-center ">
+              <button className=" hover:underline cursor-pointer" onClick={handleClick}>
+                Hi, {getFirstName(name)}
+              </button>
 
-            {userId && (
-              <div className="w-auto flex h-auto">
-                {lightAndDarkMode ? (
-                  <button className="dark:text-darkText text-lightText rounded-md ml-2  cursor-pointer">
-                    <WbSunnyOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
-                  </button>
-                ) : (
-                  <button className="dark:text-darkText text-lightText rounded-md ml-2  cursor-pointer">
-                    <NightlightOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-        )}
+              <button onClick={handleClick}>
+                <AccountCircleIcon className="text-chartGreen dark:text-chartGreen/90 text-[24px]" />
+              </button>
+
+              {userId && (
+                <div className="w-auto flex h-auto">
+                  {lightAndDarkMode ? (
+                    <button className="dark:text-darkText text-lightText rounded-md ml-2  cursor-pointer">
+                      <WbSunnyOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
+                    </button>
+                  ) : (
+                    <button className="dark:text-darkText text-lightText rounded-md ml-2  cursor-pointer">
+                      <NightlightOutlinedIcon onClick={() => dispatch(setLightAndDarkMode())} />
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
       <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
-        {!matches && <MenuItem
-          onClick={() => {
-            navigate("/");
-            handleClose();
-          }}
-        >
-          Home
-        </MenuItem>}
-        {!matches && <MenuItem
-          onClick={() => {
-            navigate("/cars");
-            handleClose();
-          }}
-        >
-          Cars
-        </MenuItem>}
-        {userId && <MenuItem
-          onClick={() => {
-            dispatch(setLogout())
-            navigate("/");
-            handleClose();
-          }}
-        >
-          Log Out
-        </MenuItem>}
-        {!userId && <MenuItem
-          onClick={() => {
-            navigate("/auth/signup");
-            handleClose();
-          }}
-        >
-          Sign Up
-        </MenuItem>}
-        {!userId && <MenuItem
-          onClick={() => {
-            navigate("/auth/login");
-            handleClose();
-          }}
-        >
-          Login
-        </MenuItem>}
+        {!matches && (
+          <MenuItem
+            onClick={() => {
+              navigate("/");
+              handleClose();
+            }}
+          >
+            Home
+          </MenuItem>
+        )}
+        {!matches && (
+          <MenuItem
+            onClick={() => {
+              navigate("/cars");
+              handleClose();
+            }}
+          >
+            Cars
+          </MenuItem>
+        )}
+        {userId && (
+          <MenuItem
+            onClick={() => {
+              dispatch(setLogout());
+              navigate("/");
+              handleClose();
+            }}
+          >
+            Log Out
+          </MenuItem>
+        )}
+        {!userId && (
+          <MenuItem
+            onClick={() => {
+              navigate("/auth/signup");
+              handleClose();
+            }}
+          >
+            Sign Up
+          </MenuItem>
+        )}
+        {!userId && (
+          <MenuItem
+            onClick={() => {
+              navigate("/auth/login");
+              handleClose();
+            }}
+          >
+            Login
+          </MenuItem>
+        )}
       </Menu>
     </div>
   );

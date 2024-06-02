@@ -8,20 +8,20 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useNavigate } from "react-router-dom";
 import { Dispatch, UseSelector } from "../../../redux/store";
-import { logIn, setError} from "../../../redux/features/authSlice";
+import { logIn, setError, setSuccessChangePassword } from "../../../redux/features/authSlice";
 import { toast } from "react-toastify";
+import useShowPasswordReq from "../createNewPassword/hook/useShowPasswordReq";
 
 export default function Login() {
   // Redux States
-  const { error } = UseSelector((state) => state.auth);
+  const { error, loading, successChangePassword } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
+  const navigate = useNavigate();
 
+  // React hook Form
   const { register, errors, handleSubmit, watch } = useFormHookLogin();
   const allInputData = watch();
-
   const errorKeys = Object.keys(errors);
-
-  const navigate = useNavigate();
 
   // handleClick show pass
   function handleClickPassword() {
@@ -43,27 +43,29 @@ export default function Login() {
   });
 
   // Hide validation
-  const [hideVal, setHideVal] = React.useState(true);
-
-  React.useEffect(() => {
-    if (errorKeys.length <= 0 || !errorKeys.includes("password")) {
-      setHideVal(true);
-    } else if (errorKeys.includes("password")) {
-      setHideVal(false);
-    }
-  }, [errorKeys]);
+  const { hideVal, setHideVal } = useShowPasswordReq({ errorKeys });
 
   const onSubmit: SubmitHandler<FormFieldsLogin> = (data) => {
-    dispatch(setError())
-    dispatch(logIn({data,navigate}))
+    dispatch(setError());
+    dispatch(logIn({ data, navigate }));
   };
 
   React.useEffect(() => {
     if (error) {
       toast.error(error);
-      dispatch(setError())
+      dispatch(setError());
     }
   }, [error]); // eslint-disable-line
+
+  React.useEffect(() => {
+    if (successChangePassword) {
+      toast.success(successChangePassword, {
+        toastId: "success1",
+      });
+      dispatch(setSuccessChangePassword());
+    }
+  }, []); // eslint-disable-line
+
   return (
     <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">
       {/* Content */}
@@ -100,7 +102,7 @@ export default function Login() {
               </div>
 
               {/* Password */}
-              <div className="w-full flex flex-col sm:mb-3 mb-2 relative">
+              <div className="w-full flex flex-col relative">
                 <label htmlFor="" className="text-[13px]">
                   Password
                 </label>
@@ -127,7 +129,14 @@ export default function Login() {
                 <ValidationBox hideVal={hideVal} setHideVal={setHideVal} password={allInputData.password} />
               </div>
 
-              <button className="p-2 bg-chartGreen/80 rounded-xl text-white shadow-[0px_0px_24px_0.5px_rgb(0_163_108_/_0.8)] my-3">Sign Up</button>
+              {/* Forgot Password Link */}
+              <p className="w-full items-center justify-end flex sm:text-[13px] text-[12px] mt-1 text-blue-600 sm:mb-2 cursor-pointer hover:underline" onClick={() => navigate("/auth/forgotPassword")}>
+                Forgot Password?
+              </p>
+
+              <button disabled={loading} className={`p-2 ${loading ? "bg-gray-300" : "bg-chartGreen/80 shadow-[0px_0px_24px_0.5px_rgb(0_163_108_/_0.8)]"} rounded-xl text-white  my-3`}>
+                {loading ? "Loading..." : "Sign In"}
+              </button>
             </form>
           </div>
 

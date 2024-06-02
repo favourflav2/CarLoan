@@ -16,7 +16,7 @@ export default function useFormHookSignUp() {
     setError,
     clearErrors,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful, isSubmitted },
   } = useForm<FormFieldsSignUp>({
     //mode: "all",
     defaultValues: {
@@ -46,5 +46,7 @@ export default function useFormHookSignUp() {
     clearErrors,
     control,
     errors,
+    isSubmitSuccessful,
+    isSubmitted
   };
 }

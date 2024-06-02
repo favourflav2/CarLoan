@@ -8,8 +8,8 @@ import applicationSlice from "./features/applicationSlice";
 import retirementSlice from "./features/modalSlices/retirementSlice";
 import carModalSlice from "./features/modalSlices/carModalSlice";
 import houseSlice from "./features/modalSlices/houseSlice";
-import authSlice from "./features/authSlice";
-
+import authSlice, { setResestCheckEmailAndResetPasswordToken, setResetPasswordToken } from "./features/authSlice";
+import { isTokenExpired } from "./utils/isTokenExpired";
 
 const persistConfig = {
   key: "root",
@@ -19,7 +19,7 @@ const persistConfig = {
   //whitelist: ["page", "app", "retireSlice", "carModalSlice"],
 };
 
-const listenerMiddleware = createListenerMiddleware()
+const listenerMiddleware = createListenerMiddleware();
 
 const reducer = combineReducers({
   car: carSlice,
@@ -27,8 +27,8 @@ const reducer = combineReducers({
   app: applicationSlice,
   retireSlice: retirementSlice,
   carModalSlice: carModalSlice,
-  houseSlice:houseSlice,
-  auth: authSlice
+  houseSlice: houseSlice,
+  auth: authSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
@@ -43,46 +43,48 @@ export const store = configureStore({
     }).prepend(listenerMiddleware.middleware),
 });
 
-type RootState = ReturnType<typeof store.getState>
-type AppDispatch = typeof store.dispatch
+type RootState = ReturnType<typeof store.getState>;
+type AppDispatch = typeof store.dispatch;
 
 // Need this in order to use useDipatch and useSelctor
-export const Dispatch = useDispatch.withTypes<AppDispatch>()
+export const Dispatch = useDispatch.withTypes<AppDispatch>();
 export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
 
 // export const Dispatch: () => typeof store.dispatch = useDispatch;
 // export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
 
+// This is my session creator ... this will help me privatize my reset password pages
+//* Once the token we get from the backend expires my listen middleware will set the token state back the null and a user wont be able to go back to reset pages
+listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+  predicate: (_action, currentState, prevState) => {
+    const token = currentState.auth.resetPasswordToken;
 
+    if (!token) return false;
 
+    return isTokenExpired(token);
+  },
+  effect: async (_action, listenerApi) => {
+    const stateToken = listenerApi.getState().auth.resetPasswordToken;
 
+    if (stateToken) {
+      listenerApi.dispatch(setResetPasswordToken());
+    }
+  },
+});
 
- listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
- type:'logIn/fulfilled',
- effect: async (_action, listenerApi) => {
-   console.log("I want to clear all the goals on local storag")
+listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+  predicate: (_action, currentState, prevState) => {
+    const token = currentState.auth.checkEmailAndResetPasswordToken;
 
- }
- })
+    if (!token) return false;
 
-//  listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-//  predicate: (_action, currentState, prevState) => {
-//   const token = currentState.auth.user?.token
-  
-//   if(!token) return false
+    return isTokenExpired(token);
+  },
+  effect: async (_action, listenerApi) => {
+    const stateToken = listenerApi.getState().auth.checkEmailAndResetPasswordToken;
 
-//  return isTokenExpired(token)
-  
-
-//  },
-//  effect: async (_action, listenerApi) => {
-//    console.log("Token no longer valid")
-  
-//    //listenerApi.dispatch(setL)
-   
-//  }
-//  })
-
-
-
-
+    if (stateToken) {
+      listenerApi.dispatch(setResestCheckEmailAndResetPasswordToken());
+    }
+  },
+});

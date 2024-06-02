@@ -63,8 +63,11 @@ export default function SignUp(props: ISignUpProps) {
   React.useEffect(()=>{
     if(error){
         toast.error(error)
+        dispatch(setError())
     }
-  },[error])
+  },[error]) // eslint-disable-line
+
+ 
 
   return (
     <div className="w-full min-h-screen bg-gray-100 flex items-center justify-center">

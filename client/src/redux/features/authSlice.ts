@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { log_In, sign_Up } from "../api/authApi";
+import { check_Otp_Value, forgot_Password, log_In, reset_Password, sign_Up } from "../api/authApi";
 import { NavigateFunction } from "react-router-dom";
 
 export interface SignUpObj {
@@ -28,6 +28,9 @@ interface UserState {
   user: User | null;
   loading: boolean;
   error: any;
+  resetPasswordToken: null | string;
+  checkEmailAndResetPasswordToken: null | string;
+  successChangePassword:string | null;
 }
 
 interface ReduxSignUpWithNavigate {
@@ -40,10 +43,20 @@ interface ReduxLogInNavigate {
   navigate: NavigateFunction;
 }
 
+interface ReduxForgotPassword {
+  data:{
+    email:string
+  };
+  navigate: NavigateFunction;
+}
+
 const initialState: UserState = {
   user: null,
   loading: false,
   error: "",
+  resetPasswordToken:null,
+  checkEmailAndResetPasswordToken:null,
+  successChangePassword:null
 };
 
 export const signUp = createAsyncThunk("signUp", async ({ data, navigate }: ReduxSignUpWithNavigate, { rejectWithValue }) => {
@@ -66,6 +79,36 @@ export const logIn = createAsyncThunk("logIn", async ({ data, navigate }: ReduxL
   }
 });
 
+export const forgotPasswordRedux = createAsyncThunk("forgotPasswordRedux", async ({ data, navigate }: ReduxForgotPassword, { rejectWithValue }) => {
+  try {
+    const res = await forgot_Password(data);
+    navigate("/auth/checkEmail");
+    return res.data;
+  } catch (e: any) {
+    return rejectWithValue(e.response.data.msg);
+  }
+});
+
+export const checkOtpValue = createAsyncThunk("checkOtpValue", async ({ data, navigate }: {data:{code:string},navigate: NavigateFunction}, { rejectWithValue }) => {
+  try {
+    const res = await check_Otp_Value(data);
+    navigate("/auth/resetPassword");
+    return res.data;
+  } catch (e: any) {
+    return rejectWithValue(e.response.data.msg);
+  }
+});
+
+export const resetPassword = createAsyncThunk("resetPassword", async ({ data, navigate }: {data:{password:string,confirmPassword:string},navigate: NavigateFunction}, { rejectWithValue }) => {
+  try {
+    const res = await reset_Password(data);
+    navigate("/auth/login");
+    return res.data;
+  } catch (e: any) {
+    return rejectWithValue(e.response.data.msg);
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -80,9 +123,18 @@ const authSlice = createSlice({
     setError: (state) => {
       state.error = "";
     },
-    setPrac: () => {
-console.log("listner middleeare stuff")
+    setResetPasswordToken: (state) => {
+      state.resetPasswordToken = null
     },
+    setResestCheckEmailAndResetPasswordToken: (state) => {
+      localStorage.removeItem("resetToken");
+      state.checkEmailAndResetPasswordToken = null
+      state.resetPasswordToken = null
+    },
+    setSuccessChangePassword: (state) => {
+      state.successChangePassword = null
+    }
+    
   },
   extraReducers(builder) {
     builder
@@ -93,12 +145,12 @@ console.log("listner middleeare stuff")
       })
       .addCase(signUp.fulfilled, (state, action:PayloadAction<User>) => {
         localStorage.setItem("profile", JSON.stringify({ ...action.payload }));
-        state.loading = false;
         state.user = action.payload;
+        state.loading = false;
       })
       .addCase(signUp.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload;
+        state.loading = false;
       })
 
     // Log In
@@ -107,47 +159,60 @@ console.log("listner middleeare stuff")
     })
     .addCase(logIn.fulfilled, (state, action:PayloadAction<User>) => {
       localStorage.setItem("profile", JSON.stringify({ ...action.payload }));
-      state.loading = false;
       state.user = action.payload;
+      state.loading = false;
     })
     .addCase(logIn.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    })
+
+    // Forgot Password
+    .addCase(forgotPasswordRedux.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(forgotPasswordRedux.fulfilled, (state, action:PayloadAction<{msg:string,token:string}>) => {
+      localStorage.setItem("resetToken", JSON.stringify({ ...action.payload }));
+      state.resetPasswordToken = action.payload.token
+      state.loading = false;
+    })
+    .addCase(forgotPasswordRedux.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
     })
 
-    // // Change User Name
-    // .addCase(changeName.pending, (state) => {
-    //   state.loading = true;
-    // })
-    // .addCase(changeName.fulfilled, (state, action) => {
-    //   let { token } = JSON.parse(localStorage.getItem("profile") || "{}");
-    //   localStorage.setItem("profile", JSON.stringify({ user: { ...action.payload }, token: token }));
-    //   //@ts-ignore
-    //   state.user = { user: { ...action.payload }, token: token };
-    //   state.loading = false;
-    // })
-    // .addCase(changeName.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // })
+    // Check Otp Code
+    .addCase(checkOtpValue.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(checkOtpValue.fulfilled, (state, action:PayloadAction<{msg:string,token:string}>) => {
+      localStorage.setItem("resetToken", JSON.stringify({ ...action.payload }));
+      state.checkEmailAndResetPasswordToken = action.payload.token
+      state.loading = false;
+    })
+    .addCase(checkOtpValue.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
 
-    // // Change Email
-    // .addCase(changeEmail.pending, (state) => {
-    //   state.loading = true;
-    // })
-    // .addCase(changeEmail.fulfilled, (state, action) => {
-    //   let { token } = JSON.parse(localStorage.getItem("profile") || "{}");
-    //   localStorage.setItem("profile", JSON.stringify({ user: { ...action.payload }, token: token }));
-    //   //@ts-ignore
-    //   state.user = { user: { ...action.payload }, token: token };
-    //   state.loading = false;
-    // })
-    // .addCase(changeEmail.rejected, (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // });
+     // Reset Password
+     .addCase(resetPassword.pending, (state) => {
+      state.loading = true;
+    })
+    .addCase(resetPassword.fulfilled, (state, action:PayloadAction<string>) => {
+      localStorage.removeItem("resetToken");
+      state.checkEmailAndResetPasswordToken = null
+      state.successChangePassword = action.payload
+      state.loading = false;
+    })
+    .addCase(resetPassword.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+
+   
   },
 });
 
 export default authSlice.reducer;
-export const { setUser, setLogout, setError, setPrac } = authSlice.actions;
+export const { setUser, setLogout, setError, setResetPasswordToken, setResestCheckEmailAndResetPasswordToken, setSuccessChangePassword } = authSlice.actions;
