@@ -1,9 +1,26 @@
 import { Router } from "express";
-import { logIn, signUp } from "../controller/authController.js";
+import { check_Otp_Value, forgot_Password, logIn, practiceToken, reset_Password, signUp } from "../controller/authController.js";
+import rateLimit from "express-rate-limit";
+import { resetPasswordMiddleware } from "../middleware/authMiddleware.js";
 
-const router = Router()
+const limiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // maximum number of requests allowed in the windowMs
+  handler: function (req, res, next) {
+    return res.status(429).json({
+      msg: "Too many requests, please try again later.",
+    });
+  },
+});
 
-router.post("/signup",signUp)
-router.post("/login",logIn)
+const router = Router();
 
-export default router
+router.post("/signup", signUp);
+router.post("/login", logIn);
+router.post("/forgotPassword", forgot_Password);
+router.post("/checkOtp", limiter, resetPasswordMiddleware, check_Otp_Value);
+router.post("/resetPassword", resetPasswordMiddleware, reset_Password);
+
+router.get("/fav", practiceToken);
+
+export default router;
