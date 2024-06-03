@@ -13,12 +13,14 @@ export interface IMobileDrawerProps {
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
 
   selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
-  retireGoals: RetirementGoals[]
+  retireGoals: RetirementGoals[];
   houseGoals: HouseObjWithFormattedData[];
   carGoals: CarObjWithFormattedData[];
+
+  User: string | undefined;
 }
 
-export default function MobileDrawer({ open, setOpen, setFirstModal, selectedGoal, retireGoals, houseGoals, carGoals }: IMobileDrawerProps) {
+export default function MobileDrawer({ open, setOpen, setFirstModal, selectedGoal, retireGoals, houseGoals, carGoals, User }: IMobileDrawerProps) {
   return (
     <Drawer onClose={() => setOpen(false)} open={open}>
       {/* Content */}
@@ -32,7 +34,7 @@ export default function MobileDrawer({ open, setOpen, setFirstModal, selectedGoa
             </div>
             {/* Shrink Btn */}
             <div className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText">
-              <NavigateBeforeIcon className="!text-[30px] " onClick={()=>setOpen(false)}/>
+              <NavigateBeforeIcon className="!text-[30px] " onClick={() => setOpen(false)} />
             </div>
           </div>
 
@@ -41,7 +43,9 @@ export default function MobileDrawer({ open, setOpen, setFirstModal, selectedGoa
 
           {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
           <div className="w-full max-h-[600px] no-scrollbar overflow-y-auto ">
-            <DashboardMappedData setFirstModal={setFirstModal} type="mobile" setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
+            {!User && (
+              <DashboardMappedData setFirstModal={setFirstModal} type="mobile" setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals} />
+            )}
           </div>
         </div>
       </div>

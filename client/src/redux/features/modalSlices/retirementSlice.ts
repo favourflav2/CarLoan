@@ -107,8 +107,11 @@ const retirementSlice = createSlice({
 
       state.retireGoals = res
     },
+    setRetireGoals: (state) => {
+      state.retireGoals = []
+    }
   },
 });
 
 export default retirementSlice.reducer;
-export const { addRetireGoal, removeRetireItem, editRetireGoal, editRetireGoalTitle } = retirementSlice.actions;
+export const { addRetireGoal, removeRetireItem, editRetireGoal, editRetireGoalTitle, setRetireGoals } = retirementSlice.actions;

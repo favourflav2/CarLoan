@@ -172,9 +172,12 @@ const houseSlice = createSlice({
         state.houseGoals[index].showOppCostInputs = value
       }
     },
+    setHouseGoals: (state) => {
+      state.houseGoals = []
+    }
   },
 });
 
 export default houseSlice.reducer;
 
-export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal, houseShowInput, editHouseGoalImg, editHouseGoalTitle, houseShowOppCostInput} = houseSlice.actions;
+export const {addHouseGoal,removeHouseGoal,updateShowTax,editHouseGoal, houseShowInput, editHouseGoalImg, editHouseGoalTitle, houseShowOppCostInput, setHouseGoals} = houseSlice.actions;

@@ -141,9 +141,12 @@ const carModalSlice = createSlice({
         state.carGoals[index].showInputs = value
       }
     },
+    setCarGoals: (state) => {
+      state.carGoals = []
+    }
   },
 });
 
 export default carModalSlice.reducer;
 
-export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle,editCarGoalImg, carShowInput } = carModalSlice.actions;
+export const { addCarGoal, removeCarItem, editCarGoal, setSingleOrGridView, editCarGoalTitle,editCarGoalImg, carShowInput, setCarGoals } = carModalSlice.actions;

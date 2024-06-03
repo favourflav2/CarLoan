@@ -21,13 +21,18 @@ import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/hous
 import HousePage from "../HousePage/HousePage";
 import NoSelectedGoal from "./NoSelectedGoal";
 
+
 export default function Home() {
   // Redux States
+  const { user} = UseSelector((state) => state.auth);
   const { selectedGoal, shrinkDashboardSidebar, retireModal, carModal } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { carGoals } = UseSelector((state) => state.carModalSlice);
   const { houseGoals } = UseSelector((state) => state.houseSlice);
   const dispatch = Dispatch();
+
+  // User stuff
+  const User = user?.userObj.id;
 
   // Media Breakpoint
   const matches = useMediaQuery("(min-width:900px)");
@@ -38,27 +43,27 @@ export default function Home() {
   // Drawer State Mobile Devices
   const [open, setOpen] = React.useState(false);
 
-  
-
   function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (value?.type) {
       case "Retirement":
         return <RetirementPage />;
       case "Car":
-        return <CarPage />
+        return <CarPage />;
       case "House":
-        return <HousePage />
+        return <HousePage />;
       default:
-        return <NoSelectedGoal />
+        return <NoSelectedGoal />;
     }
   }
 
-  //If theres no saved goals ... going to set selected goal to null
+  //If theres no user id we will check for local storage data ... If theres no saved goals ... going to set selected goal to null
   React.useEffect(() => {
-    if (retireGoals.length === 0 && carGoals.length === 0 && houseGoals.length === 0 ) {
-      dispatch(setSelectedGoal(null));
+    if (!User) {
+      if (retireGoals.length === 0 && carGoals.length === 0 && houseGoals.length === 0) {
+        dispatch(setSelectedGoal(null));
+      }
     }
-  }, [dispatch, retireGoals, carGoals,houseGoals]);
+  }, [dispatch, retireGoals, carGoals, houseGoals, User]);
 
   // If the breakpoint hit/pass 900px we close mobile drawer
   React.useEffect(() => {
@@ -69,7 +74,7 @@ export default function Home() {
 
 
   return (
-    <div className="w-full min-h-screen flex flex-col" >
+    <div className="w-full min-h-screen flex flex-col">
       {/* desktop content */}
       <div className="min-[900px]:block hidden">
         <div className={`  ${shrinkDashboardSidebar ? "w-[40px]" : "w-[280px]"} h-full fixed z-10 top-[75px] left-0 overscroll-x-none`}>
@@ -107,16 +112,24 @@ export default function Home() {
 
               {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
               <div className="w-full h-[600px] overflow-y-auto ">
-                <DashboardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
+                {!User && (
+                  <DashboardMappedData
+                    setFirstModal={setFirstModal}
+                    type="desktop"
+                    setOpen={setOpen}
+                    selectedGoal={selectedGoal}
+                    retireGoals={retireGoals}
+                    houseGoals={houseGoals}
+                    carGoals={carGoals}
+                  />
+                )}
               </div>
             </motion.div>
           )}
         </div>
         <div className={`${shrinkDashboardSidebar ? "ml-[40px]" : "ml-[280px]"}`}>
           {/* Right Side */}
-          <div className=" w-full h-full">
-             {selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />} 
-          </div>
+          <div className=" w-full h-full">{selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />}</div>
         </div>
       </div>
 
@@ -126,17 +139,15 @@ export default function Home() {
           <MenuIcon className=" dark:text-darkText text-lightText " onClick={() => setOpen(true)} />
         </div>
         {/* Drawer */}
-        <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
-        <div className=" w-full h-auto">
-        {selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />} 
-        </div>
+        <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals} User={User} />
+        <div className=" w-full h-auto">{selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />}</div>
       </div>
 
       {/* Modals */}
       <SelectGoalModal open={firstModal} setOpen={setFirstModal} />
       {retireModal && <RetireModal setFirstModal={setFirstModal} />}
       {carModal && <CarModal setFirstModal={setFirstModal} />}
-      <HouseModal setFirstModal={setFirstModal}/>
+      <HouseModal setFirstModal={setFirstModal} />
     </div>
   );
 }

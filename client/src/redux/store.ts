@@ -4,10 +4,10 @@ import storage from "redux-persist/lib/storage";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import carSlice from "./features/carSlice";
 import carStateSlice from "./features/carStateSlice";
-import applicationSlice from "./features/applicationSlice";
-import retirementSlice from "./features/modalSlices/retirementSlice";
-import carModalSlice from "./features/modalSlices/carModalSlice";
-import houseSlice from "./features/modalSlices/houseSlice";
+import applicationSlice, { setSelectedGoal } from "./features/applicationSlice";
+import retirementSlice, { setRetireGoals } from "./features/modalSlices/retirementSlice";
+import carModalSlice, { setCarGoals } from "./features/modalSlices/carModalSlice";
+import houseSlice, { setHouseGoals } from "./features/modalSlices/houseSlice";
 import authSlice, { setResestCheckEmailAndResetPasswordToken, setResetPasswordToken } from "./features/authSlice";
 import { isTokenExpired } from "./utils/isTokenExpired";
 
@@ -50,8 +50,6 @@ type AppDispatch = typeof store.dispatch;
 export const Dispatch = useDispatch.withTypes<AppDispatch>();
 export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
 
-// export const Dispatch: () => typeof store.dispatch = useDispatch;
-// export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
 
 // This is my session creator ... this will help me privatize my reset password pages
 //* Once the token we get from the backend expires my listen middleware will set the token state back the null and a user wont be able to go back to reset pages
@@ -88,3 +86,30 @@ listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
     }
   },
 });
+
+listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+  type:"logIn/fulfilled",
+  effect: async (_action, listenerApi) => {
+    listenerApi.dispatch(setSelectedGoal(null))
+    listenerApi.dispatch(setRetireGoals())
+    listenerApi.dispatch(setHouseGoals())
+    listenerApi.dispatch(setCarGoals())
+  },
+})
+listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+  type:"signUp/fulfilled",
+  effect: async (_action, listenerApi) => {
+    listenerApi.dispatch(setSelectedGoal(null))
+    listenerApi.dispatch(setRetireGoals())
+    listenerApi.dispatch(setHouseGoals())
+    listenerApi.dispatch(setCarGoals())
+  },
+})
+
+// // "logIn/fulfilled"
+
+
+
+
+// export const Dispatch: () => typeof store.dispatch = useDispatch;
+// export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
