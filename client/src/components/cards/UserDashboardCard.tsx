@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dispatch } from "../../redux/store";
+import { Dispatch, UseSelector } from "../../redux/store";
 import CircleIcon from "@mui/icons-material/Circle";
 import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,22 +10,16 @@ import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlic
 import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
 import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
 
-export interface IDashboardCardProps {
+export interface IUserDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
   selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
-  retireGoals: RetirementGoals[];
-  houseGoals: HouseObjWithFormattedData[];
-  carGoals: CarObjWithFormattedData[];
 }
 
-// trying to figure out how to concat and do a switch case
-
-export default function DashboardCard({ type, setOpen, selectedGoal, retireGoals, houseGoals, carGoals }: IDashboardCardProps) {
+export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUserDashboardCardProps) {
+    // Redux States
+    const {userGoals} = UseSelector(state => state.tableSlice)
   const dispatch = Dispatch();
-
-  const concatData: Array<RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData> = [...retireGoals, ...carGoals, ...houseGoals];
-
   // ref
   const ref = React.useRef(null);
 
@@ -105,13 +99,12 @@ export default function DashboardCard({ type, setOpen, selectedGoal, retireGoals
         return;
     }
   }
-
   return (
     <>
-      {retireGoals.length > 0 || carGoals.length > 0 || houseGoals.length > 0 ? (
+      {userGoals.data.length ? (
         <div className=" text-lightText dark:text-darkText">
           {/* Mapped Data */}
-          {concatData.map((item) => (
+          {userGoals.data.map((item) => (
             <div
               key={item.id}
               className={`flex flex-col w-full p-3 cursor-pointer border-b border-gray-400 ${changeBgColor(item, selectedGoal)}`}

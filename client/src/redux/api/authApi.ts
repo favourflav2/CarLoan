@@ -2,7 +2,6 @@ import axios from "axios";
 import { LogInObj, SignUpObj } from "../features/authSlice";
 
 
-
 const API = axios.create({ baseURL: "http://localhost:5001/auth" });
 
 API.interceptors.request.use((req) => {

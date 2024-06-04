@@ -10,12 +10,13 @@ import carModalSlice, { setCarGoals } from "./features/modalSlices/carModalSlice
 import houseSlice, { setHouseGoals } from "./features/modalSlices/houseSlice";
 import authSlice, { setResestCheckEmailAndResetPasswordToken, setResetPasswordToken } from "./features/authSlice";
 import { isTokenExpired } from "./utils/isTokenExpired";
+import tablesSlice from "./features/tablesSlice";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
-  blacklist: ["car"],
+  blacklist: ["car","tableSlice"],
   //whitelist: ["page", "app", "retireSlice", "carModalSlice"],
 };
 
@@ -29,6 +30,7 @@ const reducer = combineReducers({
   carModalSlice: carModalSlice,
   houseSlice: houseSlice,
   auth: authSlice,
+  tableSlice:tablesSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

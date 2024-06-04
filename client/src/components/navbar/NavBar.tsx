@@ -62,7 +62,13 @@ export default function NavBar(props: INavBarProps) {
     }
   }, [token]); // eslint-disable-line
 
-  if (pathname === "/auth/login" || pathname === "/auth/signup" || pathname === "/auth/forgotPassword" || pathname === "/auth/checkEmail" || pathname === "/auth/resetPassword") {
+  if (
+    pathname === "/auth/login" ||
+    pathname === "/auth/signup" ||
+    pathname === "/auth/forgotPassword" ||
+    pathname === "/auth/checkEmail" ||
+    pathname === "/auth/resetPassword"
+  ) {
     return null;
   }
 
@@ -108,6 +114,15 @@ export default function NavBar(props: INavBarProps) {
             )}
           </div> */}
 
+          {userId && <div className="w-auto flex items-center">
+            <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={() => navigate("/")}>
+              Home
+            </h1>
+            <h1 className="dark:text-darkText text-lightText rounded-md p-2 mr-2  cursor-pointer" onClick={() => navigate("/cars")}>
+              Cars
+            </h1>
+          </div>}
+
           {userId && (
             <div className="w-auto sm:flex hidden items-center">
               <button className=" hover:underline " onClick={handleClick}>
@@ -146,7 +161,10 @@ export default function NavBar(props: INavBarProps) {
 
             {/* Sign Up and Login Button */}
             <div className="w-auto flex items-center mx-2">
-              <button className="p-2 rounded-sm mr-2 border border-gray-100 dark:shadow-none shadow-lg bg-white w-[80px] text-chartGreen " onClick={() => navigate("/auth/signup")}>
+              <button
+                className="p-2 rounded-sm mr-2 border border-gray-100 dark:shadow-none shadow-lg bg-white w-[80px] text-chartGreen "
+                onClick={() => navigate("/auth/signup")}
+              >
                 Sign Up
               </button>
               <button className="p-2 rounded-sm  border border-gray-100 bg-chartGreen/80 w-[80px] text-white" onClick={() => navigate("/auth/login")}>

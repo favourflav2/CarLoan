@@ -2,12 +2,8 @@ import * as React from "react";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
-
-
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { motion } from "framer-motion";
-
-
 import DashboardCard from "../cards/DashboardCard";
 import { Dispatch } from "../../redux/store";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
@@ -52,7 +48,7 @@ const dispatch = Dispatch()
         <p className="underline text-[15px] cursor-pointer" onClick={()=>dispatch(setSelectedGoal(null))}>Need Help ?</p>
       </div>}
       {/* Container For Mapped Data */}
-      <div>
+      <div >
         <DashboardCard type={type} setOpen={setOpen} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals}/>
       </div>
     </div>

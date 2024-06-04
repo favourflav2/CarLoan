@@ -20,15 +20,18 @@ import HouseModal from "../../components/modals/HouseModal";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 import HousePage from "../HousePage/HousePage";
 import NoSelectedGoal from "./NoSelectedGoal";
-
+import UserDashBoardMappedData from "../../components/dashboardComponents/UserDashboardMappedData";
+import { Pagination } from "@mui/material";
+import { setPageState } from "../../redux/features/tablesSlice";
 
 export default function Home() {
   // Redux States
-  const { user} = UseSelector((state) => state.auth);
-  const { selectedGoal, shrinkDashboardSidebar, retireModal, carModal } = UseSelector((state) => state.app);
+  const { user } = UseSelector((state) => state.auth);
+  const { selectedGoal, shrinkDashboardSidebar, retireModal, carModal, lightAndDarkMode } = UseSelector((state) => state.app);
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { carGoals } = UseSelector((state) => state.carModalSlice);
   const { houseGoals } = UseSelector((state) => state.houseSlice);
+  const { userGoals, pageState } = UseSelector((state) => state.tableSlice);
   const dispatch = Dispatch();
 
   // User stuff
@@ -42,6 +45,19 @@ export default function Home() {
 
   // Drawer State Mobile Devices
   const [open, setOpen] = React.useState(false);
+
+  // ref to scroll to on handleChange
+  const clickRef = React.useRef<any>(null)
+
+  // Handle User Goals Change
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    dispatch(setPageState(value))
+    clickRef.current?.scrollTo({
+      top:0,
+      left:0,
+      behavior: "smooth"
+    })
+  };
 
   function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (value?.type) {
@@ -72,7 +88,6 @@ export default function Home() {
     }
   }, [matches]);
 
-
   return (
     <div className="w-full min-h-screen flex flex-col">
       {/* desktop content */}
@@ -82,7 +97,10 @@ export default function Home() {
           {shrinkDashboardSidebar ? (
             // Shrinked Left Side
             <div className=" w-full flex items-center   flex-col p-4 ">
-              <NavigateNextIcon className="text-[30px] mr-1 dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())} />
+              <NavigateNextIcon
+                className="text-[30px] mr-1 dark:text-darkText  text-lightDashboardText"
+                onClick={() => dispatch(setShrinkDashboard())}
+              />
             </div>
           ) : (
             // Regualr Left Side
@@ -102,7 +120,10 @@ export default function Home() {
                   <h1>Dashboard</h1>
                 </div>
                 {/* Shrink Btn */}
-                <div className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())}>
+                <div
+                  className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText"
+                  onClick={() => dispatch(setShrinkDashboard())}
+                >
                   <NavigateBeforeIcon className="!text-[30px] " />
                 </div>
               </div>
@@ -111,8 +132,8 @@ export default function Home() {
               <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
 
               {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
-              <div className="w-full h-[600px] overflow-y-auto ">
-                {!User && (
+              <div className="w-full h-[600px] overflow-y-auto" ref={clickRef}>
+                {!User ? (
                   <DashboardMappedData
                     setFirstModal={setFirstModal}
                     type="desktop"
@@ -122,7 +143,30 @@ export default function Home() {
                     houseGoals={houseGoals}
                     carGoals={carGoals}
                   />
+                ) : (
+                  <UserDashBoardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} selectedGoal={selectedGoal}  />
                 )}
+              </div>
+
+              {/* Pagination */}
+              <div className="w-full h-auto mt-5 flex justify-center">
+                <Pagination
+                  count={userGoals.totalPages || 0}
+                  page={pageState}
+                  onChange={handlePageChange}
+                  className=""
+                  size="small"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      borderColor: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                      color: `${lightAndDarkMode ? "#d1d5db" : "black"}`,
+                      "&.Mui-selected": {
+                        background: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                        color: `${lightAndDarkMode ? "black" : "black"}`,
+                      },
+                    },
+                  }}
+                />
               </div>
             </motion.div>
           )}
@@ -139,7 +183,18 @@ export default function Home() {
           <MenuIcon className=" dark:text-darkText text-lightText " onClick={() => setOpen(true)} />
         </div>
         {/* Drawer */}
-        <MobileDrawer open={open} setOpen={setOpen} setFirstModal={setFirstModal} selectedGoal={selectedGoal} retireGoals={retireGoals} houseGoals={houseGoals} carGoals={carGoals} User={User} />
+        <MobileDrawer
+          open={open}
+          setOpen={setOpen}
+          setFirstModal={setFirstModal}
+          selectedGoal={selectedGoal}
+          retireGoals={retireGoals}
+          houseGoals={houseGoals}
+          carGoals={carGoals}
+          User={User}
+          clickRef={clickRef}
+          handlePageChange={handlePageChange}
+        />
         <div className=" w-full h-auto">{selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />}</div>
       </div>
 
