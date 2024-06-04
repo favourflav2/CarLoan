@@ -29,12 +29,16 @@ export async function insert_Fake_Retire_Data(req, res) {
   try {
     const text =
       "INSERT INTO retire (creator, type, current_age, retire_age, life_expectancy, savings, monthly_contribution, budget, pre_rate, post_rate, inflation, title, show_inputs) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *";
-    const values = ["31b38404-5e13-489d-98f2-1762786ee587", "Retirement", 22, 67, 90, 2000, 500, 20000, 7, 2, 2, "Fake Data 1", false];
-   
-
     
 
-    const data = await pool.query(text,values)
+    for(let i=0; i<=10;i++){
+      let value = 20
+      const values = ["31b38404-5e13-489d-98f2-1762786ee587", "Retirement", 22, 67, 90, 2000, 500, 20000, 7, 2, 2, `Fake Data ${value + i}`, false];
+      console.log("added new item")
+      await pool.query(text,values)
+    }
+   
+    const data = await pool.query("SELECT * FROM retire")
     res.status(200).json(data.rows)
   } catch (e) {
     console.log(e);
