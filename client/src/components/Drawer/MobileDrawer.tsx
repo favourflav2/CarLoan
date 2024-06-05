@@ -37,7 +37,7 @@ export default function MobileDrawer({
 }: IMobileDrawerProps) {
   const { lightAndDarkMode } = UseSelector((state) => state.app);
 
-  const { userGoals, pageState } = UseSelector((state) => state.tableSlice);
+  const { userGoals, pageState, userGoalsLoading } = UseSelector((state) => state.tableSlice);
 
   return (
     <Drawer onClose={() => setOpen(false)} open={open}>
@@ -77,7 +77,7 @@ export default function MobileDrawer({
           </div>
 
           {/* Pagination */}
-          <div className="w-full h-auto mt-5 flex justify-center">
+        { !userGoalsLoading && userGoals.data.length > 5 &&  <div className="w-full h-auto mt-5 flex justify-center">
             <Pagination
               count={userGoals.totalPages || 0}
               page={pageState}
@@ -95,7 +95,7 @@ export default function MobileDrawer({
                 },
               }}
             />
-          </div>
+          </div>}
         </div>
       </div>
     </Drawer>

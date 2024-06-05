@@ -8,7 +8,7 @@ import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/hous
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import UserDashboardCard from "../cards/UserDashboardCard";
-import { CircularProgress } from "@mui/material";
+import { Skeleton } from "@mui/material";
 
 export interface IUserDashBoardMappedDataProps {
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -22,7 +22,6 @@ export default function UserDashBoardMappedData({ setFirstModal, type, setOpen, 
   const dispatch = Dispatch();
   const { pageState, userGoalsLoading } = UseSelector((state) => state.tableSlice);
 
-  
 
   // Fetch All Goals only when array is empty
   React.useEffect(() => {
@@ -51,7 +50,7 @@ export default function UserDashBoardMappedData({ setFirstModal, type, setOpen, 
 
       {selectedGoal && (
         <div className="w-full flex items-center justify-center mb-3">
-          <p className="underline text-[15px] cursor-pointer" onClick={() => dispatch(setSelectedGoal(null))}>
+          <p className="underline text-[15px] text-lightText dark:text-darkText cursor-pointer" onClick={() => dispatch(setSelectedGoal(null))}>
             Need Help ?
           </p>
         </div>
@@ -59,7 +58,18 @@ export default function UserDashBoardMappedData({ setFirstModal, type, setOpen, 
 
       {/* Container For Mapped Data */}
       <div className={`${!selectedGoal && "mt-3"}`}>
-        {userGoalsLoading ? <div className="w-full h-auto flex items-center justify-center my-3"><CircularProgress style={{'color': '#00A36C'}}/></div> : <UserDashboardCard type={type} setOpen={setOpen} selectedGoal={selectedGoal} />}
+        {userGoalsLoading ? (
+          <div className="w-full h-auto flex items-center justify-center my-3">
+            <div className="w-full grid h-auto">
+              {new Array(4).fill("1").map((item:string,index:number)=>(
+                <Skeleton variant="rectangular" key={index} className="w-full h-[60px] bg-gray-300 dark:bg-gray-700/30 my-1" />
+              ))}
+            </div>
+            
+          </div>
+        ) : (
+          <UserDashboardCard type={type} setOpen={setOpen} selectedGoal={selectedGoal} />
+        )}
       </div>
     </div>
   );
