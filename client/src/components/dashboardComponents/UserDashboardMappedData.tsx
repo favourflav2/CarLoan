@@ -8,22 +8,19 @@ import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/hous
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import UserDashboardCard from "../cards/UserDashboardCard";
+import { CircularProgress } from "@mui/material";
 
 export interface IUserDashBoardMappedDataProps {
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
   type: "desktop" | "mobile";
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
-
 }
 
 export default function UserDashBoardMappedData({ setFirstModal, type, setOpen, selectedGoal }: IUserDashBoardMappedDataProps) {
   // Redux States
   const dispatch = Dispatch();
-  const { pageState } = UseSelector((state) => state.tableSlice);
-  
-
-  
+  const { pageState, userGoalsLoading } = UseSelector((state) => state.tableSlice);
 
   
 
@@ -60,10 +57,9 @@ export default function UserDashBoardMappedData({ setFirstModal, type, setOpen, 
         </div>
       )}
 
-      
       {/* Container For Mapped Data */}
-      <div className={`${!selectedGoal && 'mt-3'}`}>
-        <UserDashboardCard type={type} setOpen={setOpen} selectedGoal={selectedGoal} />
+      <div className={`${!selectedGoal && "mt-3"}`}>
+        {userGoalsLoading ? <div className="w-full h-auto flex items-center justify-center my-3"><CircularProgress style={{'color': '#00A36C'}}/></div> : <UserDashboardCard type={type} setOpen={setOpen} selectedGoal={selectedGoal} />}
       </div>
     </div>
   );

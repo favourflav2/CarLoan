@@ -13,20 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { editRetireGoalTitle } from "../../redux/features/modalSlices/retirementSlice";
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
-import futureValueWhatYouHave from "../../components/helperFunctions/retirementFunctions/futureValueWhatYouHave";
-import getWhatYouNeedFinalPrice from "../../components/helperFunctions/retirementFunctions/getWhatYouNeedFinalPrice";
-import futureValueWhatYouWillNeed from "../../components/helperFunctions/retirementFunctions/futureValueWhatYouWillNeed";
-import { getMonthlyPaymentForHave, getMonthlyPaymentForNeed } from "../../components/helperFunctions/retirementFunctions/getMonthlyPaymentForHave";
+import useFVRetireData from "./hooks/useFVRetireData";
 
-interface AgeNum {
-  age: number;
-  value: number;
-}
-interface ForLoopData {
-  data: Array<AgeNum>;
-  highestNum: string;
-  highestNumNoFormat: number;
-}
 
 const schema = z.object({
   title: z
@@ -46,7 +34,6 @@ type FormFields = z.infer<typeof schema>;
 export default function RetirementPage() {
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
-  const { retireGoals } = UseSelector((state) => state.retireSlice);
   const dispatch = Dispatch();
 
   // Form Feilds
@@ -84,34 +71,8 @@ export default function RetirementPage() {
   // Chart State and Summary State
   const [view, setView] = React.useState<string>("Graph View");
 
-  // Have State
-  const [have, setHave] = React.useState<ForLoopData>({
-    data: [],
-    highestNum: "",
-    highestNumNoFormat: 0,
-  });
-
-  // Need State
-  const [need, setNeed] = React.useState<ForLoopData>({
-    data: [],
-    highestNum: "",
-    highestNumNoFormat: 0,
-  });
-
-  // Need Monthly Contribution State
-  const [needMonthlyContribution, setNeedMonthlyContribution] = React.useState(0);
-
-  // Have Retirement Budget
-  const [haveRetireBudget, setHaveRetireBudget] = React.useState({
-    value: 0,
-    valueNoInflation: 0,
-  });
-
   // Show State
   const [show, setShow] = React.useState(true);
-
-  // Final Price State
-  const [needFinalPrice, setNeedFinalPrice] = React.useState<number>(0);
 
   const USDollar = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -127,17 +88,7 @@ export default function RetirementPage() {
     setSaveBtn(false);
   };
 
-  //* UseEffect here handles all the math needed for charts
-  // link explains that investments and loans typically compound monthly ... so all we do is take the nomial rate / coumponding periods === 12
-  React.useEffect(() => {
-    if (selectedGoal && selectedGoal?.type === "Retirement") {
-      setHave(futureValueWhatYouHave(selectedGoal));
-      setNeedFinalPrice(getWhatYouNeedFinalPrice(selectedGoal));
-      setNeed(futureValueWhatYouWillNeed(selectedGoal));
-      setHaveRetireBudget(getMonthlyPaymentForHave(selectedGoal, futureValueWhatYouHave(selectedGoal).highestNumNoFormat));
-      setNeedMonthlyContribution(getMonthlyPaymentForNeed(selectedGoal));
-    }
-  }, [selectedGoal, retireGoals, dispatch]);
+  const { have, need, needFinalPrice, needMonthlyContribution, haveRetireBudget } = useFVRetireData();
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
@@ -192,12 +143,16 @@ export default function RetirementPage() {
     return null;
   }
 
+  //console.log(have)
+
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
       {/* Top Section Chart and Inputs */}
       <div
         className={`w-full h-full grid ${
-          shrinkDashboardSidebar ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1" : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
+          shrinkDashboardSidebar
+            ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1"
+            : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
         }`}
       >
         {/* Left Side Inputs */}
@@ -215,151 +170,171 @@ export default function RetirementPage() {
         </AnimatePresence>
 
         {/* Right Side Chart */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedGoal ? selectedGoal?.title : "empty"}
-            initial={{ y: 10, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -10, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="w-full flex flex-col dark:text-gray-300 text-black p-4"
-          >
-            <div className="w-auto flex flex-col">
-              {/* Edit Title Container */}
-              <div className="w-auto h-auto flex items-center ">
-                {editState ? (
-                  <motion.input
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    className="outline-chartGreen dark:outline-none indent-1 h-[30px] text-[16px] border border-gray-300 dark:border-none rounded-md dark:text-black"
-                    type="text"
-                    {...register("title")}
-                  />
-                ) : (
-                  <motion.h1
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    className="text-[19px] font-semibold underline inline-block align-bottom"
-                  >
-                    {upperCaseWords(selectedGoal?.title)}{" "}
-                  </motion.h1>
-                )}
-
-                {editState ? (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                  >
-                    <CloseIcon
-                      className="ml-2 text-[22px] cursor-pointer"
-                      onClick={() => {
-                        setEditState(false);
-                        setValue("title", selectedGoal?.title);
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={selectedGoal ? selectedGoal?.title : "empty"}
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -10, opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="w-full flex flex-col dark:text-gray-300 text-black p-4"
+            >
+              <div className="w-auto flex flex-col">
+                {/* Edit Title Container */}
+                <div className="w-auto h-auto flex items-center ">
+                  {editState ? (
+                    <motion.input
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.2,
+                        ease: [0, 0.71, 0.2, 1.01],
                       }}
+                      className="outline-chartGreen dark:outline-none indent-1 h-[30px] text-[16px] border border-gray-300 dark:border-none rounded-md dark:text-black"
+                      type="text"
+                      {...register("title")}
                     />
-                  </motion.button>
-                ) : (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                  >
-                    <EditIcon className="ml-2 text-[22px] cursor-pointer" onClick={() => setEditState(true)} />
-                  </motion.button>
-                )}
+                  ) : (
+                    <motion.h1
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.2,
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                      className="text-[19px] font-semibold underline inline-block align-bottom"
+                    >
+                      {upperCaseWords(selectedGoal?.title)}{" "}
+                    </motion.h1>
+                  )}
+
+                  {editState ? (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.2,
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
+                      <CloseIcon
+                        className="ml-2 text-[22px] cursor-pointer"
+                        onClick={() => {
+                          setEditState(false);
+                          setValue("title", selectedGoal?.title);
+                        }}
+                      />
+                    </motion.button>
+                  ) : (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.4,
+                        delay: 0.2,
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                    >
+                      <EditIcon className="ml-2 text-[22px] cursor-pointer" onClick={() => setEditState(true)} />
+                    </motion.button>
+                  )}
+                </div>
+                {errors?.title && <p className="text-red-500 text-[13px] ">{errors?.title?.message}</p>}
+
+                {/* Save Button */}
+                <AnimatePresence>
+                  {saveBtn && (
+                    <motion.button
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      whileHover={{ scale: 0.97 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.2,
+                        ease: [0, 0.71, 0.2, 1.01],
+                      }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      className="w-[100px] text-[14px] mt-2 rounded-lg border-2 border-chartGreen dark:text-white text-black"
+                      onClick={handleSubmit(onSubmit)}
+                    >
+                      Save
+                    </motion.button>
+                  )}
+                </AnimatePresence>
               </div>
-              {errors?.title && <p className="text-red-500 text-[13px] ">{errors?.title?.message}</p>}
 
-              {/* Save Button */}
-              <AnimatePresence>
-                {saveBtn && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.5 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 0.97 }}
-                    transition={{
-                      duration: 0.3,
-                      delay: 0.2,
-                      ease: [0, 0.71, 0.2, 1.01],
-                    }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    className="w-[100px] text-[14px] mt-2 rounded-lg border-2 border-chartGreen dark:text-white text-black"
-                    onClick={handleSubmit(onSubmit)}
-                  >
-                    Save
-                  </motion.button>
-                )}
-              </AnimatePresence>
-            </div>
+              {/* Chart Content */}
+              <div className="w-full h-full flex flex-col my-5">
+                <h1 className="text-[19px] font-semibold">Retirement savings at age {selectedGoal?.retireAge}</h1>
 
-            {/* Chart Content */}
-            <div className="w-full h-full flex flex-col my-5">
-              <h1 className="text-[19px] font-semibold">Retirement savings at age {selectedGoal?.retireAge}</h1>
+                {/* Numbers */}
+                <div className="w-auto flex md:justify-normal justify-around items-center my-5">
+                  {/* What You Have Number */}
+                  <div>
+                    <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">What you'll have</h1>
 
-              {/* Numbers */}
-              <div className="w-auto flex md:justify-normal justify-around items-center my-5">
-                {/* What You Have Number */}
-                <div>
-                  <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">What you'll have</h1>
+                    <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartGreen">{have ? have.highestNum : 0}</h1>
+                  </div>
 
-                  <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartGreen">{have ? have.highestNum : 0}</h1>
+                  <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8" />
+
+                  {/* What You Need Number */}
+                  <div>
+                    <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">What you'll need</h1>
+
+                    <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">
+                      {needFinalPrice ? USDollar.format(needFinalPrice) : 0}
+                    </h1>
+                  </div>
                 </div>
 
-                <Divider orientation="vertical" flexItem className="border border-gray-300 md:mx-8" />
+                {/* Charts Go Here */}
+                <div className="w-full h-auto flex flex-col ">
+                  <div className="flex items-center w-auto h-auto">
+                    <h1
+                      className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`}
+                      onClick={() => setView("Graph View")}
+                    >
+                      Graph View
+                    </h1>
+                    <h1
+                      className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`}
+                      onClick={() => setView("Summary View")}
+                    >
+                      Summary View
+                    </h1>
+                  </div>
 
-                {/* What You Need Number */}
-                <div>
-                  <h1 className="mb-2 sm:text-[17px] text-[15px] text-lightText dark:text-white font-bold dark:font-normal">What you'll need</h1>
+                  <hr className="border my-2 border-gray-300" />
 
-                  <h1 className="sm:text-[21px] text-[19px] font-semibold text-chartYellow">{needFinalPrice ? USDollar.format(needFinalPrice) : 0}</h1>
+                  {view === "Graph View" && (
+                    <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">
+                      {need && have && <RetirementLineChart need={need} have={have} />}
+                    </div>
+                  )}
+
+                  {view === "Summary View" && need && have && haveRetireBudget && needMonthlyContribution && (
+                    <RetirementSummary
+                      show={show}
+                      setShow={setShow}
+                      have={have}
+                      need={need}
+                      haveRetireBudget={haveRetireBudget}
+                      needMonthlyContribution={needMonthlyContribution}
+                    />
+                  )}
                 </div>
               </div>
-
-              {/* Charts Go Here */}
-              <div className="w-full h-auto flex flex-col ">
-                <div className="flex items-center w-auto h-auto">
-                  <h1 className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Graph View")}>
-                    Graph View
-                  </h1>
-                  <h1 className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Summary View")}>
-                    Summary View
-                  </h1>
-                </div>
-
-                <hr className="border my-2 border-gray-300" />
-
-                {view === "Graph View" && <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 relative ">{need && have && <RetirementLineChart need={need} have={have} />}</div>}
-
-                {view === "Summary View" && (
-                  <RetirementSummary show={show} setShow={setShow} have={have} need={need} haveRetireBudget={haveRetireBudget} needMonthlyContribution={needMonthlyContribution} />
-                )}
-              </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
+        
       </div>
 
       {/* Bottom Text Explaining Whats Going on */}
-      <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} />
+       {have && needFinalPrice && <RetirementExplain haveHighNum={have.highestNumNoFormat} needFinalPrice={needFinalPrice} />} 
     </div>
   );
 }

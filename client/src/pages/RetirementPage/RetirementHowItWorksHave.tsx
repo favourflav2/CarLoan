@@ -7,6 +7,7 @@ import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { setShowHaveExample } from "../../redux/features/applicationSlice";
 import { AnimatePresence, motion, easeInOut } from "framer-motion";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import { ErrorBoundary } from "react-error-boundary";
 
 export interface IRetirementHowItWorksHaveProps {
   haveHighNum: number;
@@ -35,7 +36,8 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
 
   return (
     <>
-      <MathJaxContext>
+    <ErrorBoundary fallback={<div>Something went wrong</div>}>
+    <MathJaxContext>
         <div className="w-full flex flex-col mt-5">
           <h1 className="text-[20px]  mb-2 font-semibold ">How the retirement calculator works</h1>
 
@@ -364,6 +366,8 @@ export default function RetirementHowItWorksHave({ haveHighNum, needFinalPrice }
           </div>
         </div>
       </MathJaxContext>
+    </ErrorBoundary>
+      
     </>
   );
 }

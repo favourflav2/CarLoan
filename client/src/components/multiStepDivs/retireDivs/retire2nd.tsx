@@ -1,8 +1,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Dispatch } from "../../../redux/store";
+import { Dispatch, UseSelector } from "../../../redux/store";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
-import {  setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../redux/features/applicationSlice";
+import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../redux/features/applicationSlice";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
@@ -12,17 +12,21 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
 import dayjs from "dayjs";
-import { addRetireGoal } from "../../../redux/features/modalSlices/retirementSlice";
+import { RetirementGoals, addRetireGoal } from "../../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoalNoFormat } from "../../../redux/features/modalSlices/retirementSlice";
 import { retireModalSchema } from "./retireModalSchema";
-
-
+import { createRetireGoal } from "../../../redux/features/tablesSlice";
 
 type FormFields = z.infer<typeof retireModalSchema>;
 
 export default function Retire2nd() {
   // Redux States
   const dispatch = Dispatch();
+  const { user } = UseSelector((state) => state.auth);
+  const {userRetireGoalsError, userRetireGoalsLoading} = UseSelector(state => state.tableSlice)
+
+  // user Id
+  const userId = user?.userObj.id;
 
   // Form Feilds
   const {
@@ -53,33 +57,61 @@ export default function Retire2nd() {
     const date = new Date();
     data.id = dayjs(date).format("MMM D, YYYY h:mm:ss");
 
-    const {age, savings, postRate, preRate, title, id, monthlyContribution,budget,inflation} = data
-    const objData:RetirementGoalNoFormat = {
-      id,
-      retireAge: age.retireAge,
-      lifeExpectancy: age.lifeExpectancy,
-      currentAge: age.currentAge,
-      savings,
-      postRate,
-      preRate,
-      monthlyContribution,
-      budget,
-      title,
-      inflation,
-      type: "Retirement",
-      showInputs:true
+    const { age, savings, postRate, preRate, title, id, monthlyContribution, budget, inflation } = data;
+
+    if (userId) {
+      const formattedData: RetirementGoals = {
+        id,
+        type:"Retirement",
+        retireAge: age.retireAge,
+        lifeExpectancy: age.lifeExpectancy,
+        currentAge: age.currentAge,
+        budget: parseFloat(budget.replace(/[,%$]/gm, "")),
+        preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
+        postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
+        inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
+        monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
+        savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+        title,
+        showInputs:true,
+        date:null,
+        creator:null
+      };
+
+      dispatch(createRetireGoal({data:formattedData,creator:userId}))
+
+      if(!userRetireGoalsError){
+        // Close Modal After Everything is done
+      dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
+      }
+    } else {
+      //no logged in user
+      const objData: RetirementGoalNoFormat = {
+        id,
+        retireAge: age.retireAge,
+        lifeExpectancy: age.lifeExpectancy,
+        currentAge: age.currentAge,
+        savings,
+        postRate,
+        preRate,
+        monthlyContribution,
+        budget,
+        title,
+        inflation,
+        type: "Retirement",
+        showInputs: true,
+        date:null,
+        creator:null
+      };
+
+      dispatch(addRetireGoal(objData));
+      // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
+      dispatch(setSelectedGoalAfterCreate(objData));
+
+      // Close Modal After Everything is done
+      dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
     }
-
-    dispatch(addRetireGoal(objData));
-
-    // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
-    dispatch(setSelectedGoalAfterCreate(objData));
-
-    // Close Modal After Everything is done
-    dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
   };
-
-  
 
   return (
     <motion.div
@@ -90,7 +122,6 @@ export default function Retire2nd() {
         delay: 0.3,
       }}
       className="w-full h-full "
-      
     >
       {/* Content */}
       <div className="w-full h-full flex flex-col dark:text-gray-300 text-black ">
@@ -148,7 +179,12 @@ export default function Retire2nd() {
                 Current retirement savings
                 <Tooltip
                   placement="top"
-                  title={<h1 className="text-[12.5px]">This is the total of all your retirement savings, including your 401(k) and IRA balances plus other savings earmarked for retirement.</h1>}
+                  title={
+                    <h1 className="text-[12.5px]">
+                      This is the total of all your retirement savings, including your 401(k) and IRA balances plus other savings earmarked for
+                      retirement.
+                    </h1>
+                  }
                 >
                   <HelpOutlineIcon className="!text-[16px] ml-[1px]" />
                 </Tooltip>
@@ -235,7 +271,12 @@ export default function Retire2nd() {
                 Retirement Age
                 <Tooltip
                   placement="top"
-                  title={<h1 className="text-[12.5px]">If you were born in 1960 or later, 67 is when you can retire with full benefits. Of course, the longer you work, the more you can save.</h1>}
+                  title={
+                    <h1 className="text-[12.5px]">
+                      If you were born in 1960 or later, 67 is when you can retire with full benefits. Of course, the longer you work, the more you
+                      can save.
+                    </h1>
+                  }
                 >
                   <HelpOutlineIcon className="!text-[16px] ml-[1px]" />
                 </Tooltip>
@@ -262,8 +303,8 @@ export default function Retire2nd() {
                   placement="top"
                   title={
                     <h1 className="text-[12.5px]">
-                      How long you expect to live, which is also how long you'll need your retirement savings to last. People are living longer and healthier lives, so it's wise to plan for a long
-                      retirement.
+                      How long you expect to live, which is also how long you'll need your retirement savings to last. People are living longer and
+                      healthier lives, so it's wise to plan for a long retirement.
                     </h1>
                   }
                 >
@@ -315,7 +356,8 @@ export default function Retire2nd() {
                     placement="top"
                     title={
                       <h1 className="text-[12.5px]">
-                        What do you expect your investments to earn between now and retirement? Our default of a 6% average annual return is a conservative estimate based on historic returns.
+                        What do you expect your investments to earn between now and retirement? Our default of a 6% average annual return is a
+                        conservative estimate based on historic returns.
                       </h1>
                     }
                   >
@@ -353,7 +395,8 @@ export default function Retire2nd() {
                     placement="top"
                     title={
                       <h1 className="text-[12.5px]">
-                        Your rate of return during retirement is typically lower than pre-retirement because most people invest at least a portion of their portfolio in lower-risk investments.
+                        Your rate of return during retirement is typically lower than pre-retirement because most people invest at least a portion of
+                        their portfolio in lower-risk investments.
                       </h1>
                     }
                   >
@@ -387,7 +430,11 @@ export default function Retire2nd() {
                   Inflation rate
                   <Tooltip
                     placement="top"
-                    title={<h1 className="text-[12.5px]">We have assumed an inflation rate of 3%. You can adjust this to see how inflation could affect your retirement savings.</h1>}
+                    title={
+                      <h1 className="text-[12.5px]">
+                        We have assumed an inflation rate of 3%. You can adjust this to see how inflation could affect your retirement savings.
+                      </h1>
+                    }
                   >
                     <HelpOutlineIcon className="!text-[16px] ml-[1px]" />
                   </Tooltip>
@@ -417,7 +464,7 @@ export default function Retire2nd() {
           )}
 
           <div className="w-full h-auto my-2">
-            <button className="p-2 dark:bg-darkText bg-lightText dark:text-lightText text-darkText  w-full rounded-md">Save And Continue</button>
+            <button disabled={userRetireGoalsLoading} className={`p-2 dark:bg-darkText bg-lightText dark:text-lightText text-darkText  w-full rounded-md`}>{userRetireGoalsLoading ? 'Loading...' : 'Save And Continue'}</button>
           </div>
         </form>
       </div>

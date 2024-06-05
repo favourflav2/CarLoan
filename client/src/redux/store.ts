@@ -1,16 +1,17 @@
-import { configureStore, combineReducers, createListenerMiddleware } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import carSlice from "./features/carSlice";
 import carStateSlice from "./features/carStateSlice";
-import applicationSlice, { setSelectedGoal } from "./features/applicationSlice";
-import retirementSlice, { setRetireGoals } from "./features/modalSlices/retirementSlice";
-import carModalSlice, { setCarGoals } from "./features/modalSlices/carModalSlice";
-import houseSlice, { setHouseGoals } from "./features/modalSlices/houseSlice";
-import authSlice, { setResestCheckEmailAndResetPasswordToken, setResetPasswordToken } from "./features/authSlice";
-import { isTokenExpired } from "./utils/isTokenExpired";
+import applicationSlice from "./features/applicationSlice";
+import retirementSlice from "./features/modalSlices/retirementSlice";
+import carModalSlice from "./features/modalSlices/carModalSlice";
+import houseSlice from "./features/modalSlices/houseSlice";
+import authSlice from "./features/authSlice";
+
 import tablesSlice from "./features/tablesSlice";
+import { listenerMiddleware } from "./listeners/listenerMiddleware";
 
 const persistConfig = {
   key: "root",
@@ -20,7 +21,6 @@ const persistConfig = {
   //whitelist: ["page", "app", "retireSlice", "carModalSlice"],
 };
 
-const listenerMiddleware = createListenerMiddleware();
 
 const reducer = combineReducers({
   car: carSlice,
@@ -45,68 +45,15 @@ export const store = configureStore({
     }).prepend(listenerMiddleware.middleware),
 });
 
-type RootState = ReturnType<typeof store.getState>;
-type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
 
 // Need this in order to use useDipatch and useSelctor
 export const Dispatch = useDispatch.withTypes<AppDispatch>();
 export const UseSelector: TypedUseSelectorHook<ReturnType<typeof store.getState>> = useSelector;
 
 
-// This is my session creator ... this will help me privatize my reset password pages
-//* Once the token we get from the backend expires my listen middleware will set the token state back the null and a user wont be able to go back to reset pages
-listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-  predicate: (_action, currentState, prevState) => {
-    const token = currentState.auth.resetPasswordToken;
 
-    if (!token) return false;
-
-    return isTokenExpired(token);
-  },
-  effect: async (_action, listenerApi) => {
-    const stateToken = listenerApi.getState().auth.resetPasswordToken;
-
-    if (stateToken) {
-      listenerApi.dispatch(setResetPasswordToken());
-    }
-  },
-});
-
-listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-  predicate: (_action, currentState, prevState) => {
-    const token = currentState.auth.checkEmailAndResetPasswordToken;
-
-    if (!token) return false;
-
-    return isTokenExpired(token);
-  },
-  effect: async (_action, listenerApi) => {
-    const stateToken = listenerApi.getState().auth.checkEmailAndResetPasswordToken;
-
-    if (stateToken) {
-      listenerApi.dispatch(setResestCheckEmailAndResetPasswordToken());
-    }
-  },
-});
-
-listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-  type:"logIn/fulfilled",
-  effect: async (_action, listenerApi) => {
-    listenerApi.dispatch(setSelectedGoal(null))
-    listenerApi.dispatch(setRetireGoals())
-    listenerApi.dispatch(setHouseGoals())
-    listenerApi.dispatch(setCarGoals())
-  },
-})
-listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-  type:"signUp/fulfilled",
-  effect: async (_action, listenerApi) => {
-    listenerApi.dispatch(setSelectedGoal(null))
-    listenerApi.dispatch(setRetireGoals())
-    listenerApi.dispatch(setHouseGoals())
-    listenerApi.dispatch(setCarGoals())
-  },
-})
 
 // // "logIn/fulfilled"
 

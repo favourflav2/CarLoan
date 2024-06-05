@@ -7,6 +7,7 @@ import { goal } from "../applicationSlice";
 export interface RetirementGoals {
   type: "Retirement";
   id: string;
+  creator:string | null;
   currentAge: number;
   retireAge: number;
   lifeExpectancy: number;
@@ -18,11 +19,13 @@ export interface RetirementGoals {
   inflation: number;
   title: string;
   showInputs: boolean;
+  date: Date | null
 }
 
 export interface RetirementGoalNoFormat {
   type: "Retirement";
   id: string;
+  creator:string | null;
   currentAge: number;
   retireAge: number;
   lifeExpectancy: number;
@@ -34,7 +37,26 @@ export interface RetirementGoalNoFormat {
   inflation: string;
   title: string;
   showInputs:boolean;
+  date: Date | null
 }
+
+// export interface RetirementGoalsAuth {
+//   type: "Retirement";
+//   creator:string;
+//   id: string;
+//   currentAge: number;
+//   retireAge: number;
+//   lifeExpectancy: number;
+//   savings: number;
+//   monthlyContribution: number;
+//   budget: number;
+//   preRate: number;
+//   postRate: number;
+//   inflation: number;
+//   title: string;
+//   showInputs: boolean;
+//   date:Date
+// }
 
 interface InputRetireErrors {
   [key: string]: any;
@@ -55,7 +77,7 @@ const retirementSlice = createSlice({
   initialState,
   reducers: {
     addRetireGoal: (state, action:PayloadAction<RetirementGoalNoFormat>) => {
-      const { currentAge, lifeExpectancy, type, retireAge, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title, showInputs } = action.payload;
+      const { currentAge, lifeExpectancy, type, retireAge, budget, preRate, postRate, inflation, monthlyContribution, id, savings, title, showInputs, creator, date } = action.payload;
       const formattedData: RetirementGoals = {
         id,
         type,
@@ -69,7 +91,9 @@ const retirementSlice = createSlice({
         monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
         title,
-        showInputs
+        showInputs,
+        creator,
+        date
       };
 
       state.retireGoals = [...state.retireGoals, formattedData];

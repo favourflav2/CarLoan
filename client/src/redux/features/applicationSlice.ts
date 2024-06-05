@@ -10,7 +10,7 @@ interface AppSlice {
   retireModal: boolean;
   carModal: boolean;
   houseModal: boolean;
-  selectedGoal: RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
+  selectedGoal: RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData
   shrinkDashboardSidebar: boolean;
   shrinkRetirementInputs: boolean;
   showHaveExample: boolean;
@@ -64,7 +64,7 @@ const appSlice = createSlice({
       switch (type) {
         case "Retirement":
           if (type !== "Retirement") return;
-          const { budget, preRate, postRate, inflation, monthlyContribution, savings, title, lifeExpectancy, currentAge, retireAge } = action.payload;
+          const { budget, preRate, postRate, inflation, monthlyContribution, savings, title, lifeExpectancy, currentAge, retireAge, creator, date } = action.payload;
           const retireData: RetirementGoals = {
             id: action.payload.id,
             type,
@@ -79,6 +79,8 @@ const appSlice = createSlice({
             savings: parseFloat(savings.replace(/[,%$]/gm, "")),
             title,
             showInputs: true,
+            creator,
+            date
           };
           state.selectedGoal = retireData;
           break;

@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
-import { removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
+import {  removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
 import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
@@ -13,18 +13,18 @@ import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features
 export interface IUserDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
-  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
+  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData
 }
 
 export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUserDashboardCardProps) {
-    // Redux States
-    const {userGoals} = UseSelector(state => state.tableSlice)
+  // Redux States
+  const { userGoals } = UseSelector((state) => state.tableSlice);
   const dispatch = Dispatch();
   // ref
   const ref = React.useRef(null);
 
   // Switch function that use selected goal type as case
-  function switchCase(item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData) {
+  function switchCase(item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData ) {
     switch (item?.type) {
       case "Retirement":
         if (!item) return;
@@ -81,8 +81,8 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
 
   // Change Selected Goal backgound color
   function changeBgColor(
-    item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData,
-    goal: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData | null
+    item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData ,
+    goal: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData | null 
   ) {
     if (!goal) return "";
     switch (item.type) {
@@ -98,6 +98,49 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
       default:
         return;
     }
+  }
+
+
+
+  function renderRightTimeWithObj(item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData) {
+    switch (item.type) {
+      case "Retirement":
+       if(item.date){
+        return (
+          <>
+            <p className="text-[12.5px] sm:block hidden">{dayjs(item.date).format("MMM D, YYYY h:mm a ")}</p>
+            <p className="text-[12.5px] sm:hidden block">{dayjs(item.date).format("M/D/YY h:mm a ")}</p>
+          </>
+        )
+       }else{
+        return (
+          <>
+            <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+            <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
+          </>
+        )
+       }
+      case "Car":
+        return (
+          <>
+            <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+            <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
+          </>
+        )
+      case "House":
+        return (
+          <>
+            <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+            <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
+          </>
+        )
+      default:
+        return;
+    }
+  }
+
+  if (userGoals.data.length) {
+    renderRightTimeWithObj(userGoals.data[0]);
   }
   return (
     <>
@@ -173,8 +216,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
                     <p className="text-[12.5px] flex items-center justify-center">{item.type}</p>
                   </div>
                 )}
-                <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
-                <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
+                {renderRightTimeWithObj(item)}
               </div>
             </div>
           ))}

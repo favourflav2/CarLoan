@@ -12,8 +12,8 @@ import { NumericFormat } from "react-number-format";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { editRetireGoal } from "../../redux/features/modalSlices/retirementSlice";
 import { editSelectedGoal, setSelectedGoal } from "../../redux/features/applicationSlice";
-import _ from "lodash";
 import { schema } from "./inputSchema";
+import useCheckValidRetire from "./hooks/useCheckValidRetire";
 
 type FormFields = z.infer<typeof schema>;
 
@@ -24,9 +24,6 @@ export default function RetirementInputs() {
 
   // Advanced Details State
   const [details, setDetails] = React.useState(false);
-
-  // All react hook form states
-  const [showUpadateBtn, setShowUpdateBtn] = React.useState<boolean>(false);
 
   // Form Feilds
   const {
@@ -60,55 +57,10 @@ export default function RetirementInputs() {
   const allInputData = watch();
   const errorsArray = Object.keys(errors);
 
-  React.useEffect(() => {
-    function checkValid(
-      select: RetirementGoals,
-      inputStates:any
-    ) {
-      if (!select) return false;
-      const { title, id, type, showInputs } = select;
-     
-      const {
-        age: { lifeExpectancy, currentAge, retireAge },
-        savings,
-        budget,
-        preRate,
-        inflation,
-        postRate,
-        monthlyContribution,
-      } = inputStates;
+   // show update button
+ const {showUpadateBtn} = useCheckValidRetire({selectedGoal,watch})
 
-      const obj: RetirementGoals = {
-        id,
-        title,
-        currentAge,
-        lifeExpectancy,
-        retireAge,
-        type,
-        budget: parseFloat(budget.replace(/[,%$]/gm, "")),
-        preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
-        postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
-        inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
-        monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
-        savings: parseFloat(savings.replace(/[,%$]/gm, "")),
-        showInputs
-      };
-
-      const isTheSame = _.isEqual(obj, select);
-      if (isTheSame) {
-        setShowUpdateBtn(false);
-        return false;
-      } else {
-        setShowUpdateBtn(true);
-        return true;
-      }
-    }
-    const subscription = watch((data) => {
-      if (!selectedGoal || selectedGoal?.type !== "Retirement") return;
-      checkValid(selectedGoal, data);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, selectedGoal]);
+  
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
@@ -159,7 +111,9 @@ export default function RetirementInputs() {
       inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
       monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
       savings: parseFloat(savings.replace(/[,%$]/gm, "")),
-      showInputs
+      showInputs,
+      creator:null,
+      date:null
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));

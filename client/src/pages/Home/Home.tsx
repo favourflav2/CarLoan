@@ -31,7 +31,7 @@ export default function Home() {
   const { retireGoals } = UseSelector((state) => state.retireSlice);
   const { carGoals } = UseSelector((state) => state.carModalSlice);
   const { houseGoals } = UseSelector((state) => state.houseSlice);
-  const { userGoals, pageState } = UseSelector((state) => state.tableSlice);
+  const { userGoals, pageState, userGoalsLoading } = UseSelector((state) => state.tableSlice);
   const dispatch = Dispatch();
 
   // User stuff
@@ -132,7 +132,7 @@ export default function Home() {
               <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
 
               {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
-              <div className="w-full h-[600px] overflow-y-auto" ref={clickRef}>
+              <div className={`w-full h-[600px] overflow-y-auto no-scrollbar  ${!userGoalsLoading && userGoals.data.length > 5 && 'border-gray-500 border-b-2 dark:border-white' }`} ref={clickRef}>
                 {!User ? (
                   <DashboardMappedData
                     setFirstModal={setFirstModal}
@@ -149,7 +149,7 @@ export default function Home() {
               </div>
 
               {/* Pagination */}
-              <div className="w-full h-auto mt-5 flex justify-center">
+              {!userGoalsLoading && userGoals.data.length > 5 && <div className="w-full h-auto mt-5 flex justify-center">
                 <Pagination
                   count={userGoals.totalPages || 0}
                   page={pageState}
@@ -167,7 +167,7 @@ export default function Home() {
                     },
                   }}
                 />
-              </div>
+              </div>}
             </motion.div>
           )}
         </div>
