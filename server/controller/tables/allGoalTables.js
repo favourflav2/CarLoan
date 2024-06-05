@@ -46,4 +46,15 @@ export async function get_All_Tables(req, res) {
   }
 }
 
+export async function delete_From_All_Tables(req,res){
+  try{
+    console.log(req.body)
+    res.send("hwllow")
+
+  }catch(e){
+    console.log(e);
+    res.status(400).json({ msg: e.message });
+  }
+}
+
 
