@@ -10,7 +10,7 @@ export default function Retire1st(props: IRetire1stProps) {
   // Redux States
   const dispatch = Dispatch();
 
- 
+
   return (
     <motion.div
       className="w-full h-full  flex flex-col  text-lightText dark:text-darkText"
@@ -21,10 +21,10 @@ export default function Retire1st(props: IRetire1stProps) {
         delay: 0.3,
         ease: [0, 0.71, 0.2, 1.01],
       }}
-     
+
     >
       {/* First Box */}
-      <div className="w-full justify-between flex items-center ">
+      <div className="w-full justify-between flex items-center " >
         <h1 className=" text-[22px] font-medium">Retirement</h1>
         <CloseOutlinedIcon onClick={() => dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }))} className=" cursor-pointer"/>
       </div>

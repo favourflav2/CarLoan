@@ -122,13 +122,13 @@ export default function Retire2nd() {
         duration: 0.3,
         delay: 0.3,
       }}
-      className="w-full h-full "
+      className="w-full h-full " 
     >
       {/* Content */}
-      <div className="w-full h-full flex flex-col dark:text-gray-300 text-black ">
+      <div className="w-full h-full flex flex-col dark:text-gray-300 text-black "  >
         {/* First Box */}
         <div className="w-full justify-between flex items-center ">
-          <h1 className=" text-[22px] font-medium">Retirement Details</h1>
+          <h1 className=" text-[22px] font-medium"  >Retirement Details</h1>
           <CloseOutlinedIcon
             onClick={() => {
               dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
