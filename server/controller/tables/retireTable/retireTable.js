@@ -18,14 +18,14 @@ pool.on("error", (err, client) => {
 export async function create_Retire_Table(req, res) {
   try {
     const { data, creator } = req.body;
-    const { id, type, retireAge, lifeExpectancy, currentAge, budget, preRate, postRate, inflation, monthlyContribution, savings, title, showInputs } =
+    const { type, retireAge, lifeExpectancy, currentAge, budget, preRate, postRate, inflation, monthlyContribution, savings, title, showInputs } =
       data;
 
     // Loops over object to make sure all my values that need to be numbers are numbers
     const checkObjValues = Object.keys(data).every((key) => {
       const value = data[key];
 
-      if (key !== "id" && key !== "type" && key !== "showInputs" && key !== "title") {
+      if (key !== "id" && key !== "type" && key !== "showInputs" && key !== "title" && key !== "creator" && key !== "date") {
         if (typeof value !== "number") {
           return false;
         }
