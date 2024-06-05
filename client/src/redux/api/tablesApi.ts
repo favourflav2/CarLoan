@@ -23,3 +23,7 @@ export interface AddRetireGoalObj {
 export function add_Retire_Goal(data:AddRetireGoalObj){
     return API.post("/retire/createRetire",data)
 }
+
+export function delete_Retire_Goal(data:{type:"Retirement" | "House" | "Car", id:string}){
+    return API.delete(`/allTables/delete?type=${data.type}&id=${data.id}`)
+}

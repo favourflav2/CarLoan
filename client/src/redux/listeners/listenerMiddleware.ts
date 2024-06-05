@@ -6,7 +6,7 @@ import { setSelectedGoal } from "../features/applicationSlice";
 import { setRetireGoals } from "../features/modalSlices/retirementSlice";
 import { setHouseGoals } from "../features/modalSlices/houseSlice";
 import { setCarGoals } from "../features/modalSlices/carModalSlice";
-import { createRetireGoal, getAllGoals } from "../features/tablesSlice";
+import { createRetireGoal, deleteRetireGoal, getAllGoals } from "../features/tablesSlice";
 
 
  export const listenerMiddleware = createListenerMiddleware();
@@ -73,9 +73,8 @@ listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
 
   // When user creates new retire goal I want to refetch data
   listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-    matcher: isAnyOf(createRetireGoal.fulfilled),
+    matcher: isAnyOf(createRetireGoal.fulfilled,deleteRetireGoal.fulfilled),
     effect: async (_action, listenerApi) => {
-      console.log(_action)
       listenerApi.dispatch(getAllGoals({ limit: 10, page: 1 }))
     },
   })

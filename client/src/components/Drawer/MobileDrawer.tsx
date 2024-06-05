@@ -72,7 +72,7 @@ export default function MobileDrawer({
                 carGoals={carGoals}
               />
             ) : (
-              <UserDashBoardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} selectedGoal={selectedGoal} />
+              <UserDashBoardMappedData setFirstModal={setFirstModal} type="mobile" setOpen={setOpen} selectedGoal={selectedGoal} />
             )}
           </div>
 

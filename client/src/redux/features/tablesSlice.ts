@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddRetireGoalObj, add_Retire_Goal, get_All_Goals } from "../api/tablesApi";
+import { AddRetireGoalObj, add_Retire_Goal, delete_Retire_Goal, get_All_Goals } from "../api/tablesApi";
 
 interface UserGoalsObj {
   data: Array<RetirementGoals| CarObjWithFormattedData | HouseObjWithFormattedData>;
@@ -60,6 +60,15 @@ export const createRetireGoal = createAsyncThunk("createRetireGoal", async ({ da
   }
 });
 
+export const deleteRetireGoal = createAsyncThunk("deleteRetireGoal", async (data:{type:"Retirement" | "House" | "Car", id:string}, { rejectWithValue }) => {
+  try {
+    const res = await delete_Retire_Goal(data);
+    return res.data;
+  } catch (e: any) {
+    return rejectWithValue(e.response.data.msg);
+  }
+});
+
 const tableSlice = createSlice({
   name: "tables",
   initialState,
@@ -67,6 +76,9 @@ const tableSlice = createSlice({
     setPageState: (state, action: PayloadAction<number>) => {
       state.pageState = action.payload;
     },
+    setUserGoalError: (state) => {
+      state.userGoalsError = ""
+    }
   },
   extraReducers(builder) {
     builder
@@ -87,15 +99,28 @@ const tableSlice = createSlice({
       .addCase(createRetireGoal.pending, (state) => {
         state.userRetireGoalsLoading = true;
       })
-      .addCase(createRetireGoal.fulfilled, (state, action: PayloadAction<UserGoalsObj>) => {
+      .addCase(createRetireGoal.fulfilled, (state) => {
         state.userRetireGoalsError = false
         state.userRetireGoalsLoading = false;
       })
       .addCase(createRetireGoal.rejected, (state, action) => {
         state.userRetireGoalsError = action.payload;
         state.userRetireGoalsLoading = false;
-      });
+      })
+
+       // Add retire goal
+       .addCase(deleteRetireGoal.pending, (state) => {
+        state.userRetireGoalsLoading = true;
+      })
+      .addCase(deleteRetireGoal.fulfilled, (state) => {
+        state.userRetireGoalsError = false
+        state.userRetireGoalsLoading = false;
+      })
+      .addCase(deleteRetireGoal.rejected, (state, action) => {
+        state.userRetireGoalsError = action.payload;
+        state.userRetireGoalsLoading = false;
+      })
   },
 });
 export default tableSlice.reducer;
-export const { setPageState } = tableSlice.actions;
+export const { setPageState, setUserGoalError } = tableSlice.actions;

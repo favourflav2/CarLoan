@@ -15,7 +15,7 @@ import dayjs from "dayjs";
 import { RetirementGoals, addRetireGoal } from "../../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoalNoFormat } from "../../../redux/features/modalSlices/retirementSlice";
 import { retireModalSchema } from "./retireModalSchema";
-import { createRetireGoal } from "../../../redux/features/tablesSlice";
+import { createRetireGoal, setUserGoalError } from "../../../redux/features/tablesSlice";
 
 type FormFields = z.infer<typeof retireModalSchema>;
 
@@ -56,6 +56,7 @@ export default function Retire2nd() {
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const date = new Date();
     data.id = dayjs(date).format("MMM D, YYYY h:mm:ss");
+    dispatch(setUserGoalError())
 
     const { age, savings, postRate, preRate, title, id, monthlyContribution, budget, inflation } = data;
 

@@ -5,36 +5,52 @@ import dayjs from "dayjs";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CircleOutlinedIcon from "@mui/icons-material/CircleOutlined";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
-import {  removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
+import { removeRetireItem } from "../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
 import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
+import { deleteRetireGoal } from "../../redux/features/tablesSlice";
 
 export interface IUserDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
-  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData
+  selectedGoal: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData;
 }
 
 export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUserDashboardCardProps) {
   // Redux States
   const { userGoals } = UseSelector((state) => state.tableSlice);
+  const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
+
+  // user Id
+  const userId = user?.userObj.id;
+
   // ref
   const ref = React.useRef(null);
 
   // Switch function that use selected goal type as case
-  function switchCase(item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData ) {
+  //* If the selected goal is the current item we want to deleted we set the selected goal to null and remove the item
+  function switchCase(item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (item?.type) {
       case "Retirement":
         if (!item) return;
         if (item.type !== "Retirement") return;
 
-        if (selectedGoal?.id === item.id) {
-          dispatch(setSelectedGoal(null));
-          dispatch(removeRetireItem(item));
+        if (userId) {
+          if (selectedGoal?.id === item.id) {
+            dispatch(setSelectedGoal(null));
+            dispatch(deleteRetireGoal({ type: item.type, id: item.id }));
+          } else {
+            dispatch(deleteRetireGoal({ type: item.type, id: item.id }));
+          }
         } else {
-          dispatch(removeRetireItem(item));
+          if (selectedGoal?.id === item.id) {
+            dispatch(setSelectedGoal(null));
+            dispatch(removeRetireItem(item));
+          } else {
+            dispatch(removeRetireItem(item));
+          }
         }
 
         break;
@@ -81,8 +97,8 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
 
   // Change Selected Goal backgound color
   function changeBgColor(
-    item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData ,
-    goal: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData | null 
+    item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData,
+    goal: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData | null
   ) {
     if (!goal) return "";
     switch (item.type) {
@@ -100,48 +116,43 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
     }
   }
 
-
-
   function renderRightTimeWithObj(item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (item.type) {
       case "Retirement":
-       if(item.date){
-        return (
-          <>
-            <p className="text-[12.5px] sm:block hidden">{dayjs(item.date).format("MMM D, YYYY h:mm a ")}</p>
-            <p className="text-[12.5px] sm:hidden block">{dayjs(item.date).format("M/D/YY h:mm a ")}</p>
-          </>
-        )
-       }else{
-        return (
-          <>
-            <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
-            <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
-          </>
-        )
-       }
+        if (item.date) {
+          return (
+            <>
+              <p className="text-[12.5px] sm:block hidden">{dayjs(item.date).format("MMM D, YYYY h:mm a ")}</p>
+              <p className="text-[12.5px] sm:hidden block">{dayjs(item.date).format("M/D/YY h:mm a ")}</p>
+            </>
+          );
+        } else {
+          return (
+            <>
+              <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+              <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
+            </>
+          );
+        }
       case "Car":
         return (
           <>
             <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
             <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
           </>
-        )
+        );
       case "House":
         return (
           <>
             <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
             <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
           </>
-        )
+        );
       default:
         return;
     }
   }
 
-  if (userGoals.data.length) {
-    renderRightTimeWithObj(userGoals.data[0]);
-  }
   return (
     <>
       {userGoals.data.length ? (
@@ -169,7 +180,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
                   ref={ref}
                   className="text-[20px]"
                   onClick={() => {
-                    const confirmBox = window.confirm("Do you really want to delete this Crumb?");
+                    const confirmBox = window.confirm("Do you really want to delete this goal?");
                     if (confirmBox === true) {
                       switchCase(item);
                     }
