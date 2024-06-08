@@ -84,7 +84,7 @@ export default function Login() {
             <h1 className="font-bold text-[35px] sm:my-10 my-4">Login</h1>
 
             {/* Form */}
-            <form className="w-full flex flex-col" onClick={handleSubmit(onSubmit)}>
+            <form className="w-full flex flex-col" onSubmit={handleSubmit(onSubmit)}>
               {/* Name & Email */}
 
               <div className="w-full flex flex-col sm:mb-3 mb-2">

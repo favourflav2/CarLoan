@@ -18,7 +18,7 @@ export default function useFormHookLogin() {
     control,
     formState: { errors },
   } = useForm<FormFieldsLogin>({
-    //mode: "all",
+    mode: "all",
     defaultValues: {
       email: "",
       password: "",

@@ -87,7 +87,7 @@ export default function SignUp(props: ISignUpProps) {
             <h1 className="font-bold text-[35px] sm:my-10 my-4">Sign Up</h1>
 
             {/* Form */}
-            <form className="w-full flex flex-col" onClick={handleSubmit(onSubmit)}>
+            <form className="w-full flex flex-col" onSubmit={handleSubmit(onSubmit)}>
               {/* Name & Email */}
               <div className="w-full h-auto grid xl:grid-cols-2 xl:gap-x-6 grid-cols-1 sm:mb-3 mb-2">
                 <div className="w-full flex flex-col xl:mb-0 mb-3">

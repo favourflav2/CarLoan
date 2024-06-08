@@ -18,7 +18,7 @@ export default function useFormHookSignUp() {
     control,
     formState: { errors, isSubmitSuccessful, isSubmitted },
   } = useForm<FormFieldsSignUp>({
-    //mode: "all",
+    mode: "all",
     defaultValues: {
       name: "",
       email: "",

@@ -64,7 +64,7 @@ export default function ForgotPassword() {
           <p className="text-[13px] mt-1  text-gray-500">No worries! Just enter your email, and we will assit you</p>
         </div>
         {/* Form */}
-        <form className="w-full flex flex-col my-3" onClick={handleSubmit(onSubmit)}>
+        <form className="w-full flex flex-col my-3" onSubmit={handleSubmit(onSubmit)}>
           {/* Name & Email */}
           <div className="w-full flex flex-col sm:mb-3 mb-2">
             <label htmlFor="" className="text-[13px] mb-1">
