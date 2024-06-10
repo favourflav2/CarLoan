@@ -1,5 +1,9 @@
 import axios from "axios";
 import { RetirementGoals } from "../features/modalSlices/retirementSlice";
+export interface AddRetireGoalObj {
+    creator:string;
+    data:RetirementGoals
+}
 
 const API = axios.create({ baseURL: "http://localhost:5001" });
 
@@ -16,14 +20,14 @@ export function get_All_Goals(data:{limit:number,page:number}){
 }
 
 // Retire routes
-export interface AddRetireGoalObj {
-    creator:string;
-    data:RetirementGoals
-}
 export function add_Retire_Goal(data:AddRetireGoalObj){
     return API.post("/retire/createRetire",data)
 }
+export function update_Retire_Goal(data:{type:"Retirement" | "House" | "Car", id:string, inputData:RetirementGoals}){
+    return API.post("/retire/updateRetire",data)
+}
 
-export function delete_Retire_Goal(data:{type:"Retirement" | "House" | "Car", id:string}){
+// All Tables
+export function delete_A_Goal(data:{type:"Retirement" | "House" | "Car", id:string}){
     return API.delete(`/allTables/delete?type=${data.type}&id=${data.id}`)
 }

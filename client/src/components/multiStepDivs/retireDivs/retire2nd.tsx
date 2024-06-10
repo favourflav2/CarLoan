@@ -75,8 +75,8 @@ export default function Retire2nd() {
         savings: parseFloat(savings.replace(/[,%$]/gm, "")),
         title,
         showInputs:true,
-        date:null,
-        creator:null
+        date:new Date(),
+        creator:userId
       };
 
       dispatch(createRetireGoal({data:formattedData,creator:userId}))

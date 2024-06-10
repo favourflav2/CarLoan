@@ -2,7 +2,8 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddRetireGoalObj, add_Retire_Goal, delete_Retire_Goal, get_All_Goals } from "../api/tablesApi";
+import { AddRetireGoalObj, add_Retire_Goal, delete_A_Goal, get_All_Goals, update_Retire_Goal } from "../api/tablesApi";
+import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
   data: Array<RetirementGoals| CarObjWithFormattedData | HouseObjWithFormattedData>;
@@ -62,7 +63,16 @@ export const createRetireGoal = createAsyncThunk("createRetireGoal", async ({ da
 
 export const deleteRetireGoal = createAsyncThunk("deleteRetireGoal", async (data:{type:"Retirement" | "House" | "Car", id:string}, { rejectWithValue }) => {
   try {
-    const res = await delete_Retire_Goal(data);
+    const res = await delete_A_Goal(data);
+    return res.data;
+  } catch (e: any) {
+    return rejectWithValue(e.response.data.msg);
+  }
+});
+
+export const updateRetireGoal = createAsyncThunk("updateRetireGoal", async (data:{type:"Retirement" | "House" | "Car", id:string, inputData:RetirementGoals}, { rejectWithValue }) => {
+  try {
+    const res = await update_Retire_Goal(data);
     return res.data;
   } catch (e: any) {
     return rejectWithValue(e.response.data.msg);
@@ -108,7 +118,7 @@ const tableSlice = createSlice({
         state.userRetireGoalsLoading = false;
       })
 
-       // Add retire goal
+       // Delete retire goal
        .addCase(deleteRetireGoal.pending, (state) => {
         state.userRetireGoalsLoading = true;
       })
@@ -120,6 +130,22 @@ const tableSlice = createSlice({
         state.userRetireGoalsError = action.payload;
         state.userRetireGoalsLoading = false;
       })
+
+       // Update retire goal
+       .addCase(updateRetireGoal.pending, (state) => {
+        state.userRetireGoalsLoading = true;
+      })
+      .addCase(updateRetireGoal.fulfilled, (state, action:PayloadAction<string>) => {
+        toast.success(action.payload)
+        state.userRetireGoalsError = false
+        state.userRetireGoalsLoading = false;
+      })
+      .addCase(updateRetireGoal.rejected, (state, action) => {
+        state.userRetireGoalsError = action.payload;
+        state.userRetireGoalsLoading = false;
+      })
+
+
   },
 });
 export default tableSlice.reducer;

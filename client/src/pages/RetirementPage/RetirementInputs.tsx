@@ -14,6 +14,7 @@ import { editRetireGoal } from "../../redux/features/modalSlices/retirementSlice
 import { editSelectedGoal, setSelectedGoal } from "../../redux/features/applicationSlice";
 import { schema } from "./inputSchema";
 import useCheckValidRetire from "./hooks/useCheckValidRetire";
+import useHandleUpdate from "./hooks/useHandleUpdate";
 
 type FormFields = z.infer<typeof schema>;
 
@@ -83,42 +84,43 @@ export default function RetirementInputs() {
   }, [selectedGoal, reset]); // eslint-disable-line
 
   // Update Function
-  function handleUpdate() {
-    if (!selectedGoal?.id || selectedGoal?.type !== "Retirement") return;
+  const {handleUpdate} = useHandleUpdate({errorsArray,inputs:allInputData})
+  // function handleUpdate() {
+  //   if (!selectedGoal?.id || selectedGoal?.type !== "Retirement") return;
 
-    if (errorsArray.length) return;
+  //   if (errorsArray.length) return;
 
-    const {
-      age: { currentAge, lifeExpectancy, retireAge },
-      monthlyContribution,
-      preRate,
-      postRate,
-      inflation,
-      budget,
-      savings,
-    } = allInputData;
-    const { title, id, type, showInputs } = selectedGoal;
-    const newObj: RetirementGoals = {
-      id,
-      title,
-      type,
-      currentAge,
-      retireAge,
-      lifeExpectancy,
-      budget: parseFloat(budget.replace(/[,%$]/gm, "")),
-      preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
-      postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
-      inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
-      monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
-      savings: parseFloat(savings.replace(/[,%$]/gm, "")),
-      showInputs,
-      creator:null,
-      date:null
-    };
+  //   const {
+  //     age: { currentAge, lifeExpectancy, retireAge },
+  //     monthlyContribution,
+  //     preRate,
+  //     postRate,
+  //     inflation,
+  //     budget,
+  //     savings,
+  //   } = allInputData;
+  //   const { title, id, type, showInputs } = selectedGoal;
+  //   const newObj: RetirementGoals = {
+  //     id,
+  //     title,
+  //     type,
+  //     currentAge,
+  //     retireAge,
+  //     lifeExpectancy,
+  //     budget: parseFloat(budget.replace(/[,%$]/gm, "")),
+  //     preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
+  //     postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
+  //     inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
+  //     monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
+  //     savings: parseFloat(savings.replace(/[,%$]/gm, "")),
+  //     showInputs,
+  //     creator:null,
+  //     date:null
+  //   };
 
-    dispatch(editSelectedGoal({ goal: newObj }));
-    dispatch(editRetireGoal({ id, title, goal: newObj }));
-  }
+  //   dispatch(editSelectedGoal({ goal: newObj }));
+  //   dispatch(editRetireGoal({ id, title, goal: newObj }));
+  // }
 
 
   if (!selectedGoal || selectedGoal?.type !== "Retirement") {
