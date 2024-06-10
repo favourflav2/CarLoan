@@ -1,7 +1,7 @@
 import { env } from "custom-env";
 env(true);
 import pg from "pg";
-import { CreateRetireGoal, RetirementGoalsBackEnd } from "../../controllerTypes/retireTypes.js";
+import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 
 
@@ -55,10 +55,25 @@ export async function create_Retire_Goal(req:CreateRetireGoal, res:Response) {
   }
 }
 
-export async function update_Retire_Table(req:any,res:any){
+export async function update_Retire_Table(req:UpdateRetireGoal,res:Response){
   try{
-    console.log(req.body)
-    res.send("hello")
+    const {type, inputData, id} = req.body
+    const {currentAge, retireAge, lifeExpectancy, savings,monthlyContribution, budget, preRate, postRate, inflation, creator} = inputData
+
+    // checking values ... making sure they are of type number
+    const checkValues = [currentAge, retireAge, lifeExpectancy, savings,monthlyContribution, budget, preRate, postRate, inflation].every(item => typeof item === 'number')
+
+    if(!checkValues) return res.status(400).json({msg:"There was an error, one of the values being sent to server is not a number. Please make sure you have entered number values"})
+
+    const text = 'UPDATE retire SET "currentAge" = $1, "retireAge" = $2, "lifeExpectancy" = $3, savings = $4, "monthlyContribution" = $5, budget = $6, "preRate" = $7, "postRate" = $8, inflation = $9 WHERE creator = $10 AND id = $11 RETURNING *'
+    const values = [currentAge, retireAge, lifeExpectancy,
+      savings, monthlyContribution,
+      budget,preRate, postRate, inflation,
+      creator,id
+    ]
+    await pool.query(text,values)
+
+    res.status(200).json("You successfully updated your goal :)")
 
   }catch(e){
     console.log(e);

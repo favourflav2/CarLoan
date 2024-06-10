@@ -36,7 +36,7 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
     const newPage = parseFloat(page);
     const newLimit = parseFloat(limit);
 
-    const retireText = "SELECT * FROM retire WHERE creator = $1";
+    const retireText = "SELECT * FROM retire WHERE creator = $1 ORDER BY date ASC";
     const retireTable = await pool.query(retireText, [userId]);
 
     // Paginate Data
