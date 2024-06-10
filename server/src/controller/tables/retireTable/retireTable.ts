@@ -1,7 +1,7 @@
 import { env } from "custom-env";
 env(true);
 import pg from "pg";
-import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal } from "../../controllerTypes/retireTypes.js";
+import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 
 
@@ -74,6 +74,26 @@ export async function update_Retire_Table(req:UpdateRetireGoal,res:Response){
     await pool.query(text,values)
 
     res.status(200).json("You successfully updated your goal :)")
+
+  }catch(e){
+    console.log(e);
+    res.status(400).json({ msg: e.message });
+  }
+}
+
+export async function update_RetireTable_Name(req:UpdateRetiretTitle, res:Response){
+  try{
+    const userId = req.userId
+    const {title, id} = req.body
+
+    if(!id) return res.status(400).json({msg:"The title you are trying to edit did not have an id. Either delete this goal and make a new one or wait a sec."})
+
+    const text = 'UPDATE retire SET title = $1 WHERE id = $2 AND creator = $3 RETURNING *'
+    const values = [title,id,userId]
+    await pool.query(text,values)
+
+
+    res.status(200).json("You successfully updated your title :)")
 
   }catch(e){
     console.log(e);

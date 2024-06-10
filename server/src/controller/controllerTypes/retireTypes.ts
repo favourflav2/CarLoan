@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { IGetUserAuthInfoRequest } from "../../middleware/authMiddleware.js";
 
 export interface RetirementGoalsBackEnd {
     type: "Retirement";
@@ -48,5 +49,13 @@ export interface RetirementGoalsBackEnd {
         showInputs: boolean;
         date: Date
       }
+    }
+  }
+
+  // Update Retire Title
+  export interface UpdateRetiretTitle extends IGetUserAuthInfoRequest {
+    body:{
+      title:string;
+      id:string | undefined;
     }
   }
