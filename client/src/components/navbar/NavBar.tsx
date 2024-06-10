@@ -10,6 +10,8 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { setLogout } from "../../redux/features/authSlice";
 import { isTokenExpired } from "../../redux/utils/isTokenExpired";
 
+
+
 export interface INavBarProps {}
 
 export default function NavBar(props: INavBarProps) {
@@ -53,14 +55,15 @@ export default function NavBar(props: INavBarProps) {
   }, [lightAndDarkMode]);
 
   // Jwt Decode
-  React.useEffect(() => {
-    if (token) {
-      if (isTokenExpired(token)) {
-        dispatch(setLogout());
-        navigate("/");
-      }
-    }
-  }, [token]); // eslint-disable-line
+   React.useEffect(() => {
+     if (token) {
+       if (isTokenExpired(token)) {
+         dispatch(setLogout());
+         navigate("/");
+         
+       }
+     }
+   }, [token]); // eslint-disable-line
 
   if (
     pathname === "/auth/login" ||

@@ -1,7 +1,7 @@
 import { createListenerMiddleware, isAnyOf} from "@reduxjs/toolkit";
 import { RootState, AppDispatch } from "../store";
 import { isTokenExpired } from "../utils/isTokenExpired";
-import { setResestCheckEmailAndResetPasswordToken, setResetPasswordToken } from "../features/authSlice";
+import { setLogout, setResestCheckEmailAndResetPasswordToken, setResetPasswordToken } from "../features/authSlice";
 import { setSelectedGoal } from "../features/applicationSlice";
 import { setRetireGoals } from "../features/modalSlices/retirementSlice";
 import { setHouseGoals } from "../features/modalSlices/houseSlice";
@@ -43,6 +43,27 @@ listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
   
       if (stateToken) {
         listenerApi.dispatch(setResestCheckEmailAndResetPasswordToken());
+      }
+    },
+  });
+
+  // I have a useEffect in my navbar that is responseable for logging out a user when a token is expired
+  //* However, it needs an action to do it and recently it didnt call right away 
+  // So im also going to create a listener 
+  listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
+    predicate: (_action, currentState, prevState) => {
+      const token = currentState.auth.user?.token
+     
+  
+      if (!token) return false;
+  
+      return isTokenExpired(token);
+    },
+    effect: async (_action, listenerApi) => {
+      const stateToken = listenerApi.getState().auth.user?.token
+     
+      if (stateToken) {
+        listenerApi.dispatch(setLogout());
       }
     },
   });
