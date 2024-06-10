@@ -14,6 +14,7 @@ import { editRetireGoalTitle } from "../../redux/features/modalSlices/retirement
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
 import useFVRetireData from "./hooks/useFVRetireData";
+import { updateRetireTableName } from "../../redux/features/tablesSlice";
 
 
 const schema = z.object({
@@ -34,7 +35,10 @@ type FormFields = z.infer<typeof schema>;
 export default function RetirementPage() {
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const {user} = UseSelector(state => state.auth)
   const dispatch = Dispatch();
+
+  const userId = user?.userObj.id
 
   // Form Feilds
   const {
@@ -55,6 +59,7 @@ export default function RetirementPage() {
 
   // Id
   const id = selectedGoal?.id;
+
 
   // Scroll to top on render
   React.useEffect(() => {
@@ -81,11 +86,21 @@ export default function RetirementPage() {
 
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    dispatch(editRetireGoalTitle({ id, newTitle: data?.title, goal: selectedGoal }));
 
-    dispatch(editSelectedGoalTitle({ title: data?.title, goal: selectedGoal }));
-    setEditState(false);
-    setSaveBtn(false);
+    // If userId we will update by sending data to backend
+    if(userId){
+      dispatch(updateRetireTableName({title:data?.title, id}))
+      dispatch(editSelectedGoalTitle({ title: data?.title, goal: selectedGoal }));
+      setEditState(false);
+      setSaveBtn(false);
+    }else{
+      dispatch(editRetireGoalTitle({ id, newTitle: data?.title, goal: selectedGoal }));
+
+      dispatch(editSelectedGoalTitle({ title: data?.title, goal: selectedGoal }));
+      setEditState(false);
+      setSaveBtn(false);
+    }
+    
   };
 
   const { have, need, needFinalPrice, needMonthlyContribution, haveRetireBudget } = useFVRetireData();

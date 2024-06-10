@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddRetireGoalObj, add_Retire_Goal, delete_A_Goal, get_All_Goals, update_Retire_Goal } from "../api/tablesApi";
+import { AddRetireGoalObj, add_Retire_Goal, delete_A_Goal, get_All_Goals, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
@@ -79,6 +79,15 @@ export const updateRetireGoal = createAsyncThunk("updateRetireGoal", async (data
   }
 });
 
+export const updateRetireTableName = createAsyncThunk("updateRetireTableName", async (data:{title:string, id:string | undefined}, {rejectWithValue}) => {
+  try{
+    const res = await update_RetireTable_Title(data)
+    return res.data
+  }catch(e:any){
+    return rejectWithValue(e.response.data.msg);
+  }
+})
+
 const tableSlice = createSlice({
   name: "tables",
   initialState,
@@ -141,6 +150,21 @@ const tableSlice = createSlice({
         state.userRetireGoalsLoading = false;
       })
       .addCase(updateRetireGoal.rejected, (state, action) => {
+        state.userRetireGoalsError = action.payload;
+        state.userRetireGoalsLoading = false;
+      })
+
+      // Update retire title
+      .addCase(updateRetireTableName.pending, (state) => {
+        state.userRetireGoalsLoading = true;
+      })
+      .addCase(updateRetireTableName.fulfilled, (state, action:PayloadAction<string>) => {
+        toast.success(action.payload)
+        state.userRetireGoalsError = false
+        state.userRetireGoalsLoading = false;
+      })
+      .addCase(updateRetireTableName.rejected, (state, action) => {
+        toast.error(action.payload as string)
         state.userRetireGoalsError = action.payload;
         state.userRetireGoalsLoading = false;
       })

@@ -27,6 +27,10 @@ export function update_Retire_Goal(data:{type:"Retirement" | "House" | "Car", id
     return API.post("/retire/updateRetire",data)
 }
 
+export function update_RetireTable_Title(data:{title:string, id:string | undefined}){
+    return API.put("/retire/updateTitle",data)
+}
+
 // All Tables
 export function delete_A_Goal(data:{type:"Retirement" | "House" | "Car", id:string}){
     return API.delete(`/allTables/delete?type=${data.type}&id=${data.id}`)
