@@ -9,6 +9,7 @@ import costOfLivingRoutes from "./routes/costOfLivingRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import retireRoutes from "./routes/tables/retireRoutes.js";
 import allGoalRoutes from "./routes/allGoalRoutes.js";
+import houseRoutes from "./routes/tables/houseRoutes.js";
 
 
 env(true);
@@ -38,6 +39,7 @@ app.use("/carData", carRoutes);
 app.use("/COL",costOfLivingRoutes)
 app.use("/auth",authRoutes)
 app.use("/retire", retireRoutes)
+app.use("/house",houseRoutes)
 app.use("/allTables",allGoalRoutes)
 
 

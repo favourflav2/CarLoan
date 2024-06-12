@@ -3,6 +3,9 @@ import { Request, Response, NextFunction } from "express";
 env(true);
 import pg from "pg";
 import { IGetUserAuthInfoRequest } from "../../middleware/authMiddleware.js";
+import { RetirementGoalsBackEnd } from "../controllerTypes/retireTypes.js";
+import { HouseObjWithFormattedDataBackendData } from "../controllerTypes/houseTypes.js";
+import dayjs from "dayjs";
 const { Pool, types } = pg;
 
 interface RequestBody extends IGetUserAuthInfoRequest {
@@ -13,10 +16,10 @@ interface RequestBody extends IGetUserAuthInfoRequest {
 }
 
 interface DeleteFromALlTables extends IGetUserAuthInfoRequest {
-query:{
-  type: "Retirement" | "Car" | "House",
-  id:string;
-}
+  query: {
+    type: "Retirement" | "Car" | "House";
+    id: string;
+  };
 }
 
 const pool = new Pool({
@@ -36,8 +39,20 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
     const newPage = parseFloat(page);
     const newLimit = parseFloat(limit);
 
+    // Grab All Retire Data
     const retireText = "SELECT * FROM retire WHERE creator = $1 ORDER BY date ASC";
     const retireTable = await pool.query(retireText, [userId]);
+
+    // Grab All House Data
+    const houseText = "SELECT * FROM house WHERE creator = $1";
+    const houseTable = await pool.query(houseText, [userId]);
+
+    // concating all the data and sorting by newset goal first
+    const concatData: Array<RetirementGoalsBackEnd | HouseObjWithFormattedDataBackendData> = retireTable.rows.concat(houseTable.rows).sort((a, b) => {
+      return - dayjs(b.date).unix() - dayjs(a.date).unix()
+    });
+
+    
 
     // Paginate Data
     if (typeof newPage !== "number" || typeof newLimit !== "number")
@@ -45,7 +60,7 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
 
     const startIndex = (newPage - 1) * newLimit;
     const endIndex = newPage * newLimit;
-    const result = retireTable.rows.slice(startIndex, endIndex);
+    const result = concatData.slice(startIndex, endIndex);
     const totalPages = Math.ceil(retireTable.rows.length / newLimit);
 
     const paginatedData = {
