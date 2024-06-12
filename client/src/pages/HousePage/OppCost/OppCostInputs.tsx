@@ -88,6 +88,8 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
       showTax: selectedGoal.showTax,
       showInputs: selectedGoal.showInputs,
       showOppCostInputs: selectedGoal.showOppCostInputs,
+      creator:null,
+      date:null
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));

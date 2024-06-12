@@ -10,11 +10,15 @@ interface Props {
   updateImg(img: string): void;
   setOpenImgModal: React.Dispatch<React.SetStateAction<boolean>>;
   type: "Edit" | "Create";
+  
 }
 export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
   //Redux States
   const { selectedGoal } = UseSelector((state) => state.app);
+  const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
+
+  const userId = user?.userObj.id;
 
   // File Uploader States
   const fileRef = React.useRef(null as null | HTMLInputElement);
@@ -43,10 +47,12 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
       );
     });
 
-  const handleFileChange = async (event: any) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement> | undefined) => {
+   if(!event?.target.files) return
+
     const file = event.target.files[0];
     const image = await resizeFile(file);
-
+    
     switch (type) {
       case "Create":
         updateImg(image as string);
@@ -70,9 +76,9 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
           default:
             break;
         }
-      break;
+        break;
       default:
-        break
+        break;
     }
   };
 
@@ -82,7 +88,10 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
       <div className="w-auto flex flex-col">
         {/* Custom Input File */}
         <div className="w-auto flex items-center">
-          <button className="text-[15px] p-[2px] bg-gray-200 px-2  rounded-lg border border-lightText dark:border-none text-lightText" onClick={chooseImg}>
+          <button
+            className="text-[15px] p-[2px] bg-gray-200 px-2  rounded-lg border border-lightText dark:border-none text-lightText"
+            onClick={chooseImg}
+          >
             Choose File
           </button>
         </div>

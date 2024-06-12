@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddRetireGoalObj, add_Retire_Goal, delete_A_Goal, get_All_Goals, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
+import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_A_Goal, get_All_Goals, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
@@ -24,6 +24,11 @@ interface TableObj {
   userRetireGoals: Array<RetirementGoals>;
   userRetireGoalsError: any;
   userRetireGoalsLoading: boolean;
+
+
+  userHouseGoals: Array<HouseObjWithFormattedData>;
+  userHouseGoalsError: any;
+  userHouseGoalsLoading: boolean;
 }
 
 const initialState: TableObj = {
@@ -41,6 +46,10 @@ const initialState: TableObj = {
   userRetireGoals: [],
   userRetireGoalsError: "",
   userRetireGoalsLoading: false,
+
+  userHouseGoals: [],
+  userHouseGoalsError:"",
+  userHouseGoalsLoading:false
 };
 
 export const getAllGoals = createAsyncThunk("getAllGoals", async (data: { limit: number; page: number }, { rejectWithValue }) => {
@@ -82,6 +91,15 @@ export const updateRetireGoal = createAsyncThunk("updateRetireGoal", async (data
 export const updateRetireTableName = createAsyncThunk("updateRetireTableName", async (data:{title:string, id:string | undefined}, {rejectWithValue}) => {
   try{
     const res = await update_RetireTable_Title(data)
+    return res.data
+  }catch(e:any){
+    return rejectWithValue(e.response.data.msg);
+  }
+})
+
+export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,creator}:AddHouseGoalObj, {rejectWithValue}) => {
+  try{
+    const res = await create_House_Goal({data,creator})
     return res.data
   }catch(e:any){
     return rejectWithValue(e.response.data.msg);
@@ -132,7 +150,7 @@ const tableSlice = createSlice({
         state.userRetireGoalsLoading = true;
       })
       .addCase(deleteRetireGoal.fulfilled, (state) => {
-        state.userRetireGoalsError = false
+        state.userRetireGoalsError = ""
         state.userRetireGoalsLoading = false;
       })
       .addCase(deleteRetireGoal.rejected, (state, action) => {
@@ -146,7 +164,7 @@ const tableSlice = createSlice({
       })
       .addCase(updateRetireGoal.fulfilled, (state, action:PayloadAction<string>) => {
         toast.success(action.payload)
-        state.userRetireGoalsError = false
+        state.userRetireGoalsError = ""
         state.userRetireGoalsLoading = false;
       })
       .addCase(updateRetireGoal.rejected, (state, action) => {
@@ -160,14 +178,33 @@ const tableSlice = createSlice({
       })
       .addCase(updateRetireTableName.fulfilled, (state, action:PayloadAction<string>) => {
         toast.success(action.payload)
-        state.userRetireGoalsError = false
+        state.userHouseGoalsError = ""
         state.userRetireGoalsLoading = false;
       })
       .addCase(updateRetireTableName.rejected, (state, action) => {
         toast.error(action.payload as string)
-        state.userRetireGoalsError = action.payload;
+        state.userHouseGoalsError = action.payload;
         state.userRetireGoalsLoading = false;
       })
+
+      // -------- House Goals ------------
+
+
+      // Create House Goal
+      .addCase(createHouseGoal.pending, (state) => {
+        state.userHouseGoalsLoading = true;
+      })
+      .addCase(createHouseGoal.fulfilled, (state, action:PayloadAction<string>) => {
+        //toast.success(action.payload)
+        state.userHouseGoalsError = ''
+        state.userHouseGoalsLoading = false;
+      })
+      .addCase(createHouseGoal.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsLoading = false;
+      })
+
 
 
   },

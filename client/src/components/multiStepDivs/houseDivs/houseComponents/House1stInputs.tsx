@@ -8,13 +8,15 @@ import { MenuItem } from "@mui/material";
 import HouseControllerInput from "./HouseControllerInput";
 import dayjs from "dayjs";
 import HouseAddressInput from "./HouseAddressInput";
-import { Dispatch } from "../../../../redux/store";
-import { HouseObj, addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
+import { Dispatch, UseSelector } from "../../../../redux/store";
+import { addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
 import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../../redux/features/applicationSlice";
+import { createHouseGoal } from "../../../../redux/features/tablesSlice";
+import { LoggedInUserFormData, NoUserFormData } from "../utils/houseSubmitFormData";
 
 export const houseTerms = ["10", "15", "20", "25", "30", "60"];
 
-type FormFields = z.infer<typeof house1stSchema>;
+export type FormFieldsHouse1stInputs = z.infer<typeof house1stSchema>;
 
 export interface SelectedAddress {
   [key: string]: any;
@@ -32,7 +34,10 @@ export interface IHouseFirstInputsProps {
 export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps) {
   // Redux States
   const [selectedAddress, setSelectedAddress] = React.useState<SelectedAddress>();
+  const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
+
+  const userId = user?.userObj.id;
 
   // Error for google api
   const [googleError, setGoogleError] = React.useState(false);
@@ -51,7 +56,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
     clearErrors,
     control,
     formState: { errors },
-  } = useForm<FormFields>({
+  } = useForm<FormFieldsHouse1stInputs>({
     mode: "all",
     // the average annual cost of homeowners insurance in the U.S. is $2,511.25
     defaultValues: {
@@ -63,7 +68,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
       appreciation: "2",
       maintenance: "1",
       opportunityCostRate: "7",
-      rent:"1515"
+      rent: "1515",
     },
     resolver: zodResolver(house1stSchema),
   });
@@ -72,36 +77,26 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   const twentyPercentValue = Number(parseFloat(allInputData.price) * 0.2);
   const downPayment = watch("downPayment");
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { id, price, downPayment, interest, term, extraPayment, streetAddress, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, img, rent } = data;
+  const onSubmit: SubmitHandler<FormFieldsHouse1stInputs> = (data) => {
+    if (userId) {
+      // if theres a logged in user we make an api call
+      const formattedData = LoggedInUserFormData(data, userId);
+      dispatch(createHouseGoal({ data: formattedData, creator: userId }));
 
-    const newObj:HouseObj = {
-      id,
-      price,
-      downPayment,
-      interest,
-      term,
-      extraPayment,
-      streetAddress,
-      propertyTax,
-      insurance,
-      mortgageInsurance,
-      rent,
-      appreciation,
-      opportunityCostRate,
-      maintenance,
-      img:img ? img : "",
-      showInputs:true,
-      showOppCostInputs:true,
-      type:"House"
+      // Close Modal after everything is done
+         dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
+   
+      
+    } else {
+      const newObj = NoUserFormData(data);
+      dispatch(addHouseGoal(newObj));
+
+      // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
+      dispatch(setSelectedGoalAfterCreate(newObj));
+
+      // Close Modal after everything is done
+      dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
     }
-    dispatch(addHouseGoal(newObj));
-
-     // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
-     dispatch(setSelectedGoalAfterCreate(newObj));
-
-    // Close Modal after everything is done
-    dispatch(setAnyTypeOfModal({ value: false, type: "House" }));
   };
 
   function SubmitValidation(e: any) {
@@ -142,7 +137,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   }, [updatedImg, setValue]);
 
   // This will not allow google api
-  const user = true;
+  const cash = true;
 
   return (
     <div className="mb-2">
@@ -152,7 +147,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
           {/* 1st Row with address and price */}
           <div className="w-full h-auto grid grid-cols-1 gap-x-4">
             {/* Street Address */}
-            {googleError || user ? (
+            {googleError || cash ? (
               <div className="w-full  flex flex-col mb-3  ">
                 <label htmlFor="streetAddress" className="text-[12px] dark:text-gray-300 text-black">
                   Address
@@ -190,12 +185,26 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
           </div>
 
           {/* Down Payment */}
-          <HouseControllerInput type="Number" control={control} errors={errors} name="downPayment" label="Down Payment" placeholder="Enter a down payment..." />
+          <HouseControllerInput
+            type="Number"
+            control={control}
+            errors={errors}
+            name="downPayment"
+            label="Down Payment"
+            placeholder="Enter a down payment..."
+          />
 
           {/* Other Inputs */}
           <div className="w-full h-auto grid grid-cols-2 gap-x-4">
             {/* Interest */}
-            <HouseControllerInput type="Percent" control={control} errors={errors} name="interest" label="Interest Rate" placeholder="Enter an interest rate..." />
+            <HouseControllerInput
+              type="Percent"
+              control={control}
+              errors={errors}
+              name="interest"
+              label="Interest Rate"
+              placeholder="Enter an interest rate..."
+            />
 
             {/* Loan Term */}
             <div className="w-auto flex flex-col mb-2">
@@ -215,7 +224,9 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
                     border: 0,
                   },
                 }}
-                className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${errors.term && "border-2 border-red-500"}`}
+                className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${
+                  errors.term && "border-2 border-red-500"
+                }`}
                 onChange={handleChange}
                 value={allInputData.term.toString()}
               >
@@ -230,7 +241,14 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
 
           {/* Mortgage Insurance */}
           {twentyPercentValue > parseFloat(downPayment) && (
-            <HouseControllerInput type="Percent" control={control} errors={errors} name="mortgageInsurance" label="Mortgage Insurance" placeholder="Enter an mortgage nsurancet rate..." />
+            <HouseControllerInput
+              type="Percent"
+              control={control}
+              errors={errors}
+              name="mortgageInsurance"
+              label="Mortgage Insurance"
+              placeholder="Enter an mortgage nsurancet rate..."
+            />
           )}
         </div>
 

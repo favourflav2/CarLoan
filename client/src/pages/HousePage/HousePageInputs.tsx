@@ -94,7 +94,9 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
       type: "House",
       showTax: selectedGoal.showTax,
       showInputs,
-      showOppCostInputs
+      showOppCostInputs,
+      creator:null,
+      date:null
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));

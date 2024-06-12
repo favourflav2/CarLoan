@@ -21,6 +21,8 @@ type OppCostTrimSelectedGoal = {
   interest: number;
 };
 
+type OnlyInputs = Omit<HouseObjWithFormattedData, "creator" | "date">;
+
 export function isTheSameCheck(
   select: HouseObjWithFormattedData | RetirementGoals | CarObjWithFormattedData | null,
   inputs: {
@@ -47,7 +49,7 @@ export function isTheSameCheck(
 
   const { showInputs, showOppCostInputs } = select;
 
-  const newObj: HouseObjWithFormattedData = {
+  const newObj: OnlyInputs = {
     id,
     streetAddress,
     price: parseFloat(price.replace(/[,%$]/gm, "")),
@@ -69,7 +71,29 @@ export function isTheSameCheck(
     showOppCostInputs
   };
 
-  return _.isEqual(select, newObj) ? false : true;
+  const stateSelect:OnlyInputs = {
+    id:select.id,
+    streetAddress: select.streetAddress,
+    price: select.price,
+    downPayment: select.downPayment,
+    interest: select.interest,
+    term: select.term,
+    extraPayment: select.extraPayment,
+    img: select.img,
+    propertyTax: select.propertyTax,
+    insurance: select.insurance,
+    mortgageInsurance: select.mortgageInsurance,
+    appreciation: select.appreciation,
+    opportunityCostRate: select.opportunityCostRate,
+    maintenance: select.maintenance,
+    rent: select.rent,
+    type: "House",
+    showTax: select.showTax,
+    showInputs,
+    showOppCostInputs
+  }
+
+  return _.isEqual(stateSelect, newObj) ? false : true;
 }
 
 export function isTheSameCheckOppCost(select: HouseObjWithFormattedData | RetirementGoals | CarObjWithFormattedData | null, inputs: FormFieldsOppCost) {

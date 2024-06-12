@@ -1,8 +1,14 @@
 import axios from "axios";
 import { RetirementGoals } from "../features/modalSlices/retirementSlice";
+import { HouseObjWithFormattedData } from "../features/modalSlices/houseSlice";
 export interface AddRetireGoalObj {
     creator:string;
     data:RetirementGoals
+}
+
+export interface AddHouseGoalObj {
+    creator:string;
+    data:HouseObjWithFormattedData
 }
 
 const API = axios.create({ baseURL: "http://localhost:5001" });
@@ -29,6 +35,11 @@ export function update_Retire_Goal(data:{type:"Retirement" | "House" | "Car", id
 
 export function update_RetireTable_Title(data:{title:string, id:string | undefined}){
     return API.put("/retire/updateTitle",data)
+}
+
+// House Routes
+export function create_House_Goal(data:AddHouseGoalObj){
+    return API.post("/house/createHouseGoal",data)
 }
 
 // All Tables

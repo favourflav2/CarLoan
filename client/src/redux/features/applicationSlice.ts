@@ -129,6 +129,8 @@ const appSlice = createSlice({
             showTax: "monthlyPaymentWithNoTax",
             showInputs: true,
             showOppCostInputs,
+            creator:null,
+            date:null
           };
 
           state.selectedGoal = houseData;

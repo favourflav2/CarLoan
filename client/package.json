@@ -23,6 +23,7 @@
     "@types/react-slick": "^0.23.13",
     "@types/react-text-mask": "^5.4.14",
     "axios": "^1.6.2",
+    "base64-arraybuffer": "^1.0.2",
     "better-react-mathjax": "^2.0.3",
     "chart.js": "^4.4.2",
     "dayjs": "^1.11.10",

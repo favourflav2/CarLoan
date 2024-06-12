@@ -9,8 +9,8 @@ import ImageCrop from "../ImageCropper/ImageCropper";
 export interface ISelectImgModalProps {
     setOpenImgModal: React.Dispatch<React.SetStateAction<boolean>>;
   open: boolean;
-
   updateImg(img: string): void;
+
 }
 
 export default function SelectImgModal ({ setOpenImgModal, open, updateImg }: ISelectImgModalProps) {

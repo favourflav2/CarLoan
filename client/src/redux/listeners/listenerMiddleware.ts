@@ -6,7 +6,7 @@ import { setSelectedGoal } from "../features/applicationSlice";
 import { setRetireGoals } from "../features/modalSlices/retirementSlice";
 import { setHouseGoals } from "../features/modalSlices/houseSlice";
 import { setCarGoals } from "../features/modalSlices/carModalSlice";
-import { createRetireGoal, deleteRetireGoal, getAllGoals, updateRetireGoal, updateRetireTableName } from "../features/tablesSlice";
+import { createHouseGoal, createRetireGoal, deleteRetireGoal, getAllGoals, updateRetireGoal, updateRetireTableName } from "../features/tablesSlice";
 
 
  export const listenerMiddleware = createListenerMiddleware();
@@ -92,15 +92,15 @@ listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
     },
   })
 
-  // When user creates new retire goal I want to refetch data
+  // When user creates new a goal or updates I want to refetch data
   listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-    matcher: isAnyOf(createRetireGoal.fulfilled,deleteRetireGoal.fulfilled, updateRetireGoal.fulfilled, updateRetireTableName.fulfilled),
+    matcher: isAnyOf(createRetireGoal.fulfilled,deleteRetireGoal.fulfilled, updateRetireGoal.fulfilled, updateRetireTableName.fulfilled, createHouseGoal.fulfilled),
     effect: async (_action, listenerApi) => {
       listenerApi.dispatch(getAllGoals({ limit: 10, page: 1 }))
     },
   })
 
-  // type(pin):"auth/setLogout"
+  // When I logout set selected goal to null
   listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
     type:"auth/setLogout",
     effect: async (_action, listenerApi) => {

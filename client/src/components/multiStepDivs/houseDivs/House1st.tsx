@@ -11,12 +11,14 @@ import SelectImgModal from "../../modals/SelectImgModal";
 
 export interface IHouse1stProps {}
 
+
 export default function House1st(props: IHouse1stProps) {
   // Redux States
   const dispatch = Dispatch();
 
   // File Uploader
   const [updatedImg, setUpdatedImg] = React.useState("");
+
 
   // Modal States
   const [openImgModal, setOpenImgModal] = React.useState(false); // eslint-disable-line
