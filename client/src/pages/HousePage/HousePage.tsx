@@ -8,19 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import HousePageInputs from "./HousePageInputs";
 import EditNameHouseBox from "./EditNameHouseBox";
 import HouseImgAndNum from "./HouseImgAndNum";
-import {
-  ExtraNumberYears,
-  HouseMonthlyPayment,
-  getMonthlyPaymentForHouse,
-  loanAmmortizationForHouse,
-  loanAmmortizationWithExtraPaymentForHouse,
-  solveForNumberOfMonthsForHouse,
-} from "../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
-import { LoanAmmortizationType, MyLoanForLoop } from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import HouseChartContainer from "./HouseChartContainer";
 import EditImgModal from "../CarPage/components/EditImgModal";
 import { editHouseGoalTitle } from "../../redux/features/modalSlices/houseSlice";
 import OpportunityCost from "./OppCost/OpportunityCost";
+import useHouseFVFunctions from "./hooks/useHouseFVFunctions";
 
 export interface IHousePageProps {}
 
@@ -78,11 +70,9 @@ export default function HousePage(props: IHousePageProps) {
   // Chart State and Summary State
   const [view, setView] = React.useState<string>("Graph View");
 
-  // Chart States
-  const [monthlyPayment, setMonthlyPayment] = React.useState<HouseMonthlyPayment>();
-  const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
-  const [extraNumberOfYears, setExtraNumberOfYears] = React.useState<ExtraNumberYears>();
-  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop>>();
+  // Chart States using React use Memo
+  const {monthlyPayment, regualrLoanAmmortization, extraNumberOfYears, extraLoanAmmortization} = useHouseFVFunctions()
+ 
 
   // Scroll to top on render
   React.useEffect(() => {
@@ -92,18 +82,6 @@ export default function HousePage(props: IHousePageProps) {
     });
   }, []);
 
-  React.useEffect(() => {
-    if (!selectedGoal || selectedGoal.type !== "House") return;
-    const { interest, downPayment, insurance, mortgageInsurance, propertyTax, price, term } = selectedGoal;
-    const twentyPercentValue = price * 0.2;
-    const isNotGreaterThan20 = downPayment < twentyPercentValue ? true : false;
-    setMonthlyPayment(getMonthlyPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment, isNotGreaterThan20));
-    setRegualrLoanAmmortization(loanAmmortizationForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, isNotGreaterThan20));
-    setExtraNumberOfYears(solveForNumberOfMonthsForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment, isNotGreaterThan20));
-    setExtraLoanAmmortization(
-      loanAmmortizationWithExtraPaymentForHouse({ rate: interest, time: term, downPayment, price, propertyTax, insurance, mortgageInsurance }, selectedGoal.extraPayment, isNotGreaterThan20)
-    );
-  }, [selectedGoal]);
 
   // Callback version of watch.  It's your responsibility to unsubscribe when done.
   React.useEffect(() => {
