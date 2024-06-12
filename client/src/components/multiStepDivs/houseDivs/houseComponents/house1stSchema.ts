@@ -14,6 +14,8 @@ export const house1stSchema = z
       }),
     price: z.string({
       required_error: "Please enter a price",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a price",
     }),
     downPayment: z
       .string({
@@ -36,13 +38,19 @@ export const house1stSchema = z
       required_error: "Please select a time",
     }),
     id: z.string(),
-    extraPayment: z.string(),
+    extraPayment: z.string().refine((item) => item.length > 0, {
+      message: "Please enter a value",
+    }),
     img: z.any(),
     propertyTax: z.string({
       required_error: "Please enter your property tax rate",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a value",
     }),
     insurance: z.string({
       required_error: "Please enter home owners insurance",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a value",
     }),
     mortgageInsurance: z
       .string({
@@ -50,20 +58,31 @@ export const house1stSchema = z
       })
       .refine((item) => parseFloat(item) < 10, {
         message: "Please enter a number between 1% and 10%",
+      })
+      .refine((item) => item.length > 0, {
+        message: "Please enter a value",
       }),
     appreciation: z.string({
       required_error: "The average home appreciation per year in the United States is between 2-4%, you can choose what you need",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a value",
     }),
     opportunityCostRate: z.string({
       required_error: "Please enter a rate",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a value",
     }),
     maintenance: z.string({
       required_error: "A common suggestion is to allocate approximately 1% of the property's value per year, on average, to cover maintenance costs.",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a value",
     }),
     rent: z
       .string({
         required_error: "Please enter a rent you would like to compare with",
-      })
+      }).refine((item) => item.length > 0, {
+        message: "Please enter a value",
+      }),
   })
   .superRefine((values, ctx) => {
     if (parseFloat(values.downPayment) >= parseFloat(values.price)) {

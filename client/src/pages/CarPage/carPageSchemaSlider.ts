@@ -28,9 +28,13 @@ export const carPageSchemaSlider = z
       message:"Please enter a price greater than or equal to $1,000"
     }).refine((item) => parseFloat(item) <= 750000, {
       message:"Please enter a price less than or equal to $750,000"
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a number",
     }),
     mileage: z.string({
       required_error: "Please enter a mileage",
+    }).refine((item) => item.length > 0, {
+      message: "Please enter a number",
     }),
     downPayment: z
       .string({
@@ -63,7 +67,9 @@ export const carPageSchemaSlider = z
       message: "Please enter a number greater than or equal 36 months",
     }),
     id: z.string(),
-    extraPayment: z.string(),
+    extraPayment: z.string().refine((item) => item.length > 0, {
+      message: "Please enter a number",
+    }),
     img: z.any().optional()
   })
   .superRefine((values, ctx) => {
