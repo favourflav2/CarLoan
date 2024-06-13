@@ -32,3 +32,11 @@ export interface CreateHouseGoal extends IGetUserAuthInfoRequest {
         data:HouseObjWithFormattedDataBackendData
     }
 }
+
+export interface UpdateHouseGoal extends IGetUserAuthInfoRequest {
+    body:{
+        type:"House",
+        id:string;
+        inputData: HouseObjWithFormattedDataBackendData
+    }
+}

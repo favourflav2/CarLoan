@@ -5,7 +5,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateHouseGoal } from "../../controllerTypes/houseTypes.js";
+import { CreateHouseGoal, UpdateHouseGoal } from "../../controllerTypes/houseTypes.js";
 
 const { Pool, types } = pg;
 
@@ -32,6 +32,7 @@ const s3 = new S3Client({
 export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
   try {
     const { data, creator } = req.body;
+    // id sent from front end is just a date formatted with dayjs
     const {
       id,
       streetAddress,
@@ -105,33 +106,42 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
       const textWithImg = 'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)'
       const valuesWIthImg = [userId, type, streetAddress, price, downPayment, interest, term, extraPayment, imageUrl, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, showTax, showInputs, rent, showOppCostInputs, id]
       await pool.query(textWithImg,valuesWIthImg)
-      res.status(200).json("You successfully updated your goal :)")
+      res.status(200).json("You successfully created your goal :)")
     } else {
       // user did not add an image
-      console.log(img.length)
-      res.send("hello")
+      const textWithNoImg = 'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)'
+      const valuesWIthNoImg = [userId, type, streetAddress, price, downPayment, interest, term, extraPayment, "", propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, showTax, showInputs, rent, showOppCostInputs, id]
+
+      await pool.query(textWithNoImg, valuesWIthNoImg)
+      res.status(200).json("You successfully created your goal :)")
     }
 
-    //   // I need a unique Id to save my images to aws s3 ... currently Im using the date in which it was created
-    //   //* However when I save it to aws it chnages the url to the url snytax ... so Im going to set my id to the url syntax before I save it as an unique id
-    //   const encodedURI = encodeURIComponent(id.replace(/\s/g, ""));
-
-    //   const params = {
-    //     Bucket: process.env.BUCKET as string,
-    //     Key: `${id.replace(/\s/g, "")}`,
-    //     Body: base64Data,
-    //     ContentType: type,
-    //   };
-
-    //   // https://datascrape.s3.amazonaws.com/Jun11%2C20245%3A52%3A28pm
-    //  //  https://datascrape.s3.amazonaws.com/Jun11%252C20245%253A52%253A28pm
-
-    //   const command = new PutObjectCommand(params);
-    //   await s3.send(command);
-
-    //   const url = `https://${process.env.BUCKET}.s3.amazonaws.com/${id.replace(/\s/g, "")}`;
-    //   console.log(url);
+  
   } catch (e) {
+    console.log(e);
+    res.status(400).json({ msg: e.message });
+  }
+}
+
+export async function update_House_Goal(req:UpdateHouseGoal, res:Response){
+  try{
+    const {id, inputData} = req.body
+    const {price,downPayment,interest,term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent, showInputs, showOppCostInputs, date} = inputData
+    const userId = req.userId
+
+    // making sure all number values are of typeof numbers
+    const checkValues = [price, downPayment, interest, term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent].every((item => typeof item === 'number'))
+
+    if(!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
+    if(!date) return res.status(400).json({msg:"Date value is null"})
+
+    const text = 'UPDATE house SET price = $1, "downPayment" = $2, interest = $3, term = $4, "extraPayment" = $5, "propertyTax" = $6, insurance = $7, "mortgageInsurance" = $8, appreciation = $9, "opportunityCostRate" = $10, maintenance = $11, "showInputs" = $12, "showOppCostInputs" = $13 WHERE id = $14 AND creator = $15 RETURNING * '
+    const values = [price,downPayment,interest,term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, showInputs, showOppCostInputs, id, userId]
+    await pool.query(text,values)
+
+    res.status(200).json("You successfully updated your goal :)")
+
+  }catch(e){
     console.log(e);
     res.status(400).json({ msg: e.message });
   }
