@@ -1,11 +1,11 @@
 import { env } from "custom-env";
 env(true);
 import pg from "pg";
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateHouseGoal, UpdateHouseGoal } from "../../controllerTypes/houseTypes.js";
+import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal } from "../../controllerTypes/houseTypes.js";
 
 const { Pool, types } = pg;
 
@@ -54,7 +54,7 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
       showTax,
       type,
     } = data;
-    const userId = req.userId
+    const userId = req.userId;
 
     // Making sure all my input typeof values are numbers
     const checkValues = [
@@ -73,7 +73,6 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
     ].every((item) => typeof item === "number");
 
     if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
-
 
     // If a user added a picture
     if (img.length) {
@@ -103,46 +102,180 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
       const imageUrl = `https://${process.env.BUCKET}.s3.amazonaws.com/${paramsKey}`;
 
       // send data to database
-      const textWithImg = 'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)'
-      const valuesWIthImg = [userId, type, streetAddress, price, downPayment, interest, term, extraPayment, imageUrl, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, showTax, showInputs, rent, showOppCostInputs, id]
-      await pool.query(textWithImg,valuesWIthImg)
-      res.status(200).json("You successfully created your goal :)")
+      const textWithImg =
+        'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)';
+      const valuesWIthImg = [
+        userId,
+        type,
+        streetAddress,
+        price,
+        downPayment,
+        interest,
+        term,
+        extraPayment,
+        imageUrl,
+        propertyTax,
+        insurance,
+        mortgageInsurance,
+        appreciation,
+        opportunityCostRate,
+        maintenance,
+        showTax,
+        showInputs,
+        rent,
+        showOppCostInputs,
+        id,
+      ];
+      await pool.query(textWithImg, valuesWIthImg);
+      res.status(200).json("You successfully created your goal :)");
     } else {
       // user did not add an image
-      const textWithNoImg = 'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)'
-      const valuesWIthNoImg = [userId, type, streetAddress, price, downPayment, interest, term, extraPayment, "", propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, showTax, showInputs, rent, showOppCostInputs, id]
+      const textWithNoImg =
+        'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)';
+      const valuesWIthNoImg = [
+        userId,
+        type,
+        streetAddress,
+        price,
+        downPayment,
+        interest,
+        term,
+        extraPayment,
+        "",
+        propertyTax,
+        insurance,
+        mortgageInsurance,
+        appreciation,
+        opportunityCostRate,
+        maintenance,
+        showTax,
+        showInputs,
+        rent,
+        showOppCostInputs,
+        id,
+      ];
 
-      await pool.query(textWithNoImg, valuesWIthNoImg)
-      res.status(200).json("You successfully created your goal :)")
+      await pool.query(textWithNoImg, valuesWIthNoImg);
+      res.status(200).json("You successfully created your goal :)");
     }
-
-  
   } catch (e) {
     console.log(e);
     res.status(400).json({ msg: e.message });
   }
 }
 
-export async function update_House_Goal(req:UpdateHouseGoal, res:Response){
-  try{
-    const {id, inputData} = req.body
-    const {price,downPayment,interest,term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent, showInputs, showOppCostInputs, date} = inputData
-    const userId = req.userId
+export async function update_House_Goal(req: UpdateHouseGoal, res: Response) {
+  try {
+    const { id, inputData } = req.body;
+    const {
+      price,
+      downPayment,
+      interest,
+      term,
+      extraPayment,
+      propertyTax,
+      insurance,
+      mortgageInsurance,
+      appreciation,
+      opportunityCostRate,
+      maintenance,
+      rent,
+      showInputs,
+      showOppCostInputs,
+      date,
+    } = inputData;
+    const userId = req.userId;
 
     // making sure all number values are of typeof numbers
-    const checkValues = [price, downPayment, interest, term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent].every((item => typeof item === 'number'))
+    const checkValues = [
+      price,
+      downPayment,
+      interest,
+      term,
+      extraPayment,
+      propertyTax,
+      insurance,
+      mortgageInsurance,
+      appreciation,
+      opportunityCostRate,
+      maintenance,
+      rent,
+    ].every((item) => typeof item === "number");
 
-    if(!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
-    if(!date) return res.status(400).json({msg:"Date value is null"})
+    if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
+    if (!date) return res.status(400).json({ msg: "Date value is null" });
 
-    const text = 'UPDATE house SET price = $1, "downPayment" = $2, interest = $3, term = $4, "extraPayment" = $5, "propertyTax" = $6, insurance = $7, "mortgageInsurance" = $8, appreciation = $9, "opportunityCostRate" = $10, maintenance = $11, "showInputs" = $12, "showOppCostInputs" = $13 WHERE id = $14 AND creator = $15 RETURNING * '
-    const values = [price,downPayment,interest,term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, showInputs, showOppCostInputs, id, userId]
-    await pool.query(text,values)
+    const text =
+      'UPDATE house SET price = $1, "downPayment" = $2, interest = $3, term = $4, "extraPayment" = $5, "propertyTax" = $6, insurance = $7, "mortgageInsurance" = $8, appreciation = $9, "opportunityCostRate" = $10, maintenance = $11, "showInputs" = $12, "showOppCostInputs" = $13 WHERE id = $14 AND creator = $15 RETURNING * ';
+    const values = [
+      price,
+      downPayment,
+      interest,
+      term,
+      extraPayment,
+      propertyTax,
+      insurance,
+      mortgageInsurance,
+      appreciation,
+      opportunityCostRate,
+      maintenance,
+      showInputs,
+      showOppCostInputs,
+      id,
+      userId,
+    ];
+    await pool.query(text, values);
 
-    res.status(200).json("You successfully updated your goal :)")
-
-  }catch(e){
+    res.status(200).json("You successfully updated your goal :)");
+  } catch (e) {
     console.log(e);
     res.status(400).json({ msg: e.message });
+  }
+}
+
+export async function delete_House_Goal(req: DeleteHouseGoal, res: Response) {
+  try {
+    const { itemUUID, dateAsAWSId, img } = req.query;
+    const userId = req.userId;
+
+    if (!img || img.length <= 0) {
+      // If theres no img theres no need to delete img from aws
+
+      const text = "DELETE FROM house WHERE creator = $1 AND id = $2";
+      const values = [userId, itemUUID];
+
+      // delete from db
+      await pool.query(text, values);
+
+    return  res.status(200).json("Deleted Goal (no img)");
+    } else {
+      // This means we have an img and we need to delete it from my aws and database
+
+      if (!itemUUID || !dateAsAWSId) return res.status(400).json({ msg: "Item is not able to be deleted, the id sent to server is wrong" });
+
+      //* This will be my unique id for my aws ... no post will ever have the same date (formatted with dayjs) and userId
+      const paramsKey = dateAsAWSId.replace(/\s/g, "") + `${userId}`;
+
+      const params = {
+        Bucket: process.env.BUCKET as string,
+        Key: paramsKey,
+      };
+
+      const command = new DeleteObjectCommand(params);
+
+      const text = "DELETE FROM house WHERE creator = $1 AND id = $2";
+      const values = [userId, itemUUID];
+
+      // this deletes img from aws s3
+      await s3.send(command);
+      // delete from db
+      await pool.query(text, values);
+
+    return res.status(200).json("Deleted Goal with image");
+    }
+  } catch (e) {
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error deleting this goal" });
   }
 }

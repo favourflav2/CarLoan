@@ -40,3 +40,11 @@ export interface UpdateHouseGoal extends IGetUserAuthInfoRequest {
         inputData: HouseObjWithFormattedDataBackendData
     }
 }
+
+export interface DeleteHouseGoal extends IGetUserAuthInfoRequest {
+    query:{
+        itemUUID: string
+        dateAsAWSId: string;
+        img:string
+    }
+}
