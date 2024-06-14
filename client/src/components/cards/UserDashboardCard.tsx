@@ -9,7 +9,7 @@ import { removeRetireItem } from "../../redux/features/modalSlices/retirementSli
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
 import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
-import { deleteRetireGoal } from "../../redux/features/tablesSlice";
+import { deleteHouseGoal, deleteRetireGoal } from "../../redux/features/tablesSlice";
 
 export interface IUserDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -38,6 +38,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
         if (item.type !== "Retirement") return;
 
         if (userId) {
+          // if userId we run this
           if (selectedGoal?.id === item.id) {
             dispatch(setSelectedGoal(null));
             dispatch(deleteRetireGoal({ type: item.type, id: item.id }));
@@ -45,6 +46,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
             dispatch(deleteRetireGoal({ type: item.type, id: item.id }));
           }
         } else {
+          // if theres no user/userId we run this
           if (selectedGoal?.id === item.id) {
             dispatch(setSelectedGoal(null));
             dispatch(removeRetireItem(item));
@@ -52,8 +54,8 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
             dispatch(removeRetireItem(item));
           }
         }
-
         break;
+
       case "Car":
         if (!item) return;
         if (item.type !== "Car") return;
@@ -65,16 +67,28 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
         }
 
         break;
+
       case "House":
         if (!item) return;
         if (item.type !== "House") return;
-        if (selectedGoal?.id === item.id) {
-          dispatch(setSelectedGoal(null));
-          dispatch(removeHouseGoal(item));
-        } else {
-          dispatch(removeHouseGoal(item));
-        }
 
+        if (userId) {
+          // id we have a user/userId
+          if (selectedGoal?.id === item.id) {
+            dispatch(setSelectedGoal(null));
+            dispatch(deleteHouseGoal({ itemUUID: item.id, dateAsAWSId: item.date as string, img: item.img as string }));
+          } else {
+            dispatch(deleteHouseGoal({ itemUUID: item.id, dateAsAWSId: item.date as string, img: item.img as string }));
+          }
+        } else {
+          // if we dont have a user/userId
+          if (selectedGoal?.id === item.id) {
+            dispatch(setSelectedGoal(null));
+            dispatch(removeHouseGoal(item));
+          } else {
+            dispatch(removeHouseGoal(item));
+          }
+        }
         break;
       default:
         return;
@@ -156,7 +170,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
               <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
             </>
           );
-        };
+        }
       default:
         return;
     }

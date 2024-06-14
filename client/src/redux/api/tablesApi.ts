@@ -50,4 +50,8 @@ export function update_House_Goal(data: { type: "House"; id: string; inputData: 
   return API.put("/house/updateHouse",data);
 }
 
+export function delete_House_Goal(data:{itemUUID:string, dateAsAWSId:string, img:string }){
+  return API.delete(`/house/deleteHouse?itemUUID=${data.itemUUID}&dateAsAWSId=${data.dateAsAWSId}&img=${data.img}`)
+}
+
 
