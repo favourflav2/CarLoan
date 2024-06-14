@@ -37,6 +37,10 @@ export function update_RetireTable_Title(data: { title: string; id: string | und
   return API.put("/retire/updateTitle", data);
 }
 
+export function delete_Retire_Goal(data:{type:"Retirement", id:string;}){
+  return API.delete(`/retire/deleteRetire?type=${data.type}&id=${data.id}`)
+}
+
 // House Routes
 export function create_House_Goal(data: AddHouseGoalObj) {
   return API.post("/house/createHouseGoal", data);
@@ -46,7 +50,4 @@ export function update_House_Goal(data: { type: "House"; id: string; inputData: 
   return API.put("/house/updateHouse",data);
 }
 
-// All Tables
-export function delete_A_Goal(data: { type: "Retirement" | "House" | "Car"; id: string }) {
-  return API.delete(`/allTables/delete?type=${data.type}&id=${data.id}`);
-}
+

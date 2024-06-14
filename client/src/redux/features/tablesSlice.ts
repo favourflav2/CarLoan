@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_A_Goal, get_All_Goals, update_House_Goal, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
+import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_Retire_Goal, get_All_Goals, update_House_Goal, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
@@ -70,9 +70,9 @@ export const createRetireGoal = createAsyncThunk("createRetireGoal", async ({ da
   }
 });
 
-export const deleteRetireGoal = createAsyncThunk("deleteRetireGoal", async (data:{type:"Retirement" | "House" | "Car", id:string}, { rejectWithValue }) => {
+export const deleteRetireGoal = createAsyncThunk("deleteRetireGoal", async (data:{type:"Retirement", id:string}, { rejectWithValue }) => {
   try {
-    const res = await delete_A_Goal(data);
+    const res = await delete_Retire_Goal(data);
     return res.data;
   } catch (e: any) {
     return rejectWithValue(e.response.data.msg);
