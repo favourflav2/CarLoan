@@ -41,6 +41,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+       // ignoredActionPaths: ['payload.goal.date','meta.arg.inputData.date'],
       },
     }).prepend(listenerMiddleware.middleware),
 });

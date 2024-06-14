@@ -20,7 +20,7 @@ export interface HouseObj {
   showOppCostInputs:boolean;
   type: "House"
   creator:string | null;
-  date: string|  null
+  date: string |  null
 }
 
 export interface HouseObjWithFormattedData {
@@ -44,7 +44,7 @@ export interface HouseObjWithFormattedData {
   rent:number;
   showOppCostInputs:boolean;
   creator:string | null;
-  date: null | string
+  date: string | null
 }
 
 interface HouseData {
@@ -64,7 +64,7 @@ const houseSlice = createSlice({
   initialState,
   reducers: {
     addHouseGoal: (state, action: PayloadAction<HouseObj>) => {
-      const {id, streetAddress, price, downPayment,interest, term, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate,maintenance, showInputs, rent, showOppCostInputs,date,creator } = action.payload;
+      const {id, streetAddress, price, downPayment,interest, term, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate,maintenance, showInputs, rent, showOppCostInputs } = action.payload;
       const formattedData: HouseObjWithFormattedData = {
         id,
         streetAddress,
@@ -85,8 +85,8 @@ const houseSlice = createSlice({
         showTax:"monthlyPaymentWithNoTax",
         showInputs,
         showOppCostInputs,
-        date,
-        creator
+        date:null,
+        creator:null
       };
 
       const index = state.houseGoals.findIndex((item) => item.id === id);

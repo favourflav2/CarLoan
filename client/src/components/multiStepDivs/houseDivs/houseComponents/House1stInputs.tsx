@@ -12,7 +12,7 @@ import { Dispatch, UseSelector } from "../../../../redux/store";
 import { addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
 import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../../redux/features/applicationSlice";
 import { createHouseGoal } from "../../../../redux/features/tablesSlice";
-import { LoggedInUserFormData, NoUserFormData } from "../utils/houseSubmitFormData";
+import { CreateHouseGoalFormDataWithNoUser, CreateHouseGoalFormDataWithUser } from "../utils/houseSubmitFormData";
 
 export const houseTerms = ["10", "15", "20", "25", "30", "60"];
 
@@ -80,7 +80,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
   const onSubmit: SubmitHandler<FormFieldsHouse1stInputs> = (data) => {
     if (userId) {
       // if theres a logged in user we make an api call
-      const formattedData = LoggedInUserFormData(data, userId);
+      const formattedData = CreateHouseGoalFormDataWithUser(data, userId);
       dispatch(createHouseGoal({ data: formattedData, creator: userId }));
 
       // Close Modal after everything is done
@@ -88,7 +88,7 @@ export default function HouseFirstInputs({ updatedImg }: IHouseFirstInputsProps)
    
       
     } else {
-      const newObj = NoUserFormData(data);
+      const newObj = CreateHouseGoalFormDataWithNoUser(data);
       dispatch(addHouseGoal(newObj));
 
       // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created

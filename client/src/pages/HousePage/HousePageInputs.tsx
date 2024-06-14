@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Dispatch } from "../../redux/store";
+import { Dispatch, UseSelector } from "../../redux/store";
 import HouseControllerInput from "../../components/multiStepDivs/houseDivs/houseComponents/HouseControllerInput";
 import { HouseObjWithFormattedData, editHouseGoal, houseShowInput } from "../../redux/features/modalSlices/houseSlice";
 import { MenuItem, Select, SelectChangeEvent, useMediaQuery } from "@mui/material";
@@ -13,16 +13,21 @@ import { editSelectedGoal, selectedShowInput } from "../../redux/features/applic
 import { isTheSameCheck } from "./components/utils/isTheSameCheck";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { UpdateHouseGoalWithUser, UpdateHouseGoalWithNoUser } from "./utils/housePageSubmitFunc";
+import { updateHouseGoal } from "../../redux/features/tablesSlice";
 
 export interface IHousePageInputsProps {
   selectedGoal: HouseObjWithFormattedData;
 }
-type FormFields = z.infer<typeof house1stSchema>;
+export type FormFieldsHousePage = z.infer<typeof house1stSchema>;
 
 export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps) {
   // Redux States
   const dispatch = Dispatch();
-  const { showInputs, showOppCostInputs } = selectedGoal;
+  const { showInputs } = selectedGoal;
+  const { user } = UseSelector((state) => state.auth);
+
+  const userId = user?.userObj.id;
 
   // Show mortgage insurance
   const [showMIP, setShowMIP] = React.useState(false);
@@ -40,7 +45,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
     setError,
     clearErrors,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<FormFields>({
+  } = useForm<FormFieldsHousePage>({
     mode: "all",
     resetOptions: {
       keepErrors: true, // input errors will be retained with value update
@@ -72,35 +77,19 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
   const twentyPercentValue = Number(parseFloat(allInputData.price) * 0.2);
   const downPayment = watch("downPayment");
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent } = data;
+  const onSubmit: SubmitHandler<FormFieldsHousePage> = (data) => {
+    const { id } = data;
 
-    const newObj: HouseObjWithFormattedData = {
-      id,
-      streetAddress,
-      price: parseFloat(price.replace(/[,%$]/gm, "")),
-      downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
-      interest: parseFloat(interest.replace(/[,%$]/gm, "")),
-      term,
-      extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
-      img: img ? img : "",
-      propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
-      insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
-      mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
-      appreciation: parseFloat(appreciation.replace(/[,%$]/gm, "")),
-      opportunityCostRate: parseFloat(opportunityCostRate.replace(/[,%$]/gm, "")),
-      maintenance: parseFloat(maintenance.replace(/[,%$]/gm, "")),
-      rent: parseFloat(rent.replace(/[,%$]/gm, "")),
-      type: "House",
-      showTax: selectedGoal.showTax,
-      showInputs,
-      showOppCostInputs,
-      creator:null,
-      date:null
-    };
+    if (userId) {
+      const newObjWithUser = UpdateHouseGoalWithUser(data, userId, selectedGoal);
+      dispatch(updateHouseGoal({ type: "House", id: selectedGoal.id, inputData: newObjWithUser }));
+      dispatch(editSelectedGoal({ goal: newObjWithUser }));
+    } else {
+      const newObjNoUser = UpdateHouseGoalWithNoUser(data, selectedGoal);
 
-    dispatch(editSelectedGoal({ goal: newObj }));
-    dispatch(editHouseGoal({ goal: newObj, id }));
+      dispatch(editSelectedGoal({ goal: newObjNoUser }));
+      dispatch(editHouseGoal({ goal: newObjNoUser, id }));
+    }
   };
 
   function SubmitValidation(e: any) {
@@ -173,7 +162,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
       appreciation: selectedGoal.appreciation.toString(),
       maintenance: selectedGoal.maintenance.toString(),
       opportunityCostRate: selectedGoal.opportunityCostRate.toString(),
-      rent: selectedGoal.rent.toString()
+      rent: selectedGoal.rent.toString(),
     });
   }, [selectedGoal, isSubmitSuccessful]); // eslint-disable-line
 
@@ -186,13 +175,10 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
     }
   }, [matches, showInputs, selectedGoal]); // eslint-disable-line
 
-  
-
   return (
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c] text-lightText dark:text-darkText">
       {/* Content */}
       <div className="w-full flex flex-col">
-
         {/* Expand and Shrink Input Section Btn */}
         <div className="flex items-end justify-end w-full h-auto lg:hidden ">
           {showInputs ? (
@@ -213,7 +199,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
             />
           )}
         </div>
-        
+
         {showInputs ? (
           <form className="w-full h-auto flex flex-col " onSubmit={(e) => SubmitValidation(e)}>
             {/* Price */}
@@ -246,7 +232,9 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
                     border: 0,
                   },
                 }}
-                className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${errors.term && "border-2 border-red-500"}`}
+                className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${
+                  errors.term && "border-2 border-red-500"
+                }`}
                 onChange={handleChange}
                 value={allInputData.term.toString()}
               >
@@ -272,7 +260,14 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
                   animate={{ x: 0, opacity: 1, transition: { duration: 0.2, ease: easeInOut } }}
                   exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
                 >
-                  <HouseControllerInput errors={errors} control={control} name="mortgageInsurance" label="Mortgage Insurance" placeholder="" type="Percent" />
+                  <HouseControllerInput
+                    errors={errors}
+                    control={control}
+                    name="mortgageInsurance"
+                    label="Mortgage Insurance"
+                    placeholder=""
+                    type="Percent"
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -286,10 +281,13 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
                   exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
                   className="w-full flex flex-col"
                 >
-                  <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>Update</button>
+                  <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} `}>
+                    Update
+                  </button>
                   {Number(parseFloat(allInputData.downPayment)) > Number(parseFloat(allInputData.price)) * 0.2 && (
                     <p className="text-[12px] dark:text-chartGreen text-green-900 mt-2">
-                      If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to save your results.
+                      If you had mortgage insurance it will now be removed since your down payment is greater than 20%. Click the update button to
+                      save your results.
                     </p>
                   )}
                 </motion.div>

@@ -1,7 +1,7 @@
 import { HouseObj, HouseObjWithFormattedData } from "../../../../redux/features/modalSlices/houseSlice";
-import { FormFieldsHouse1stInputs } from "../houseComponents/House1stInputs";
+import { FormFieldsHouse1stInputs } from "../houseComponents/House1stInputs"
 
-export function LoggedInUserFormData(data: FormFieldsHouse1stInputs, userId: string) {
+export function CreateHouseGoalFormDataWithUser(data: FormFieldsHouse1stInputs, userId: string) {
   const {
     id,
     price,
@@ -47,7 +47,7 @@ export function LoggedInUserFormData(data: FormFieldsHouse1stInputs, userId: str
   return formattedData;
 }
 
-export function NoUserFormData(data: FormFieldsHouse1stInputs) {
+export function CreateHouseGoalFormDataWithNoUser(data: FormFieldsHouse1stInputs) {
   const {
     id,
     price,

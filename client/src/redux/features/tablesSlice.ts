@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_A_Goal, get_All_Goals, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
+import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_A_Goal, get_All_Goals, update_House_Goal, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
@@ -106,6 +106,15 @@ export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,
   }
 })
 
+export const updateHouseGoal = createAsyncThunk("updateHouseGoal", async (data: { type: "House"; id: string; inputData: HouseObjWithFormattedData }, {rejectWithValue}) => {
+  try{
+    const res = await update_House_Goal(data)
+    return res.data
+  }catch(e:any){
+    return rejectWithValue(e.response.data.msg);
+  }
+})
+
 const tableSlice = createSlice({
   name: "tables",
   initialState,
@@ -125,6 +134,7 @@ const tableSlice = createSlice({
       })
       .addCase(getAllGoals.fulfilled, (state, action: PayloadAction<UserGoalsObj>) => {
         state.userGoals = action.payload;
+        state.userGoalsError = ""
         state.userGoalsLoading = false;
       })
       .addCase(getAllGoals.rejected, (state, action) => {
@@ -137,7 +147,7 @@ const tableSlice = createSlice({
         state.userRetireGoalsLoading = true;
       })
       .addCase(createRetireGoal.fulfilled, (state) => {
-        state.userRetireGoalsError = false
+        state.userRetireGoalsError = ""
         state.userRetireGoalsLoading = false;
       })
       .addCase(createRetireGoal.rejected, (state, action) => {
@@ -200,6 +210,21 @@ const tableSlice = createSlice({
         state.userHouseGoalsLoading = false;
       })
       .addCase(createHouseGoal.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsLoading = false;
+      })
+
+      // Update House GOal
+      .addCase(updateHouseGoal.pending, (state) => {
+        state.userHouseGoalsLoading = true;
+      })
+      .addCase(updateHouseGoal.fulfilled, (state, action:PayloadAction<string>) => {
+        state.userHouseGoalsError = ''
+        state.userHouseGoalsLoading = false;
+        toast.success(action.payload)
+      })
+      .addCase(updateHouseGoal.rejected, (state, action) => {
         toast.error(action.payload as string)
         state.userRetireGoalsError = action.payload
         state.userHouseGoalsLoading = false;
