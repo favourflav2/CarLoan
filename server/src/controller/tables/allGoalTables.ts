@@ -15,12 +15,7 @@ interface RequestBody extends IGetUserAuthInfoRequest {
   };
 }
 
-interface DeleteFromALlTables extends IGetUserAuthInfoRequest {
-  query: {
-    type: "Retirement" | "Car" | "House";
-    id: string;
-  };
-}
+
 
 const pool = new Pool({
   connectionString: process.env.POSTGRES_URI_AUTH,
@@ -78,20 +73,4 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
   }
 }
 
-export async function delete_From_All_Tables(req: DeleteFromALlTables, res: Response) {
-  try {
-    const { type, id } = req.query;
-    const userId = req.userId;
 
-    if (type !== "Retirement" && type !== "Car" && type !== "House") return res.status(404).json({ msg: "Type of goal needed to delete is wrong" });
-    if (!id) return res.status(404).json({ msg: "Theres no user id provided" });
-
-    const text = "DELETE FROM retire WHERE creator = $1 AND type = $2 AND id = $3";
-    const values = [userId, type, id];
-    await pool.query(text, values);
-    res.send("Deleted goal");
-  } catch (e) {
-    console.log(e);
-    res.status(400).json({ msg: e.message });
-  }
-}

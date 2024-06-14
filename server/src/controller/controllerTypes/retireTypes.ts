@@ -59,3 +59,11 @@ export interface RetirementGoalsBackEnd {
       id:string | undefined;
     }
   }
+
+  // Delete Retire Goal
+  export interface DeleteFromRetireGoal extends IGetUserAuthInfoRequest {
+    query: {
+      type: "Retirement"
+      id: string;
+    };
+  }
