@@ -21,7 +21,7 @@ type OppCostTrimSelectedGoal = {
   interest: number;
 };
 
-type OnlyInputs = Omit<HouseObjWithFormattedData, "creator" | "date">;
+type OnlyInputs = Omit<HouseObjWithFormattedData, "creator" | "date" | "img">;
 
 export function isTheSameCheck(
   select: HouseObjWithFormattedData | RetirementGoals | CarObjWithFormattedData | null,
@@ -45,7 +45,7 @@ export function isTheSameCheck(
 ) {
   if (!select || select.type !== "House" || !inputs) return;
 
-  const { id, streetAddress, price, downPayment, interest, term, extraPayment, img, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent } = inputs;
+  const { id, streetAddress, price, downPayment, interest, term, extraPayment, propertyTax, insurance, mortgageInsurance, appreciation, opportunityCostRate, maintenance, rent } = inputs;
 
   const { showInputs, showOppCostInputs } = select;
 
@@ -57,7 +57,6 @@ export function isTheSameCheck(
     interest: parseFloat(interest.replace(/[,%$]/gm, "")),
     term,
     extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
-    img: img ? img : "",
     propertyTax: parseFloat(propertyTax.replace(/[,%$]/gm, "")),
     insurance: parseFloat(insurance.replace(/[,%$]/gm, "")),
     mortgageInsurance: parseFloat(mortgageInsurance.replace(/[,%$]/gm, "")),
@@ -79,7 +78,6 @@ export function isTheSameCheck(
     interest: select.interest,
     term: select.term,
     extraPayment: select.extraPayment,
-    img: select.img,
     propertyTax: select.propertyTax,
     insurance: select.insurance,
     mortgageInsurance: select.mortgageInsurance,
