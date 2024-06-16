@@ -64,3 +64,10 @@ export interface UpdateHouseGoalImg extends IGetUserAuthInfoRequest {
         img:string
     }
 }
+
+export interface UpdateHouseGoalAddress extends IGetUserAuthInfoRequest {
+    body:{
+        id:string;
+        newAddress:string;
+    }
+}

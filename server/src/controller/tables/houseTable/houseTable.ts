@@ -5,7 +5,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal, UpdateHouseGoalImg, UpdateHouseGoalOppCost } from "../../controllerTypes/houseTypes.js";
+import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal, UpdateHouseGoalAddress, UpdateHouseGoalImg, UpdateHouseGoalOppCost } from "../../controllerTypes/houseTypes.js";
 
 const { Pool, types } = pg;
 
@@ -356,5 +356,23 @@ export async function update_House_Goal_Img(req: UpdateHouseGoalImg, res: Respon
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error updating your image" });
+  }
+}
+
+export async function update_House_Goal_Address(req:UpdateHouseGoalAddress, res:Response){
+  try{
+    const {id, newAddress} = req.body
+    const userId = req.userId
+
+    const text = 'UPDATE house SET "streetAddress" = $1 WHERE id = $2 and creator = $3 '
+    const values = [newAddress, id, userId]
+    await pool.query(text,values)
+
+    res.status(200).json("You successfully updated your address:)");
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error updating your address" });
   }
 }
