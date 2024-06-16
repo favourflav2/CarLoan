@@ -17,6 +17,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { UpdateHouseGoalOppCostWithNoUser, UpdateHouseGoalOppCostWithUser } from "../utils/housePageOppCostFunc";
 import { updateHouseGoalOppCost } from "../../../redux/asyncActions/houseActions";
+import useShowInputsMobile from "../hooks/useShowInputsMobile";
+import useUpdateHouseShowInputs from "../hooks/useUpdateHouseShowInputs";
 
 export interface IOppCostInputsProps {
   selectedGoal: HouseObjWithFormattedData;
@@ -33,7 +35,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
   // Show Inputs on mobile states
   const matches = useMediaQuery("(min-width:1280px)");
 
-  const { interest, maintenance, propertyTax, opportunityCostRate, rent, appreciation, price, downPayment, showOppCostInputs } = selectedGoal;
+  const { interest, maintenance, propertyTax, opportunityCostRate, rent, appreciation, price, downPayment } = selectedGoal;
   // Form Feilds
   const {
     control,
@@ -102,6 +104,9 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
     }
   }
 
+  const {showOppCostInputs} = useShowInputsMobile({selectedGoal, matches})
+  const {handleHideShowOppCostInputs, handleShowOppCostInputs} = useUpdateHouseShowInputs({selectedGoal})
+
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
     reset({
@@ -114,14 +119,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
     });
   }, [selectedGoal, isSubmitSuccessful]); // eslint-disable-line
 
-  React.useEffect(() => {
-    if (showOppCostInputs === false) {
-      if (matches) {
-        dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: true }));
-        dispatch(houseShowOppCostInput({ id: selectedGoal.id, value: true }));
-      }
-    }
-  }, [matches, showOppCostInputs, selectedGoal]); // eslint-disable-line
+ 
 
   return (
     <div className="w-full h-auto flex flex-col">
@@ -132,18 +130,12 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
           {showOppCostInputs ? (
             <KeyboardArrowUpIcon
               className="text-[28px] cursor-pointer"
-              onClick={() => {
-                dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: false }));
-                dispatch(houseShowOppCostInput({ id: selectedGoal.id, value: false }));
-              }}
+              onClick={handleHideShowOppCostInputs}
             />
           ) : (
             <KeyboardArrowDownIcon
               className="text-[28px] cursor-pointer"
-              onClick={() => {
-                dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: true }));
-                dispatch(houseShowOppCostInput({ id: selectedGoal.id, value: true }));
-              }}
+              onClick={handleShowOppCostInputs}
             />
           )}
         </div>

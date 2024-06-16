@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AddHouseGoalObj, create_House_Goal, update_House_Goal, delete_House_Goal, update_House_Goal_Opp_Cost, update_House_Goal_Img, update_House_Goal_Address, hide_And_Show_House_Inputs } from "../api/tablesApi";
+import { AddHouseGoalObj, create_House_Goal, update_House_Goal, delete_House_Goal, update_House_Goal_Opp_Cost, update_House_Goal_Img, update_House_Goal_Address, hide_And_Show_House_Inputs, hide_And_Show_House_OppCost_Inputs } from "../api/tablesApi";
 import {  HouseObjWithFormattedData } from "../features/modalSlices/houseSlice";
 
 export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,creator}:AddHouseGoalObj, {rejectWithValue}) => {
@@ -60,6 +60,15 @@ export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,
   export const hideAndShowHouseInputs = createAsyncThunk("hideAndShowHouseInputs", async (data:{id:string, inputs:boolean}, {rejectWithValue}) => {
     try{
       const res = await hide_And_Show_House_Inputs(data)
+      return res.data
+    }catch(e:any){
+      return rejectWithValue(e.response.data.msg);
+    }
+  })
+
+  export const hideAndShowHouseOppCostInputs = createAsyncThunk("hideAndShowHouseOppCostInputs", async (data:{id:string, oppCostInputs:boolean}, {rejectWithValue}) => {
+    try{
+      const res = await hide_And_Show_House_OppCost_Inputs(data)
       return res.data
     }catch(e:any){
       return rejectWithValue(e.response.data.msg);

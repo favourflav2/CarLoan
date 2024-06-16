@@ -70,3 +70,7 @@ export function update_House_Goal_Address(data:{newAddress:string, id:string}){
 export function hide_And_Show_House_Inputs(data:{id:string, inputs:boolean}){
   return API.put("/house/showInputs", data)
 }
+
+export function hide_And_Show_House_OppCost_Inputs(data:{id:string, oppCostInputs:boolean}){
+  return API.put("/house/showOppCostInputs", data)
+}

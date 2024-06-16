@@ -1,8 +1,7 @@
-
 import { Dispatch, UseSelector } from "../../../redux/store";
-import { HouseObjWithFormattedData, houseShowInput } from "../../../redux/features/modalSlices/houseSlice";
-import { selectedShowInput } from "../../../redux/features/applicationSlice";
-import { hideAndShowHouseInputs } from "../../../redux/asyncActions/houseActions";
+import { HouseObjWithFormattedData, houseShowInput, houseShowOppCostInput } from "../../../redux/features/modalSlices/houseSlice";
+import { selectedShowInput, selectedShowOppCostInput } from "../../../redux/features/applicationSlice";
+import { hideAndShowHouseInputs, hideAndShowHouseOppCostInputs } from "../../../redux/asyncActions/houseActions";
 
 export interface IuseUpdateHouseShowInputsProps {
   selectedGoal: HouseObjWithFormattedData;
@@ -26,7 +25,7 @@ export default function useUpdateHouseShowInputs({ selectedGoal }: IuseUpdateHou
     }
   }
 
-   // Toggle House Inputs === FALSE
+  // Toggle House Inputs === FALSE
   function handleHideHouseInputs() {
     if (userId) {
       dispatch(selectedShowInput({ goal: selectedGoal, value: false }));
@@ -36,9 +35,34 @@ export default function useUpdateHouseShowInputs({ selectedGoal }: IuseUpdateHou
       dispatch(houseShowInput({ id: selectedGoal.id, value: false }));
     }
   }
-  
+
+  // --------------------------------------------- House Opp Cost Inputs Functions --------------------------------------------
+
+  // Toggle Opp Cost Inputs === TRUE
+  function handleShowOppCostInputs() {
+    if (userId) {
+      dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: true }));
+      dispatch(hideAndShowHouseOppCostInputs({ id: selectedGoal.id, oppCostInputs: true }));
+    } else {
+      dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: true }));
+      dispatch(houseShowOppCostInput({ id: selectedGoal.id, value: true }));
+    }
+  }
+
+  function handleHideShowOppCostInputs(){
+    if (userId) {
+        dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: false }));
+        dispatch(hideAndShowHouseOppCostInputs({ id: selectedGoal.id, oppCostInputs: false }));
+      } else {
+        dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: false }));
+        dispatch(houseShowOppCostInput({ id: selectedGoal.id, value: false }));
+      }
+  }
+
   return {
     handleHideHouseInputs,
-    handleShowHouseInputs
-  }
+    handleShowHouseInputs,
+    handleShowOppCostInputs,
+    handleHideShowOppCostInputs
+  };
 }

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../../redux/store";
-import { HouseObjWithFormattedData, houseShowInput } from "../../../redux/features/modalSlices/houseSlice";
-import { selectedShowInput } from "../../../redux/features/applicationSlice";
-import { hideAndShowHouseInputs } from "../../../redux/asyncActions/houseActions";
+import { HouseObjWithFormattedData, houseShowInput, houseShowOppCostInput } from "../../../redux/features/modalSlices/houseSlice";
+import { selectedShowInput, selectedShowOppCostInput } from "../../../redux/features/applicationSlice";
+import { hideAndShowHouseInputs, hideAndShowHouseOppCostInputs } from "../../../redux/asyncActions/houseActions";
 
 export interface IuseShowInputsMobileProps {
   selectedGoal: HouseObjWithFormattedData;
@@ -17,7 +17,7 @@ export default function useShowInputsMobile({ selectedGoal, matches }: IuseShowI
   const userId = user?.userObj.id;
 
   // Show Inputs from selected goal
-  const { showInputs } = selectedGoal;
+  const { showInputs, showOppCostInputs } = selectedGoal;
 
   React.useEffect(() => {
     // This useEffect will only be ran when the showInputs is false ... mobile users will be able to hide and show the inputs ... but when the screen width gets bigger showInputs will be set to true
@@ -27,7 +27,7 @@ export default function useShowInputsMobile({ selectedGoal, matches }: IuseShowI
         // When theres a logged in user we need to send data to the server
         if (userId) {
           dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
-          dispatch(hideAndShowHouseInputs({ id:selectedGoal.id, inputs:true }));
+          dispatch(hideAndShowHouseInputs({ id: selectedGoal.id, inputs: true }));
         } else {
           // No logged in user ... we will use local storage
           dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
@@ -36,8 +36,25 @@ export default function useShowInputsMobile({ selectedGoal, matches }: IuseShowI
       }
     }
   }, [selectedGoal, showInputs, matches, userId]); //eslint-disable-line
-  
+
+  React.useEffect(() => {
+    if (showOppCostInputs === false) {
+      if (matches) {
+        if (userId) {
+          // Logged in user .. we will send data to server
+          dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: true }));
+          dispatch(hideAndShowHouseOppCostInputs({ id: selectedGoal.id, oppCostInputs: true }));
+        } else {
+          // No logged in user
+          dispatch(selectedShowOppCostInput({ goal: selectedGoal, value: true }));
+          dispatch(houseShowOppCostInput({ id: selectedGoal.id, value: true }));
+        }
+      }
+    }
+  }, [matches, showOppCostInputs, selectedGoal, userId]); //eslint-disable-line
+
   return {
-    showInputs
-  }
+    showInputs,
+    showOppCostInputs
+  };
 }
