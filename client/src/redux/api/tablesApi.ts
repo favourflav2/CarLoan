@@ -66,3 +66,7 @@ export function update_House_Goal_Img(data:{goal:HouseObjWithFormattedData, id:s
 export function update_House_Goal_Address(data:{newAddress:string, id:string}){
   return API.put("/house/updateHouseAddress",data)
 }
+
+export function hide_And_Show_House_Inputs(data:{id:string, inputs:boolean}){
+  return API.put("/house/showInputs", data)
+}

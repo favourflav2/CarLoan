@@ -15,6 +15,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { UpdateHouseGoalWithUser, UpdateHouseGoalWithNoUser } from "./utils/housePageSubmitFunc";
 import { updateHouseGoal } from "../../redux/asyncActions/houseActions";
+import useShowInputsMobile from "./hooks/useShowInputsMobile";
+import useUpdateHouseShowInputs from "./hooks/useUpdateHouseShowInputs";
 
 export interface IHousePageInputsProps {
   selectedGoal: HouseObjWithFormattedData;
@@ -24,7 +26,6 @@ export type FormFieldsHousePage = z.infer<typeof house1stSchema>;
 export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps) {
   // Redux States
   const dispatch = Dispatch();
-  const { showInputs } = selectedGoal;
   const { user } = UseSelector((state) => state.auth);
 
   const userId = user?.userObj.id;
@@ -117,6 +118,9 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
     setValue("term", Number(event.target.value) as number);
   };
 
+  // Functions that handle hide and show inputs
+  const {handleHideHouseInputs, handleShowHouseInputs} = useUpdateHouseShowInputs({selectedGoal})
+
   const errorsArray = Object.keys(errors);
   // Using loadash to compare object ... if the selected goal doesnt match the currnet inputs on the page ... we show an update button
 
@@ -166,14 +170,11 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
     });
   }, [selectedGoal, isSubmitSuccessful]); // eslint-disable-line
 
-  React.useEffect(() => {
-    if (showInputs === false) {
-      if (matches) {
-        dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
-        dispatch(houseShowInput({ id: selectedGoal.id, value: true }));
-      }
-    }
-  }, [matches, showInputs, selectedGoal]); // eslint-disable-line
+
+// React useEffect hook ... handles show inputs boolen value ... when screen width get larger
+  const {showInputs} = useShowInputsMobile({selectedGoal,matches})
+
+
 
   return (
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c] text-lightText dark:text-darkText">
@@ -184,18 +185,12 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
           {showInputs ? (
             <KeyboardArrowUpIcon
               className="text-[28px] cursor-pointer"
-              onClick={() => {
-                dispatch(selectedShowInput({ goal: selectedGoal, value: false }));
-                dispatch(houseShowInput({ id: selectedGoal.id, value: false }));
-              }}
+              onClick={handleHideHouseInputs}
             />
           ) : (
             <KeyboardArrowDownIcon
               className="text-[28px] cursor-pointer"
-              onClick={() => {
-                dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
-                dispatch(houseShowInput({ id: selectedGoal.id, value: true }));
-              }}
+              onClick={handleShowHouseInputs}
             />
           )}
         </div>

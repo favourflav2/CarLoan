@@ -7,7 +7,7 @@ import { setRetireGoals } from "../features/modalSlices/retirementSlice";
 import { setHouseGoals } from "../features/modalSlices/houseSlice";
 import { setCarGoals } from "../features/modalSlices/carModalSlice";
 import {  createRetireGoal,  deleteRetireGoal, updateRetireGoal, updateRetireTableName } from "../asyncActions/retireActions";
-import { createHouseGoal, updateHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, deleteHouseGoal, updateHouseGoalAddress } from "../asyncActions/houseActions";
+import { createHouseGoal, updateHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, deleteHouseGoal, updateHouseGoalAddress, hideAndShowHouseInputs } from "../asyncActions/houseActions";
 import { getAllGoals } from "../features/tablesSlice";
 
 
@@ -96,7 +96,7 @@ listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
 
   // When user creates new a goal or updates I want to refetch data
   listenerMiddleware.startListening.withTypes<RootState, AppDispatch>()({
-    matcher: isAnyOf(createRetireGoal.fulfilled,deleteRetireGoal.fulfilled, updateRetireGoal.fulfilled, updateRetireTableName.fulfilled, createHouseGoal.fulfilled, updateHouseGoal.fulfilled, deleteHouseGoal.fulfilled, updateHouseGoalOppCost.fulfilled, updateHouseGoalImg.fulfilled, updateHouseGoalAddress.fulfilled),
+    matcher: isAnyOf(createRetireGoal.fulfilled,deleteRetireGoal.fulfilled, updateRetireGoal.fulfilled, updateRetireTableName.fulfilled, createHouseGoal.fulfilled, updateHouseGoal.fulfilled, deleteHouseGoal.fulfilled, updateHouseGoalOppCost.fulfilled, updateHouseGoalImg.fulfilled, updateHouseGoalAddress.fulfilled, hideAndShowHouseInputs.fulfilled ),
     effect: async (_action, listenerApi) => {
       listenerApi.dispatch(getAllGoals({ limit: 10, page: 1 }))
     },

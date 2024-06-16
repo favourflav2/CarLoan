@@ -3,7 +3,7 @@ import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
 import {toast} from 'react-toastify'
-import { createHouseGoal, updateHouseGoal, deleteHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost } from "../asyncActions/houseActions";
+import { createHouseGoal, updateHouseGoal, deleteHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, updateHouseGoalAddress, hideAndShowHouseInputs } from "../asyncActions/houseActions";
 import { createRetireGoal, deleteRetireGoal, updateRetireGoal, updateRetireTableName } from "../asyncActions/retireActions";
 import { get_All_Goals } from "../api/tablesApi";
 
@@ -228,6 +228,36 @@ const tableSlice = createSlice({
         //toast.success(action.payload)
       })
       .addCase(updateHouseGoalImg.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userHouseGoalsError = action.payload
+        state.userHouseGoalsLoading = false;
+      })
+
+      // Update House Address
+      .addCase(updateHouseGoalAddress.pending, (state) => {
+        state.userHouseGoalsLoading = true;
+      })
+      .addCase(updateHouseGoalAddress.fulfilled, (state, action:PayloadAction<string>) => {
+        state.userHouseGoalsError = ''
+        state.userHouseGoalsLoading = false;
+        //toast.success(action.payload)
+      })
+      .addCase(updateHouseGoalAddress.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userHouseGoalsError = action.payload
+        state.userHouseGoalsLoading = false;
+      })
+
+      // Show and Hide Inputs House Goal
+      .addCase(hideAndShowHouseInputs.pending, (state) => {
+        state.userHouseGoalsLoading = true;
+      })
+      .addCase(hideAndShowHouseInputs.fulfilled, (state, action:PayloadAction<string>) => {
+        state.userHouseGoalsError = ''
+        state.userHouseGoalsLoading = false;
+        //toast.success(action.payload)
+      })
+      .addCase(hideAndShowHouseInputs.rejected, (state, action) => {
         toast.error(action.payload as string)
         state.userHouseGoalsError = action.payload
         state.userHouseGoalsLoading = false;
