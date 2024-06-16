@@ -71,3 +71,10 @@ export interface UpdateHouseGoalAddress extends IGetUserAuthInfoRequest {
         newAddress:string;
     }
 }
+
+export interface ShowAndHideHouseInputs extends IGetUserAuthInfoRequest {
+    body:{
+        id:string;
+        inputs:boolean
+    }
+}
