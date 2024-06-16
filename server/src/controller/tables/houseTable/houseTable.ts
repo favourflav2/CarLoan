@@ -5,7 +5,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal } from "../../controllerTypes/houseTypes.js";
+import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal, UpdateHouseGoalOppCost } from "../../controllerTypes/houseTypes.js";
 
 const { Pool, types } = pg;
 
@@ -247,7 +247,7 @@ export async function delete_House_Goal(req: DeleteHouseGoal, res: Response) {
       // delete from db
       await pool.query(text, values);
 
-    return  res.status(200).json("Deleted Goal (no img)");
+      return res.status(200).json("Deleted Goal");
     } else {
       // This means we have an img and we need to delete it from my aws and database
 
@@ -271,8 +271,50 @@ export async function delete_House_Goal(req: DeleteHouseGoal, res: Response) {
       // delete from db
       await pool.query(text, values);
 
-    return res.status(200).json("Deleted Goal with image");
+      return res.status(200).json("Deleted Goal");
     }
+  } catch (e) {
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error deleting this goal" });
+  }
+}
+
+export async function update_House_Goal_Opp_Cost(req: UpdateHouseGoalOppCost, res: Response) {
+  try {
+    const { creator, goal, id } = req.body;
+    const {
+      propertyTax,
+      appreciation,
+      opportunityCostRate,
+      maintenance,
+      rent,
+      showInputs,
+      showOppCostInputs,
+      date,
+    } = goal;
+    const userId = req.userId;
+
+    if (creator !== userId) return res.status(400).json({ msg: "The user id being sent to the server is not authenticated" });
+
+    // making sure all number values are of typeof numbers
+    const checkValues = [
+      propertyTax,
+      appreciation,
+      opportunityCostRate,
+      maintenance,
+      rent,
+    ].every((item) => typeof item === "number");
+
+    if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
+    if (!date) return res.status(400).json({ msg: "Date value is null" });
+
+    const text = 'UPDATE house SET "propertyTax" = $1, "appreciation" = $2, "opportunityCostRate" = $3, maintenance = $4, "rent" = $5, "showInputs" = $6, "showOppCostInputs" = $7 WHERE creator = $8 AND id = $9 '
+    const values = [propertyTax, appreciation, opportunityCostRate, maintenance, rent, showInputs, showOppCostInputs, creator, id]
+    await pool.query(text, values)
+
+    res.send("Updated Opp Cost")
+
   } catch (e) {
     console.log(e);
     console.log("message", e.message);

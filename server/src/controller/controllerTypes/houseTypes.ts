@@ -48,3 +48,11 @@ export interface DeleteHouseGoal extends IGetUserAuthInfoRequest {
         img:string
     }
 }
+
+export interface UpdateHouseGoalOppCost extends IGetUserAuthInfoRequest {
+    body:{
+        creator:string;
+        goal:HouseObjWithFormattedDataBackendData;
+        id:string;
+    }
+}
