@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_House_Goal, delete_Retire_Goal, get_All_Goals, update_House_Goal, update_House_Goal_Opp_Cost, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
+import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_House_Goal, delete_Retire_Goal, get_All_Goals, update_House_Goal, update_House_Goal_Img, update_House_Goal_Opp_Cost, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
@@ -135,6 +135,15 @@ export const updateHouseGoalOppCost = createAsyncThunk("updateHouseGoalOppCost",
   }
 })
 
+export const updateHouseGoalImg = createAsyncThunk("updateHouseGoalImg", async (data:{goal:HouseObjWithFormattedData, id:string, img:string}, {rejectWithValue}) => {
+  try{
+    const res = await update_House_Goal_Img(data)
+    return res.data
+  }catch(e:any){
+    return rejectWithValue(e.response.data.msg);
+  }
+})
+
 const tableSlice = createSlice({
   name: "tables",
   initialState,
@@ -231,7 +240,7 @@ const tableSlice = createSlice({
       })
       .addCase(createHouseGoal.rejected, (state, action) => {
         toast.error(action.payload as string)
-        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsError = action.payload
         state.userHouseGoalsLoading = false;
       })
 
@@ -246,11 +255,11 @@ const tableSlice = createSlice({
       })
       .addCase(updateHouseGoal.rejected, (state, action) => {
         toast.error(action.payload as string)
-        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsError = action.payload
         state.userHouseGoalsLoading = false;
       })
 
-      // Update House GOal
+      // Delete House Goal
       .addCase(deleteHouseGoal.pending, (state) => {
         state.userHouseGoalsLoading = true;
       })
@@ -261,7 +270,7 @@ const tableSlice = createSlice({
       })
       .addCase(deleteHouseGoal.rejected, (state, action) => {
         toast.error(action.payload as string)
-        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsError = action.payload
         state.userHouseGoalsLoading = false;
       })
 
@@ -276,7 +285,22 @@ const tableSlice = createSlice({
       })
       .addCase(updateHouseGoalOppCost.rejected, (state, action) => {
         toast.error(action.payload as string)
-        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsError = action.payload
+        state.userHouseGoalsLoading = false;
+      })
+
+      // Update House Goal Img
+      .addCase(updateHouseGoalImg.pending, (state) => {
+        state.userHouseGoalsLoading = true;
+      })
+      .addCase(updateHouseGoalImg.fulfilled, (state, action:PayloadAction<string>) => {
+        state.userHouseGoalsError = ''
+        state.userHouseGoalsLoading = false;
+        //toast.success(action.payload)
+      })
+      .addCase(updateHouseGoalImg.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userHouseGoalsError = action.payload
         state.userHouseGoalsLoading = false;
       })
 

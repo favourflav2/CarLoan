@@ -4,13 +4,12 @@ import { Dispatch, UseSelector } from "../../redux/store";
 import { editCarGoalImg } from "../../redux/features/modalSlices/carModalSlice";
 import { editSelectedGoalImg } from "../../redux/features/applicationSlice";
 import { editHouseGoalImg } from "../../redux/features/modalSlices/houseSlice";
-
+import { updateHouseGoalImg } from "../../redux/features/tablesSlice";
 
 interface Props {
   updateImg(img: string): void;
   setOpenImgModal: React.Dispatch<React.SetStateAction<boolean>>;
   type: "Edit" | "Create";
-  
 }
 export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
   //Redux States
@@ -48,11 +47,11 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
     });
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement> | undefined) => {
-   if(!event?.target.files) return
+    if (!event?.target.files) return;
 
     const file = event.target.files[0];
     const image = await resizeFile(file);
-    
+
     switch (type) {
       case "Create":
         updateImg(image as string);
@@ -69,9 +68,20 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
             break;
           case "House":
             if (selectedGoal.type !== "House") return;
-            dispatch(editHouseGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }));
-            dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
-            setOpenImgModal(false);
+
+            if (userId) {
+              // If we have a user we sned an object to the backend and update
+
+              dispatch(updateHouseGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }))
+              dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
+              setOpenImgModal(false);
+            } else {
+              
+              // No user logged in ... using local storage to save stuff
+              dispatch(editHouseGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }));
+              dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
+              setOpenImgModal(false);
+            }
             break;
           default:
             break;

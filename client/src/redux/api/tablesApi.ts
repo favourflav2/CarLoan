@@ -58,3 +58,7 @@ export function delete_House_Goal(data:{itemUUID:string, dateAsAWSId:string, img
 export function update_House_Goal_Opp_Cost(data:{creator:string, goal:HouseObjWithFormattedData, id:string;}){
   return API.put("/house/updateHouseOppCost", data)
 }
+
+export function update_House_Goal_Img(data:{goal:HouseObjWithFormattedData, id:string, img:string}){
+  return API.put("/house/updateHouseImg", data)
+}
