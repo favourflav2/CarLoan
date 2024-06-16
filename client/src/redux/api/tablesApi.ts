@@ -62,3 +62,7 @@ export function update_House_Goal_Opp_Cost(data:{creator:string, goal:HouseObjWi
 export function update_House_Goal_Img(data:{goal:HouseObjWithFormattedData, id:string, img:string}){
   return API.put("/house/updateHouseImg", data)
 }
+
+export function update_House_Goal_Address(data:{newAddress:string, id:string}){
+  return API.put("/house/updateHouseAddress",data)
+}

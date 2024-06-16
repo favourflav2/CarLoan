@@ -107,7 +107,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
       case "House":
         return item.streetAddress;
       default:
-        return;
+        return "";
     }
   }
 
@@ -128,7 +128,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
         if (item.id === goal.id) return "bg-gray-300 dark:bg-black/50";
         break;
       default:
-        return;
+        return
     }
   }
 
@@ -200,7 +200,7 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
             >
               {/* Title and Delete Icon */}
               <div className="w-full justify-between items-center flex ">
-                <h1 className="text-[15px] underline">{title(item)}</h1>
+                <h1 className="text-[15px] underline">{title(item) && title(item).length >= 28 ? title(item).slice(0,25) + '...' : title(item)}</h1>
                 <DeleteIcon
                   ref={ref}
                   className="text-[20px]"

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AddHouseGoalObj, create_House_Goal, update_House_Goal, delete_House_Goal, update_House_Goal_Opp_Cost, update_House_Goal_Img } from "../api/tablesApi";
+import { AddHouseGoalObj, create_House_Goal, update_House_Goal, delete_House_Goal, update_House_Goal_Opp_Cost, update_House_Goal_Img, update_House_Goal_Address } from "../api/tablesApi";
 import {  HouseObjWithFormattedData } from "../features/modalSlices/houseSlice";
 
 export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,creator}:AddHouseGoalObj, {rejectWithValue}) => {
@@ -46,3 +46,14 @@ export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,
       return rejectWithValue(e.response.data.msg);
     }
   })
+
+
+  export const updateHouseGoalAddress = createAsyncThunk("updateHouseGoalAddress", async (data:{newAddress:string, id:string}, {rejectWithValue}) => {
+    try{
+      const res = await update_House_Goal_Address(data)
+      return res.data
+    }catch(e:any){
+      return rejectWithValue(e.response.data.msg);
+    }
+  })
+

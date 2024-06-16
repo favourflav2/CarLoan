@@ -13,6 +13,7 @@ import EditImgModal from "../CarPage/components/EditImgModal";
 import { editHouseGoalTitle } from "../../redux/features/modalSlices/houseSlice";
 import OpportunityCost from "./OppCost/OpportunityCost";
 import useHouseFVFunctions from "./hooks/useHouseFVFunctions";
+import { updateHouseGoalAddress } from "../../redux/asyncActions/houseActions";
 
 export interface IHousePageProps {}
 
@@ -34,7 +35,10 @@ type FormFields = z.infer<typeof schema>;
 export default function HousePage(props: IHousePageProps) {
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
+
+  const userId = user?.userObj.id;
 
   // Form Feilds
   const {
@@ -71,8 +75,7 @@ export default function HousePage(props: IHousePageProps) {
   const [view, setView] = React.useState<string>("Graph View");
 
   // Chart States using React use Memo
-  const {monthlyPayment, regualrLoanAmmortization, extraNumberOfYears, extraLoanAmmortization} = useHouseFVFunctions()
- 
+  const { monthlyPayment, regualrLoanAmmortization, extraNumberOfYears, extraLoanAmmortization } = useHouseFVFunctions();
 
   // Scroll to top on render
   React.useEffect(() => {
@@ -81,7 +84,6 @@ export default function HousePage(props: IHousePageProps) {
       left: 0,
     });
   }, []);
-
 
   // Callback version of watch.  It's your responsibility to unsubscribe when done.
   React.useEffect(() => {
@@ -112,10 +114,20 @@ export default function HousePage(props: IHousePageProps) {
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     if (!selectedGoal || selectedGoal?.type !== "House") return;
-    dispatch(editHouseGoalTitle({ id: selectedGoal.id, newAddress: data.streetAddress, goal: selectedGoal }));
-    dispatch(editSelectedGoalTitle({ title: data.streetAddress, goal: selectedGoal }));
-    setEditState(false);
-    setSaveBtn(false);
+
+    if (userId) {
+      // with user we send data to the backend
+      dispatch(editSelectedGoalTitle({ title: data.streetAddress, goal: selectedGoal }));
+      dispatch(updateHouseGoalAddress({ id: selectedGoal.id, newAddress: data.streetAddress }));
+      setEditState(false);
+      setSaveBtn(false);
+    } else {
+      // No user we use local storage
+      dispatch(editHouseGoalTitle({ id: selectedGoal.id, newAddress: data.streetAddress, goal: selectedGoal }));
+      dispatch(editSelectedGoalTitle({ title: data.streetAddress, goal: selectedGoal }));
+      setEditState(false);
+      setSaveBtn(false);
+    }
   };
 
   if (!selectedGoal || selectedGoal.type !== "House") {
@@ -123,13 +135,14 @@ export default function HousePage(props: IHousePageProps) {
     return null;
   }
 
-
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">
       {/* Top Section Chart and Inputs */}
       <div
         className={`w-full h-full grid ${
-          shrinkDashboardSidebar ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1" : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
+          shrinkDashboardSidebar
+            ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1"
+            : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
         }`}
       >
         {/* Left Side Inputs */}
@@ -190,7 +203,7 @@ export default function HousePage(props: IHousePageProps) {
       </div>
 
       {/* Opportunity Cost */}
-      {selectedGoal && monthlyPayment &&  <OpportunityCost selectedGoal={selectedGoal} monthlyPayment={monthlyPayment}/>}
+      {selectedGoal && monthlyPayment && <OpportunityCost selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} />}
     </div>
   );
 }
