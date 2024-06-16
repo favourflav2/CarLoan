@@ -4,7 +4,7 @@ import { Dispatch, UseSelector } from "../../redux/store";
 import { editCarGoalImg } from "../../redux/features/modalSlices/carModalSlice";
 import { editSelectedGoalImg } from "../../redux/features/applicationSlice";
 import { editHouseGoalImg } from "../../redux/features/modalSlices/houseSlice";
-import { updateHouseGoalImg } from "../../redux/features/tablesSlice";
+import { updateHouseGoalImg } from "../../redux/asyncActions/houseActions";
 
 interface Props {
   updateImg(img: string): void;
@@ -76,7 +76,7 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
               dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
               setOpenImgModal(false);
             } else {
-              
+
               // No user logged in ... using local storage to save stuff
               dispatch(editHouseGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }));
               dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));

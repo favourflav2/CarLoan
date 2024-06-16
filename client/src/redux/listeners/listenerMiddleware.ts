@@ -6,7 +6,9 @@ import { setSelectedGoal } from "../features/applicationSlice";
 import { setRetireGoals } from "../features/modalSlices/retirementSlice";
 import { setHouseGoals } from "../features/modalSlices/houseSlice";
 import { setCarGoals } from "../features/modalSlices/carModalSlice";
-import { createHouseGoal, createRetireGoal, deleteHouseGoal, deleteRetireGoal, getAllGoals, updateHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, updateRetireGoal, updateRetireTableName } from "../features/tablesSlice";
+import {  createRetireGoal,  deleteRetireGoal, updateRetireGoal, updateRetireTableName } from "../asyncActions/retireActions";
+import { createHouseGoal, updateHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, deleteHouseGoal } from "../asyncActions/houseActions";
+import { getAllGoals } from "../features/tablesSlice";
 
 
  export const listenerMiddleware = createListenerMiddleware();

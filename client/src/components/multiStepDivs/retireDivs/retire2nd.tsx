@@ -15,7 +15,8 @@ import dayjs from "dayjs";
 import { RetirementGoals, addRetireGoal } from "../../../redux/features/modalSlices/retirementSlice";
 import { RetirementGoalNoFormat } from "../../../redux/features/modalSlices/retirementSlice";
 import { retireModalSchema } from "./retireModalSchema";
-import { createRetireGoal, setUserGoalError } from "../../../redux/features/tablesSlice";
+import {  setUserGoalError } from "../../../redux/features/tablesSlice";
+import { createRetireGoal } from "../../../redux/asyncActions/retireActions";
 
 type FormFields = z.infer<typeof retireModalSchema>;
 

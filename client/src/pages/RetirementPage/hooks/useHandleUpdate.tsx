@@ -2,7 +2,7 @@
 import { Dispatch, UseSelector } from "../../../redux/store";
 import { RetirementGoals, editRetireGoal } from "../../../redux/features/modalSlices/retirementSlice";
 import { editSelectedGoal } from "../../../redux/features/applicationSlice";
-import { updateRetireGoal } from "../../../redux/features/tablesSlice";
+import { updateRetireGoal } from "../../../redux/asyncActions/retireActions";
 
 export interface IuseHandleUpdateProps {
   inputs: {

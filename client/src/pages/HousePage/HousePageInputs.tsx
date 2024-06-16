@@ -14,7 +14,7 @@ import { isTheSameCheck } from "./components/utils/isTheSameCheck";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { UpdateHouseGoalWithUser, UpdateHouseGoalWithNoUser } from "./utils/housePageSubmitFunc";
-import { updateHouseGoal } from "../../redux/features/tablesSlice";
+import { updateHouseGoal } from "../../redux/asyncActions/houseActions";
 
 export interface IHousePageInputsProps {
   selectedGoal: HouseObjWithFormattedData;

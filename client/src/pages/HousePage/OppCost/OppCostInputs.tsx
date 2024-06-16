@@ -16,7 +16,7 @@ import { editSelectedGoal, selectedShowOppCostInput } from "../../../redux/featu
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { UpdateHouseGoalOppCostWithNoUser, UpdateHouseGoalOppCostWithUser } from "../utils/housePageOppCostFunc";
-import { updateHouseGoalOppCost } from "../../../redux/features/tablesSlice";
+import { updateHouseGoalOppCost } from "../../../redux/asyncActions/houseActions";
 
 export interface IOppCostInputsProps {
   selectedGoal: HouseObjWithFormattedData;

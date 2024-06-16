@@ -2,8 +2,10 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_House_Goal, delete_Retire_Goal, get_All_Goals, update_House_Goal, update_House_Goal_Img, update_House_Goal_Opp_Cost, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
+import { createHouseGoal, updateHouseGoal, deleteHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost } from "../asyncActions/houseActions";
+import { createRetireGoal, deleteRetireGoal, updateRetireGoal, updateRetireTableName } from "../asyncActions/retireActions";
+import { get_All_Goals } from "../api/tablesApi";
 
 interface UserGoalsObj {
   data: Array<RetirementGoals| CarObjWithFormattedData | HouseObjWithFormattedData>;
@@ -52,6 +54,8 @@ const initialState: TableObj = {
   userHouseGoalsLoading:false
 };
 
+
+// All Goals
 export const getAllGoals = createAsyncThunk("getAllGoals", async (data: { limit: number; page: number }, { rejectWithValue }) => {
   try {
     const res = await get_All_Goals(data);
@@ -61,88 +65,13 @@ export const getAllGoals = createAsyncThunk("getAllGoals", async (data: { limit:
   }
 });
 
-export const createRetireGoal = createAsyncThunk("createRetireGoal", async ({ data, creator }: AddRetireGoalObj, { rejectWithValue }) => {
-  try {
-    const res = await add_Retire_Goal({ data, creator });
-    return res.data;
-  } catch (e: any) {
-    return rejectWithValue(e.response.data.msg);
-  }
-});
 
-export const deleteRetireGoal = createAsyncThunk("deleteRetireGoal", async (data:{type:"Retirement", id:string}, { rejectWithValue }) => {
-  try {
-    const res = await delete_Retire_Goal(data);
-    return res.data;
-  } catch (e: any) {
-    return rejectWithValue(e.response.data.msg);
-  }
-});
 
-export const updateRetireGoal = createAsyncThunk("updateRetireGoal", async (data:{type:"Retirement" | "House" | "Car", id:string, inputData:RetirementGoals}, { rejectWithValue }) => {
-  try {
-    const res = await update_Retire_Goal(data);
-    return res.data;
-  } catch (e: any) {
-    return rejectWithValue(e.response.data.msg);
-  }
-});
 
-export const updateRetireTableName = createAsyncThunk("updateRetireTableName", async (data:{title:string, id:string | undefined}, {rejectWithValue}) => {
-  try{
-    const res = await update_RetireTable_Title(data)
-    return res.data
-  }catch(e:any){
-    return rejectWithValue(e.response.data.msg);
-  }
-})
 
-// --------------------------------- House Goals ------------------------------------------------
 
-export const createHouseGoal = createAsyncThunk("createHouseGoal", async ({data,creator}:AddHouseGoalObj, {rejectWithValue}) => {
-  try{
-    const res = await create_House_Goal({data,creator})
-    return res.data
-  }catch(e:any){
-    return rejectWithValue(e.response.data.msg);
-  }
-})
 
-export const updateHouseGoal = createAsyncThunk("updateHouseGoal", async (data: { type: "House"; id: string; inputData: HouseObjWithFormattedData }, {rejectWithValue}) => {
-  try{
-    const res = await update_House_Goal(data)
-    return res.data
-  }catch(e:any){
-    return rejectWithValue(e.response.data.msg);
-  }
-})
 
-export const deleteHouseGoal = createAsyncThunk("deleteHouseGoal", async (data:{itemUUID:string, dateAsAWSId:string, img:string;}, {rejectWithValue}) => {
-  try{
-    const res = await delete_House_Goal(data)
-    return res.data
-  }catch(e:any){
-    return rejectWithValue(e.response.data.msg);
-  }
-})
-
-export const updateHouseGoalOppCost = createAsyncThunk("updateHouseGoalOppCost", async (data:{creator:string, goal:HouseObjWithFormattedData, id:string;}, {rejectWithValue}) => {
-  try{
-    const res = await update_House_Goal_Opp_Cost(data)
-    return res.data
-  }catch(e:any){
-    return rejectWithValue(e.response.data.msg);
-  }
-})
-
-export const updateHouseGoalImg = createAsyncThunk("updateHouseGoalImg", async (data:{goal:HouseObjWithFormattedData, id:string, img:string}, {rejectWithValue}) => {
-  try{
-    const res = await update_House_Goal_Img(data)
-    return res.data
-  }catch(e:any){
-    return rejectWithValue(e.response.data.msg);
-  }
-})
 
 const tableSlice = createSlice({
   name: "tables",

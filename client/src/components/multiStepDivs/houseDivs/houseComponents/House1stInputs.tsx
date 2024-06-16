@@ -11,7 +11,7 @@ import HouseAddressInput from "./HouseAddressInput";
 import { Dispatch, UseSelector } from "../../../../redux/store";
 import { addHouseGoal } from "../../../../redux/features/modalSlices/houseSlice";
 import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../../redux/features/applicationSlice";
-import { createHouseGoal } from "../../../../redux/features/tablesSlice";
+import { createHouseGoal } from "../../../../redux/asyncActions/houseActions";
 import { CreateHouseGoalFormDataWithNoUser, CreateHouseGoalFormDataWithUser } from "../utils/houseSubmitFormData";
 
 export const houseTerms = ["10", "15", "20", "25", "30", "60"];

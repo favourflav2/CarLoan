@@ -14,7 +14,7 @@ import { editRetireGoalTitle } from "../../redux/features/modalSlices/retirement
 import RetirementSummary from "./RetirementSummary";
 import RetirementExplain from "./RetirementExplain";
 import useFVRetireData from "./hooks/useFVRetireData";
-import { updateRetireTableName } from "../../redux/features/tablesSlice";
+import { updateRetireTableName } from "../../redux/asyncActions/retireActions";
 
 
 const schema = z.object({

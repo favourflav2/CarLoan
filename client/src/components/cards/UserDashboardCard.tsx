@@ -9,7 +9,9 @@ import { removeRetireItem } from "../../redux/features/modalSlices/retirementSli
 import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
 import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/modalSlices/carModalSlice";
 import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
-import { deleteHouseGoal, deleteRetireGoal } from "../../redux/features/tablesSlice";
+import { deleteRetireGoal } from "../../redux/asyncActions/retireActions";
+import { deleteHouseGoal } from "../../redux/asyncActions/houseActions";
+
 
 export interface IUserDashboardCardProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;

@@ -5,7 +5,8 @@ import { RetirementGoals, removeRetireItem } from "../../../redux/features/modal
 
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../../redux/store";
-import { deleteHouseGoal, deleteRetireGoal } from "../../../redux/features/tablesSlice";
+import { deleteRetireGoal } from "../../../redux/asyncActions/retireActions";
+
 
 export interface IDeleteSwitchCaseProps {
   item: RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData;
