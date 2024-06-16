@@ -78,3 +78,10 @@ export interface ShowAndHideHouseInputs extends IGetUserAuthInfoRequest {
         inputs:boolean
     }
 }
+
+export interface ShowAndHideHouseOppCostInputs extends IGetUserAuthInfoRequest {
+    body:{
+        id:string;
+        oppCostInputs:boolean
+    }
+}

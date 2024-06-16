@@ -5,7 +5,16 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateHouseGoal, DeleteHouseGoal, ShowAndHideHouseInputs, UpdateHouseGoal, UpdateHouseGoalAddress, UpdateHouseGoalImg, UpdateHouseGoalOppCost } from "../../controllerTypes/houseTypes.js";
+import {
+  CreateHouseGoal,
+  DeleteHouseGoal,
+  ShowAndHideHouseInputs,
+  ShowAndHideHouseOppCostInputs,
+  UpdateHouseGoal,
+  UpdateHouseGoalAddress,
+  UpdateHouseGoalImg,
+  UpdateHouseGoalOppCost,
+} from "../../controllerTypes/houseTypes.js";
 
 const { Pool, types } = pg;
 
@@ -310,7 +319,7 @@ export async function update_House_Goal_Opp_Cost(req: UpdateHouseGoalOppCost, re
 export async function update_House_Goal_Img(req: UpdateHouseGoalImg, res: Response) {
   try {
     const { id, goal, img } = req.body;
-    const userId = req.userId
+    const userId = req.userId;
 
     if (!img || img.length <= 0) return res.status(400).json("Unable to update image, server received an empty value");
 
@@ -344,11 +353,10 @@ export async function update_House_Goal_Img(req: UpdateHouseGoalImg, res: Respon
 
       const imageUrl = `https://${process.env.BUCKET}.s3.amazonaws.com/${paramsKey}`;
 
-
       // Update Img from database
-      const text = 'UPDATE house SET img = $1 WHERE id = $2 AND creator = $3'
-      const values = [imageUrl,id,userId]
-      await pool.query(text,values)
+      const text = "UPDATE house SET img = $1 WHERE id = $2 AND creator = $3";
+      const values = [imageUrl, id, userId];
+      await pool.query(text, values);
 
       res.status(200).json("You successfully updated your image :)");
     }
@@ -359,38 +367,53 @@ export async function update_House_Goal_Img(req: UpdateHouseGoalImg, res: Respon
   }
 }
 
-export async function update_House_Goal_Address(req:UpdateHouseGoalAddress, res:Response){
-  try{
-    const {id, newAddress} = req.body
-    const userId = req.userId
+export async function update_House_Goal_Address(req: UpdateHouseGoalAddress, res: Response) {
+  try {
+    const { id, newAddress } = req.body;
+    const userId = req.userId;
 
-    const text = 'UPDATE house SET "streetAddress" = $1 WHERE id = $2 and creator = $3 '
-    const values = [newAddress, id, userId]
-    await pool.query(text,values)
+    const text = 'UPDATE house SET "streetAddress" = $1 WHERE id = $2 and creator = $3 ';
+    const values = [newAddress, id, userId];
+    await pool.query(text, values);
 
     res.status(200).json("You successfully updated your address:)");
-
-  }catch(e){
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error updating your address" });
   }
 }
 
-export async function hide_And_Show_Inputs(req:ShowAndHideHouseInputs, res:Response){
-  try{
-    const {id, inputs} = req.body
-    const userId = req.userId
+export async function hide_And_Show_Inputs(req: ShowAndHideHouseInputs, res: Response) {
+  try {
+    const { id, inputs } = req.body;
+    const userId = req.userId;
 
-    const text = 'UPDATE house SET "showInputs" = $1 WHERE id = $2 AND creator = $3 '
-    const values = [inputs, id, userId]
-    await pool.query(text,values)
-    
-    res.status(200).json("Show/Hide input success")
+    const text = 'UPDATE house SET "showInputs" = $1 WHERE id = $2 AND creator = $3 ';
+    const values = [inputs, id, userId];
+    await pool.query(text, values);
 
-  }catch(e){
+    res.status(200).json("Show/Hide input success");
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error hiding and showing your inputs" });
+  }
+}
+
+export async function hide_And_Show_Opp_Cost(req: ShowAndHideHouseOppCostInputs, res: Response) {
+  try {
+    const { id, oppCostInputs } = req.body;
+    const userId = req.userId;
+
+    const text = 'UPDATE house SET "showOppCostInputs" = $1 WHERE id = $2 AND creator = $3 ';
+    const values = [oppCostInputs, id, userId];
+    await pool.query(text, values);
+
+    res.status(200).json("Show/Hide opp cost input success");
+  } catch (e) {
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error hiding and showing your opp cost inputs" });
   }
 }
