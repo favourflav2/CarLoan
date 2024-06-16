@@ -11,19 +11,24 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Tooltip, useMediaQuery } from "@mui/material";
 import { isTheSameCheckOppCost } from "../components/utils/isTheSameCheck";
 import { getBreakEvenNumber } from "../components/utils/getBreakEvenNumber";
-import { Dispatch } from "../../../redux/store";
+import { Dispatch, UseSelector } from "../../../redux/store";
 import { editSelectedGoal, selectedShowOppCostInput } from "../../../redux/features/applicationSlice";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { UpdateHouseGoalOppCostWithNoUser, UpdateHouseGoalOppCostWithUser } from "../utils/housePageOppCostFunc";
+import { updateHouseGoalOppCost } from "../../../redux/features/tablesSlice";
 
 export interface IOppCostInputsProps {
   selectedGoal: HouseObjWithFormattedData;
 }
-type FormFields = z.infer<typeof opportunityCostSchema>;
+export type FormFieldsHousePageOppCost = z.infer<typeof opportunityCostSchema>;
 
 export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
   // Redux States
   const dispatch = Dispatch();
+  const { user } = UseSelector((state) => state.auth);
+
+  const userId = user?.userObj.id;
 
   // Show Inputs on mobile states
   const matches = useMediaQuery("(min-width:1280px)");
@@ -38,7 +43,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
     clearErrors,
     watch,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<FormFields>({
+  } = useForm<FormFieldsHousePageOppCost>({
     mode: "all",
     resetOptions: {
       keepErrors: true, // input errors will be retained with value update
@@ -65,35 +70,18 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
   // Break Even Point Per Month
   const breakEvenPerMonth = getBreakEvenNumber(selectedGoal).resultNoFormat;
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { interest: interestData, propertyTax: propertyTaxData, appreciation: appreciationData, opportunityCostRate: opportunityCostRateData, maintenance: maintenanceData, rent: rentData } = data;
+  const onSubmit: SubmitHandler<FormFieldsHousePageOppCost> = (data) => {
+    if (userId) {
 
-    const newObj: HouseObjWithFormattedData = {
-      id: selectedGoal.id,
-      streetAddress: selectedGoal.streetAddress,
-      price: selectedGoal.price,
-      downPayment: selectedGoal.downPayment,
-      interest: parseFloat(interestData.replace(/[,%$]/gm, "")),
-      term: selectedGoal.term,
-      extraPayment: selectedGoal.extraPayment,
-      img: selectedGoal.img ? selectedGoal.img : "",
-      propertyTax: parseFloat(propertyTaxData.replace(/[,%$]/gm, "")),
-      insurance: selectedGoal.insurance,
-      mortgageInsurance: selectedGoal.mortgageInsurance,
-      appreciation: parseFloat(appreciationData.replace(/[,%$]/gm, "")),
-      opportunityCostRate: parseFloat(opportunityCostRateData.replace(/[,%$]/gm, "")),
-      maintenance: parseFloat(maintenanceData.replace(/[,%$]/gm, "")),
-      rent: parseFloat(rentData.replace(/[,%$]/gm, "")),
-      type: "House",
-      showTax: selectedGoal.showTax,
-      showInputs: selectedGoal.showInputs,
-      showOppCostInputs: selectedGoal.showOppCostInputs,
-      creator:null,
-      date:null
-    };
+      const newObjWithUser = UpdateHouseGoalOppCostWithUser(selectedGoal,data,userId)
+      dispatch(editSelectedGoal({ goal: newObjWithUser }));
+      dispatch(updateHouseGoalOppCost({creator:userId, goal:newObjWithUser, id:selectedGoal.id}))
+    } else {
+      const newObj = UpdateHouseGoalOppCostWithNoUser(selectedGoal, data);
 
-    dispatch(editSelectedGoal({ goal: newObj }));
-    dispatch(editHouseGoal({ goal: newObj, id: selectedGoal.id }));
+      dispatch(editSelectedGoal({ goal: newObj }));
+      dispatch(editHouseGoal({ goal: newObj, id: selectedGoal.id }));
+    }
   };
 
   function SubmitValidation(e: any) {
@@ -107,7 +95,6 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
         message:
           "If the rent is greater than or equal to the break even per month, it would make sense to just buy. However, in order for us to compare the rent to the total cost of homeownership we need the rent to be less than the break even per month.",
       });
-      console.log(allInputData.rent, "sss", breakEvenPerMonth);
     } else {
       // if the newly typed rent value is less than the break even per month we clear the error and submit
       clearErrors("rent");
@@ -169,7 +156,12 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
                 House Price
               </label>
 
-              <input type="text" className="outline-none border border-black text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px]" readOnly value={housePrice} />
+              <input
+                type="text"
+                className="outline-none border border-black text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px]"
+                readOnly
+                value={housePrice}
+              />
             </div>
 
             {/* Down Payment */}
@@ -178,7 +170,12 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
                 Down Payment
               </label>
 
-              <input type="text" className="outline-none border border-black text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px]" readOnly value={houseDownPayment} />
+              <input
+                type="text"
+                className="outline-none border border-black text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px]"
+                readOnly
+                value={houseDownPayment}
+              />
             </div>
 
             {/* Maintenance */}
@@ -204,7 +201,15 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
             />
 
             {/* Interest */}
-            <OppCostInputCard errors={errors} control={control} name="interest" label="Mortgage Interest Rate" placeholder="" type="Percent" tooltip="Mortgage Interest Rate" />
+            <OppCostInputCard
+              errors={errors}
+              control={control}
+              name="interest"
+              label="Mortgage Interest Rate"
+              placeholder=""
+              type="Percent"
+              tooltip="Mortgage Interest Rate"
+            />
 
             {/* Rent */}
             <OppCostInputCard
@@ -273,7 +278,9 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
                   exit={{ opacity: [0.8, 0.5, 0], transition: { duration: 0.2, ease: easeInOut } }}
                   className="w-full flex flex-col"
                 >
-                  <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} my-3`}>Update</button>
+                  <button className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"} my-3`}>
+                    Update
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>

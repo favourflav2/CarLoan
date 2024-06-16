@@ -2,7 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RetirementGoals } from "./modalSlices/retirementSlice";
 import { CarObjWithFormattedData } from "./modalSlices/carModalSlice";
 import { HouseObjWithFormattedData } from "./modalSlices/houseSlice";
-import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_House_Goal, delete_Retire_Goal, get_All_Goals, update_House_Goal, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
+import { AddHouseGoalObj, AddRetireGoalObj, add_Retire_Goal, create_House_Goal, delete_House_Goal, delete_Retire_Goal, get_All_Goals, update_House_Goal, update_House_Goal_Opp_Cost, update_RetireTable_Title, update_Retire_Goal } from "../api/tablesApi";
 import {toast} from 'react-toastify'
 
 interface UserGoalsObj {
@@ -120,6 +120,15 @@ export const updateHouseGoal = createAsyncThunk("updateHouseGoal", async (data: 
 export const deleteHouseGoal = createAsyncThunk("deleteHouseGoal", async (data:{itemUUID:string, dateAsAWSId:string, img:string;}, {rejectWithValue}) => {
   try{
     const res = await delete_House_Goal(data)
+    return res.data
+  }catch(e:any){
+    return rejectWithValue(e.response.data.msg);
+  }
+})
+
+export const updateHouseGoalOppCost = createAsyncThunk("updateHouseGoalOppCost", async (data:{creator:string, goal:HouseObjWithFormattedData, id:string;}, {rejectWithValue}) => {
+  try{
+    const res = await update_House_Goal_Opp_Cost(data)
     return res.data
   }catch(e:any){
     return rejectWithValue(e.response.data.msg);
@@ -251,6 +260,21 @@ const tableSlice = createSlice({
         toast.success(action.payload)
       })
       .addCase(deleteHouseGoal.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userRetireGoalsError = action.payload
+        state.userHouseGoalsLoading = false;
+      })
+
+      // Update House Opp Cost
+      .addCase(updateHouseGoalOppCost.pending, (state) => {
+        state.userHouseGoalsLoading = true;
+      })
+      .addCase(updateHouseGoalOppCost.fulfilled, (state, action:PayloadAction<string>) => {
+        state.userHouseGoalsError = ''
+        state.userHouseGoalsLoading = false;
+        //toast.success(action.payload)
+      })
+      .addCase(updateHouseGoalOppCost.rejected, (state, action) => {
         toast.error(action.payload as string)
         state.userRetireGoalsError = action.payload
         state.userHouseGoalsLoading = false;
