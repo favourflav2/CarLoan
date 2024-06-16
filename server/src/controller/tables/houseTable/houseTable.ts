@@ -5,7 +5,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal, UpdateHouseGoalOppCost } from "../../controllerTypes/houseTypes.js";
+import { CreateHouseGoal, DeleteHouseGoal, UpdateHouseGoal, UpdateHouseGoalImg, UpdateHouseGoalOppCost } from "../../controllerTypes/houseTypes.js";
 
 const { Pool, types } = pg;
 
@@ -283,41 +283,78 @@ export async function delete_House_Goal(req: DeleteHouseGoal, res: Response) {
 export async function update_House_Goal_Opp_Cost(req: UpdateHouseGoalOppCost, res: Response) {
   try {
     const { creator, goal, id } = req.body;
-    const {
-      propertyTax,
-      appreciation,
-      opportunityCostRate,
-      maintenance,
-      rent,
-      showInputs,
-      showOppCostInputs,
-      date,
-    } = goal;
+    const { propertyTax, appreciation, opportunityCostRate, maintenance, rent, showInputs, showOppCostInputs, date } = goal;
     const userId = req.userId;
 
     if (creator !== userId) return res.status(400).json({ msg: "The user id being sent to the server is not authenticated" });
 
     // making sure all number values are of typeof numbers
-    const checkValues = [
-      propertyTax,
-      appreciation,
-      opportunityCostRate,
-      maintenance,
-      rent,
-    ].every((item) => typeof item === "number");
+    const checkValues = [propertyTax, appreciation, opportunityCostRate, maintenance, rent].every((item) => typeof item === "number");
 
     if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
     if (!date) return res.status(400).json({ msg: "Date value is null" });
 
-    const text = 'UPDATE house SET "propertyTax" = $1, "appreciation" = $2, "opportunityCostRate" = $3, maintenance = $4, "rent" = $5, "showInputs" = $6, "showOppCostInputs" = $7 WHERE creator = $8 AND id = $9 '
-    const values = [propertyTax, appreciation, opportunityCostRate, maintenance, rent, showInputs, showOppCostInputs, creator, id]
-    await pool.query(text, values)
+    const text =
+      'UPDATE house SET "propertyTax" = $1, "appreciation" = $2, "opportunityCostRate" = $3, maintenance = $4, "rent" = $5, "showInputs" = $6, "showOppCostInputs" = $7 WHERE creator = $8 AND id = $9 ';
+    const values = [propertyTax, appreciation, opportunityCostRate, maintenance, rent, showInputs, showOppCostInputs, creator, id];
+    await pool.query(text, values);
 
-    res.send("Updated Opp Cost")
-
+    res.send("Updated Opp Cost");
   } catch (e) {
     console.log(e);
     console.log("message", e.message);
-    res.status(400).json({ msg: "There was an error deleting this goal" });
+    res.status(400).json({ msg: "There was an updating opportunity cost inputs" });
+  }
+}
+
+export async function update_House_Goal_Img(req: UpdateHouseGoalImg, res: Response) {
+  try {
+    const { id, goal, img } = req.body;
+    const userId = req.userId
+
+    if (!img || img.length <= 0) return res.status(400).json("Unable to update image, server received an empty value");
+
+    if (!goal.date) return res.status(400).json("The date id required for updating the image was not received to the server");
+
+    if (!id || id.length <= 0) return res.status(400).json("The id required for updating the image was not received to the server");
+
+    if (img.length) {
+      // Ensure that you POST a base64 data to your server.
+      // Let's assume the variable "base64" is one.
+      const base64Data = Buffer.from(img.replace(/^data:image\/\w+;base64,/, ""), "base64");
+
+      // Getting the file type, ie: jpeg, png or gif
+      const imgType = img.split(";")[0].split("/")[1];
+
+      // Removes white spaces for id ... id is the date in which the goal was created
+      //* This will be my unique id for my aws ... no post will ever have the same date and userId
+      const paramsKey = goal.date.replace(/\s/g, "") + `${userId}`;
+
+      const params = {
+        Bucket: process.env.BUCKET as string,
+        Key: paramsKey,
+        Body: base64Data,
+        ContentType: imgType,
+      };
+
+      const command = new PutObjectCommand(params);
+      await s3.send(command);
+
+      // Img is sent to aws ... we then save the url with the Key to our database
+
+      const imageUrl = `https://${process.env.BUCKET}.s3.amazonaws.com/${paramsKey}`;
+
+
+      // Update Img from database
+      const text = 'UPDATE house SET img = $1 WHERE id = $2 AND creator = $3'
+      const values = [imageUrl,id,userId]
+      await pool.query(text,values)
+
+      res.status(200).json("You successfully updated your image :)");
+    }
+  } catch (e) {
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error updating your image" });
   }
 }

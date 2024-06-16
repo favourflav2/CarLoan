@@ -56,3 +56,11 @@ export interface UpdateHouseGoalOppCost extends IGetUserAuthInfoRequest {
         id:string;
     }
 }
+
+export interface UpdateHouseGoalImg extends IGetUserAuthInfoRequest {
+    body:{
+        id:string;
+        goal:HouseObjWithFormattedDataBackendData;
+        img:string
+    }
+}
