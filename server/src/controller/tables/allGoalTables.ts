@@ -6,6 +6,7 @@ import { IGetUserAuthInfoRequest } from "../../middleware/authMiddleware.js";
 import { RetirementGoalsBackEnd } from "../controllerTypes/retireTypes.js";
 import { HouseObjWithFormattedDataBackendData } from "../controllerTypes/houseTypes.js";
 import dayjs from "dayjs";
+import { CarObjWithFormattedDataBackendData } from "../controllerTypes/carGoalTypes.js";
 const { Pool, types } = pg;
 
 interface RequestBody extends IGetUserAuthInfoRequest {
@@ -35,15 +36,19 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
     const newLimit = parseFloat(limit);
 
     // Grab All Retire Data
-    const retireText = "SELECT * FROM retire WHERE creator = $1 ORDER BY date ASC";
+    const retireText = "SELECT * FROM retire WHERE creator = $1";
     const retireTable = await pool.query(retireText, [userId]);
 
     // Grab All House Data
     const houseText = "SELECT * FROM house WHERE creator = $1";
     const houseTable = await pool.query(houseText, [userId]);
 
+    // Grab All Car Data
+    const carText = "SELECT * FROM car WHERE creator = $1"
+    const carTable = await pool.query(carText,[userId])
+
     // concating all the data and sorting by newset goal first
-    const concatData: Array<RetirementGoalsBackEnd | HouseObjWithFormattedDataBackendData> = retireTable.rows.concat(houseTable.rows).sort((a, b) => {
+    const concatData: Array<RetirementGoalsBackEnd | HouseObjWithFormattedDataBackendData | CarObjWithFormattedDataBackendData> = retireTable.rows.concat(houseTable.rows).concat(carTable.rows).sort((a, b) => {
       return - dayjs(b.date).unix() - dayjs(a.date).unix()
     });
 

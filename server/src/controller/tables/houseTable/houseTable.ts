@@ -2,9 +2,7 @@ import { env } from "custom-env";
 env(true);
 import pg from "pg";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
-import { Request, Response } from "express";
-import { v4 as uuidv4 } from "uuid";
+import {  Response } from "express";
 import {
   CreateHouseGoal,
   DeleteHouseGoal,

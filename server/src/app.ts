@@ -10,6 +10,8 @@ import authRoutes from "./routes/authRoutes.js";
 import retireRoutes from "./routes/tables/retireRoutes.js";
 import allGoalRoutes from "./routes/allGoalRoutes.js";
 import houseRoutes from "./routes/tables/houseRoutes.js";
+import carGoalRoutes from "./routes/tables/carGoalRoutes.js";
+
 
 
 env(true);
@@ -41,6 +43,7 @@ app.use("/auth",authRoutes)
 app.use("/retire", retireRoutes)
 app.use("/house",houseRoutes)
 app.use("/allTables",allGoalRoutes)
+app.use("/carGoals", carGoalRoutes)
 
 
 
