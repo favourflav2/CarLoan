@@ -3,11 +3,11 @@ import FivePercentRule from "../components/FivePercentRule";
 import OwnVsRent from "../components/OwnVsRent";
 import { HouseObjWithFormattedData } from "../../../redux/features/modalSlices/houseSlice";
 import OppCostInputs from "./OppCostInputs";
-import { FTVOppCost, futureValueOfOppCost } from "../../../components/helperFunctions/oppCostFunctions/oppCostFunction";
 import { getBreakEvenNumber } from "../components/utils/getBreakEvenNumber";
 import OppCostChartContainer from "./OppCostChartContainer";
 import { HouseMonthlyPayment } from "../../../components/helperFunctions/loanfunctions/HouseLoanFuntion";
 import ThingsToKeepInMind from "../components/ThingsToKeepInMind";
+import useHouseOppCostFVFunction from "../hooks/useHouseOppCostFVFunction";
 
 interface Props {
   selectedGoal: HouseObjWithFormattedData;
@@ -15,20 +15,15 @@ interface Props {
 }
 
 export default function OpportunityCost({ selectedGoal, monthlyPayment }: Props) {
-  //const { interest, maintenance, propertyTax, opportunityCostRate, rent, appreciation } = selectedGoal;
 
-  // Chart states
-  const [breakEvenOppCost, setBreakEvenOppCost] = React.useState<FTVOppCost>();
-  const [rentOppCost, setRentOppCost] = React.useState<FTVOppCost>();
-  const [diffOppCost, setDiffOppCost] = React.useState<FTVOppCost>();
 
-  const diffCost = getBreakEvenNumber(selectedGoal).resultNoFormat - selectedGoal.rent;
+  const diffCost = React.useMemo(()=>{
+return getBreakEvenNumber(selectedGoal).resultNoFormat - selectedGoal.rent
+  },[selectedGoal])
 
-  React.useEffect(() => {
-    setBreakEvenOppCost(futureValueOfOppCost(selectedGoal, "breakEven", getBreakEvenNumber(selectedGoal).resultNoFormat));
-    setRentOppCost(futureValueOfOppCost(selectedGoal, "rent", selectedGoal.rent));
-    setDiffOppCost(futureValueOfOppCost(selectedGoal, "oppCost-rent", diffCost));
-  }, [selectedGoal]); // eslint-disable-line
+  const {breakEvenOppCost, rentOppCost, diffOppCost} = useHouseOppCostFVFunction({selectedGoal, diffCost})
+
+
 
   return (
     <div className={`mt-8 h-auto w-full   flex flex-col items-center justify-center text-black dark:text-gray-300`}>
