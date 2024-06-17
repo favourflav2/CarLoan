@@ -94,13 +94,6 @@ export const carModalSchema = z
       .refine((item) => item.length > 0, {
         message: "Please enter a number between 0% and 39%",
       }),
-    salary: z
-      .string({
-        required_error: "Please enter your salary",
-      })
-      .refine((item) => parseFloat(item) <= 1000000, {
-        message: "Please enter an income/salary less than 1,000,000",
-      }),
       term: z.number({
         required_error: "Please select a time",
       }).refine((item) => item <= 120 , {

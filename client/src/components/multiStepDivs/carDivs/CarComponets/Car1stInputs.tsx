@@ -6,8 +6,6 @@ import { NumericFormat } from "react-number-format";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { Dispatch } from "../../../../redux/store";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Tooltip } from "@mui/material";
 import { carModalSchema } from "./carModalSchema";
 import dayjs from "dayjs";
 import { CarObj, addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
@@ -55,7 +53,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   const watchModal = watch("modal", "Select A Car Modal...");
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { price, downPayment, interest, term, id, extraPayment, mileage, name, salary, modal, img } = data;
+    const { price, downPayment, interest, term, id, extraPayment, mileage, name, modal, img } = data;
 
     const newObj:CarObj = {
       price,
@@ -66,7 +64,6 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
       extraPayment,
       mileage,
       name,
-      salary,
       modal,
       img: img ? img : "",
       showInputs:true,
@@ -311,36 +308,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           {errors?.term && <p className="text-red-500 text-[13px] ">{errors?.term?.message}</p>}
         </div>
 
-        {/* Retirement Age */}
-        <div className="w-auto flex flex-col mb-3">
-          <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
-            Annual Income
-            <Tooltip placement="top" title={<h1 className="text-[12.5px]">How much you make per year.</h1>}>
-              <HelpOutlineIcon className="!text-[15px] ml-[2px]" />
-            </Tooltip>
-          </label>
-          <Controller
-            render={({ field: { onChange, value } }) => (
-              <NumericFormat
-                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.salary && "border-2 border-red-500"}`}
-                prefix="$"
-                thousandSeparator=","
-                decimalSeparator="."
-                decimalScale={2}
-                autoComplete="off"
-                placeholder="Enter annual income..."
-                allowNegative={false}
-                onValueChange={(v) => {
-                  onChange(v.value);
-                }}
-                value={value}
-              />
-            )}
-            name="salary"
-            control={control}
-          />
-          {errors?.salary && <p className="text-red-500 text-[13px] ">{errors?.salary?.message}</p>}
-        </div>
+       
       </div>
 
       <button className="w-full p-2 rounded-lg mt-2 mb-3 bg-chartYellow dark:text-lightText">Save & Continue</button>

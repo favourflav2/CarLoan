@@ -51,7 +51,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
       downPayment: selectedGoal.downPayment.toString(),
       interest: selectedGoal.interest.toString(),
       term: selectedGoal.term,
-      salary: selectedGoal.salary.toString(),
       modal: selectedGoal.modal,
       name: selectedGoal.name,
       img: selectedGoal.img ? selectedGoal.img : "",
@@ -63,7 +62,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
   });
 
   const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { img, id, price, mileage, term, name, modal, downPayment, interest, salary, extraPayment } = data;
+    const { img, id, price, mileage, term, name, modal, downPayment, interest, extraPayment } = data;
     const { showInputs } = selectedGoal;
 
     const newObj: CarObjWithFormattedData = {
@@ -74,7 +73,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
       downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
       interest: parseFloat(interest.replace(/[,%$]/gm, "")),
       mileage: parseFloat(mileage.replace(/[,%$]/gm, "")),
-      salary: parseFloat(salary.replace(/[,%$]/gm, "")),
       modal,
       term,
       img: img ? img : "",
@@ -90,7 +88,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
 
   React.useEffect(() => {
     function checkValid(select: CarObjWithFormattedData, inputStates: CarObj | any) {
-      const { img, id, price, mileage, term, name, modal, downPayment, interest, salary, extraPayment } = inputStates;
+      const { img, id, price, mileage, term, name, modal, downPayment, interest, extraPayment } = inputStates;
       const { showInputs } = select;
 
       const obj: CarObjWithFormattedData = {
@@ -101,7 +99,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
         downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
         interest: parseFloat(interest.replace(/[,%$]/gm, "")),
         mileage: parseFloat(mileage.replace(/[,%$]/gm, "")),
-        salary: parseFloat(salary.replace(/[,%$]/gm, "")),
         modal,
         term,
         img: img ? img : "",
@@ -131,7 +128,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
         downPayment: selectedGoal.downPayment.toString(),
         interest: selectedGoal.interest.toString(),
         term: selectedGoal.term,
-        salary: selectedGoal.salary.toString(),
         modal: selectedGoal.modal,
         name: selectedGoal.name,
         img: selectedGoal.img,
@@ -320,33 +316,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               {errors?.mileage && <p className="text-red-500 text-[13px] ">{errors?.mileage?.message}</p>}
             </div>
 
-            {/* Income */}
-            <div className="w-auto flex flex-col mb-3">
-              <label htmlFor="Current Age" className="text-[12px] dark:text-gray-300 text-black">
-                Income
-              </label>
-
-              <Controller
-                render={({ field: { onChange, value } }) => (
-                  <NumericFormat
-                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.salary && "border-2 border-red-500"}`}
-                    prefix="$"
-                    thousandSeparator=","
-                    decimalSeparator="."
-                    decimalScale={2}
-                    autoComplete="off"
-                    allowNegative={false}
-                    onValueChange={(v) => {
-                      onChange(v.value);
-                    }}
-                    value={value}
-                  />
-                )}
-                name="salary"
-                control={control}
-              />
-              {errors?.salary && <p className="text-red-500 text-[13px] ">{errors?.salary?.message}</p>}
-            </div>
 
             <AnimatePresence>
               {selectedGoal && showUpadateBtn && (

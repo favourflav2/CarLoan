@@ -9,7 +9,6 @@ export interface CarObj {
   downPayment: string;
   interest: string;
   term: number;
-  salary: string;
   img?:  string | undefined;
   modal: string;
   extraPayment: string;
@@ -25,7 +24,6 @@ export interface CarObjWithFormattedData {
   downPayment: number;
   interest: number;
   term: number;
-  salary: number;
   img?:  string | undefined;
   modal: string;
   type:"Car";
@@ -50,7 +48,7 @@ const carModalSlice = createSlice({
   initialState,
   reducers: {
     addCarGoal: (state, action: PayloadAction<CarObj>) => {
-      const { name, id, mileage, term, salary, interest, downPayment, img, price, modal,showInputs } = action.payload;
+      const { name, id, mileage, term, interest, downPayment, img, price, modal,showInputs } = action.payload;
       const formattedData:CarObjWithFormattedData = {
         id,
         name,
@@ -59,7 +57,6 @@ const carModalSlice = createSlice({
         downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
         interest: parseFloat(interest.replace(/[,%$]/gm, "")),
         term,
-        salary: parseFloat(salary.replace(/[,%$]/gm, "")),
         img: img ? img : "",
         modal,
         type:"Car",

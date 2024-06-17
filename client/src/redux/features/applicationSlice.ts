@@ -86,7 +86,7 @@ const appSlice = createSlice({
           break;
         case "Car":
           if (type !== "Car") return;
-          const { name, mileage, salary, modal } = action.payload;
+          const { name, mileage, modal } = action.payload;
           const carData: CarObjWithFormattedData = {
             id: action.payload.id,
             name,
@@ -95,7 +95,6 @@ const appSlice = createSlice({
             downPayment: parseFloat(action.payload.downPayment.replace(/[,%$]/gm, "")),
             interest: parseFloat(action.payload.interest.replace(/[,%$]/gm, "")),
             term: action.payload.term,
-            salary: parseFloat(salary.replace(/[,%$]/gm, "")),
             img: action.payload.img ? action.payload.img : "",
             modal,
             type: "Car",

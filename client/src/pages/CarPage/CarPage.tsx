@@ -244,9 +244,6 @@ export default function CarPage() {
                   <span className="font-bold text-[15px]">Miles:</span> {selectedGoal.mileage.toLocaleString()} miles
                 </h1>
                 <h1 className="text-[15px]">
-                  <span className="font-bold text-[15px]">Income:</span> {USDollar.format(selectedGoal.salary)}
-                </h1>
-                <h1 className="text-[15px]">
                   <span className="font-bold text-[15px]">Term:</span> {selectedGoal.term} months
                 </h1>
                 <h1 className="text-[15px]">
