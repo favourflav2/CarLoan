@@ -151,12 +151,21 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
           );
         }
       case "Car":
-        return (
-          <>
-            <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
-            <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
-          </>
-        );
+        if (item.date) {
+          return (
+            <>
+              <p className="text-[12.5px] sm:block hidden">{dayjs(item.date).format("MMM D, YYYY h:mm a ")}</p>
+              <p className="text-[12.5px] sm:hidden block">{dayjs(item.date).format("M/D/YY h:mm a ")}</p>
+            </>
+          );
+        } else {
+          return (
+            <>
+              <p className="text-[12.5px] sm:block hidden">{dayjs(item.id).format("MMM D, YYYY h:mm a ")}</p>
+              <p className="text-[12.5px] sm:hidden block">{dayjs(item.id).format("M/D/YY h:mm a ")}</p>
+            </>
+          );
+        }
       case "House":
         if (item.date) {
           return (

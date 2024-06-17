@@ -5,23 +5,28 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { NumericFormat } from "react-number-format";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { Dispatch } from "../../../../redux/store";
+import { Dispatch, UseSelector } from "../../../../redux/store";
 import { carModalSchema } from "./carModalSchema";
 import dayjs from "dayjs";
-import { CarObj, addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
+import {  addCarGoal } from "../../../../redux/features/modalSlices/carModalSlice";
 import { setAnyTypeOfModal, setSelectedGoalAfterCreate } from "../../../../redux/features/applicationSlice";
 import { carsArr } from "./carModalSchema";
+import { CreateCarGoalWithNoUser, CreateCarGoalWithUser } from "../utils/carCreateGoalFunc";
+import { createCarGoal } from "../../../../redux/asyncActions/carActions";
 export interface ICar1stInputsProps {
   updatedImg: string;
 }
 
-type FormFields = z.infer<typeof carModalSchema>;
+export type FormFieldsCar1stInputs = z.infer<typeof carModalSchema>;
 
 export const termArr = [36, 48, 60, 72, 84, 96, 108, 120];
 
 export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   // Redux States
   const dispatch = Dispatch();
+  const { user } = UseSelector((state) => state.auth);
+
+  const userId = user?.userObj.id;
 
   // States
   const [openChooseModal, setOpenChooseModal] = React.useState(false);
@@ -42,7 +47,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
     setValue,
     control,
     formState: { errors },
-  } = useForm<FormFields>({
+  } = useForm<FormFieldsCar1stInputs>({
     mode: "all",
     defaultValues: {
       term: 60,
@@ -52,30 +57,27 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
   });
   const watchModal = watch("modal", "Select A Car Modal...");
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { price, downPayment, interest, term, id, extraPayment, mileage, name, modal, img } = data;
+  const onSubmit: SubmitHandler<FormFieldsCar1stInputs> = (data) => {
+    if (userId) {
 
-    const newObj:CarObj = {
-      price,
-      downPayment,
-      interest,
-      term,
-      id,
-      extraPayment,
-      mileage,
-      name,
-      modal,
-      img: img ? img : "",
-      showInputs:true,
-      type:"Car"
+      // We have a user ... so we will send data to th backend
+      const newObjWithUser = CreateCarGoalWithUser(data,userId)
+      dispatch(createCarGoal({data:newObjWithUser, creator: userId}))
+      // Close Modal after everything is done
+      dispatch(setAnyTypeOfModal({ value: false, type: "Car" }));
+    } else {
+
+      // No user ... create with saving to local storage
+      const newObjNoUser = CreateCarGoalWithNoUser(data);
+
+      dispatch(addCarGoal(newObjNoUser));
+
+      // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
+      dispatch(setSelectedGoalAfterCreate(newObjNoUser));
+
+      // Close Modal after everything is done
+      dispatch(setAnyTypeOfModal({ value: false, type: "Car" }));
     }
-    dispatch(addCarGoal(newObj));
-
-    // Once we have added the new goal to our array ... we want to set selected goal to the new goal the user created
-    dispatch(setSelectedGoalAfterCreate(newObj));
-
-    // Close Modal after everything is done
-    dispatch(setAnyTypeOfModal({ value: false, type: "Car" }));
   };
 
   React.useEffect(() => {
@@ -116,7 +118,9 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
             placeholder="Enter name..."
             {...register("name", {})}
             autoComplete="off"
-            className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors?.name && "border-2 border-red-500"}`}
+            className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+              errors?.name && "border-2 border-red-500"
+            }`}
           />
           {errors?.name && <p className="text-red-500 text-[13px] ">{errors?.name?.message}</p>}
         </div>
@@ -169,7 +173,9 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           <Controller
             render={({ field: { onChange, value } }) => (
               <NumericFormat
-                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.price && "border-2 border-red-500"}`}
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                  errors.price && "border-2 border-red-500"
+                }`}
                 prefix="$"
                 thousandSeparator=","
                 decimalSeparator="."
@@ -198,9 +204,9 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           <Controller
             render={({ field: { onChange, value } }) => (
               <NumericFormat
-                className={`outline-none ${openChooseModal ? "border-none" : "border"} border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
-                  errors.mileage && "border-2 border-red-500"
-                }`}
+                className={`outline-none ${
+                  openChooseModal ? "border-none" : "border"
+                } border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.mileage && "border-2 border-red-500"}`}
                 suffix=" miles"
                 thousandSeparator=","
                 decimalSeparator="."
@@ -229,7 +235,9 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           <Controller
             render={({ field: { onChange, value } }) => (
               <NumericFormat
-                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.downPayment && "border-2 border-red-500"}`}
+                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                  errors.downPayment && "border-2 border-red-500"
+                }`}
                 prefix="$"
                 thousandSeparator=","
                 decimalSeparator="."
@@ -258,9 +266,9 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           <Controller
             render={({ field: { onChange, value } }) => (
               <NumericFormat
-                className={`outline-none ${openChooseModal ? "border-none" : "border"} border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
-                  errors.interest && "border-2 border-red-500"
-                }`}
+                className={`outline-none ${
+                  openChooseModal ? "border-none" : "border"
+                } border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.interest && "border-2 border-red-500"}`}
                 suffix="%"
                 thousandSeparator=","
                 decimalSeparator="."
@@ -288,7 +296,9 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
 
           <select
             id="term"
-            className={`outline-none border border-black  dark:border-none py-[8px] px-[6px] text-black mt-1 bg-white placeholder:text-[15px] ${errors.term && "border-2 border-red-500"} `}
+            className={`outline-none border border-black  dark:border-none py-[8px] px-[6px] text-black mt-1 bg-white placeholder:text-[15px] ${
+              errors.term && "border-2 border-red-500"
+            } `}
             {...register("term", {
               valueAsNumber: true,
             })}
@@ -307,8 +317,6 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           </select>
           {errors?.term && <p className="text-red-500 text-[13px] ">{errors?.term?.message}</p>}
         </div>
-
-       
       </div>
 
       <button className="w-full p-2 rounded-lg mt-2 mb-3 bg-chartYellow dark:text-lightText">Save & Continue</button>

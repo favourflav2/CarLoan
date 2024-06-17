@@ -100,6 +100,8 @@ const appSlice = createSlice({
             type: "Car",
             extraPayment: 0,
             showInputs: true,
+            creator:null,
+            date:null
           };
           state.selectedGoal = carData;
           break;

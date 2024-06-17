@@ -14,6 +14,8 @@ export interface CarObj {
   extraPayment: string;
   showInputs:boolean;
   type: "Car"
+  creator:string | null;
+  date: string |  null
 }
 
 export interface CarObjWithFormattedData {
@@ -29,6 +31,8 @@ export interface CarObjWithFormattedData {
   type:"Car";
   extraPayment: number;
   showInputs:boolean;
+  creator:string | null;
+  date: string |  null
 }
 
 interface CarData {
@@ -48,7 +52,7 @@ const carModalSlice = createSlice({
   initialState,
   reducers: {
     addCarGoal: (state, action: PayloadAction<CarObj>) => {
-      const { name, id, mileage, term, interest, downPayment, img, price, modal,showInputs } = action.payload;
+      const { name, id, mileage, term, interest, downPayment, img, price, modal,showInputs, creator, date } = action.payload;
       const formattedData:CarObjWithFormattedData = {
         id,
         name,
@@ -61,7 +65,9 @@ const carModalSlice = createSlice({
         modal,
         type:"Car",
         extraPayment:0,
-        showInputs
+        showInputs,
+        creator,
+        date
       };
 
       const index = state.carGoals.findIndex((item) => item.id === id);

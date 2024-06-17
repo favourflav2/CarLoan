@@ -1,6 +1,7 @@
 import axios from "axios";
 import { RetirementGoals } from "../features/modalSlices/retirementSlice";
 import { HouseObjWithFormattedData } from "../features/modalSlices/houseSlice";
+import { CarObjWithFormattedData } from "../features/modalSlices/carModalSlice";
 export interface AddRetireGoalObj {
   creator: string;
   data: RetirementGoals;
@@ -9,6 +10,11 @@ export interface AddRetireGoalObj {
 export interface AddHouseGoalObj {
   creator: string;
   data: HouseObjWithFormattedData;
+}
+
+export interface AddCarGoalObj {
+  creator:string;
+  data:CarObjWithFormattedData
 }
 
 const API = axios.create({ baseURL: "http://localhost:5001" });
@@ -73,4 +79,10 @@ export function hide_And_Show_House_Inputs(data:{id:string, inputs:boolean}){
 
 export function hide_And_Show_House_OppCost_Inputs(data:{id:string, oppCostInputs:boolean}){
   return API.put("/house/showOppCostInputs", data)
+}
+
+
+// ---------------------------------- Car Goal Routes -------------------------------
+export function create_Car_Goal(data:AddCarGoalObj){
+  return API.post("/carGoals/createCar", data);
 }

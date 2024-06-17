@@ -26,8 +26,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
   const dispatch = Dispatch();
   const { showInputs } = selectedGoal;
 
-  
-
   // Show Update Btn
   const [showUpadateBtn, setShowUpdateBtn] = React.useState<boolean>(false);
 
@@ -78,6 +76,8 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
       img: img ? img : "",
       extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
       showInputs,
+      date: null,
+      creator: null,
     };
 
     dispatch(editSelectedGoal({ goal: newObj }));
@@ -104,6 +104,8 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
         img: img ? img : "",
         extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
         showInputs,
+        date: null,
+        creator: null,
       };
 
       const isTheSame = _.isEqual(obj, select);
@@ -182,7 +184,9 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               <Controller
                 render={({ field: { onChange, value } }) => (
                   <NumericFormat
-                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.price && "border-2 border-red-500"}`}
+                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                      errors.price && "border-2 border-red-500"
+                    }`}
                     prefix="$"
                     thousandSeparator=","
                     decimalSeparator="."
@@ -211,7 +215,9 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               <Controller
                 render={({ field: { onChange, value } }) => (
                   <NumericFormat
-                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.downPayment && "border-2 border-red-500"}`}
+                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                      errors.downPayment && "border-2 border-red-500"
+                    }`}
                     prefix="$"
                     thousandSeparator=","
                     decimalSeparator="."
@@ -239,7 +245,9 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               <Controller
                 render={({ field: { onChange, value } }) => (
                   <NumericFormat
-                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.extraPayment && "border-2 border-red-500"}`}
+                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                      errors.extraPayment && "border-2 border-red-500"
+                    }`}
                     prefix="$"
                     thousandSeparator=","
                     decimalSeparator="."
@@ -267,7 +275,9 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               <Controller
                 render={({ field: { onChange, value } }) => (
                   <NumericFormat
-                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.interest && "border-2 border-red-500"}`}
+                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                      errors.interest && "border-2 border-red-500"
+                    }`}
                     suffix="%"
                     thousandSeparator=","
                     decimalSeparator="."
@@ -297,7 +307,9 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               <Controller
                 render={({ field: { onChange, value } }) => (
                   <NumericFormat
-                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.mileage && "border-2 border-red-500"}`}
+                    className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                      errors.mileage && "border-2 border-red-500"
+                    }`}
                     prefix="$"
                     thousandSeparator=","
                     decimalSeparator="."
@@ -315,7 +327,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
               />
               {errors?.mileage && <p className="text-red-500 text-[13px] ">{errors?.mileage?.message}</p>}
             </div>
-
 
             <AnimatePresence>
               {selectedGoal && showUpadateBtn && (
