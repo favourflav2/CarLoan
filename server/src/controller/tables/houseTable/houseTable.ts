@@ -79,7 +79,7 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
       rent,
     ].every((item) => typeof item === "number");
 
-    if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
+    if (!checkValues) return res.status(400).json({msg:"One of the inputs you typed is not a valid number"});
 
     // If a user added a picture
     if (img.length) {
@@ -209,7 +209,7 @@ export async function update_House_Goal(req: UpdateHouseGoal, res: Response) {
       rent,
     ].every((item) => typeof item === "number");
 
-    if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
+    if (!checkValues) return res.status(400).json({msg:"One of the inputs you typed is not a valid number"});
     if (!date) return res.status(400).json({ msg: "Date value is null" });
 
     const text =
@@ -298,7 +298,7 @@ export async function update_House_Goal_Opp_Cost(req: UpdateHouseGoalOppCost, re
     // making sure all number values are of typeof numbers
     const checkValues = [propertyTax, appreciation, opportunityCostRate, maintenance, rent].every((item) => typeof item === "number");
 
-    if (!checkValues) return res.status(400).json("One of the inputs you typed is not a valid number");
+    if (!checkValues) return res.status(400).json({msg:"One of the inputs you typed is not a valid number"});
     if (!date) return res.status(400).json({ msg: "Date value is null" });
 
     const text =
@@ -319,11 +319,11 @@ export async function update_House_Goal_Img(req: UpdateHouseGoalImg, res: Respon
     const { id, goal, img } = req.body;
     const userId = req.userId;
 
-    if (!img || img.length <= 0) return res.status(400).json("Unable to update image, server received an empty value");
+    if (!img || img.length <= 0) return res.status(400).json({msg:"Unable to update image, server received an empty value"});
 
-    if (!goal.date) return res.status(400).json("The date id required for updating the image was not received to the server");
+    if (!goal.date) return res.status(400).json({msg:"The date id required for updating the image was not received to the server"});
 
-    if (!id || id.length <= 0) return res.status(400).json("The id required for updating the image was not received to the server");
+    if (!id || id.length <= 0) return res.status(400).json({msg:"The id required for updating the image was not received to the server"});
 
     if (img.length) {
       // Ensure that you POST a base64 data to your server.
