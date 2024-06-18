@@ -1,16 +1,6 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { editSelectedGoalTitle, setSelectedGoal } from "../../redux/features/applicationSlice";
-import {
-  MonthlyPayment,
-  getMonthlyPayment,
-  loanAmmortization,
-  loanAmmortizationWithExtraPayment,
-  solveForNumberOfMonths,
-  LoanAmmortizationType,
-  ExtraNumberMonths,
-  MyLoanForLoop,
-} from "../../components/helperFunctions/loanfunctions/LoanFunction";
 import CarPageInputs from "./CarPageInputs";
 import CarChart from "../../components/charts/CarChart";
 import { Divider, SelectChangeEvent } from "@mui/material";
@@ -25,6 +15,7 @@ import EditImgModal from "./components/EditImgModal";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import insertCar from "../../assets/addImg.png";
 import EditNameAndModal from "./EditNameAndModal";
+import useCarFVFunction from "./hooks/useCarFVFunctions";
 
 const schema = z.object({
   name: z
@@ -98,11 +89,8 @@ export default function CarPage() {
     setUpdatedImg(img);
   }
 
-  // Chart States
-  const [monthlyPayment, setMonthlyPayment] = React.useState<MonthlyPayment>();
-  const [regualrLoanAmmortization, setRegualrLoanAmmortization] = React.useState<LoanAmmortizationType>();
-  const [extraNumberOfMonths, setExtraNumberOfMonths] = React.useState<ExtraNumberMonths | undefined>();
-  const [extraLoanAmmortization, setExtraLoanAmmortization] = React.useState<Array<MyLoanForLoop> | undefined>();
+  // Chart States with react useMemo
+ const {extraLoanAmmortization,extraNumberOfMonths, regualrLoanAmmortization, monthlyPayment} = useCarFVFunction()
 
   // Edit State and Save Btn
   const [editState, setEditState] = React.useState(false);
@@ -121,17 +109,6 @@ export default function CarPage() {
     setSaveBtn(false);
   };
 
-  React.useEffect(() => {
-    if (!selectedGoal || selectedGoal.type !== "Car") return;
-    setMonthlyPayment(getMonthlyPayment({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }, selectedGoal.extraPayment));
-    setExtraNumberOfMonths(
-      solveForNumberOfMonths({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }, selectedGoal.extraPayment)
-    );
-    setRegualrLoanAmmortization(loanAmmortization({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }));
-    setExtraLoanAmmortization(
-      loanAmmortizationWithExtraPayment({ rate: selectedGoal.interest, time: selectedGoal.term, downPayment: selectedGoal.downPayment, carPrice: selectedGoal.price }, selectedGoal.extraPayment)
-    );
-  }, [selectedGoal]);
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
