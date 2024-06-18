@@ -4,14 +4,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { carPageSchemaSlider } from "./carPageSchemaSlider";
-import { CarObj, CarObjWithFormattedData, carShowInput, editCarGoal } from "../../redux/features/modalSlices/carModalSlice";
+import { CarObjWithFormattedData, carShowInput, editCarGoal } from "../../redux/features/modalSlices/carModalSlice";
 import { editSelectedGoal, selectedShowInput } from "../../redux/features/applicationSlice";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { NumericFormat } from "react-number-format";
-import _ from "lodash";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useMediaQuery } from "@mui/material";
+import { isTheSameCheckCarPage } from "./utils/isSameCheckCarPage";
 
 export interface ICarPageInputsProps {
   selectedGoal: CarObjWithFormattedData;
@@ -26,8 +26,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
   const dispatch = Dispatch();
   const { showInputs } = selectedGoal;
 
-  // Show Update Btn
-  const [showUpadateBtn, setShowUpdateBtn] = React.useState<boolean>(false);
 
   // Show Inputs on mobile states
   const matches = useMediaQuery("(min-width:1024px)");
@@ -59,6 +57,8 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
     resolver: zodResolver(carPageSchemaSlider),
   });
 
+  const allInputData = watch()
+
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     const { img, id, price, mileage, term, name, modal, downPayment, interest, extraPayment } = data;
     const { showInputs } = selectedGoal;
@@ -86,42 +86,6 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
 
   const errorsArray = Object.keys(errors);
 
-  React.useEffect(() => {
-    function checkValid(select: CarObjWithFormattedData, inputStates: CarObj | any) {
-      const { img, id, price, mileage, term, name, modal, downPayment, interest, extraPayment } = inputStates;
-      const { showInputs } = select;
-
-      const obj: CarObjWithFormattedData = {
-        id,
-        name,
-        type: "Car",
-        price: parseFloat(price.replace(/[,%$]/gm, "")),
-        downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
-        interest: parseFloat(interest.replace(/[,%$]/gm, "")),
-        mileage: parseFloat(mileage.replace(/[,%$]/gm, "")),
-        modal,
-        term,
-        img: img ? img : "",
-        extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
-        showInputs,
-        date: null,
-        creator: null,
-      };
-
-      const isTheSame = _.isEqual(obj, select);
-      if (isTheSame) {
-        setShowUpdateBtn(false);
-        return false;
-      } else {
-        setShowUpdateBtn(true);
-        return true;
-      }
-    }
-    const subscription = watch((data) => {
-      checkValid(selectedGoal, data);
-    });
-    return () => subscription.unsubscribe();
-  }, [watch, selectedGoal]);
 
   React.useEffect(() => {
     if (selectedGoal && selectedGoal.type === "Car") {
@@ -329,7 +293,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
             </div>
 
             <AnimatePresence>
-              {selectedGoal && showUpadateBtn && (
+              {selectedGoal && isTheSameCheckCarPage(selectedGoal,allInputData) && (
                 <motion.button
                   className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"}`}
                   initial={{ x: -100, opacity: 0 }}
