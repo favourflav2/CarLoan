@@ -86,3 +86,7 @@ export function hide_And_Show_House_OppCost_Inputs(data:{id:string, oppCostInput
 export function create_Car_Goal(data:AddCarGoalObj){
   return API.post("/carGoals/createCar", data);
 }
+
+export function update_Car_Goal(data:{id:string, goal:CarObjWithFormattedData}){
+  return API.put("/carGoals/updateCar",data)
+}

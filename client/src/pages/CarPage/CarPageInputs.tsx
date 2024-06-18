@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dispatch } from "../../redux/store";
+import { Dispatch, UseSelector } from "../../redux/store";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -12,6 +12,8 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useMediaQuery } from "@mui/material";
 import { isTheSameCheckCarPage } from "./utils/isSameCheckCarPage";
+import { updateDataWithNoUser, updateDataWithUser } from "./utils/onSubmitFunc";
+import { updateCarGoal } from "../../redux/asyncActions/carActions";
 
 export interface ICarPageInputsProps {
   selectedGoal: CarObjWithFormattedData;
@@ -19,13 +21,15 @@ export interface ICarPageInputsProps {
 
 export type IndexNames = "mileage" | "price" | "downPayment" | "interest" | "term" | "salary" | "extraPayment";
 
-type FormFields = z.infer<typeof carPageSchemaSlider>;
+export type FormFieldsCarPageInputs = z.infer<typeof carPageSchemaSlider>;
 
 export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
   // Redux States
   const dispatch = Dispatch();
   const { showInputs } = selectedGoal;
+  const { user } = UseSelector((state) => state.auth);
 
+  const userId = user?.userObj.id;
 
   // Show Inputs on mobile states
   const matches = useMediaQuery("(min-width:1024px)");
@@ -37,7 +41,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<FormFields>({
+  } = useForm<FormFieldsCarPageInputs>({
     mode: "all",
     resetOptions: {
       keepErrors: true, // input errors will be retained with value update
@@ -57,35 +61,22 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
     resolver: zodResolver(carPageSchemaSlider),
   });
 
-  const allInputData = watch()
+  const allInputData = watch();
 
-  const onSubmit: SubmitHandler<FormFields> = (data) => {
-    const { img, id, price, mileage, term, name, modal, downPayment, interest, extraPayment } = data;
-    const { showInputs } = selectedGoal;
-
-    const newObj: CarObjWithFormattedData = {
-      id,
-      name,
-      type: "Car",
-      price: parseFloat(price.replace(/[,%$]/gm, "")),
-      downPayment: parseFloat(downPayment.replace(/[,%$]/gm, "")),
-      interest: parseFloat(interest.replace(/[,%$]/gm, "")),
-      mileage: parseFloat(mileage.replace(/[,%$]/gm, "")),
-      modal,
-      term,
-      img: img ? img : "",
-      extraPayment: parseFloat(extraPayment.replace(/[,%$]/gm, "")),
-      showInputs,
-      date: null,
-      creator: null,
-    };
-
-    dispatch(editSelectedGoal({ goal: newObj }));
-    dispatch(editCarGoal({ id, goal: newObj }));
+  const onSubmit: SubmitHandler<FormFieldsCarPageInputs> = (data) => {
+    const { showInputs, id } = selectedGoal;
+    if (userId) {
+      const newObjWithUser = updateDataWithUser(data,userId,selectedGoal)
+      dispatch(editSelectedGoal({ goal: newObjWithUser }));
+      dispatch(updateCarGoal({id,goal:newObjWithUser}));
+    } else {
+      const newObjWithNoUser = updateDataWithNoUser(data, showInputs);
+      dispatch(editSelectedGoal({ goal: newObjWithNoUser }));
+      dispatch(editCarGoal({ id, goal: newObjWithNoUser }));
+    }
   };
 
   const errorsArray = Object.keys(errors);
-
 
   React.useEffect(() => {
     if (selectedGoal && selectedGoal.type === "Car") {
@@ -293,7 +284,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
             </div>
 
             <AnimatePresence>
-              {selectedGoal && isTheSameCheckCarPage(selectedGoal,allInputData) && (
+              {selectedGoal && isTheSameCheckCarPage(selectedGoal, allInputData) && (
                 <motion.button
                   className={` rounded-lg p-1 ${errorsArray.length ? "bg-gray-300 text-gray-400" : "bg-chartGreen text-white"}`}
                   initial={{ x: -100, opacity: 0 }}
