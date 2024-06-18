@@ -4,7 +4,7 @@ import pg from "pg";
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateCarGoal } from "../../controllerTypes/carGoalTypes.js";
+import { CreateCarGoal, UpdateCarGoal } from "../../controllerTypes/carGoalTypes.js";
 
 const { Pool, types } = pg;
 
@@ -27,6 +27,8 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_KEY as string,
   },
 });
+
+//! I need to make sure all my controller function have a msg json when i return an error
 
 export async function create_Car_Goal(req: CreateCarGoal, res: Response) {
   try {
@@ -82,6 +84,30 @@ export async function create_Car_Goal(req: CreateCarGoal, res: Response) {
       await pool.query(textWithNoImg, valuesWIthNoImg);
       res.status(200).json("You successfully created your goal :)");
     }
+  } catch (e) {
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error creating your goal" });
+  }
+}
+
+export async function update_Car_Goal(req: UpdateCarGoal, res: Response) {
+  try {
+    const { id, goal } = req.body;
+    const { price, downPayment, interest, mileage, term, extraPayment, showInputs, date } = goal;
+    const userId = req.userId;
+
+    const checkValues = [price, downPayment, interest, mileage, term, extraPayment].every((item) => typeof item === "number");
+
+    if (!checkValues) return res.status(400).json({ msg: "One of your values from the inputs is not a number" });
+    if (!date) return res.status(400).json({ msg: "Date value is null" });
+
+    const text = 'UPDATE car SET price = $1, "downPayment" = $2, interest = $3, mileage = $4, term = $5, "extraPayment" = $6 WHERE id = $7 AND creator = $8 RETURNING * ';
+    const values = [price, downPayment, interest, mileage, term, extraPayment, id, userId]
+    await pool.query(text,values)
+
+    res.status(200).json("You successfully updated your goal :)");
+  
   } catch (e) {
     console.log(e);
     console.log("message", e.message);
