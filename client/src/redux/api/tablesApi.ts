@@ -90,3 +90,7 @@ export function create_Car_Goal(data:AddCarGoalObj){
 export function update_Car_Goal(data:{id:string, goal:CarObjWithFormattedData}){
   return API.put("/carGoals/updateCar",data)
 }
+
+export function update_Car_Name(data:{id:string, name:string, modal:string}){
+  return API.put("/carGoals/updateCarName", data)
+}

@@ -6,7 +6,7 @@ import {toast} from 'react-toastify'
 import { createHouseGoal, updateHouseGoal, deleteHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, updateHouseGoalAddress, hideAndShowHouseInputs, hideAndShowHouseOppCostInputs } from "../asyncActions/houseActions";
 import { createRetireGoal, deleteRetireGoal, updateRetireGoal, updateRetireTableName } from "../asyncActions/retireActions";
 import { get_All_Goals } from "../api/tablesApi";
-import { createCarGoal, updateCarGoal } from "../asyncActions/carActions";
+import { createCarGoal, updateCarGoal, updateCarName } from "../asyncActions/carActions";
 
 interface UserGoalsObj {
   data: Array<RetirementGoals| CarObjWithFormattedData | HouseObjWithFormattedData>;
@@ -314,6 +314,20 @@ const tableSlice = createSlice({
         
       })
       .addCase(updateCarGoal.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userCarGoalsError = action.payload
+        state.userCarGoalsIsLoading = false;
+      })
+
+      .addCase(updateCarName.pending, (state) => {
+        state.userCarGoalsIsLoading = true;
+      })
+      .addCase(updateCarName.fulfilled, (state) => {
+        state.userCarGoalsError = ''
+        state.userCarGoalsIsLoading = false;
+        
+      })
+      .addCase(updateCarName.rejected, (state, action) => {
         toast.error(action.payload as string)
         state.userCarGoalsError = action.payload
         state.userCarGoalsIsLoading = false;

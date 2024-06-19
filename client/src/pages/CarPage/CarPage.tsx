@@ -16,6 +16,7 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import insertCar from "../../assets/addImg.png";
 import EditNameAndModal from "./EditNameAndModal";
 import useCarFVFunction from "./hooks/useCarFVFunctions";
+import { updateCarName } from "../../redux/asyncActions/carActions";
 
 const schema = z.object({
   name: z
@@ -51,7 +52,10 @@ export const USDollar = new Intl.NumberFormat("en-US", {
 export default function CarPage() {
   // Redux States
   const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
+
+  const userId = user?.userObj.id;
 
   // Form Feilds
   const {
@@ -90,7 +94,7 @@ export default function CarPage() {
   }
 
   // Chart States with react useMemo
- const {extraLoanAmmortization,extraNumberOfMonths, regualrLoanAmmortization, monthlyPayment} = useCarFVFunction()
+  const { extraLoanAmmortization, extraNumberOfMonths, regualrLoanAmmortization, monthlyPayment } = useCarFVFunction();
 
   // Edit State and Save Btn
   const [editState, setEditState] = React.useState(false);
@@ -102,13 +106,20 @@ export default function CarPage() {
   // Handle Submit
   const onSubmit: SubmitHandler<FormFields> = (data) => {
     if (!selectedGoal || selectedGoal?.type !== "Car") return;
-    dispatch(editCarGoalTitle({ id: selectedGoal.id, name: data?.name, goal: selectedGoal, modal: data?.modal }));
 
-    dispatch(editSelectedGoalTitle({ title: data?.name, goal: selectedGoal, modal: data?.modal }));
-    setEditState(false);
-    setSaveBtn(false);
+    if (userId) {
+      dispatch(editSelectedGoalTitle({ title: data?.name, goal: selectedGoal, modal: data?.modal }));
+      dispatch(updateCarName({ id: selectedGoal.id, name: data.name, modal: data.modal }));
+      setEditState(false);
+      setSaveBtn(false);
+    } else {
+      dispatch(editCarGoalTitle({ id: selectedGoal.id, name: data?.name, goal: selectedGoal, modal: data?.modal }));
+
+      dispatch(editSelectedGoalTitle({ title: data?.name, goal: selectedGoal, modal: data?.modal }));
+      setEditState(false);
+      setSaveBtn(false);
+    }
   };
-
 
   // Makes Sure inputs match selected goal on page refresh
   React.useEffect(() => {
@@ -155,7 +166,9 @@ export default function CarPage() {
       {/* Top Section Chart and Inputs */}
       <div
         className={`w-full h-full grid ${
-          shrinkDashboardSidebar ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1" : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
+          shrinkDashboardSidebar
+            ? "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] min-[880px]:grid-cols-[250px_1fr] grid-cols-1"
+            : "lg:grid-cols-[280px_1fr] 2xl:grid-cols-[20%_1fr] grid-cols-1"
         }`}
       >
         {/* Left Side Inputs */}
@@ -201,7 +214,10 @@ export default function CarPage() {
               <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
                 <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md object-cover" />
 
-                <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={() => setOpenImgModal(true)}>
+                <button
+                  className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full"
+                  onClick={() => setOpenImgModal(true)}
+                >
                   <EditNoteIcon className=" " />
                 </button>
               </div>
@@ -212,10 +228,12 @@ export default function CarPage() {
                   <span className="font-bold text-[15px]">Car Name/Modal:</span> {selectedGoal.modal} {selectedGoal.name}
                 </h1>
                 <h1 className="text-[15px]">
-                  <span className="font-bold text-[15px]">Price:</span> <span className="text-chartYellow font-bold"> {USDollar.format(selectedGoal.price)}</span>
+                  <span className="font-bold text-[15px]">Price:</span>{" "}
+                  <span className="text-chartYellow font-bold"> {USDollar.format(selectedGoal.price)}</span>
                 </h1>
                 <h1 className="text-[15px]">
-                  <span className="font-bold text-[15px]">Down Payment:</span> <span className="text-red-500 font-bold"> {USDollar.format(selectedGoal.downPayment)}</span>
+                  <span className="font-bold text-[15px]">Down Payment:</span>{" "}
+                  <span className="text-red-500 font-bold"> {USDollar.format(selectedGoal.downPayment)}</span>
                 </h1>
                 <h1 className="text-[15px]">
                   <span className="font-bold text-[15px]">Miles:</span> {selectedGoal.mileage.toLocaleString()} miles
@@ -228,7 +246,8 @@ export default function CarPage() {
                 </h1>
 
                 <h1 className="text-[15px]">
-                  <span className="font-bold text-[15px]">Loan Amount:</span> <span className="text-chartGreen font-bold">{USDollar.format(selectedGoal.price - selectedGoal.downPayment)}</span>
+                  <span className="font-bold text-[15px]">Loan Amount:</span>{" "}
+                  <span className="text-chartGreen font-bold">{USDollar.format(selectedGoal.price - selectedGoal.downPayment)}</span>
                 </h1>
               </div>
             </div>
@@ -263,10 +282,16 @@ export default function CarPage() {
               {/* Charts Go Here */}
               <div className="w-full h-auto flex flex-col ">
                 <div className="flex items-center w-auto h-auto">
-                  <h1 className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Graph View")}>
+                  <h1
+                    className={`mr-8 cursor-pointer ${view === "Graph View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`}
+                    onClick={() => setView("Graph View")}
+                  >
                     Graph View
                   </h1>
-                  <h1 className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`} onClick={() => setView("Summary View")}>
+                  <h1
+                    className={` cursor-pointer ${view === "Summary View" ? "underline text-chartGreen font-bold" : "text-gray-400"}`}
+                    onClick={() => setView("Summary View")}
+                  >
                     Summary View
                   </h1>
                 </div>
@@ -289,7 +314,9 @@ export default function CarPage() {
 
                 {view === "Summary View" && regualrLoanAmmortization?.myLoan && (
                   <div className="w-full xl:w-[90%] 2xl:w-[70%] h-auto grid grid-cols-1 overflow-hidden">
-                    {monthlyPayment && <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />}
+                    {monthlyPayment && (
+                      <CarPageSummary selectedGoal={selectedGoal} monthlyPayment={monthlyPayment} extraNumberOfMonths={extraNumberOfMonths} />
+                    )}
                   </div>
                 )}
               </div>
