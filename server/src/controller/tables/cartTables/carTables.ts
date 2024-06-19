@@ -4,7 +4,7 @@ import pg from "pg";
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateCarGoal, UpdateCarGoal } from "../../controllerTypes/carGoalTypes.js";
+import { CreateCarGoal, UpdateCarGoal, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
 
 const { Pool, types } = pg;
 
@@ -28,7 +28,6 @@ const s3 = new S3Client({
   },
 });
 
-//! I need to make sure all my controller function have a msg json when i return an error
 
 export async function create_Car_Goal(req: CreateCarGoal, res: Response) {
   try {
@@ -111,6 +110,26 @@ export async function update_Car_Goal(req: UpdateCarGoal, res: Response) {
   } catch (e) {
     console.log(e);
     console.log("message", e.message);
-    res.status(400).json({ msg: "There was an error creating your goal" });
+    res.status(400).json({ msg: "There was an error updating your goal" });
+  }
+}
+
+export async function update_Car_Name(req:UpdateCarName, res:Response){
+  try{
+    const {name, id, modal} = req.body
+    const userId = req.userId
+
+    if(!id) return res.status(400).json({msg:"The title you are trying to edit did not have an id. Either delete this goal and make a new one or wait a sec."})
+
+    const text = 'UPDATE car SET name = $1, modal = $2 WHERE id = $3 AND creator = $4'
+    const values = [name, modal, id, userId]
+    await pool.query(text,values)
+
+    res.status(200).json("You successfully updated your goal :)");
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error updating your car name and modal" });
   }
 }
