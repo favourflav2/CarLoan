@@ -5,6 +5,7 @@ import { editCarGoalImg } from "../../redux/features/modalSlices/carModalSlice";
 import { editSelectedGoalImg } from "../../redux/features/applicationSlice";
 import { editHouseGoalImg } from "../../redux/features/modalSlices/houseSlice";
 import { updateHouseGoalImg } from "../../redux/asyncActions/houseActions";
+import { updateCarGoalImg } from "../../redux/asyncActions/carActions";
 
 interface Props {
   updateImg(img: string): void;
@@ -62,9 +63,17 @@ export default function ImageCrop({ updateImg, setOpenImgModal, type }: Props) {
         switch (selectedGoal.type) {
           case "Car":
             if (selectedGoal.type !== "Car") return;
-            dispatch(editCarGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }));
-            dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
-            setOpenImgModal(false);
+
+            if(userId){
+              dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
+              dispatch(updateCarGoalImg({goal:selectedGoal, id:selectedGoal.id, img: image as string}))
+              setOpenImgModal(false);
+            }else{
+              dispatch(editCarGoalImg({ id: selectedGoal.id, goal: selectedGoal, img: image as string }));
+              dispatch(editSelectedGoalImg({ goal: selectedGoal, img: image as string }));
+              setOpenImgModal(false);
+            }
+           
             break;
           case "House":
             if (selectedGoal.type !== "House") return;
