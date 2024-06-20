@@ -118,7 +118,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
             placeholder="Enter name..."
             {...register("name", {})}
             autoComplete="off"
-            className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+            className={`outline-none border border-black dark:text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
               errors?.name && "border-2 border-red-500"
             }`}
           />
@@ -127,11 +127,11 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
 
         {/* Car Modal */}
         <div className="w-full  flex flex-col mb-3 relative ">
-          <label htmlFor="name" className="text-[12px] dark:text-gray-300 text-black">
+          <label htmlFor="modal" className="text-[12px] dark:text-gray-300 text-black">
             Car Modal
           </label>
           <div
-            className={`outline-none border border-black flex items-center justify-between cursor-pointer  overflow-y-auto  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+            className={`outline-none border border-black dark:text-black flex items-center justify-between cursor-pointer  overflow-y-auto  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
               errors?.modal && "border-2 border-red-500"
             }`}
             onClick={() => setOpenChooseModal((item) => !item)}
@@ -173,7 +173,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
           <Controller
             render={({ field: { onChange, value } }) => (
               <NumericFormat
-                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                className={`outline-none border border-black dark:text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
                   errors.price && "border-2 border-red-500"
                 }`}
                 prefix="$"
@@ -206,7 +206,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
               <NumericFormat
                 className={`outline-none ${
                   openChooseModal ? "border-none" : "border"
-                } border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.mileage && "border-2 border-red-500"}`}
+                } border-black dark:text-black dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.mileage && "border-2 border-red-500"}`}
                 suffix=" miles"
                 thousandSeparator=","
                 decimalSeparator="."
@@ -228,14 +228,14 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
 
         {/* Down Payment */}
         <div className="w-full  flex flex-col mb-3">
-          <label htmlFor="mileage" className="text-[12px] dark:text-gray-300 text-black">
+          <label htmlFor="downPayment" className="text-[12px] dark:text-gray-300 text-black">
             Down Payment
           </label>
 
           <Controller
             render={({ field: { onChange, value } }) => (
               <NumericFormat
-                className={`outline-none border border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
+                className={`outline-none border border-black dark:text-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${
                   errors.downPayment && "border-2 border-red-500"
                 }`}
                 prefix="$"
@@ -259,7 +259,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
 
         {/* Interest */}
         <div className="w-full  flex flex-col mb-3">
-          <label htmlFor="mileage" className="text-[12px] dark:text-gray-300 text-black">
+          <label htmlFor="interest" className="text-[12px] dark:text-gray-300 text-black">
             Interest Rate
           </label>
 
@@ -268,7 +268,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
               <NumericFormat
                 className={`outline-none ${
                   openChooseModal ? "border-none" : "border"
-                } border-black  dark:border-none p-[6px] mt-1 bg-white placeholder:text-[15px] ${errors.interest && "border-2 border-red-500"}`}
+                } border-black  dark:border-none p-[6px] mt-1 bg-white dark:text-black placeholder:text-[15px] ${errors.interest && "border-2 border-red-500"}`}
                 suffix="%"
                 thousandSeparator=","
                 decimalSeparator="."
@@ -290,7 +290,7 @@ export default function Car1stInputs({ updatedImg }: ICar1stInputsProps) {
 
         {/* Term in months */}
         <div className="w-full  flex flex-col mb-3">
-          <label htmlFor="mileage" className="text-[12px] dark:text-gray-300 text-black">
+          <label htmlFor="term" className="text-[12px] dark:text-gray-300 text-black">
             Term in (Months)
           </label>
 
