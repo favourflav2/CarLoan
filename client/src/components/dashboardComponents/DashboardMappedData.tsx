@@ -69,7 +69,11 @@ export default function DashboardMappedData({
 
       {selectedGoal && (
         <div className="w-full flex items-center justify-center mb-3 dark:text-darkText text-lightText">
-          <p className="underline text-[15px] cursor-pointer" onClick={() => dispatch(setSelectedGoal(null))}>
+          <p className="underline text-[15px] cursor-pointer" onClick={() => {
+             setOpen(false)
+            dispatch(setSelectedGoal(null))
+           
+          }}>
             Need Help ?
           </p>
         </div>

@@ -50,7 +50,10 @@ export default function UserDashBoardMappedData({ setFirstModal, type, setOpen, 
 
       {selectedGoal && (
         <div className="w-full flex items-center justify-center mb-3">
-          <p className="underline text-[15px] text-lightText dark:text-darkText cursor-pointer" onClick={() => dispatch(setSelectedGoal(null))}>
+          <p className="underline text-[15px] text-lightText dark:text-darkText cursor-pointer" onClick={() => {
+            setOpen(false)
+            dispatch(setSelectedGoal(null))
+          }}>
             Need Help ?
           </p>
         </div>
