@@ -46,3 +46,11 @@ export interface CarObjWithFormattedDataBackendData {
         img:string;
     }
   }
+
+  export interface UpdateCarGoalImg extends IGetUserAuthInfoRequest {
+    body:{
+        id:string;
+        goal:CarObjWithFormattedDataBackendData;
+        img:string
+    }
+  }

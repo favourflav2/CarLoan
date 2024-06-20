@@ -1,10 +1,9 @@
 import { env } from "custom-env";
 env(true);
 import pg from "pg";
-import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateCarGoal, DeleteCarGoal, UpdateCarGoal, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
+import { CreateCarGoal, DeleteCarGoal, UpdateCarGoal, UpdateCarGoalImg, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
 
 const { Pool, types } = pg;
 
@@ -176,6 +175,58 @@ export async function delete_Car_Goal(req:DeleteCarGoal, res:Response){
       return res.status(200).json("Deleted Goal");
     }
 
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error deleting this goal" });
+  }
+}
+
+export async function update_Car_Goal_Img(req:UpdateCarGoalImg, res:Response){
+try{
+  const {id, goal, img} = req.body
+  const userId = req.userId
+
+  if (!img || img.length <= 0) return res.status(400).json({msg:"Unable to update image, server received an empty value"});
+
+    if (!goal.date) return res.status(400).json({msg:"The date id required for updating the image was not received to the server"});
+
+    if (!id || id.length <= 0) return res.status(400).json({msg:"The id required for updating the image was not received to the server"});
+
+    if(img.length){
+
+      // Ensure that you POST a base64 data to your server.
+      // Let's assume the variable "base64" is one.
+      const base64Data = Buffer.from(img.replace(/^data:image\/\w+;base64,/, ""), "base64");
+
+      // Getting the file type, ie: jpeg, png or gif
+      const imgType = img.split(";")[0].split("/")[1];
+
+      // Removes white spaces for id ... id is the date in which the goal was created
+      //* This will be my unique id for my aws ... no post will ever have the same date and userId
+      const paramsKey = goal.date.replace(/\s/g, "") + `${userId}`;
+
+      const params = {
+        Bucket: process.env.BUCKET as string,
+        Key: paramsKey,
+        Body: base64Data,
+        ContentType: imgType,
+      };
+
+      const command = new PutObjectCommand(params);
+      await s3.send(command);
+
+      // Img is sent to aws ... we then save the url with the Key to our database
+
+      const imageUrl = `https://${process.env.BUCKET}.s3.amazonaws.com/${paramsKey}`;
+
+      // Update Img from database
+      const text = "UPDATE car SET img = $1 WHERE id = $2 AND creator = $3";
+      const values = [imageUrl, id, userId];
+      await pool.query(text, values);
+
+      res.status(200).json("You successfully updated your image :)");
+    }
   }catch(e){
     console.log(e);
     console.log("message", e.message);
