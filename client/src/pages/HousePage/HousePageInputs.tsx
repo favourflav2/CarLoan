@@ -218,6 +218,12 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
                 label="Loan Term"
                 MenuProps={{ PaperProps: { sx: { maxHeight: 150 } } }}
                 sx={{
+                  '& .MuiSelect-select': {
+                    paddingRight: 0,
+                    paddingLeft: 1,
+                    paddingTop: 1,
+                    paddingBottom: 1,
+                 },
                   boxShadow: "none",
                   ".MuiOutlinedInput-notchedOutline": { border: 0 },
                   "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {

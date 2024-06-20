@@ -10,10 +10,12 @@ import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { NumericFormat } from "react-number-format";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useMediaQuery } from "@mui/material";
+import { MenuItem, Select, SelectChangeEvent, useMediaQuery } from "@mui/material";
 import { isTheSameCheckCarPage } from "./utils/isSameCheckCarPage";
 import { updateDataWithNoUser, updateDataWithUser } from "./utils/onSubmitFunc";
 import { updateCarGoal } from "../../redux/asyncActions/carActions";
+import { termArr } from "../../components/multiStepDivs/carDivs/CarComponets/Car1stInputs";
+
 
 export interface ICarPageInputsProps {
   selectedGoal: CarObjWithFormattedData;
@@ -40,6 +42,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
     reset,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<FormFieldsCarPageInputs>({
     mode: "all",
@@ -62,6 +65,11 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
   });
 
   const allInputData = watch();
+
+   // Handle Change
+   const handleChange = (event: SelectChangeEvent) => {
+    setValue("term", Number(event.target.value) as number);
+  };
 
   const onSubmit: SubmitHandler<FormFieldsCarPageInputs> = (data) => {
     const { showInputs, id } = selectedGoal;
@@ -252,6 +260,44 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
             </div>
 
             {/* Term DropDown */}
+            <div className="w-auto flex flex-col mb-3">
+              <label htmlFor="term" className="text-[12px] dark:text-gray-300 text-black">
+              Loan Term (Years)
+              </label>
+
+              <Select
+                label="Loan Term"
+                MenuProps={{ PaperProps: { sx: { maxHeight: 150 } } }}
+                sx={{
+                  '& .MuiSelect-select': {
+                    paddingRight: 0,
+                    paddingLeft: 1,
+                    paddingTop: 1,
+                    paddingBottom: 1,
+                 },
+                  boxShadow: "none",
+                  ".MuiOutlinedInput-notchedOutline": { border: 0 },
+                  "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                    border: 0,
+                  },
+                  "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    border: 0,
+                  },
+                }}
+                className={`outline-none border border-black h-[38px]  dark:border-none  mt-1 bg-white placeholder:text-[15px] ${
+                  errors.term && "border-2 border-red-500"
+                }`}
+                onChange={handleChange}
+                value={allInputData.term.toString()}
+              >
+                {termArr.map((item: number) => (
+                  <MenuItem key={item} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
+              </Select>
+            </div>
+
 
             {/* Mileage */}
             <div className="w-auto flex flex-col mb-3">
