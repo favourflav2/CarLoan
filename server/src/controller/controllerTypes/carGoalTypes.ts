@@ -54,3 +54,10 @@ export interface CarObjWithFormattedDataBackendData {
         img:string
     }
   }
+
+  export interface ShowAndHideCarInputs extends IGetUserAuthInfoRequest {
+    body:{
+        id:string;
+        inputs:boolean
+    }
+  }

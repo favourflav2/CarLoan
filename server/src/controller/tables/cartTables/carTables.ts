@@ -3,7 +3,7 @@ env(true);
 import pg from "pg";
 import { Request, Response } from "express";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateCarGoal, DeleteCarGoal, UpdateCarGoal, UpdateCarGoalImg, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
+import { CreateCarGoal, DeleteCarGoal, ShowAndHideCarInputs, UpdateCarGoal, UpdateCarGoalImg, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
 
 const { Pool, types } = pg;
 
@@ -230,6 +230,25 @@ try{
   }catch(e){
     console.log(e);
     console.log("message", e.message);
-    res.status(400).json({ msg: "There was an error deleting this goal" });
+    res.status(400).json({ msg: "There was an error updating the img" });
+  }
+}
+
+export async function hide_And_Show_Car_Inputs(req:ShowAndHideCarInputs, res:Response){
+  try{
+
+    const {id, inputs} = req.body
+    const userId = req.userId
+
+    const text = 'UPDATE car SET "showInputs" = $1 WHERE id = $2 AND creator = $3 ';
+    const values = [inputs, id, userId];
+    await pool.query(text, values);
+
+    res.status(200).json("Show/Hide input success");
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error updating hide/show input with server" });
   }
 }
