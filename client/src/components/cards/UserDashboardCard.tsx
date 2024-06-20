@@ -11,6 +11,7 @@ import { CarObjWithFormattedData, removeCarItem } from "../../redux/features/mod
 import { HouseObjWithFormattedData, removeHouseGoal } from "../../redux/features/modalSlices/houseSlice";
 import { deleteRetireGoal } from "../../redux/asyncActions/retireActions";
 import { deleteHouseGoal } from "../../redux/asyncActions/houseActions";
+import { deleteCarGoal } from "../../redux/asyncActions/carActions";
 
 
 export interface IUserDashboardCardProps {
@@ -61,12 +62,25 @@ export default function UserDashboardCard({ setOpen, type, selectedGoal }: IUser
       case "Car":
         if (!item) return;
         if (item.type !== "Car") return;
-        if (selectedGoal?.id === item.id) {
-          dispatch(setSelectedGoal(null));
-          dispatch(removeCarItem(item));
-        } else {
-          dispatch(removeCarItem(item));
+
+        if(userId){
+
+          if (selectedGoal?.id === item.id) {
+            dispatch(setSelectedGoal(null));
+            dispatch(deleteCarGoal({itemUUID:item.id, dateAsAWSId:item.date as string, img: item.img as string}))
+          } else {
+            dispatch(deleteCarGoal({itemUUID:item.id, dateAsAWSId:item.date as string, img: item.img as string}))
+          }
+
+        }else{
+          if (selectedGoal?.id === item.id) {
+            dispatch(setSelectedGoal(null));
+            dispatch(removeCarItem(item));
+          } else {
+            dispatch(removeCarItem(item));
+          }
         }
+       
 
         break;
 

@@ -6,7 +6,7 @@ import {toast} from 'react-toastify'
 import { createHouseGoal, updateHouseGoal, deleteHouseGoal, updateHouseGoalImg, updateHouseGoalOppCost, updateHouseGoalAddress, hideAndShowHouseInputs, hideAndShowHouseOppCostInputs } from "../asyncActions/houseActions";
 import { createRetireGoal, deleteRetireGoal, updateRetireGoal, updateRetireTableName } from "../asyncActions/retireActions";
 import { get_All_Goals } from "../api/tablesApi";
-import { createCarGoal, updateCarGoal, updateCarName } from "../asyncActions/carActions";
+import { createCarGoal, deleteCarGoal, updateCarGoal, updateCarName } from "../asyncActions/carActions";
 
 interface UserGoalsObj {
   data: Array<RetirementGoals| CarObjWithFormattedData | HouseObjWithFormattedData>;
@@ -291,6 +291,8 @@ const tableSlice = createSlice({
 
 
       // ------------------------------------------ Car Goals --------------------------------------
+
+      // Create Car Goal
       .addCase(createCarGoal.pending, (state) => {
         state.userCarGoalsIsLoading = true;
       })
@@ -305,6 +307,7 @@ const tableSlice = createSlice({
         state.userCarGoalsIsLoading = false;
       })
 
+      // Update Car Goal
       .addCase(updateCarGoal.pending, (state) => {
         state.userCarGoalsIsLoading = true;
       })
@@ -319,6 +322,7 @@ const tableSlice = createSlice({
         state.userCarGoalsIsLoading = false;
       })
 
+      // Update Car Name and Modal
       .addCase(updateCarName.pending, (state) => {
         state.userCarGoalsIsLoading = true;
       })
@@ -332,6 +336,23 @@ const tableSlice = createSlice({
         state.userCarGoalsError = action.payload
         state.userCarGoalsIsLoading = false;
       })
+
+      // Delete Car Goal
+      .addCase(deleteCarGoal.pending, (state) => {
+        state.userCarGoalsIsLoading = true;
+      })
+      .addCase(deleteCarGoal.fulfilled, (state, action:PayloadAction<string>) => {
+        state.userCarGoalsError = ''
+        toast.success(action.payload)
+        state.userCarGoalsIsLoading = false;
+        
+      })
+      .addCase(deleteCarGoal.rejected, (state, action) => {
+        toast.error(action.payload as string)
+        state.userCarGoalsError = action.payload
+        state.userCarGoalsIsLoading = false;
+      })
+
 
 
 

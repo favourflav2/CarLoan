@@ -94,3 +94,7 @@ export function update_Car_Goal(data:{id:string, goal:CarObjWithFormattedData}){
 export function update_Car_Name(data:{id:string, name:string, modal:string}){
   return API.put("/carGoals/updateCarName", data)
 }
+
+export function delete_Car_Goal(data:{itemUUID:string, dateAsAWSId:string, img:string }){
+  return API.delete(`/carGoals/deleteCar?itemUUID=${data.itemUUID}&dateAsAWSId=${data.dateAsAWSId}&img=${data.img}`)
+}
