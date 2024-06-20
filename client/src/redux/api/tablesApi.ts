@@ -102,3 +102,7 @@ export function delete_Car_Goal(data:{itemUUID:string, dateAsAWSId:string, img:s
 export function update_Car_Goal_Img(data:{goal:CarObjWithFormattedData, id:string; img:string}){
 return API.put("/carGoals/updateImg",data)
 }
+
+export function hide_And_Show_Car_Inputs(data:{id:string; inputs:boolean}){
+return API.put("/carGoals/hideAndShowCarInputs", data)
+} 

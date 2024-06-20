@@ -15,6 +15,8 @@ import { isTheSameCheckCarPage } from "./utils/isSameCheckCarPage";
 import { updateDataWithNoUser, updateDataWithUser } from "./utils/onSubmitFunc";
 import { updateCarGoal } from "../../redux/asyncActions/carActions";
 import { termArr } from "../../components/multiStepDivs/carDivs/CarComponets/Car1stInputs";
+import useShowCarInputs from "./hooks/useShowCarInputs";
+import useHandleShowCarInputs from "./hooks/useHandleShowCarInputs";
 
 
 export interface ICarPageInputsProps {
@@ -28,7 +30,6 @@ export type FormFieldsCarPageInputs = z.infer<typeof carPageSchemaSlider>;
 export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
   // Redux States
   const dispatch = Dispatch();
-  const { showInputs } = selectedGoal;
   const { user } = UseSelector((state) => state.auth);
 
   const userId = user?.userObj.id;
@@ -66,6 +67,8 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
 
   const allInputData = watch();
 
+  const {handleHideHouseInputs, handleShowHouseInputs} = useHandleShowCarInputs({selectedGoal})
+
    // Handle Change
    const handleChange = (event: SelectChangeEvent) => {
     setValue("term", Number(event.target.value) as number);
@@ -86,6 +89,8 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
 
   const errorsArray = Object.keys(errors);
 
+  const {showInputs} = useShowCarInputs({selectedGoal,matches})
+
   React.useEffect(() => {
     if (selectedGoal && selectedGoal.type === "Car") {
       reset({
@@ -103,14 +108,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
     }
   }, [selectedGoal, reset]);
 
-  React.useEffect(() => {
-    if (showInputs === false) {
-      if (matches) {
-        dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
-        dispatch(carShowInput({ id: selectedGoal.id, value: true }));
-      }
-    }
-  }, [matches, showInputs, selectedGoal]); // eslint-disable-line
+ 
 
   return (
     <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
@@ -121,18 +119,12 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
           {showInputs ? (
             <KeyboardArrowUpIcon
               className="text-[28px] cursor-pointer"
-              onClick={() => {
-                dispatch(selectedShowInput({ goal: selectedGoal, value: false }));
-                dispatch(carShowInput({ id: selectedGoal.id, value: false }));
-              }}
+              onClick={handleHideHouseInputs}
             />
           ) : (
             <KeyboardArrowDownIcon
               className="text-[28px] cursor-pointer"
-              onClick={() => {
-                dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
-                dispatch(carShowInput({ id: selectedGoal.id, value: true }));
-              }}
+              onClick={handleShowHouseInputs}
             />
           )}
         </div>

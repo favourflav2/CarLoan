@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AddCarGoalObj, create_Car_Goal, delete_Car_Goal, update_Car_Goal, update_Car_Goal_Img, update_Car_Name } from "../api/tablesApi";
+import { AddCarGoalObj, create_Car_Goal, delete_Car_Goal, hide_And_Show_Car_Inputs, update_Car_Goal, update_Car_Goal_Img, update_Car_Name } from "../api/tablesApi";
 import { CarObjWithFormattedData } from "../features/modalSlices/carModalSlice";
 
 export const createCarGoal = createAsyncThunk("createCarGoal", async (data:AddCarGoalObj, {rejectWithValue}) => {
@@ -51,3 +51,14 @@ export const updateCarGoalImg = createAsyncThunk("updateCarGoalImg", async (data
         return rejectWithValue(e.response.data.msg);
     }
 })
+
+export const hideAndShowCarInputs = createAsyncThunk("hideAndShowCarInputs", async (data:{id:string; inputs:boolean}, {rejectWithValue}) => {
+    try{
+        const res = await hide_And_Show_Car_Inputs(data)
+        return res.data
+
+    }catch(e:any){
+        return rejectWithValue(e.response.data.msg);
+    }
+})
+
