@@ -38,3 +38,11 @@ export interface CarObjWithFormattedDataBackendData {
         modal:string;
     }
   }
+
+  export interface DeleteCarGoal extends IGetUserAuthInfoRequest {
+    query:{
+        itemUUID:string;
+        dateAsAWSId:string;
+        img:string;
+    }
+  }

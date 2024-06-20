@@ -4,7 +4,7 @@ import pg from "pg";
 import { CreateRetireGoal, RetirementGoalsBackEnd, UpdateRetireGoal, UpdateRetiretTitle } from "../../controllerTypes/retireTypes.js";
 import { Request, Response } from "express";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateCarGoal, UpdateCarGoal, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
+import { CreateCarGoal, DeleteCarGoal, UpdateCarGoal, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
 
 const { Pool, types } = pg;
 
@@ -131,5 +131,54 @@ export async function update_Car_Name(req:UpdateCarName, res:Response){
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error updating your car name and modal" });
+  }
+}
+
+export async function delete_Car_Goal(req:DeleteCarGoal, res:Response){
+  try{
+    const {itemUUID, dateAsAWSId, img} = req.query
+    const userId = req.userId
+
+    if(!img || img.length <= 0){
+
+      // Only delete from database
+      const text = "DELETE FROM car WHERE creator = $1 AND id = $2";
+      const values = [userId, itemUUID];
+
+      // delete from db
+      await pool.query(text, values);
+
+      return res.status(200).json("Deleted Goal");
+
+    }else{
+
+      // Delete from aws s3 and from database
+      if (!itemUUID || !dateAsAWSId) return res.status(400).json({ msg: "Item is not able to be deleted, the id sent to server is wrong" });
+
+      //* This will be my unique id for my aws ... no post will ever have the same date (formatted with dayjs) and userId
+      const paramsKey = dateAsAWSId.replace(/\s/g, "") + `${userId}`;
+
+      const params = {
+        Bucket: process.env.BUCKET as string,
+        Key: paramsKey,
+      };
+
+      const command = new DeleteObjectCommand(params);
+
+      const text = 'DELETE FROM car WHERE creator = $1 AND id = $2'
+      const values = [userId, itemUUID]
+
+      // this deletes img from aws s3
+      await s3.send(command);
+      // delete from db
+      await pool.query(text, values);
+
+      return res.status(200).json("Deleted Goal");
+    }
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error deleting this goal" });
   }
 }
