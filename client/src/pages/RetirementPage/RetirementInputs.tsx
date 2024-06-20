@@ -83,42 +83,7 @@ export default function RetirementInputs() {
 
   // Update Function
   const {handleUpdate} = useHandleUpdate({errorsArray,inputs:allInputData})
-  // function handleUpdate() {
-  //   if (!selectedGoal?.id || selectedGoal?.type !== "Retirement") return;
-
-  //   if (errorsArray.length) return;
-
-  //   const {
-  //     age: { currentAge, lifeExpectancy, retireAge },
-  //     monthlyContribution,
-  //     preRate,
-  //     postRate,
-  //     inflation,
-  //     budget,
-  //     savings,
-  //   } = allInputData;
-  //   const { title, id, type, showInputs } = selectedGoal;
-  //   const newObj: RetirementGoals = {
-  //     id,
-  //     title,
-  //     type,
-  //     currentAge,
-  //     retireAge,
-  //     lifeExpectancy,
-  //     budget: parseFloat(budget.replace(/[,%$]/gm, "")),
-  //     preRate: parseFloat(preRate.replace(/[,%$]/gm, "")),
-  //     postRate: parseFloat(postRate.replace(/[,%$]/gm, "")),
-  //     inflation: parseFloat(inflation.replace(/[,%$]/gm, "")),
-  //     monthlyContribution: parseFloat(monthlyContribution.replace(/[,%$]/gm, "")),
-  //     savings: parseFloat(savings.replace(/[,%$]/gm, "")),
-  //     showInputs,
-  //     creator:null,
-  //     date:null
-  //   };
-
-  //   dispatch(editSelectedGoal({ goal: newObj }));
-  //   dispatch(editRetireGoal({ id, title, goal: newObj }));
-  // }
+  
 
 
   if (!selectedGoal || selectedGoal?.type !== "Retirement") {
@@ -127,7 +92,7 @@ export default function RetirementInputs() {
   }
 
   return (
-    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
+    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1b1e21]">
       {/* Content */}
       <div className="w-full flex flex-col">
 

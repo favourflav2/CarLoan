@@ -111,7 +111,7 @@ export default function Home() {
                 duration: 0.4,
                 ease: [0, 0.71, 0.2, 1.01],
               }}
-              className=" w-full h-full flex flex-col p-4 bg-[#e8e9ed] dark:bg-[#120d0a] "
+              className=" w-full h-full flex flex-col p-4 bg-[#e8e9ed] dark:bg-[#171717] "
             >
               {/* Dashboard Title */}
               <div className="w-full h-auto flex items-center justify-between">

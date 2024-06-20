@@ -122,7 +122,7 @@ export default function OppCostInputs({ selectedGoal }: IOppCostInputsProps) {
  
 
   return (
-    <div className="w-full h-auto flex flex-col">
+    <div className="w-full h-auto flex flex-col bg-inherit dark:bg-[#1b1e21] p-2">
       {/* Content */}
       <div className="w-full h-full flex flex-col">
         {/* Expand and Shrink Input Section Btn */}

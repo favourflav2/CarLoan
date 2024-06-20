@@ -50,7 +50,7 @@ return getBreakEvenNumber(selectedGoal).resultNoFormat - selectedGoal.rent
           {/* Adjust Width Div */}
           <div className="min-[900px]:w-[80%] w-[97%] h-full ">
             {/* Content */}
-            <div className={`w-full grid xl:grid-cols-[250px_1fr] grid-cols-1 xl:gap-x-5 gap-y-5 xl:gap-y-0  `}>
+            <div className={`w-full grid xl:grid-cols-[260px_1fr] grid-cols-1 xl:gap-x-2 gap-y-5 xl:gap-y-0  `}>
               {/* Left Side Inputs */}
               <OppCostInputs selectedGoal={selectedGoal} />
 

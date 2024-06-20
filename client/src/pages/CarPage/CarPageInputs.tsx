@@ -111,7 +111,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
  
 
   return (
-    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c]">
+    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1b1e21]">
       {/* Content */}
       <div className="w-full flex flex-col">
         {/* Expand and Shrink Input Section Btn */}

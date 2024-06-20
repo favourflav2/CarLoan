@@ -177,7 +177,7 @@ export default function HousePageInputs({ selectedGoal }: IHousePageInputsProps)
 
 
   return (
-    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1814149c] text-lightText dark:text-darkText">
+    <div className="w-full h-full py-4 px-4 min-[900px]:px-3 flex flex-col bg-[#EADDCA] dark:bg-[#1b1e21] text-lightText dark:text-darkText">
       {/* Content */}
       <div className="w-full flex flex-col">
         {/* Expand and Shrink Input Section Btn */}
