@@ -118,12 +118,12 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
         <div className="flex items-end justify-end w-full h-auto lg:hidden">
           {showInputs ? (
             <KeyboardArrowUpIcon
-              className="text-[28px] cursor-pointer"
+              className="text-[28px] cursor-pointer dark:text-darkText text-black"
               onClick={handleHideHouseInputs}
             />
           ) : (
             <KeyboardArrowDownIcon
-              className="text-[28px] cursor-pointer"
+              className="text-[28px] cursor-pointer dark:text-darkText text-black"
               onClick={handleShowHouseInputs}
             />
           )}
@@ -337,7 +337,7 @@ export default function CarPageInputs({ selectedGoal }: ICarPageInputsProps) {
         ) : (
           <div className="flex items-end justify-end w-full h-auto">
             <p
-              className="text-[12.5px] underline cursor-pointer"
+              className="text-[12.5px] underline cursor-pointer dark:text-darkText text-black"
               onClick={() => {
                 dispatch(selectedShowInput({ goal: selectedGoal, value: true }));
                 dispatch(carShowInput({ id: selectedGoal.id, value: true }));
