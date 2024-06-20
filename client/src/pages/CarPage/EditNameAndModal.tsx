@@ -139,7 +139,7 @@ export default function EditNameAndModal ({editState,allInputData,setValue, setE
             delay: 0.2,
             ease: [0, 0.71, 0.2, 1.01],
           }}
-          className=" absolute left-[180px]"
+          className=" absolute left-[195px]"
         >
           <CloseIcon
             className="ml-2 text-[22px] cursor-pointer"
