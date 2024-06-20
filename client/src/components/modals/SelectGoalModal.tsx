@@ -3,8 +3,12 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import NavigateNextOutlinedIcon from "@mui/icons-material/NavigateNextOutlined";
-import { Dispatch } from "../../redux/store";
+import { Dispatch, UseSelector } from "../../redux/store";
 import { setAnyTypeOfModal } from "../../redux/features/applicationSlice";
+import { determineLengthError } from "../dashboardComponents/utils/determineLengthError";
+import { RetirementGoals } from "../../redux/features/modalSlices/retirementSlice";
+import { CarObjWithFormattedData } from "../../redux/features/modalSlices/carModalSlice";
+import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 
 export interface IFirstModalProps {
   open: boolean;
@@ -13,6 +17,15 @@ export interface IFirstModalProps {
 
 export default function FirstModal({ open, setOpen }: IFirstModalProps) {
   const dispatch = Dispatch();
+  const { carGoals } = UseSelector((state) => state.carModalSlice);
+  const { houseGoals } = UseSelector((state) => state.houseSlice);
+  const { retireGoals } = UseSelector((state) => state.retireSlice);
+
+  const concatData: Array<RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData> = [...retireGoals, ...carGoals, ...houseGoals];
+
+  function handleOpenModalCheckForLengthError() {
+    return determineLengthError(concatData);
+  }
   return (
     <Modal onClose={() => setOpen(false)} open={open}>
       <div className=" absolute top-[50%] left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg lg:w-[30%] md:w-[40%] sm:w-[45%] 2xl:w-[25%] w-[95%] rounded-lg">
@@ -37,7 +50,6 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
 
           {/* Second Box */}
           <div className="w-auto flex flex-col h-auto">
-            
             {/* Retirement */}
             <div className="w-auto flex items-center my-3 cursor-pointer">
               <h1
@@ -64,7 +76,9 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
                 className="underline text-[17px] font-medium"
                 onClick={() => {
                   setOpen(false);
-                  dispatch(setAnyTypeOfModal({ value: true, type: "House" }));
+                  if (handleOpenModalCheckForLengthError()) {
+                    dispatch(setAnyTypeOfModal({ value: true, type: "House" }));
+                  }
                 }}
               >
                 House
@@ -73,7 +87,9 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
                 className="text-[19px]"
                 onClick={() => {
                   setOpen(false);
-                  dispatch(setAnyTypeOfModal({ value: true, type: "House" }));
+                  if (handleOpenModalCheckForLengthError()) {
+                    dispatch(setAnyTypeOfModal({ value: true, type: "House" }));
+                  }
                 }}
               />
             </div>
@@ -84,7 +100,9 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
                 className="underline text-[17px] font-medium"
                 onClick={() => {
                   setOpen(false);
-                  dispatch(setAnyTypeOfModal({ value: true, type: "Car" }));
+                  if (handleOpenModalCheckForLengthError()) {
+                    dispatch(setAnyTypeOfModal({ value: true, type: "Car" }));
+                  }
                 }}
               >
                 Car
@@ -93,7 +111,9 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
                 className="text-[19px]"
                 onClick={() => {
                   setOpen(false);
-                  dispatch(setAnyTypeOfModal({ value: true, type: "Car" }));
+                  if (handleOpenModalCheckForLengthError()) {
+                    dispatch(setAnyTypeOfModal({ value: true, type: "Car" }));
+                  }
                 }}
               />
             </div>
