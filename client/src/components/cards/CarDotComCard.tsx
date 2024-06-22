@@ -2,7 +2,7 @@ import * as React from "react";
 import noImgPlaceHolder from "../../assets/noImg.png";
 import { NumericFormat } from "react-number-format";
 import { useNavigate } from "react-router-dom";
-import { Dispatch } from "../../redux/store";
+
 
 
 export interface ICarDotComCardProps {
@@ -19,7 +19,7 @@ export interface ICarDotComCardProps {
 
 export default function CarDotComCard({ item }: ICarDotComCardProps) {
   const navigate = useNavigate();
-  const dispatch = Dispatch();
+ // const dispatch = Dispatch();
 
   const checkIfImageExists = (url: string, callback: (exists: boolean) => void) => {
     const img = new Image();
@@ -94,4 +94,4 @@ export default function CarDotComCard({ item }: ICarDotComCardProps) {
   );
 }
 
-// item?.img ? item?.img : noImgPlaceHolder
+

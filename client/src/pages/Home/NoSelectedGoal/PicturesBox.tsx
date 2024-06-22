@@ -12,6 +12,7 @@ import darkRentVsOwning from "../../../assets/darkRentVsOwning.png";
 import car from "../../../assets/car.png";
 import darkCar from "../../../assets/darkCar.png";
 import { UseSelector } from "../../../redux/store";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export interface IPicturesBoxProps {}
 
@@ -24,7 +25,8 @@ export default function PicturesBox(props: IPicturesBoxProps) {
         {/* Modal Box/Img */}
         <div className="w-full grid  grid-cols-[40%_60%] gap-x-4  mb-[100px]">
           <Zoom>
-            <img src={lightAndDarkMode ? darkModalImg : modalImg} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" />
+            {/* <img src={lightAndDarkMode ? darkModalImg : modalImg} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" /> */}
+            <LazyLoadImage src={lightAndDarkMode ? darkModalImg : modalImg} alt="Goal Img" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" effect="blur" />
           </Zoom>
 
           <div className="w-auto h-auto flex flex-col">
@@ -69,14 +71,16 @@ export default function PicturesBox(props: IPicturesBoxProps) {
             </div>
           </div>
           <Zoom>
-            <img src={lightAndDarkMode ? darkInputs : inputs} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" />
+            {/* <img src={lightAndDarkMode ? darkInputs : inputs} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" /> */}
+            <LazyLoadImage src={lightAndDarkMode ? darkInputs : inputs} alt="On Page" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500"effect="blur"/>
           </Zoom>
         </div>
 
         {/*Summary Box/Img */}
         <div className="w-full grid  grid-cols-2 gap-x-4  mb-[100px]">
           <Zoom>
-            <img src={lightAndDarkMode ? darkSummary : summary} alt="Icon" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" />
+            {/* <img src={lightAndDarkMode ? darkSummary : summary} alt="Icon" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" /> */}
+            <LazyLoadImage src={lightAndDarkMode ? darkSummary : summary} alt="Icon" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500"effect="blur"/>
           </Zoom>
           <div className="w-auto h-auto flex flex-col ml-5">
             {/*Summary */}
@@ -102,14 +106,16 @@ export default function PicturesBox(props: IPicturesBoxProps) {
             </div>
           </div>
           <Zoom>
-            <img src={lightAndDarkMode ? darkRentVsOwning : rentVsOwning} alt="Icon" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" />
+            {/* <img src={lightAndDarkMode ? darkRentVsOwning : rentVsOwning} alt="Icon" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" /> */}
+            <LazyLoadImage src={lightAndDarkMode ? darkRentVsOwning : rentVsOwning} alt="Home" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" effect="blur"/>
           </Zoom>
         </div>
 
         {/* Cars Box/Img */}
         <div className="w-full grid  grid-cols-[40%_60%] gap-x-4   mb-[100px]">
           <Zoom>
-            <img src={lightAndDarkMode ? darkCar : car} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" />
+            {/* <img src={lightAndDarkMode ? darkCar : car} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" /> */}
+            <LazyLoadImage src={lightAndDarkMode ? darkCar : car} alt="" className="rounded-lg object-cover border border-gray-300 dark:border-gray-500" effect="blur"/>
           </Zoom>
           <div className="w-full flex flex-col h-auto mb-3">
             <h1 className=" underline font-bold">Cars Page</h1>

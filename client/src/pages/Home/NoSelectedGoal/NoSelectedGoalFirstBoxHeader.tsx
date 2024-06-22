@@ -1,5 +1,6 @@
 import * as React from "react";
 import headerImg from "../../../assets/header.avif";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export interface INoSelectedGoalFirstBoxHeaderProps {}
 
@@ -25,7 +26,8 @@ export default function NoSelectedGoalFirstBoxHeader(props: INoSelectedGoalFirst
 
       {/* Right Side */}
       <div className="shadow-[0px_6px_15px_0px_#00000024] dark:shadow-[0px_6px_15px_0px_#271d17] h-auto rounded-lg flex flex-col">
-        <img src={headerImg} alt="headerImg" className="w-full h-[280px] object-cover rounded-lg" loading="lazy"/>
+        {/* <img src={headerImg} alt="headerImg" className="w-full h-[280px] object-cover rounded-lg" loading="lazy"/> */}
+        <LazyLoadImage src={headerImg} alt="headerImg" className="w-full h-[280px] object-cover rounded-lg" effect="blur"/>
 
         <div className="w-full h-auto flex flex-col p-3">
           <h1 className="w-full flex items-center justify-center mt-3 font-bold text-[20px]">Average American Debt in 2024</h1>

@@ -3,6 +3,7 @@ import { USDollar } from "../CarPage/CarPage";
 import { HouseObjWithFormattedData } from "../../redux/features/modalSlices/houseSlice";
 import insertCar from "../../assets/addImg.png";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export interface IHouseImgAndNumProps {
   selectedGoal: HouseObjWithFormattedData;
@@ -15,7 +16,8 @@ export default function HouseImgAndNum({ selectedGoal, setOpenImgModal }: IHouse
   return (
     <div className="w-auto flex flex-col sm:flex-row items-center sm:justify-normal justify-center mb-6 mt-4">
       <div className="w-[220px] h-[220px] flex justify-center items-center  rounded-md relative">
-        <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md object-cover" />
+        {/* <img src={selectedGoal.img ? selectedGoal.img : insertCar} alt="" className="w-[200px] h-[200px] rounded-md object-cover" /> */}
+        <LazyLoadImage src={selectedGoal.img ? selectedGoal.img : insertCar} alt="carImg" className="w-[200px] h-[200px] rounded-md object-cover" effect="blur"/>
 
         <button className="h-[30px] w-[30px] absolute right-0 top-0  bg-gray-800 dark:bg-gray-200 dark:text-gray-800 text-white   rounded-full" onClick={() => setOpenImgModal(true)}>
           <EditNoteIcon className=" " />

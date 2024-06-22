@@ -11,6 +11,7 @@ import { Dispatch, UseSelector } from "./redux/store";
 import "react-image-crop/dist/ReactCrop.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import SignUp from "./pages/Auth/signup/SignUp";
 import Login from "./pages/Auth/login/Login";
 import { setUser } from "./redux/features/authSlice";
