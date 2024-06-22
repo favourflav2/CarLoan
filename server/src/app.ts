@@ -11,6 +11,7 @@ import retireRoutes from "./routes/tables/retireRoutes.js";
 import allGoalRoutes from "./routes/allGoalRoutes.js";
 import houseRoutes from "./routes/tables/houseRoutes.js";
 import carGoalRoutes from "./routes/tables/carGoalRoutes.js";
+import contentCreatorRoutes from "./routes/tables/contentCreatorRoutes.js";
 
 
 
@@ -44,6 +45,7 @@ app.use("/retire", retireRoutes)
 app.use("/house",houseRoutes)
 app.use("/allTables",allGoalRoutes)
 app.use("/carGoals", carGoalRoutes)
+app.use("/contentCreator",contentCreatorRoutes)
 
 
 
