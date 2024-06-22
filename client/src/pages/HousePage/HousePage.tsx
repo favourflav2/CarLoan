@@ -83,7 +83,7 @@ export default function HousePage(props: IHousePageProps) {
       top: 0,
       left: 0,
     });
-  }, []);
+  }, [selectedGoal]);
 
   // Callback version of watch.  It's your responsibility to unsubscribe when done.
   React.useEffect(() => {
