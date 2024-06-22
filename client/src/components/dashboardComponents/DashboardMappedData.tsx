@@ -8,6 +8,7 @@ import DashboardCard from "../cards/DashboardCard";
 import { Dispatch } from "../../redux/store";
 import { setSelectedGoal } from "../../redux/features/applicationSlice";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 export interface IDashboardMappedDataProps {
   setFirstModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -33,6 +34,8 @@ export default function DashboardMappedData({
 }: IDashboardMappedDataProps) {
   const dispatch = Dispatch();
   const concatData: Array<RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData> = [...retireGoals, ...carGoals, ...houseGoals];
+
+  const navigate = useNavigate()
 
   // Im only going to allow 4 goals created max ... I dont want to have too much data saved in the local storage
   function handleCreateGoalNoUser() {
@@ -67,17 +70,36 @@ export default function DashboardMappedData({
         <AddOutlinedIcon className="ml-1 !text-[23px]" />
       </motion.div>
 
-      {selectedGoal && (
-        <div className="w-full flex items-center justify-center mb-3 dark:text-darkText text-lightText">
-          <p className="underline text-[15px] cursor-pointer" onClick={() => {
-             setOpen(false)
-            dispatch(setSelectedGoal(null))
-           
-          }}>
-            Need Help ?
+      <div className="w-full h-auto flex flex-col mt-3 mb-4">
+        {/* Need help */}
+        {selectedGoal && (
+          <div className="w-full flex items-center justify-center mb-2">
+            <p
+              className="underline text-[15px] text-lightText dark:text-darkText cursor-pointer"
+              onClick={() => {
+                setOpen(false);
+                dispatch(setSelectedGoal(null));
+              }}
+            >
+              Need Help ?
+            </p>
+          </div>
+        )}
+
+        {/* How to invest */}
+        <div className="w-full flex items-center justify-center">
+          <p
+            className="underline text-[15px] text-lightText dark:text-darkText cursor-pointer"
+            onClick={() => {
+              setOpen(false);
+              dispatch(setSelectedGoal(null));
+              navigate("/home/howToInvest")
+            }}
+          >
+            How to invest ?
           </p>
         </div>
-      )}
+      </div>
       {/* Container For Mapped Data */}
       <div>
         <DashboardCard

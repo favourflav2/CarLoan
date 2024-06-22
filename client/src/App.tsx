@@ -19,6 +19,7 @@ import ForgotPassword from "./pages/Auth/forgotPassword/ForgotPassword";
 import PleaseCheckEmail from "./pages/Auth/pleaseCheckEmail/PleaseCheckEmail";
 import ResetPasswordPrivateRoute from "./pages/Auth/PrivateRoutes/ResetPasswordPrivateRoute";
 import CreateNewPassword from "./pages/Auth/createNewPassword/CreateNewPassword";
+import HowToInvest from "./pages/HowToPage/HowToInvest";
 
 function App() {
   const localStorageUser = localStorage.getItem("profile");
@@ -41,6 +42,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/home/howToInvest" element={<HowToInvest />} />
           <Route path="/cars" element={<Cars />} />
           <Route path="/path" element={<Prac />} />
           <Route path="/vehicle/:id" element={<ItemDetails />} />
