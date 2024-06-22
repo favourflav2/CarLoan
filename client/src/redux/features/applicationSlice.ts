@@ -5,6 +5,8 @@ import { HouseObj, HouseObjWithFormattedData } from "./modalSlices/houseSlice";
 
 export type goal = RetirementGoals | CarObjWithFormattedData | null | HouseObjWithFormattedData;
 
+export type GoalNoNullVal = RetirementGoals | CarObjWithFormattedData | HouseObjWithFormattedData;
+
 interface AppSlice {
   lightAndDarkMode: boolean;
   retireModal: boolean;
