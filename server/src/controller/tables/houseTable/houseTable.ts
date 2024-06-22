@@ -110,7 +110,7 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
 
       // send data to database
       const textWithImg =
-        'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)';
+        'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING *';
       const valuesWIthImg = [
         userId,
         type,
@@ -133,12 +133,12 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
         showOppCostInputs,
         id,
       ];
-      await pool.query(textWithImg, valuesWIthImg);
-      res.status(200).json("You successfully created your goal :)");
+    const obj = await pool.query(textWithImg, valuesWIthImg);
+      res.status(200).json(obj.rows[0]);
     } else {
       // user did not add an image
       const textWithNoImg =
-        'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)';
+        'INSERT INTO house (creator, type, "streetAddress", "price", "downPayment", "interest", "term", "extraPayment", img, "propertyTax", insurance, "mortgageInsurance", "appreciation", "opportunityCostRate", maintenance, "showTax", "showInputs", rent, "showOppCostInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20) RETURNING *';
       const valuesWIthNoImg = [
         userId,
         type,
@@ -162,8 +162,8 @@ export async function create_House_Goal(req: CreateHouseGoal, res: Response) {
         id,
       ];
 
-      await pool.query(textWithNoImg, valuesWIthNoImg);
-      res.status(200).json("You successfully created your goal :)");
+    const objNoImg = await pool.query(textWithNoImg, valuesWIthNoImg);
+      res.status(200).json(objNoImg.rows[0]);
     }
   } catch (e) {
     console.log(e);

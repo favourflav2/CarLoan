@@ -3,7 +3,14 @@ env(true);
 import pg from "pg";
 import { Request, Response } from "express";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { CreateCarGoal, DeleteCarGoal, ShowAndHideCarInputs, UpdateCarGoal, UpdateCarGoalImg, UpdateCarName } from "../../controllerTypes/carGoalTypes.js";
+import {
+  CreateCarGoal,
+  DeleteCarGoal,
+  ShowAndHideCarInputs,
+  UpdateCarGoal,
+  UpdateCarGoalImg,
+  UpdateCarName,
+} from "../../controllerTypes/carGoalTypes.js";
 
 const { Pool, types } = pg;
 
@@ -26,7 +33,6 @@ const s3 = new S3Client({
     secretAccessKey: process.env.AWS_SECRET_KEY as string,
   },
 });
-
 
 export async function create_Car_Goal(req: CreateCarGoal, res: Response) {
   try {
@@ -67,20 +73,20 @@ export async function create_Car_Goal(req: CreateCarGoal, res: Response) {
 
       // send data to database
       const textWithImg =
-        'INSERT INTO car (creator, "name", "price", "mileage", "downPayment", interest, term, img, modal, type, "extraPayment", "showInputs", "date") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)';
+        'INSERT INTO car (creator, "name", "price", "mileage", "downPayment", interest, term, img, modal, type, "extraPayment", "showInputs", "date") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
       const valuesWIthImg = [userId, name, price, mileage, downPayment, interest, term, imageUrl, modal, "Car", extraPayment, showInputs, id];
 
-      await pool.query(textWithImg, valuesWIthImg);
-      res.status(200).json("You successfully created your goal :)");
+      const obj = await pool.query(textWithImg, valuesWIthImg);
+      res.status(200).json(obj.rows[0]);
     } else {
       // User did not add an img ... img will be empty string
 
       const textWithNoImg =
-        'INSERT INTO car (creator, "name", "price", "mileage", "downPayment", interest, term, img, modal, type, "extraPayment", "showInputs", "date") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)';
+        'INSERT INTO car (creator, "name", "price", "mileage", "downPayment", interest, term, img, modal, type, "extraPayment", "showInputs", "date") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *';
       const valuesWIthNoImg = [userId, name, price, mileage, downPayment, interest, term, "", modal, "Car", extraPayment, showInputs, id];
 
-      await pool.query(textWithNoImg, valuesWIthNoImg);
-      res.status(200).json("You successfully created your goal :)");
+      const objNoImg = await pool.query(textWithNoImg, valuesWIthNoImg);
+      res.status(200).json(objNoImg.rows[0]);
     }
   } catch (e) {
     console.log(e);
@@ -100,12 +106,12 @@ export async function update_Car_Goal(req: UpdateCarGoal, res: Response) {
     if (!checkValues) return res.status(400).json({ msg: "One of your values from the inputs is not a number" });
     if (!date) return res.status(400).json({ msg: "Date value is null" });
 
-    const text = 'UPDATE car SET price = $1, "downPayment" = $2, interest = $3, mileage = $4, term = $5, "extraPayment" = $6 WHERE id = $7 AND creator = $8 RETURNING * ';
-    const values = [price, downPayment, interest, mileage, term, extraPayment, id, userId]
-    await pool.query(text,values)
+    const text =
+      'UPDATE car SET price = $1, "downPayment" = $2, interest = $3, mileage = $4, term = $5, "extraPayment" = $6 WHERE id = $7 AND creator = $8 RETURNING * ';
+    const values = [price, downPayment, interest, mileage, term, extraPayment, id, userId];
+    await pool.query(text, values);
 
     res.status(200).json("You successfully updated your goal :)");
-  
   } catch (e) {
     console.log(e);
     console.log("message", e.message);
@@ -113,33 +119,34 @@ export async function update_Car_Goal(req: UpdateCarGoal, res: Response) {
   }
 }
 
-export async function update_Car_Name(req:UpdateCarName, res:Response){
-  try{
-    const {name, id, modal} = req.body
-    const userId = req.userId
+export async function update_Car_Name(req: UpdateCarName, res: Response) {
+  try {
+    const { name, id, modal } = req.body;
+    const userId = req.userId;
 
-    if(!id) return res.status(400).json({msg:"The title you are trying to edit did not have an id. Either delete this goal and make a new one or wait a sec."})
+    if (!id)
+      return res
+        .status(400)
+        .json({ msg: "The title you are trying to edit did not have an id. Either delete this goal and make a new one or wait a sec." });
 
-    const text = 'UPDATE car SET name = $1, modal = $2 WHERE id = $3 AND creator = $4'
-    const values = [name, modal, id, userId]
-    await pool.query(text,values)
+    const text = "UPDATE car SET name = $1, modal = $2 WHERE id = $3 AND creator = $4";
+    const values = [name, modal, id, userId];
+    await pool.query(text, values);
 
     res.status(200).json("You successfully updated your goal :)");
-
-  }catch(e){
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error updating your car name and modal" });
   }
 }
 
-export async function delete_Car_Goal(req:DeleteCarGoal, res:Response){
-  try{
-    const {itemUUID, dateAsAWSId, img} = req.query
-    const userId = req.userId
+export async function delete_Car_Goal(req: DeleteCarGoal, res: Response) {
+  try {
+    const { itemUUID, dateAsAWSId, img } = req.query;
+    const userId = req.userId;
 
-    if(!img || img.length <= 0){
-
+    if (!img || img.length <= 0) {
       // Only delete from database
       const text = "DELETE FROM car WHERE creator = $1 AND id = $2";
       const values = [userId, itemUUID];
@@ -148,9 +155,7 @@ export async function delete_Car_Goal(req:DeleteCarGoal, res:Response){
       await pool.query(text, values);
 
       return res.status(200).json("Deleted Goal");
-
-    }else{
-
+    } else {
       // Delete from aws s3 and from database
       if (!itemUUID || !dateAsAWSId) return res.status(400).json({ msg: "Item is not able to be deleted, the id sent to server is wrong" });
 
@@ -164,8 +169,8 @@ export async function delete_Car_Goal(req:DeleteCarGoal, res:Response){
 
       const command = new DeleteObjectCommand(params);
 
-      const text = 'DELETE FROM car WHERE creator = $1 AND id = $2'
-      const values = [userId, itemUUID]
+      const text = "DELETE FROM car WHERE creator = $1 AND id = $2";
+      const values = [userId, itemUUID];
 
       // this deletes img from aws s3
       await s3.send(command);
@@ -174,27 +179,25 @@ export async function delete_Car_Goal(req:DeleteCarGoal, res:Response){
 
       return res.status(200).json("Deleted Goal");
     }
-
-  }catch(e){
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error deleting this goal" });
   }
 }
 
-export async function update_Car_Goal_Img(req:UpdateCarGoalImg, res:Response){
-try{
-  const {id, goal, img} = req.body
-  const userId = req.userId
+export async function update_Car_Goal_Img(req: UpdateCarGoalImg, res: Response) {
+  try {
+    const { id, goal, img } = req.body;
+    const userId = req.userId;
 
-  if (!img || img.length <= 0) return res.status(400).json({msg:"Unable to update image, server received an empty value"});
+    if (!img || img.length <= 0) return res.status(400).json({ msg: "Unable to update image, server received an empty value" });
 
-    if (!goal.date) return res.status(400).json({msg:"The date id required for updating the image was not received to the server"});
+    if (!goal.date) return res.status(400).json({ msg: "The date id required for updating the image was not received to the server" });
 
-    if (!id || id.length <= 0) return res.status(400).json({msg:"The id required for updating the image was not received to the server"});
+    if (!id || id.length <= 0) return res.status(400).json({ msg: "The id required for updating the image was not received to the server" });
 
-    if(img.length){
-
+    if (img.length) {
       // Ensure that you POST a base64 data to your server.
       // Let's assume the variable "base64" is one.
       const base64Data = Buffer.from(img.replace(/^data:image\/\w+;base64,/, ""), "base64");
@@ -227,26 +230,24 @@ try{
 
       res.status(200).json("You successfully updated your image :)");
     }
-  }catch(e){
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error updating the img" });
   }
 }
 
-export async function hide_And_Show_Car_Inputs(req:ShowAndHideCarInputs, res:Response){
-  try{
-
-    const {id, inputs} = req.body
-    const userId = req.userId
+export async function hide_And_Show_Car_Inputs(req: ShowAndHideCarInputs, res: Response) {
+  try {
+    const { id, inputs } = req.body;
+    const userId = req.userId;
 
     const text = 'UPDATE car SET "showInputs" = $1 WHERE id = $2 AND creator = $3 ';
     const values = [inputs, id, userId];
     await pool.query(text, values);
 
     res.status(200).json("Show/Hide input success");
-
-  }catch(e){
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error updating hide/show input with server" });

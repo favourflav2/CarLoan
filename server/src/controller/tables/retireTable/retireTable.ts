@@ -45,9 +45,9 @@ export async function create_Retire_Goal(req:CreateRetireGoal, res:Response) {
     const text =
       `INSERT INTO retire (creator, type, "currentAge", "retireAge", "lifeExpectancy", savings, "monthlyContribution", budget, "preRate", "postRate", inflation, title, "showInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`;
     const values = [creator, type, currentAge, retireAge, lifeExpectancy, savings, monthlyContribution, budget, preRate, postRate, inflation, title, showInputs, new Date()]
-    await pool.query(text, values);
+   const obj =  await pool.query(text, values);
 
-    res.status(200).json("added new goal")
+    res.status(200).json(obj.rows[0])
 
   } catch (e) {
     console.log(e);
