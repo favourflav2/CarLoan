@@ -49,8 +49,10 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
 
     // concating all the data and sorting by newset goal first
     const concatData: Array<RetirementGoalsBackEnd | HouseObjWithFormattedDataBackendData | CarObjWithFormattedDataBackendData> = retireTable.rows.concat(houseTable.rows).concat(carTable.rows).sort((a, b) => {
-      return - dayjs(b.date).unix() - dayjs(a.date).unix()
+      return  dayjs(b.date).unix() - dayjs(a.date).unix()
     });
+
+   
 
     
 
@@ -61,14 +63,14 @@ export async function get_All_Tables(req: RequestBody, res: Response) {
     const startIndex = (newPage - 1) * newLimit;
     const endIndex = newPage * newLimit;
     const result = concatData.slice(startIndex, endIndex);
-    const totalPages = Math.ceil(retireTable.rows.length / newLimit);
+    const totalPages = Math.ceil(concatData.length / newLimit);
 
     const paginatedData = {
       data: result,
       page: newPage,
       limit: newLimit,
       totalPages,
-      totalCount: retireTable.rows.length,
+      totalCount: concatData.length,
     };
 
     res.status(200).json(paginatedData);
