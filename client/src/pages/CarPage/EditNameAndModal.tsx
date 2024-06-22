@@ -125,7 +125,7 @@ export default function EditNameAndModal ({editState,allInputData,setValue, setE
           }}
           className="text-[19px] font-semibold underline inline-block align-bottom"
         >
-          {selectedGoal.modal} {selectedGoal.name}
+         {selectedGoal.modal === "*Other" ? "" : selectedGoal.modal} {selectedGoal.name}
         </motion.h1>
       )}
 

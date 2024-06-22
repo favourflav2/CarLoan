@@ -225,7 +225,7 @@ export default function CarPage() {
               {/* About Car */}
               <div className="w-auto flex flex-col sm:ml-4  mt-3 sm:mt-0">
                 <h1 className="text-[15px]">
-                  <span className="font-bold text-[15px]">Car Name/Modal:</span> {selectedGoal.modal} {selectedGoal.name}
+                  <span className="font-bold text-[15px]">Car Name/Modal:</span> {selectedGoal.modal === "*Other" ? "" : selectedGoal.modal} {selectedGoal.name}
                 </h1>
                 <h1 className="text-[15px]">
                   <span className="font-bold text-[15px]">Price:</span>{" "}

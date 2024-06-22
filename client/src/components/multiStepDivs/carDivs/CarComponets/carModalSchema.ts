@@ -40,6 +40,7 @@ export const carsArr = [
   "Toyota",
   "Volkswagen",
   "Volvo",
+  "*Other"
 ];
 
 export const carModalSchema = z
