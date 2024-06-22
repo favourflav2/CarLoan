@@ -77,7 +77,7 @@ export default function MobileDrawer({
           </div>
 
           {/* Pagination */}
-        { !userGoalsLoading && userGoals.data.length > 5 &&  <div className="w-full h-auto mt-5 flex justify-center">
+        {!userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 &&  <div className="w-full h-auto mt-5 flex justify-center">
             <Pagination
               count={userGoals.totalPages || 0}
               page={pageState}
