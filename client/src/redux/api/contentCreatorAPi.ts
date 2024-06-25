@@ -5,7 +5,7 @@ import { VideoLinkObj } from "../features/contentCreatorSlice";
 
 
 
-const API = axios.create({ baseURL: "http://localhost:5001/contentCreator" });
+const API = axios.create({ baseURL: "http://localhost:5001/howToInvest" });
 
 
 // Get all content creators
@@ -21,7 +21,7 @@ export function get_All_Vidoe_Links_By_Id(data:any){
 // Craete APi
 export const contentCreatorApi = createApi({
     reducerPath:"contentCreatorApi",
-    baseQuery: fetchBaseQuery({baseUrl:`http://localhost:5001/contentCreator`}),
+    baseQuery: fetchBaseQuery({baseUrl:`http://localhost:5001/howToInvest`}),
     endpoints: (builder) => ({
         getVideoLinksById: builder.query<Array<VideoLinkObj>,{creatorId:string}>({
             query:(body:{creatorId:string}) => ({
