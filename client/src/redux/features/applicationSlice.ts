@@ -18,6 +18,8 @@ interface AppSlice {
   showHaveExample: boolean;
   showNeedExample1: boolean;
   showNeedExample2: boolean;
+
+  visitedHowToInvest:boolean
 }
 
 const initialState: AppSlice = {
@@ -32,6 +34,8 @@ const initialState: AppSlice = {
   showNeedExample1: true,
   showNeedExample2: true,
   houseModal: false,
+
+  visitedHowToInvest:false
 };
 
 const appSlice = createSlice({
@@ -292,6 +296,9 @@ const appSlice = createSlice({
           break;
       }
     },
+    setVisitedHowToInvest: (state) => {
+      state.visitedHowToInvest = true
+    }
   },
 });
 
@@ -309,4 +316,5 @@ export const {
   editShowTaxForHouse,
   selectedShowInput,
   selectedShowOppCostInput,
+  setVisitedHowToInvest
 } = appSlice.actions;

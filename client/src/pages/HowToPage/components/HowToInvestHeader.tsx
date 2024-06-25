@@ -19,7 +19,7 @@ export default function HowToInvestHeader (props: IHowToInvestHeaderProps) {
       </div>
 
       {/* Image */}
-      <LazyLoadImage src={how2InvestImg} className='w-full h-full object-cover '/>
+      <LazyLoadImage src={how2InvestImg} alt='Invest Image' className='w-full h-full object-cover '/>
     </div>
   );
 }

@@ -7,12 +7,15 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import { Skeleton } from "@mui/material";
 import YoutubeCard from "./YoutubeCard";
 
+
+
 export interface IContentCreatorCardProps {
   item: CreatorDataObj;
   loading: boolean;
 }
 
 export default function ContentCreatorCard({ item, loading }: IContentCreatorCardProps) {
+
 
 
  
@@ -34,7 +37,7 @@ export default function ContentCreatorCard({ item, loading }: IContentCreatorCar
           {/* Header Card */}
           <div className="w-full h-auto grid min-[545px]:grid-cols-[30%_1fr] min-[545px]:gap-x-10 min-[545px]:gap-y-0  grid-cols-1 gap-x-10 gap-y-3 my-5 ">
             {/* Left Side Image */}
-            <LazyLoadImage src={item.photo} effect="blur" alt="creator" className=" w-full min-h-[200px] object-cover  rounded-xl" />
+            <LazyLoadImage src={item.photo} effect="blur" alt="creator" className=" w-full min-h-[200px] object-cover  rounded-xl mb-4" />
 
             {/* Right Side */}
 

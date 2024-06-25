@@ -1,11 +1,26 @@
 import * as React from "react";
 import HowToInvestHeader from "./components/HowToInvestHeader";
 import CreatorsSection from "./components/CreatorsSection";
+import { Dispatch, UseSelector } from "../../redux/store";
+import { toast } from "react-toastify";
+import { setVisitedHowToInvest } from "../../redux/features/applicationSlice";
+
+
 
 export interface IHowToInvestProps {}
 
 export default function HowToInvest(props: IHowToInvestProps) {
 
+  
+  const {visitedHowToInvest} = UseSelector(state => state.app)
+  const dispatch = Dispatch()
+
+  React.useEffect(()=>{
+    if(!visitedHowToInvest){
+      toast.warn("If you have ad blockers on, you may encounter some bugs within this page")
+      dispatch(setVisitedHowToInvest())
+    }
+  },[]) // eslint-disable-line
   
   return (
     <div className="w-full min-h-screen flex flex-col dark:text-darkText text-lightText">
