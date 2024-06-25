@@ -3,7 +3,7 @@ import { Dispatch, UseSelector } from "../../../redux/store";
 import ContentCreatorCard from "./cards/ContentCreatorCard";
 import { getAllContentCreators } from "../../../redux/features/contentCreatorSlice";
 import { Pagination } from "@mui/material";
-import { error } from "console";
+
 
 export interface ICreatorsSectionProps {}
 
@@ -26,6 +26,8 @@ export default function CreatorsSection(props: ICreatorsSectionProps) {
     dispatch(getAllContentCreators({ page: pageState }));
   }, [pageState]); // eslint-disable-line
 
+
+
   if (creatorError) {
     return null;
   }
@@ -40,7 +42,7 @@ export default function CreatorsSection(props: ICreatorsSectionProps) {
           {/* Mapped Data */}
           <div className="w-full h-auto grid grid-cols-1 gap-2">
             {creatorData.data.map((item) => (
-              <ContentCreatorCard item={item} loading={creatorLoading} />
+              <ContentCreatorCard item={item} loading={creatorLoading} key={item.id}/>
             ))}
           </div>
 

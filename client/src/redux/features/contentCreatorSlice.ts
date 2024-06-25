@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { get_All_Content_Creators } from "../api/contentCreatorAPi";
+import { get_All_Content_Creators, get_All_Vidoe_Links_By_Id } from "../api/contentCreatorAPi";
 import {toast} from 'react-toastify'
 
 export interface CreatorDataObj {
@@ -12,6 +12,14 @@ export interface CreatorDataObj {
     about:string;
 }
 
+export interface VideoLinkObj {
+    idVideoLink:string;
+    title:string;
+    link:string;
+    aboutVideoLink:string;
+    creator:string;
+}
+
 interface ContentCreatorObj {
   creatorData: {
     page: number;
@@ -21,7 +29,13 @@ interface ContentCreatorObj {
     data: Array<CreatorDataObj>;
     creatorLoading: boolean;
     creatorError: any;
-  };
+  }
+
+  videoLinkData:{
+    loading:boolean;
+    error:any
+    data:string;
+  }
 }
 
 const initialState: ContentCreatorObj = {
@@ -34,6 +48,11 @@ const initialState: ContentCreatorObj = {
     creatorLoading: false,
     creatorError: "",
   },
+  videoLinkData:{
+    loading:false,
+    error:"",
+    data:""
+  }
 };
 
 export const getAllContentCreators = createAsyncThunk("getAllContentCreators", async (data: { page: number }, { rejectWithValue }) => {
@@ -45,6 +64,15 @@ export const getAllContentCreators = createAsyncThunk("getAllContentCreators", a
   }
 });
 
+export const getAllVideoLinksById = createAsyncThunk("getAllVideoLinksById", async (data: any, { rejectWithValue }) => {
+    try {
+      const res = await get_All_Vidoe_Links_By_Id(data);
+      return res.data;
+    } catch (e: any) {
+      return rejectWithValue(e.response.data.msg);
+    }
+  });
+
 const contentCreatorSlice = createSlice({
   name: "contentCreatorSlice",
   initialState,
@@ -52,7 +80,7 @@ const contentCreatorSlice = createSlice({
   extraReducers(builder) {
     builder
 
-      // Fetch All Goals
+      // Fetch All Content Creators
       .addCase(getAllContentCreators.pending, (state) => {
         state.creatorData.creatorLoading = true;
       })
@@ -65,7 +93,22 @@ const contentCreatorSlice = createSlice({
         state.creatorData.creatorError = action.payload;
         toast.error(action.payload as string)
         state.creatorData.creatorLoading = false;
-      });
+      })
+
+       // Fetch All Vidoe Links
+       .addCase(getAllVideoLinksById.pending, (state) => {
+        state.videoLinkData.loading = true;
+      })
+      .addCase(getAllVideoLinksById.fulfilled, (state, action) => {
+        state.videoLinkData.data = action.payload;
+        state.videoLinkData.error = "";
+        state.videoLinkData.loading = false;
+      })
+      .addCase(getAllVideoLinksById.rejected, (state, action:PayloadAction<any>) => {
+        state.videoLinkData.error = action.payload;
+        toast.error(action.payload as string)
+        state.videoLinkData.loading = false;
+      })
   },
 });
 
