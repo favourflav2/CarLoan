@@ -25,3 +25,9 @@ export interface AddVideoLink extends Request {
     title: string;
   };
 }
+
+export interface GetAllVideoLinksById extends Request {
+  body: {
+    creatorId: string;
+  };
+}

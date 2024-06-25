@@ -4,7 +4,7 @@ import pg from "pg";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Response, Request } from "express";
 import imageToBase64 from "image-to-base64";
-import { AddContentCreator, AddVideoLink, GetAllContentCreators } from "../../controllerTypes/contentCreatorTypes.js";
+import { AddContentCreator, AddVideoLink, GetAllContentCreators, GetAllVideoLinksById } from "../../controllerTypes/contentCreatorTypes.js";
 
 const { Pool, types } = pg;
 
@@ -28,53 +28,51 @@ const s3 = new S3Client({
   },
 });
 
-
-export async function get_All_Content_Creators(req:GetAllContentCreators, res:Response){
-try{
-    const {page} = req.query
+export async function get_All_Content_Creators(req: GetAllContentCreators, res: Response) {
+  try {
+    const { page } = req.query;
     const limit = 4;
 
-    const pageNum:number = typeof page !== 'number' ? parseFloat(page) : page
-   
-    const text = 'SELECT * FROM "contentCreator"'
-    const data = await pool.query(text)
+    const pageNum: number = typeof page !== "number" ? parseFloat(page) : page;
 
-    const startIndex = (pageNum - 1) * limit
-    const endIndex = pageNum * limit
-    const result = data.rows.slice(startIndex, endIndex)
-    const totalPages = Math.ceil(data.rows.length / limit)
+    const text = 'SELECT * FROM "contentCreator"';
+    const data = await pool.query(text);
+
+    const startIndex = (pageNum - 1) * limit;
+    const endIndex = pageNum * limit;
+    const result = data.rows.slice(startIndex, endIndex);
+    const totalPages = Math.ceil(data.rows.length / limit);
 
     const paginatedData = {
-        data: result,
-        page:pageNum,
-        limit,
-        totalPages,
-        totalCount: data.rows.length
-    }
-    
-    res.send(paginatedData)
+      data: result,
+      page: pageNum,
+      limit,
+      totalPages,
+      totalCount: data.rows.length,
+    };
 
-}catch(e){
+    res.send(paginatedData);
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error getting all the content creator data" });
+  }
 }
-}
 
+export async function get_All_Vidoe_Links_By_Id(req: GetAllVideoLinksById, res: Response) {
+  try {
+    const {creatorId} = req.body;
+    const text = 'SELECT * FROM "videoLink" WHERE creator = $1 '
+    const data = await pool.query(text,[creatorId])
+   
 
-export async function get_All_Vidoe_Links_By_Id(req:any,res:any){
-try{
-    console.log(req.body)
-    res.send("hello")
-
-}catch(e){
+    res.status(200).json(data.rows);
+  } catch (e) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error getting the vidoe links" });
+  }
 }
-}
-
-
 
 // This controller is only responsable for adding new content creator ... dev use only
 export async function add_Content_Creator(req: AddContentCreator, res: Response) {
