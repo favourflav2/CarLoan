@@ -33,8 +33,8 @@ export async function create_Retire_Goal(req, res) {
         // Now after checking all the values we can start inserting inro tables
         const text = `INSERT INTO retire (creator, type, "currentAge", "retireAge", "lifeExpectancy", savings, "monthlyContribution", budget, "preRate", "postRate", inflation, title, "showInputs", date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`;
         const values = [creator, type, currentAge, retireAge, lifeExpectancy, savings, monthlyContribution, budget, preRate, postRate, inflation, title, showInputs, new Date()];
-        await pool.query(text, values);
-        res.status(200).json("added new goal");
+        const obj = await pool.query(text, values);
+        res.status(200).json(obj.rows[0]);
     }
     catch (e) {
         console.log(e);
@@ -43,8 +43,54 @@ export async function create_Retire_Goal(req, res) {
 }
 export async function update_Retire_Table(req, res) {
     try {
-        console.log(req.body);
-        res.send("hello");
+        const { type, inputData, id } = req.body;
+        const { currentAge, retireAge, lifeExpectancy, savings, monthlyContribution, budget, preRate, postRate, inflation, creator } = inputData;
+        // checking values ... making sure they are of type number
+        const checkValues = [currentAge, retireAge, lifeExpectancy, savings, monthlyContribution, budget, preRate, postRate, inflation].every(item => typeof item === 'number');
+        if (!checkValues)
+            return res.status(400).json({ msg: "There was an error, one of the values being sent to server is not a number. Please make sure you have entered number values" });
+        const text = 'UPDATE retire SET "currentAge" = $1, "retireAge" = $2, "lifeExpectancy" = $3, savings = $4, "monthlyContribution" = $5, budget = $6, "preRate" = $7, "postRate" = $8, inflation = $9 WHERE creator = $10 AND id = $11 RETURNING *';
+        const values = [currentAge, retireAge, lifeExpectancy,
+            savings, monthlyContribution,
+            budget, preRate, postRate, inflation,
+            creator, id
+        ];
+        await pool.query(text, values);
+        res.status(200).json("You successfully updated your goal :)");
+    }
+    catch (e) {
+        console.log(e);
+        res.status(400).json({ msg: e.message });
+    }
+}
+export async function update_RetireTable_Name(req, res) {
+    try {
+        const userId = req.userId;
+        const { title, id } = req.body;
+        if (!id)
+            return res.status(400).json({ msg: "The title you are trying to edit did not have an id. Either delete this goal and make a new one or wait a sec." });
+        const text = 'UPDATE retire SET title = $1 WHERE id = $2 AND creator = $3 RETURNING *';
+        const values = [title, id, userId];
+        await pool.query(text, values);
+        res.status(200).json("You successfully updated your title :)");
+    }
+    catch (e) {
+        console.log(e);
+        res.status(400).json({ msg: e.message });
+    }
+}
+export async function delete_Retire_Goal(req, res) {
+    try {
+        const { type, id } = req.query;
+        const userId = req.userId;
+        if (type !== "Retirement")
+            return res.status(404).json({ msg: "Type of goal needed to delete is wrong" });
+        if (!id)
+            return res.status(404).json({ msg: "Theres no user id provided" });
+        const text = "DELETE FROM retire WHERE creator = $1 AND type = $2 AND id = $3";
+        const values = [userId, type, id];
+        await pool.query(text, values);
+        res.send("Deleted goal");
     }
     catch (e) {
         console.log(e);

@@ -4,7 +4,7 @@ import pg from "pg";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Response, Request } from "express";
 import imageToBase64 from "image-to-base64";
-import { AddContentCreator, AddVideoLink, GetAllContentCreators, GetAllVideoLinksById } from "../../controllerTypes/contentCreatorTypes.js";
+import { AddBook, AddContentCreator, AddVideoLink, GetAllContentCreators, GetAllVideoLinksById } from "../../controllerTypes/contentCreatorTypes.js";
 
 const { Pool, types } = pg;
 
@@ -124,5 +124,44 @@ export async function add_Video_Link(req: AddVideoLink, res: Response) {
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error adding a video link" });
+  }
+}
+
+// These controllers only responsable for adding new book ... dev use only
+export async function add_Book(req:AddBook, res:Response){
+  try{
+    const {title, author, img, about, amazonLink} = req.body
+
+    // Turn img to base 64 type
+  const newImg = await imageToBase64(img);
+  const base64Data = Buffer.from(newImg.replace(/^data:image\/\w+;base64,/, ""), "base64");
+
+  const paramsKey = title.replace(/\s/g, "");
+
+  // Im going to send the book pictures to the same bucket as my content creators ... theres not going to be no overlap because all the name and titles are going to be diffrenet
+  const params = {
+    Bucket: process.env.CONTENT_CREATOR_BUCKET as string,
+    Key: paramsKey,
+    Body: base64Data,
+    ContentType: "jpeg",
+  };
+
+  const command = new PutObjectCommand(params);
+  await s3.send(command);
+
+  const imageUrl = `https://${process.env.CONTENT_CREATOR_BUCKET}.s3.amazonaws.com/${paramsKey}`;
+
+
+   // send data to database
+  const text = 'INSERT INTO books (title, author, about, "amazonLink", img, "haveRead") VALUES ($1, $2, $3, $4, $5, $6) RETURNING * ';
+  const values = [title, author, about, amazonLink, imageUrl, true];
+  const book = await pool.query(text, values);
+
+  res.status(200).json(book.rows[0])
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error adding a book" }); 
   }
 }

@@ -31,3 +31,13 @@ export interface GetAllVideoLinksById extends Request {
     creatorId: string;
   };
 }
+
+export interface AddBook extends Request {
+  body:{
+    title:string;
+    author:string;
+    about:string;
+    amazonLink:string;
+    img:string;
+  }
+}

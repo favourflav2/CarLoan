@@ -1,6 +1,7 @@
 import { env } from "custom-env";
 env(true);
 import pg from "pg";
+import dayjs from "dayjs";
 const { Pool, types } = pg;
 const pool = new Pool({
     connectionString: process.env.POSTGRES_URI_AUTH,
@@ -17,41 +18,34 @@ export async function get_All_Tables(req, res) {
             return res.status(404).json({ msg: "Please provide a page and limit" });
         const newPage = parseFloat(page);
         const newLimit = parseFloat(limit);
+        // Grab All Retire Data
         const retireText = "SELECT * FROM retire WHERE creator = $1";
         const retireTable = await pool.query(retireText, [userId]);
+        // Grab All House Data
+        const houseText = "SELECT * FROM house WHERE creator = $1";
+        const houseTable = await pool.query(houseText, [userId]);
+        // Grab All Car Data
+        const carText = "SELECT * FROM car WHERE creator = $1";
+        const carTable = await pool.query(carText, [userId]);
+        // concating all the data and sorting by newset goal first
+        const concatData = retireTable.rows.concat(houseTable.rows).concat(carTable.rows).sort((a, b) => {
+            return dayjs(b.date).unix() - dayjs(a.date).unix();
+        });
         // Paginate Data
         if (typeof newPage !== "number" || typeof newLimit !== "number")
             return res.status(404).json({ msg: "The page number or limit query are not numbers" });
         const startIndex = (newPage - 1) * newLimit;
         const endIndex = newPage * newLimit;
-        const result = retireTable.rows.slice(startIndex, endIndex);
-        const totalPages = Math.ceil(retireTable.rows.length / newLimit);
+        const result = concatData.slice(startIndex, endIndex);
+        const totalPages = Math.ceil(concatData.length / newLimit);
         const paginatedData = {
             data: result,
             page: newPage,
             limit: newLimit,
             totalPages,
-            totalCount: retireTable.rows.length,
+            totalCount: concatData.length,
         };
         res.status(200).json(paginatedData);
-    }
-    catch (e) {
-        console.log(e);
-        res.status(400).json({ msg: e.message });
-    }
-}
-export async function delete_From_All_Tables(req, res) {
-    try {
-        const { type, id } = req.query;
-        const userId = req.userId;
-        if (type !== "Retirement" && type !== "Car" && type !== "House")
-            return res.status(404).json({ msg: "Type of goal needed to delete is wrong" });
-        if (!id)
-            return res.status(404).json({ msg: "Theres no user id provided" });
-        const text = "DELETE FROM retire WHERE creator = $1 AND type = $2 AND id = $3";
-        const values = [userId, type, id];
-        await pool.query(text, values);
-        res.send("Deleted goal");
     }
     catch (e) {
         console.log(e);
