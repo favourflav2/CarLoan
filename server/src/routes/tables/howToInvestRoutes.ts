@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { add_Content_Creator, add_Video_Link, get_All_Content_Creators, get_All_Vidoe_Links_By_Id, } from "../../controller/tables/contentCreator/contentCreatorTable.js";
+import { add_Content_Creator, add_Video_Link, get_All_Content_Creators, get_All_Vidoe_Links_By_Id, } from "../../controller/tables/contentCreator/howToInvestTable.js";
 
 
 const router = Router()
