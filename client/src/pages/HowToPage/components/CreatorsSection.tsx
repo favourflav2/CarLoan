@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../../redux/store";
 import ContentCreatorCard from "./cards/ContentCreatorCard";
-import { getAllContentCreators } from "../../../redux/features/contentCreatorSlice";
+import { getAllContentCreators } from "../../../redux/features/howToInvestSlice";
 import { Pagination } from "@mui/material";
 
 
@@ -10,7 +10,7 @@ export interface ICreatorsSectionProps {}
 export default function CreatorsSection(props: ICreatorsSectionProps) {
   // Redux States
   const dispatch = Dispatch();
-  const { creatorData } = UseSelector((state) => state.contentCreator);
+  const { creatorData } = UseSelector((state) => state.howToInvest);
   const { creatorError, creatorLoading } = creatorData;
   const { lightAndDarkMode } = UseSelector((state) => state.app);
 

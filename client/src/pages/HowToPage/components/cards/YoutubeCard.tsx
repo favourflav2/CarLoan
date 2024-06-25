@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useGetVideoLinksByIdQuery } from "../../../../redux/api/contentCreatorAPi";
+import { useGetVideoLinksByIdQuery } from "../../../../redux/api/howToInvestApi";
 import Slider from "react-slick";
 import YoutubeReactPlayer from "./YoutubeReactPlayer";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";

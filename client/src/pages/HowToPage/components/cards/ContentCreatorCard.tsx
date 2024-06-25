@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CreatorDataObj } from "../../../../redux/features/contentCreatorSlice";
+import { CreatorDataObj } from "../../../../redux/features/howToInvestSlice";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import InstagramIcon from "@mui/icons-material/Instagram";

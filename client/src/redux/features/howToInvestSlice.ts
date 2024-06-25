@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { get_All_Content_Creators, get_All_Vidoe_Links_By_Id } from "../api/contentCreatorAPi";
+import { get_All_Content_Creators, get_All_Vidoe_Links_By_Id } from "../api/howToInvestApi";
 import {toast} from 'react-toastify'
 
 export interface CreatorDataObj {
@@ -73,8 +73,8 @@ export const getAllVideoLinksById = createAsyncThunk("getAllVideoLinksById", asy
     }
   });
 
-const contentCreatorSlice = createSlice({
-  name: "contentCreatorSlice",
+const howToInvestSlice = createSlice({
+  name: "howToInvestSlice",
   initialState,
   reducers: {},
   extraReducers(builder) {
@@ -112,4 +112,4 @@ const contentCreatorSlice = createSlice({
   },
 });
 
-export default contentCreatorSlice.reducer;
+export default howToInvestSlice.reducer;

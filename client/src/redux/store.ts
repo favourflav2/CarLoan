@@ -12,15 +12,15 @@ import authSlice from "./features/authSlice";
 
 import tablesSlice from "./features/tablesSlice";
 import { listenerMiddleware } from "./listeners/listenerMiddleware";
-import { contentCreatorApi } from "./api/contentCreatorAPi";
-import contentCreatorSlice from "./features/contentCreatorSlice";
+import { howToInvestCreateApi } from "./api/howToInvestApi";
+import howToInvestSlice from "./features/howToInvestSlice";
 
 const persistConfig = {
   key: "root",
   version: 1,
   storage,
   // what i dont want to persist
-  blacklist: ["car","tableSlice", "contentCreator"],
+  blacklist: ["car","tableSlice", "howToInvest"],
   //whitelist: ["page", "app", "retireSlice", "carModalSlice"],
 };
 
@@ -34,8 +34,8 @@ const reducer = combineReducers({
   houseSlice: houseSlice,
   auth: authSlice,
   tableSlice:tablesSlice,
-  [contentCreatorApi.reducerPath]: contentCreatorApi.reducer,
-  contentCreator: contentCreatorSlice
+  [howToInvestCreateApi.reducerPath]: howToInvestCreateApi.reducer,
+  howToInvest: howToInvestSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
@@ -48,7 +48,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
        // ignoredActionPaths: ['payload.goal.date','meta.arg.inputData.date'],
       },
-    }).concat([contentCreatorApi.middleware]).prepend(listenerMiddleware.middleware),
+    }).concat([howToInvestCreateApi.middleware]).prepend(listenerMiddleware.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
