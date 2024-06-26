@@ -74,6 +74,19 @@ export async function get_All_Vidoe_Links_By_Id(req: GetAllVideoLinksById, res: 
   }
 }
 
+export async function get_All_Books(req:any, res:any){
+  try{
+
+    console.log(req.query)
+    res.status(200).json("hello")
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error getting all books" });
+  }
+}
+
 // This controller is only responsable for adding new content creator ... dev use only
 export async function add_Content_Creator(req: AddContentCreator, res: Response) {
   const { photo, name, instagram, twitter, about, youtube } = req.body;
