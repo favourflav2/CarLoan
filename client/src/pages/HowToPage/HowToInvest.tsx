@@ -4,6 +4,7 @@ import CreatorsSection from "./components/CreatorsSection";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { toast } from "react-toastify";
 import { setVisitedHowToInvest } from "../../redux/features/applicationSlice";
+import Books from "./components/Books";
 
 
 
@@ -34,6 +35,9 @@ export default function HowToInvest(props: IHowToInvestProps) {
 
           {/* Creators */}
           <CreatorsSection />
+
+          {/* Books */}
+          <Books />
         </div>
       </div>
     </div>

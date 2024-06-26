@@ -1,9 +1,8 @@
 import axios from "axios";
 import {  createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { VideoLinkObj } from "../features/howToInvestSlice";
+import { VideoLinkObj } from "../features/howToInvestSlice"
 
-
-
+type Page = number;
 
 const API = axios.create({ baseURL: "http://localhost:5001/howToInvest" });
 
@@ -30,11 +29,10 @@ export const howToInvestCreateApi = createApi({
                 body:body
             })
         }),
-        getAllBooks:builder.query<Array<any>,{page:number}>({
-            query:(body:{page:number}) => ({
-                url:`/getAllBooks`,
-                method:"POST",
-                body:body
+        getAllBooks:builder.query<Array<any>,Page>({
+            query:(page:number) => ({
+                url:`/getAllBooks?page=${page}`,
+                method:"GET",
             })
         }),
     })
@@ -42,4 +40,4 @@ export const howToInvestCreateApi = createApi({
 
 
 
-export const {useGetVideoLinksByIdQuery} = howToInvestCreateApi
+export const {useGetVideoLinksByIdQuery, useGetAllBooksQuery} = howToInvestCreateApi
