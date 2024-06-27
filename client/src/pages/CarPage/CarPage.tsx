@@ -156,7 +156,7 @@ export default function CarPage() {
       top: 0,
       left: 0,
     });
-  }, [selectedGoal]);
+  }, [selectedGoal?.id]);
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));

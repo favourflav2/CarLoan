@@ -67,7 +67,7 @@ export default function RetirementPage() {
       top: 0,
       left: 0,
     });
-  }, [selectedGoal]);
+  }, [selectedGoal?.id]);
 
   // Edit State
   const [editState, setEditState] = React.useState(false);
