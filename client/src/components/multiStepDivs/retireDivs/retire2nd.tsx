@@ -82,10 +82,10 @@ export default function Retire2nd() {
 
       dispatch(createRetireGoal({data:formattedData,creator:userId}))
 
-      if(!userRetireGoalsError){
+      
         // Close Modal After Everything is done
       dispatch(setAnyTypeOfModal({ value: false, type: "Retirement" }));
-      }
+      
     } else {
       //no logged in user
       const objData: RetirementGoalNoFormat = {
