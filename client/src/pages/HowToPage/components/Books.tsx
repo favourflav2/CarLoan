@@ -1,24 +1,36 @@
-import * as React from 'react';
-import { useGetAllBooksQuery } from '../../../redux/api/howToInvestApi';
+import * as React from "react";
+import { useGetAllBooksQuery } from "../../../redux/api/howToInvestApi";
+import { error } from "console";
+import { BooksApiError, BooksServerError } from "../utils/ErrorHandlerBooks";
 
-export interface IBooksProps {
-}
+export interface IBooksProps {}
 
-export default function Books (props: IBooksProps) {
-
-     // Page State
+export default function Books(props: IBooksProps) {
+  // Page State
   const [pageState, setPageState] = React.useState(1);
 
-    // Redux States
-    const {data, isFetching, isLoading, error} = useGetAllBooksQuery(pageState)
+  // Redux States
+  const { data, isFetching, isLoading, error, refetch } = useGetAllBooksQuery(pageState);
 
-     
+console.log(data)
+
+  if (error) {
+    if ("status" in error) {
+     return BooksServerError(error)
+    } else {
+     return BooksApiError(error)
+    }
+  }
 
   return (
     <div className="w-full h-auto flex flex-col mb-10">
       {/* Content */}
       <div className="w-full flex flex-col h-auto">
         <h1 className="sm:text-[25px] text-[20px] underline ">Books</h1>
+
+        <button className="w-full h-[30px] bg-red-500" onClick={() => refetch()}>
+          Refetch
+        </button>
 
         {/* Mapped Content Creators with Pagination */}
         <div className="w-full flex flex-col h-auto">
