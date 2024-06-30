@@ -41,3 +41,10 @@ export interface AddBook extends Request {
     img:string;
   }
 }
+
+
+export interface GetAllBooks extends Request {
+  query:{
+    page:string;
+  }
+}

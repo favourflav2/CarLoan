@@ -4,7 +4,7 @@ import pg from "pg";
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Response, Request } from "express";
 import imageToBase64 from "image-to-base64";
-import { AddBook, AddContentCreator, AddVideoLink, GetAllContentCreators, GetAllVideoLinksById } from "../../controllerTypes/contentCreatorTypes.js";
+import { AddBook, AddContentCreator, AddVideoLink, GetAllBooks, GetAllContentCreators, GetAllVideoLinksById } from "../../controllerTypes/howToInvestTypes.js";
 
 const { Pool, types } = pg;
 
@@ -74,16 +74,40 @@ export async function get_All_Vidoe_Links_By_Id(req: GetAllVideoLinksById, res: 
   }
 }
 
-export async function get_All_Books(req:any, res:any){
+export async function get_All_Books(req:GetAllBooks, res:Response){
   try{
 
-    console.log(req.query)
-    res.status(200).json("hello")
+    const {page} = req.query
+    const limit = 10
+
+    const pageNum:number = typeof page !== "number" ? parseFloat(page) : page;
+
+    const startIndex = (pageNum - 1) * limit;
+    const endIndex = pageNum * limit
+
+    console.log(startIndex)
+
+   
+    const totalCountQuery = await pool.query('SELECT COUNT(*) FROM books ')
+    const totalCountVal = parseFloat(totalCountQuery.rows[0].count)
+
+    const text = 'SELECT * FROM books ORDER BY "title" LIMIT $1 OFFSET $2'
+
+
+    const values = [limit,startIndex]
+    const allBooks = await pool.query(text,values)
+
+    if(typeof totalCountVal !== 'number' || totalCountVal <= 0 ) return res.status(401).json("There was an error calculating the total count for the books api. Sorry")
+    
+
+    //const text =
+    console.log("page", page)
+    res.status(200).json(allBooks.rows)
 
   }catch(e){
     console.log(e);
     console.log("message", e.message);
-    res.status(400).json({ msg: "There was an error getting all books" });
+    res.status(400).json("There was an error getting all books" );
   }
 }
 
