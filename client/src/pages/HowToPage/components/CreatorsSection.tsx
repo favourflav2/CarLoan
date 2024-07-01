@@ -35,7 +35,7 @@ export default function CreatorsSection(props: ICreatorsSectionProps) {
     <div className="w-full h-auto flex flex-col my-10">
       {/* Content */}
       <div className="w-full flex flex-col h-auto">
-        <h1 className="sm:text-[25px] text-[20px] underline ">Creators</h1>
+        <h1 className="sm:text-[25px] text-[20px] underline mb-5">Creators</h1>
 
         {/* Mapped Content Creators with Pagination */}
         <div className="w-full flex flex-col h-auto">

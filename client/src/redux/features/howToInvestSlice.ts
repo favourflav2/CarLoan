@@ -20,6 +20,24 @@ export interface VideoLinkObj {
     creator:string;
 }
 
+export interface BooksArrayObj {
+  bookId:string;
+  title:string;
+  author:string;
+  about:string;
+  haveRead:boolean;
+  amazonLink:string;
+  img:string;
+}
+
+export interface BooksObj {
+  data:Array<BooksArrayObj>;
+  page:number;
+  limit:number;
+  totalPages:number;
+  totalCount:number
+}
+
 interface ContentCreatorObj {
   creatorData: {
     page: number;

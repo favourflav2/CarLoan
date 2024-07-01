@@ -1,6 +1,6 @@
 import axios from "axios";
 import {  createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { VideoLinkObj } from "../features/howToInvestSlice"
+import { BooksObj, VideoLinkObj } from "../features/howToInvestSlice"
 
 type Page = number;
 
@@ -16,6 +16,10 @@ export function get_All_Vidoe_Links_By_Id(data:any){
     return API.post("/getVideoLinks",data)
 }
 
+export function practice_Fun(page:any){
+    return API.get(`/getAllBooks?page=${page}`)
+}
+
 
 // Craete APi
 export const howToInvestCreateApi = createApi({
@@ -29,7 +33,7 @@ export const howToInvestCreateApi = createApi({
                 body:body
             })
         }),
-        getAllBooks:builder.query<Array<any>,Page>({
+        getAllBooks:builder.query<BooksObj,Page>({
             query:(page:number) => ({
                 url:`/getAllBooks?page=${page}`,
                 method:"GET",

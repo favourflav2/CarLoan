@@ -70,7 +70,7 @@ export default function YoutubeCard({ id }: IYoutubeCardProps) {
             <CircularProgress size="30px" sx={{ color: `${lightAndDarkMode ? "#9ca3af" : "#9ca3af"}` }} />
           </div>
         ) : (
-          <div className=" w-full flex flex-col">
+          <div className=" w-full flex flex-col  mt-4">
             {/* Breakpoint above 1024 will show a grid */}
             <div className="w-full lg:grid hidden grid-cols-3 gap-3">
               {data?.map((item) => (

@@ -1,7 +1,9 @@
 import * as React from "react";
 import { useGetAllBooksQuery } from "../../../redux/api/howToInvestApi";
-import { error } from "console";
 import { BooksApiError, BooksServerError } from "../utils/ErrorHandlerBooks";
+import BooksSlider from "./BooksSlider";
+import { Pagination } from "@mui/material";
+import { UseSelector } from "../../../redux/store";
 
 export interface IBooksProps {}
 
@@ -11,14 +13,22 @@ export default function Books(props: IBooksProps) {
 
   // Redux States
   const { data, isFetching, isLoading, error, refetch } = useGetAllBooksQuery(pageState);
+  const {lightAndDarkMode} = UseSelector(state => state.app)
 
-console.log(data)
+
+  // Change Page of creators
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPageState(value);
+  };
+  
+
+
 
   if (error) {
     if ("status" in error) {
-     return BooksServerError(error)
+      return BooksServerError(error);
     } else {
-     return BooksApiError(error)
+      return BooksApiError(error);
     }
   }
 
@@ -26,26 +36,23 @@ console.log(data)
     <div className="w-full h-auto flex flex-col mb-10">
       {/* Content */}
       <div className="w-full flex flex-col h-auto">
-        <h1 className="sm:text-[25px] text-[20px] underline ">Books</h1>
+        <h1 className="sm:text-[25px] text-[20px] underline mb-5">Books</h1>
 
-        <button className="w-full h-[30px] bg-red-500" onClick={() => refetch()}>
+        {/* <button className="w-full h-[30px] bg-red-500" onClick={() => refetch()}>
           Refetch
-        </button>
+        </button> */}
 
-        {/* Mapped Content Creators with Pagination */}
-        <div className="w-full flex flex-col h-auto">
-          {/* Mapped Data */}
-          <div className="w-full h-auto grid grid-cols-1 gap-2">
-            {/* {creatorData.data.map((item) => (
-              <ContentCreatorCard item={item} loading={creatorLoading} key={item.id}/>
-            ))} */}
-          </div>
+        {/* Mapped Data Container  */}
+        <div className="w-full flex flex-col h-auto ">
+
+          {/* Slider Container */}
+          {data && <BooksSlider data={data.data} loading={isLoading} fetch={isFetching} />}
 
           {/* Paginatio */}
-          {/* {!creatorLoading && creatorData.totalPages && creatorData.totalPages > 1 && (
-            <div className="w-full flex flex-col items-center justify-center mb-2 mt-4">
+           {data && !isLoading && !isFetching && data.totalPages > 1 && (
+            <div className="w-full flex flex-col items-center justify-center mt-[50px]">
               <Pagination
-                count={creatorData.totalPages || 0}
+                count={data.totalPages}
                 onChange={handlePageChange}
                 page={pageState}
                 size="small"
@@ -61,9 +68,14 @@ console.log(data)
                 }}
               />
             </div>
-          )} */}
+          )} 
         </div>
       </div>
     </div>
   );
 }
+
+
+
+
+

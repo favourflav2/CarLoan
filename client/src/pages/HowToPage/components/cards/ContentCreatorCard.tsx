@@ -24,7 +24,7 @@ export default function ContentCreatorCard({ item, loading }: IContentCreatorCar
       {/* Content */}
       {loading ? (
         <div className="w-full h-auto flex flex-col">
-          <div className="w-full h-auto grid grid-cols-[30%_1fr] my-5 gap-x-10">
+          <div className="w-full h-auto grid min-[545px]:grid-cols-[30%_1fr] min-[545px]:gap-x-10 min-[545px]:gap-y-0  grid-cols-1 gap-x-10 gap-y-3">
             {/* Left Side Image */}
             <Skeleton variant="rectangular" className="h-[200px] dark:bg-white/20" />
 
@@ -35,7 +35,7 @@ export default function ContentCreatorCard({ item, loading }: IContentCreatorCar
       ) : (
         <div className="w-full h-auto flex flex-col">
           {/* Header Card */}
-          <div className="w-full h-auto grid min-[545px]:grid-cols-[30%_1fr] min-[545px]:gap-x-10 min-[545px]:gap-y-0  grid-cols-1 gap-x-10 gap-y-3 my-5 ">
+          <div className="w-full h-auto grid min-[545px]:grid-cols-[30%_1fr] min-[545px]:gap-x-10 min-[545px]:gap-y-0  grid-cols-1  gap-y-3 ">
             {/* Left Side Image */}
             <LazyLoadImage src={item.photo} effect="blur" alt="creator" className=" w-full min-h-[200px] object-cover  rounded-xl mb-4" />
 
