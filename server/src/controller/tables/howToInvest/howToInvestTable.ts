@@ -193,6 +193,7 @@ export async function add_Book(req:AddBook, res:Response){
  .resize(400,500,{
   fit:'fill'
  })
+ .jpeg()
   .toBuffer()
 
  
