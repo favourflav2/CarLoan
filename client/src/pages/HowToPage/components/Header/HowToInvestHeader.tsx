@@ -1,5 +1,5 @@
 import * as React from 'react';
-import how2InvestImg from '../../../assets/howToInvestImg.jpg'
+import how2InvestImg from '../../../../assets/howToInvestImg.jpg'
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 export interface IHowToInvestHeaderProps {

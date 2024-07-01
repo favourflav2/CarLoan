@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Dispatch, UseSelector } from "../../../redux/store";
-import ContentCreatorCard from "./cards/ContentCreatorCard";
-import { getAllContentCreators } from "../../../redux/features/howToInvestSlice";
+import { Dispatch, UseSelector } from "../../../../redux/store";
+import ContentCreatorCard from ".././cards/ContentCreatorCard";
+import { getAllContentCreators } from "../../../../redux/features/howToInvestSlice";
 import { Pagination } from "@mui/material";
 
 

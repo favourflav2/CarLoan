@@ -1,10 +1,10 @@
 import * as React from "react";
-import HowToInvestHeader from "./components/HowToInvestHeader";
-import CreatorsSection from "./components/CreatorsSection";
+import HowToInvestHeader from "./components/Header/HowToInvestHeader";
+import CreatorsSection from "./components/Creator/CreatorsSection";
 import { Dispatch, UseSelector } from "../../redux/store";
 import { toast } from "react-toastify";
 import { setVisitedHowToInvest } from "../../redux/features/applicationSlice";
-import Books from "./components/Books";
+import Books from "./components/Books/Books";
 
 
 

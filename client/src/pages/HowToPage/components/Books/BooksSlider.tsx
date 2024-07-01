@@ -2,9 +2,9 @@ import * as React from "react";
 import Slider from "react-slick";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { BooksArrayObj } from "../../../redux/features/howToInvestSlice";
+import { BooksArrayObj } from "../../../../redux/features/howToInvestSlice";
 import { Skeleton } from "@mui/material";
-import BookCard from "./cards/BookCard";
+import BookCard from "../cards/BookCard";
 
 export interface IBooksSliderProps {
   data: Array<BooksArrayObj>;
