@@ -18,7 +18,7 @@ export default function BookModal({ open, handleClose, handleOpen, item }: IBook
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <div className=" absolute top-[50%] text-lightText dark:text-darkText left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[450px] w-full sm:max-h-[95%] h-full  sm:rounded-lg border-[3px] border-gray-400 overflow-y-auto ">
+      <div className=" absolute top-[50%] text-lightText dark:text-darkText left-[50%] transfrom -translate-x-[50%] -translate-y-[50%]  dark:bg-homeBg bg-lightHomeBg sm:w-[450px] w-full sm:max-h-[95%] sm:h-auto h-full  sm:rounded-lg border-[3px] border-gray-400 overflow-y-auto ">
         {/* Content */}
         <div className="w-full flex flex-col sm:py-4 px-4 py-2 ">
           {/* Clear Button */}
@@ -36,7 +36,7 @@ export default function BookModal({ open, handleClose, handleOpen, item }: IBook
               <h1 className=" mb-1 mt-2 text-[13px] text-gray-400 dark:text-gray-300 font-semibold">{item.author}</h1>
 
               {/* Title */}
-              <h1 className="  text-[15px]  ">{item.title}</h1>
+              <h1 className="  text-[15px] text-center mb-1  ">{item.title}</h1>
 
               {/* Have Read */}
               <h1 className="text-[13px]">
