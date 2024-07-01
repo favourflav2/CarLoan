@@ -5,6 +5,7 @@ import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client
 import { Response, Request } from "express";
 import imageToBase64 from "image-to-base64";
 import { AddBook, AddContentCreator, AddVideoLink, GetAllBooks, GetAllContentCreators, GetAllVideoLinksById } from "../../controllerTypes/howToInvestTypes.js";
+import sharp from "sharp";
 
 const { Pool, types } = pg;
 
@@ -80,29 +81,40 @@ export async function get_All_Books(req:GetAllBooks, res:Response){
     const {page} = req.query
     const limit = 10
 
+    // Page number sent from frontend
     const pageNum:number = typeof page !== "number" ? parseFloat(page) : page;
 
     const startIndex = (pageNum - 1) * limit;
-    const endIndex = pageNum * limit
-
-    console.log(startIndex)
+    // Dont need endIndex becasue I am using limit with postgresql
+   // const endIndex = pageNum * limit
 
    
+    // These 2 values return the total amount of books in my database
     const totalCountQuery = await pool.query('SELECT COUNT(*) FROM books ')
     const totalCountVal = parseFloat(totalCountQuery.rows[0].count)
 
-    const text = 'SELECT * FROM books ORDER BY "title" LIMIT $1 OFFSET $2'
+    const text = 'SELECT * FROM books ORDER BY "title" DESC LIMIT $1 OFFSET $2'
 
 
     const values = [limit,startIndex]
     const allBooks = await pool.query(text,values)
 
+    // If the total amount of books from my database is less than or equal to 0 || not a number ... we return an error
     if(typeof totalCountVal !== 'number' || totalCountVal <= 0 ) return res.status(401).json("There was an error calculating the total count for the books api. Sorry")
+
+      const totalPages = Math.ceil(totalCountVal / limit)
+
+      const paginatedData = {
+        data: allBooks.rows,
+        page: pageNum,
+        limit,
+        totalPages,
+        totalCount: totalCountVal
+      };
     
 
-    //const text =
-    console.log("page", page)
-    res.status(200).json(allBooks.rows)
+ 
+    res.status(200).json(paginatedData)
 
   }catch(e){
     console.log(e);
@@ -110,6 +122,10 @@ export async function get_All_Books(req:GetAllBooks, res:Response){
     res.status(400).json("There was an error getting all books" );
   }
 }
+
+
+// ------------------------------------ Dev Functions for createing the data -------------------------------------
+
 
 // This controller is only responsable for adding new content creator ... dev use only
 export async function add_Content_Creator(req: AddContentCreator, res: Response) {
@@ -173,13 +189,21 @@ export async function add_Book(req:AddBook, res:Response){
   const newImg = await imageToBase64(img);
   const base64Data = Buffer.from(newImg.replace(/^data:image\/\w+;base64,/, ""), "base64");
 
+ const resizeBase64Img = await sharp(base64Data)
+ .resize(400,500,{
+  fit:'fill'
+ })
+  .toBuffer()
+
+ 
+ 
   const paramsKey = title.replace(/\s/g, "");
 
   // Im going to send the book pictures to the same bucket as my content creators ... theres not going to be no overlap because all the name and titles are going to be diffrenet
   const params = {
     Bucket: process.env.CONTENT_CREATOR_BUCKET as string,
     Key: paramsKey,
-    Body: base64Data,
+    Body: resizeBase64Img,
     ContentType: "jpeg",
   };
 
@@ -195,6 +219,54 @@ export async function add_Book(req:AddBook, res:Response){
   const book = await pool.query(text, values);
 
   res.status(200).json(book.rows[0])
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error adding a book" }); 
+  }
+}
+
+// This controller is only responsable for adding new content creator ... dev use only
+export async function update_Book_Img(req:AddBook, res:Response){
+  try{
+    const {title, img} = req.body
+
+    // Turn img to base 64 type
+  const newImg = await imageToBase64(img);
+  const base64Data = Buffer.from(newImg.replace(/^data:image\/\w+;base64,/, ""), "base64");
+
+const resizeBase64Img = await sharp(base64Data)
+.resize(400,500,{
+ fit:'fill'
+})
+ .toBuffer()
+ 
+ 
+  const paramsKey = title.replace(/\s/g, "");
+
+  // Im going to send the book pictures to the same bucket as my content creators ... theres not going to be no overlap because all the name and titles are going to be diffrenet
+  const params = {
+    Bucket: process.env.CONTENT_CREATOR_BUCKET as string,
+    Key: paramsKey,
+    Body: resizeBase64Img,
+    ContentType: "jpeg",
+  };
+
+  const command = new PutObjectCommand(params);
+  await s3.send(command);
+
+  const imageUrl = `https://${process.env.CONTENT_CREATOR_BUCKET}.s3.amazonaws.com/${paramsKey}`;
+
+
+  // send data to database
+   const text = 'UPDATE books SET img = $1 WHERE title = $2 RETURNING * ';
+  const values = [imageUrl, title];
+   const book = await pool.query(text, values);
+
+  res.status(200).json(book.rows[0])
+
+
 
   }catch(e){
     console.log(e);

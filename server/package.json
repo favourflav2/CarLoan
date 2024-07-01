@@ -34,6 +34,7 @@
     "puppeteer": "^21.11.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "sharp": "^0.33.4",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
