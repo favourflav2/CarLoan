@@ -10,7 +10,7 @@ export default function YoutubeReactPlayer({ link }: IYoutubeReactPlayerProps) {
   return (
     <div className=" relative pt-[56.25%]">
       <LazyLoadComponent >
-        <ReactPlayer url={link} playing={false} height="100%" width="100%" className=" absolute top-0 left-0 " />
+        <ReactPlayer url={link} playing={false} height="100%" width="100%" className=" absolute top-0 left-0 " controls={true}/>
       </LazyLoadComponent>
     </div>
   );
