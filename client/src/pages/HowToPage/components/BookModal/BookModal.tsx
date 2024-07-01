@@ -28,7 +28,7 @@ export default function BookModal({ open, handleClose, handleOpen, item }: IBook
           {/* Book Data */}
           <div className="w-full flex flex-col mt-6">
             {/* Image */}
-            <LazyLoadImage src={item.img} effect="blur" className="object-contain w-full sm:max-h-[250px] h-[170px] " />
+            <LazyLoadImage src={item.img} effect="blur" className="object-contain w-full sm:h-[250px] h-[170px] " />
 
             {/* Author & Title & Have Read */}
             <div className="w-full flex flex-col items-center justify-center">
