@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { BooksArrayObj } from '../../../../redux/features/howToInvestSlice';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import BookModal from '../BookModal/BookModal';
 
 
 export interface IBookCardProps {
@@ -8,10 +9,14 @@ export interface IBookCardProps {
 }
 
 export default function BookCard ({item}: IBookCardProps) {
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
   return (
+    <>
     <div className='w-full flex flex-col h-auto px-2'>
       {/* Content */}
-      <div className='w-full flex flex-col'>
+      <div className='w-full flex flex-col' onClick={handleOpen}>
         {/* Image */}
         <LazyLoadImage src={item.img} effect='blur' className='object-contain w-full max-h-[250px] '/>
 
@@ -24,5 +29,8 @@ export default function BookCard ({item}: IBookCardProps) {
         
       </div>
     </div>
+
+    <BookModal open={open} setOpen={setOpen} handleOpen={handleOpen} handleClose={handleClose} item={item}/>
+    </>
   );
 }
