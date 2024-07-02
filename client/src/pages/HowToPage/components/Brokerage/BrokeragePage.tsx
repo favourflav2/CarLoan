@@ -11,7 +11,7 @@ export default function BrokeragePage(props: IBrokeragePageProps) {
       <div className="w-full flex flex-col">
         <h1 className="sm:text-[25px] text-[20px] underline mb-5">Brokerage Accounts</h1>
 
-        <p>
+        <p className="sm:text-base text-[14px]">
          - A brokerage account is an investment account that allows you to buy and sell securities like stocks, bonds, mutual funds, and
           exchange-traded funds (ETFs) through a financial institution. You can use the funds in your account for any purpose, such as saving for a
           big purchase or setting money aside for the future.
@@ -19,7 +19,7 @@ export default function BrokeragePage(props: IBrokeragePageProps) {
 
         <h1 className="text-[19px] mt-5 mb-2 font-semibold">Here are some of the top brokerages</h1>
 
-        <ul className="list-disc list-inside">
+        <ul className="list-disc list-inside sm:text-base text-[14px]">
             <li>Charles Schwab</li>
             <li>Fidelity Investments</li>
             <li>Vanguard Group</li>
@@ -41,4 +41,4 @@ export default function BrokeragePage(props: IBrokeragePageProps) {
   );
 }
 
-// https://investor.vanguard.com/investment-products
+

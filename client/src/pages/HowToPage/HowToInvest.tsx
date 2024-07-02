@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { setVisitedHowToInvest } from "../../redux/features/applicationSlice";
 import Books from "./components/Books/Books";
 import BrokeragePage from "./components/Brokerage/BrokeragePage";
+import HowToInvestSummary from "./components/Summary/HowToInvestSummary";
 
 
 
@@ -42,6 +43,9 @@ export default function HowToInvest(props: IHowToInvestProps) {
 
           {/* Brokerage Accounts */}
           <BrokeragePage />
+
+          {/* Summary */}
+          <HowToInvestSummary />
         </div>
       </div>
     </div>
