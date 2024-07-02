@@ -118,6 +118,11 @@ export default function FirstModal({ open, setOpen }: IFirstModalProps) {
               />
             </div>
 
+            <div className="w-full h-auto flex flex-col mt-3">
+            <h1 className=" text-[17px] font-medium text-chartGreen">News!</h1>
+                <p className="text-[12px]">New calculators and functions will be added soon ... Investing, Cost of Debt, and many more stay tuned :) </p>
+            </div>
+
             {/* <div className="w-auto flex items-center my-3 cursor-pointer">
               <h1 className="underline text-[17px] font-medium">Other</h1>
               <NavigateNextOutlinedIcon className="text-[19px]" />

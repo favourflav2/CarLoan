@@ -24,7 +24,6 @@ export default function HowToInvest(props: IHowToInvestProps) {
       dispatch(setVisitedHowToInvest())
     }
   },[]) // eslint-disable-line
-  
   return (
     <div className="w-full min-h-screen flex flex-col dark:text-darkText text-lightText">
       {/* Container */}
