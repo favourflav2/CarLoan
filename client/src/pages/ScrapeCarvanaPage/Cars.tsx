@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Dispatch, UseSelector } from "../../redux/store";
-import { filterData, searchCars, setSearchedCars } from "../../redux/features/carSlice";
+import { filterData, searchCars, setSearchLoading, setSearchedCars } from "../../redux/features/carSlice";
 import { Skeleton, Pagination} from "@mui/material";
 import CarVanaCard from "../../components/cards/CarVanaCard";
 import CarDotComCard from "../../components/cards/CarDotComCard";
@@ -38,6 +38,7 @@ export default function Cars() {
   }, [sendRequest]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    dispatch(setSearchLoading())
     setInputVal(e.target.value);
     debouncedSendRequest(e.target.value);
   }
@@ -84,6 +85,7 @@ export default function Cars() {
   }, [inputVal]); // eslint-disable-line
 
 
+
   return (
     <div className="w-full min-h-screen  lg:px-8 md:px-4 px-2 flex pt-[50px] text-lightText dark:text-darkText">
       {/* Desktop Content */}
@@ -104,7 +106,7 @@ export default function Cars() {
                 <input
                   type="text"
                   className="w-full  border-gray-500 outline-none rounded-sm indent-2 border h-[50px] text-black"
-                  placeholder="Search for brand, shoe, etc."
+                  placeholder="Search for car."
                   onChange={handleChange}
                   value={inputVal}
                 />

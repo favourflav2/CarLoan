@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 export interface ISearchDropDownProps {
   openBox: boolean;
   refOne: React.MutableRefObject<any>;
-  setInputVal: React.Dispatch<React.SetStateAction<string>>
-  inputVal:string;
+  setInputVal: React.Dispatch<React.SetStateAction<string>>;
+  inputVal: string;
 }
 
 export default function SearchDropDown({ openBox, refOne, setInputVal, inputVal }: ISearchDropDownProps) {
@@ -23,13 +23,18 @@ export default function SearchDropDown({ openBox, refOne, setInputVal, inputVal 
   return (
     <>
       {openBox && (
-        <div className="w-full max-h-[250px] absolute bg-white dark:bg-[#1a120e] top-[51px]  z-10 overflow-y-auto border border-gray-500" ref={refOne}>
+        <div
+          className="w-full max-h-[250px] absolute bg-white dark:bg-[#1a120e] top-[51px]  z-10 overflow-y-auto border border-gray-500"
+          ref={refOne}
+        >
           {/* Content */}
           <div className="w-full flex flex-col h-full overflow-y-auto">
+         
+
             {searchLoading ? (
               <div className="w-full flex flex-col h-auto">
                 {Array.from(Array(6).keys()).map((item: any, index: any) => (
-                  <Skeleton key={index} variant="rectangular" className="w-full h-[40px] my-1" />
+                  <Skeleton key={index} variant="rectangular" className="w-full h-[40px] mb-[3px] " />
                 ))}
               </div>
             ) : searchedCars.length ? (

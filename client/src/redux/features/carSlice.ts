@@ -179,6 +179,9 @@ const carSlice = createSlice({
     },
     setSearchError: (state) => {
       state.searchError = ""
+    },
+    setSearchLoading: (state) => {
+      state.searchLoading = true
     }
   },
   extraReducers(builder) {
@@ -228,8 +231,9 @@ const carSlice = createSlice({
         state.searchLoading = true;
       })
       .addCase(searchCars.fulfilled, (state, action) => {
-        state.searchLoading = false;
+        
         state.searchedCars = action.payload;
+        state.searchLoading = false;
       })
       .addCase(searchCars.rejected, (state, action) => {
         state.searchLoading = false;
@@ -265,4 +269,4 @@ const carSlice = createSlice({
 });
 
 export default carSlice.reducer;
-export const { setSearchedCars, setCarSliceError } = carSlice.actions;
+export const { setSearchedCars, setCarSliceError, setSearchLoading } = carSlice.actions;
