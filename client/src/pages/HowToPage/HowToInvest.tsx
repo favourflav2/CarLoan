@@ -5,6 +5,7 @@ import { Dispatch, UseSelector } from "../../redux/store";
 import { toast } from "react-toastify";
 import { setVisitedHowToInvest } from "../../redux/features/applicationSlice";
 import Books from "./components/Books/Books";
+import BrokeragePage from "./components/Brokerage/BrokeragePage";
 
 
 
@@ -38,6 +39,9 @@ export default function HowToInvest(props: IHowToInvestProps) {
 
           {/* Books */}
           <Books />
+
+          {/* Brokerage Accounts */}
+          <BrokeragePage />
         </div>
       </div>
     </div>
