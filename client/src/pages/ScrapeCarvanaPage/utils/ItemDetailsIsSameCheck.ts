@@ -1,6 +1,8 @@
 import { ItemDetailsState } from "../../../redux/features/carStateSlice";
 import _ from "lodash";
 
+type HidePrice = Omit<ItemDetailsState, "price">
+
 export function itemDetailsIsSameCheck(
   data: {
     price: string;
@@ -11,20 +13,20 @@ export function itemDetailsIsSameCheck(
   },
   state: ItemDetailsState
 ) {
-  const newObj: ItemDetailsState = {
-    price: parseFloat(data.price.replace(/[,%$]/gm, "")),
+  const newObj: HidePrice = {
     downPayment: parseFloat(data.downPayment.replace(/[,%$]/gm, "")),
     extraPayment: parseFloat(data.extraPayment.replace(/[,%$]/gm, "")),
     interest: parseFloat(data.interest.replace(/[,%$]/gm, "")),
     term: data.term,
   };
 
-  
+  const newState:HidePrice = {
+    downPayment: state.downPayment,
+    extraPayment: state.extraPayment,
+    interest: state.interest,
+    term: state.term,
+  }
 
-  if (newObj.price <= 0 || state.price <= 0) return false;
-
-
-
-return _.isEqual(state, newObj) ? false : true;
+return _.isEqual(newState, newObj) ? false : true;
   
 }
