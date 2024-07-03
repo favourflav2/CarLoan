@@ -47,13 +47,13 @@ export interface HouseObjWithFormattedData {
   date: string | null
 }
 
-interface HouseData {
+export interface HouseData {
   houseGoals: Array<HouseObjWithFormattedData>;
   error: string;
   singleOrGridView: boolean;
 }
 
-const initialState: HouseData = {
+export const initialState: HouseData = {
   houseGoals: [],
   error: "",
   singleOrGridView: false,

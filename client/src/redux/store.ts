@@ -15,7 +15,7 @@ import { listenerMiddleware } from "./listeners/listenerMiddleware";
 import { howToInvestCreateApi } from "./api/howToInvestApi";
 import howToInvestSlice from "./features/howToInvestSlice";
 
-const persistConfig = {
+export const persistConfig = {
   key: "root",
   version: 1,
   storage,
@@ -51,8 +51,17 @@ export const store = configureStore({
     }).concat([howToInvestCreateApi.middleware]).prepend(listenerMiddleware.middleware),
 });
 
+// Redux Reusable setup Store
+export const setupStore = (preloadedState?: Partial<RootState>) => {
+  return configureStore({
+    reducer: reducer,
+    preloadedState
+  })
+}
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export type AppStore = ReturnType<typeof setupStore>
 
 // Need this in order to use useDipatch and useSelctor
 export const Dispatch = useDispatch.withTypes<AppDispatch>();

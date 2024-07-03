@@ -38,7 +38,7 @@ interface TableObj {
   userCarGoalsIsLoading: boolean
 }
 
-const initialState: TableObj = {
+export const initialState: TableObj = {
   pageState: 1,
   userGoals: {
     data: [],

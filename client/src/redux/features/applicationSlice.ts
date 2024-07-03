@@ -22,7 +22,7 @@ interface AppSlice {
   visitedHowToInvest:boolean
 }
 
-const initialState: AppSlice = {
+export const initialState: AppSlice = {
   lightAndDarkMode: false,
   retireModal: false,
 

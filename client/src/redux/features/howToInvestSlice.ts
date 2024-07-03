@@ -56,7 +56,7 @@ interface ContentCreatorObj {
   }
 }
 
-const initialState: ContentCreatorObj = {
+export const initialState: ContentCreatorObj = {
   creatorData: {
     page: 1,
     limit: 4,

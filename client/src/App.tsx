@@ -21,7 +21,7 @@ import ResetPasswordPrivateRoute from "./pages/Auth/PrivateRoutes/ResetPasswordP
 import CreateNewPassword from "./pages/Auth/createNewPassword/CreateNewPassword";
 import HowToInvest from "./pages/HowToPage/HowToInvest";
 
-function App() {
+export function App() {
   const localStorageUser = localStorage.getItem("profile");
   const user = localStorageUser !== null ? JSON.parse(localStorageUser) : null;
 

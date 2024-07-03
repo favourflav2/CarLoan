@@ -62,12 +62,12 @@ interface InputRetireErrors {
   [key: string]: any;
 }
 
-interface RetirementSlice {
+export interface RetirementSlice {
   retireGoals: Array<RetirementGoals>;
   errors: InputRetireErrors | null;
 }
 
-const initialState: RetirementSlice = {
+export const initialState: RetirementSlice = {
   retireGoals: [],
   errors: null,
 };

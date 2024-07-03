@@ -35,13 +35,13 @@ export interface CarObjWithFormattedData {
   date: string |  null
 }
 
-interface CarData {
+export interface CarData {
   carGoals: Array<CarObjWithFormattedData>;
   error: string;
   singleOrGridView: boolean;
 }
 
-const initialState: CarData = {
+export const initialState: CarData = {
   carGoals: [],
   error: "",
   singleOrGridView:false,

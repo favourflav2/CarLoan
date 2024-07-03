@@ -113,7 +113,7 @@ interface PageState {
 
 }
 
-const initialState: PageState = {
+export const initialState: PageState = {
   loading: false,
   error: "",
   filterStates: {
