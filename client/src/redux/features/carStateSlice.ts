@@ -46,7 +46,7 @@ export interface FilterDataObj {
     Rivian: boolean;
     Scion: boolean;
     Subaru: boolean;
-    Telsa: boolean;
+    Tesla: boolean;
     Toyota: boolean;
     Volkswagen: boolean;
     Volvo: boolean;
@@ -89,7 +89,7 @@ export interface MakeAndModal {
   Rivian: false;
   Scion: false;
   Subaru: false;
-  Telsa: false;
+  Tesla: false;
   Toyota: false;
   Volkswagen: false;
   Volvo: false;
@@ -158,7 +158,7 @@ export const initialState: PageState = {
       Rivian: false,
       Scion: false,
       Subaru: false,
-      Telsa: false,
+      Tesla: false,
       Toyota: false,
       Volkswagen: false,
       Volvo: false,

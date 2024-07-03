@@ -70,7 +70,7 @@ export const carvanaSchema = z
     Rivian: z.boolean(),
     Scion: z.boolean(),
     Subaru: z.boolean(),
-    Telsa: z.boolean(),
+    Tesla: z.boolean(),
     Toyota: z.boolean(),
     Volkswagen: z.boolean(),
     Volvo: z.boolean(),

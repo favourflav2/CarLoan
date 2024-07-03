@@ -64,7 +64,7 @@ export interface FilterDataBackendData {
     Rivian: boolean;
     Scion: boolean;
     Subaru: boolean;
-    Telsa: boolean;
+    Tesla: boolean;
     Toyota: boolean;
     Volkswagen: boolean;
     Volvo: boolean;

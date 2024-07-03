@@ -49,7 +49,7 @@ export default function useFormHook({ states }: FormHook) {
     Rivian,
     Scion,
     Subaru,
-    Telsa,
+    Tesla,
     Toyota,
     Volkswagen,
     Volvo,
@@ -108,7 +108,7 @@ export default function useFormHook({ states }: FormHook) {
       Rivian: false,
       Scion: false,
       Subaru: false,
-      Telsa: false,
+      Tesla: false,
       Toyota: false,
       Volkswagen: false,
       Volvo: false,
@@ -158,7 +158,7 @@ export default function useFormHook({ states }: FormHook) {
       Rivian,
       Scion,
       Subaru,
-      Telsa,
+      Tesla,
       Toyota,
       Volkswagen,
       Volvo,
@@ -225,7 +225,7 @@ export interface ICarvanaInputCardProps {
     Rivian: boolean;
     Scion: boolean;
     Subaru: boolean;
-    Telsa: boolean;
+    Tesla: boolean;
     Toyota: boolean;
     Volkswagen: boolean;
     Volvo: boolean;
@@ -272,7 +272,7 @@ export interface ICarvanaInputCardProps {
       Rivian: boolean;
       Scion: boolean;
       Subaru: boolean;
-      Telsa: boolean;
+      Tesla: boolean;
       Toyota: boolean;
       Volkswagen: boolean;
       Volvo: boolean;
