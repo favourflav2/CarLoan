@@ -3,8 +3,6 @@
 .env
 env.development
 
-data/
 screenshots/
 /node_modules
 node_modules
-/functions
