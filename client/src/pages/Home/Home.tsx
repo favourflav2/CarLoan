@@ -47,16 +47,16 @@ export default function Home() {
   const [open, setOpen] = React.useState(false);
 
   // ref to scroll to on handleChange
-  const clickRef = React.useRef<any>(null)
+  const clickRef = React.useRef<any>(null);
 
   // Handle User Goals Change
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    dispatch(setPageState(value))
+    dispatch(setPageState(value));
     clickRef.current?.scrollTo({
-      top:0,
-      left:0,
-      behavior: "smooth"
-    })
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
   };
 
   function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData) {
@@ -132,7 +132,12 @@ export default function Home() {
               <hr className=" my-4 border-2 dark:border-darkText border-lightDashboardText" />
 
               {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
-              <div className={`w-full h-[600px] overflow-y-auto no-scrollbar  ${!userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 && 'border-gray-500 border-b-2 dark:border-white' }`} ref={clickRef}>
+              <div
+                className={`w-full h-[600px] overflow-y-auto no-scrollbar  ${
+                  !userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 && "border-gray-500 border-b-2 dark:border-white"
+                }`}
+                ref={clickRef}
+              >
                 {!User ? (
                   <DashboardMappedData
                     setFirstModal={setFirstModal}
@@ -144,30 +149,34 @@ export default function Home() {
                     carGoals={carGoals}
                   />
                 ) : (
-                  <UserDashBoardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} selectedGoal={selectedGoal}  />
+                  <UserDashBoardMappedData setFirstModal={setFirstModal} type="desktop" setOpen={setOpen} selectedGoal={selectedGoal} />
                 )}
               </div>
 
               {/* Pagination */}
-              {!userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 && <div className="w-full h-auto mt-5 flex justify-center">
-                <Pagination
-                  count={userGoals.totalPages || 0}
-                  page={pageState}
-                  onChange={handlePageChange}
-                  className=""
-                  size="small"
-                  sx={{
-                    "& .MuiPaginationItem-root": {
-                      borderColor: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
-                      color: `${lightAndDarkMode ? "#d1d5db" : "black"}`,
-                      "&.Mui-selected": {
-                        background: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
-                        color: `${lightAndDarkMode ? "black" : "black"}`,
+              {!userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 ? (
+                <div className="w-full h-auto mt-5 flex justify-center">
+                  <Pagination
+                    count={userGoals.totalPages || 0}
+                    page={pageState}
+                    onChange={handlePageChange}
+                    className=""
+                    size="small"
+                    sx={{
+                      "& .MuiPaginationItem-root": {
+                        borderColor: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                        color: `${lightAndDarkMode ? "#d1d5db" : "black"}`,
+                        "&.Mui-selected": {
+                          background: `${lightAndDarkMode ? "#d1d5db" : "gray"}`,
+                          color: `${lightAndDarkMode ? "black" : "black"}`,
+                        },
                       },
-                    },
-                  }}
-                />
-              </div>}
+                    }}
+                  />
+                </div>
+              ) : (
+                <></>
+              )}
             </motion.div>
           )}
         </div>
