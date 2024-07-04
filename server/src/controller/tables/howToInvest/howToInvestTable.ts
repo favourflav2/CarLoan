@@ -135,12 +135,19 @@ export async function add_Content_Creator(req: AddContentCreator, res: Response)
   const newImg = await imageToBase64(photo);
   const base64Data = Buffer.from(newImg.replace(/^data:image\/\w+;base64,/, ""), "base64");
 
+  const resizeBase64Img = await sharp(base64Data)
+  .resize(700,700,{
+   fit:'fill'
+  })
+  .jpeg()
+   .toBuffer()
+
   const paramsKey = name.replace(/\s/g, "");
 
   const params = {
     Bucket: process.env.CONTENT_CREATOR_BUCKET as string,
     Key: paramsKey,
-    Body: base64Data,
+    Body: resizeBase64Img,
     ContentType: "jpeg",
   };
 
@@ -183,7 +190,7 @@ export async function add_Video_Link(req: AddVideoLink, res: Response) {
 // These controllers only responsable for adding new book ... dev use only
 export async function add_Book(req:AddBook, res:Response){
   try{
-    const {title, author, img, about, amazonLink} = req.body
+    const {title, author, img, about, amazonLink, haveRead} = req.body
 
     // Turn img to base 64 type
   const newImg = await imageToBase64(img);
@@ -216,7 +223,7 @@ export async function add_Book(req:AddBook, res:Response){
 
    // send data to database
   const text = 'INSERT INTO books (title, author, about, "amazonLink", img, "haveRead") VALUES ($1, $2, $3, $4, $5, $6) RETURNING * ';
-  const values = [title, author, about, amazonLink, imageUrl, true];
+  const values = [title, author, about, amazonLink, imageUrl, haveRead];
   const book = await pool.query(text, values);
 
   res.status(200).json(book.rows[0])
@@ -273,5 +280,42 @@ const resizeBase64Img = await sharp(base64Data)
     console.log(e);
     console.log("message", e.message);
     res.status(400).json({ msg: "There was an error adding a book" }); 
+  }
+}
+
+// This controller is only responsable for adding new content creator ... dev use only
+export async function update_Content_Creator_Img(req:AddContentCreator, res:Response){
+  try{
+    const {name, photo} = req.body
+
+    // Turn img to base 64 type
+  const newImg = await imageToBase64(photo);
+  const base64Data = Buffer.from(newImg.replace(/^data:image\/\w+;base64,/, ""), "base64");
+
+  const resizeBase64Img = await sharp(base64Data)
+  .resize(700,700,{
+   fit:'fill'
+  })
+  .jpeg()
+   .toBuffer()
+
+  const paramsKey = name.replace(/\s/g, "");
+
+  const params = {
+    Bucket: process.env.CONTENT_CREATOR_BUCKET as string,
+    Key: paramsKey,
+    Body: resizeBase64Img,
+    ContentType: "jpeg",
+  };
+
+  const command = new PutObjectCommand(params);
+  await s3.send(command);
+
+  res.send("Done")
+
+  }catch(e){
+    console.log(e);
+    console.log("message", e.message);
+    res.status(400).json({ msg: "There was an error adding updating content creator image" });
   }
 }

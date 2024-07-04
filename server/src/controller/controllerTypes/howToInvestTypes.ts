@@ -39,6 +39,7 @@ export interface AddBook extends Request {
     about:string;
     amazonLink:string;
     img:string;
+    haveRead:boolean;
   }
 }
 
