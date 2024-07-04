@@ -29,7 +29,7 @@ export function practice_Fun(page:any){
 // Craete APi
 export const howToInvestCreateApi = createApi({
     reducerPath:"howToInvestCreateApi",
-    baseQuery: fetchBaseQuery({baseUrl:`http://localhost:5001/howToInvest`}),
+    baseQuery: fetchBaseQuery({baseUrl:`${devEnv ? localAPI : prodAPI }`}),
     endpoints: (builder) => ({
         getVideoLinksById: builder.query<Array<VideoLinkObj>,{creatorId:string}>({
             query:(body:{creatorId:string}) => ({
