@@ -2,7 +2,10 @@ import axios from "axios";
 
 
 
-const API = axios.create({ baseURL: "http://localhost:5001/" });
+const devEnv = process.env.NODE_ENV !== "production"
+
+
+const API = axios.create({baseURL:`${devEnv ? process.env.REACT_APP_LOCALHOST_API : process.env.REACT_APP_PROD_API }`})
 
 export function carVana_Data(data: any) {
   return API.post(`/carData/allCarvanaData?page=${data.page}`);

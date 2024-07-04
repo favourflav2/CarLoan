@@ -1,8 +1,12 @@
 import axios from "axios";
 import { LogInObj, SignUpObj } from "../features/authSlice";
 
+const devEnv = process.env.NODE_ENV !== "production"
 
-const API = axios.create({ baseURL: "http://localhost:5001/auth" });
+const localAPI = `${process.env.REACT_APP_LOCALHOST_API}/auth`
+const prodAPI = `${process.env.REACT_APP_PROD_API}/auth`
+
+const API = axios.create({ baseURL: `${devEnv ? localAPI : prodAPI }` });
 
 API.interceptors.request.use((req) => {
     if(localStorage.getItem('profile')){

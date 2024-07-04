@@ -4,7 +4,12 @@ import { BooksObj, VideoLinkObj } from "../features/howToInvestSlice"
 
 type Page = number;
 
-const API = axios.create({ baseURL: "http://localhost:5001/howToInvest" });
+const devEnv = process.env.NODE_ENV !== "production"
+
+const localAPI = `${process.env.REACT_APP_LOCALHOST_API}/howToInvest`
+const prodAPI = `${process.env.REACT_APP_PROD_API}/howToInvest`
+
+const API = axios.create({ baseURL: `${devEnv ? localAPI : prodAPI }` });
 
 
 // Get all content creators
