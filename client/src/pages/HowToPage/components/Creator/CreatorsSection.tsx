@@ -2,8 +2,7 @@ import * as React from "react";
 import { Dispatch, UseSelector } from "../../../../redux/store";
 import ContentCreatorCard from ".././cards/ContentCreatorCard";
 import { getAllContentCreators } from "../../../../redux/features/howToInvestSlice";
-import { Pagination } from "@mui/material";
-
+import { Pagination, Skeleton } from "@mui/material";
 
 export interface ICreatorsSectionProps {}
 
@@ -27,7 +26,6 @@ export default function CreatorsSection(props: ICreatorsSectionProps) {
   }, [pageState]); // eslint-disable-line
 
 
-
   if (creatorError) {
     return null;
   }
@@ -41,9 +39,11 @@ export default function CreatorsSection(props: ICreatorsSectionProps) {
         <div className="w-full flex flex-col h-auto">
           {/* Mapped Data */}
           <div className="w-full h-auto grid grid-cols-1 gap-2">
-            {creatorData.data.map((item) => (
-              <ContentCreatorCard item={item} loading={creatorLoading} key={item.id}/>
-            ))}
+            {creatorData.data.length <= 0 || creatorLoading ? (
+              <div className="w-full h-auto"><Skeleton variant="rectangular" className="sm:h-[350px] h-[200px]" /></div>
+            ) : (
+              creatorData.data.map((item) => <ContentCreatorCard item={item} loading={creatorLoading} key={item.id} />)
+            )}
           </div>
 
           {/* Paginatio */}
