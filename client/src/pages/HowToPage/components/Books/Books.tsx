@@ -2,7 +2,7 @@ import * as React from "react";
 import { useGetAllBooksQuery } from "../../../../redux/api/howToInvestApi";
 import { BooksApiError, BooksServerError } from "../../utils/ErrorHandlerBooks";
 import BooksSlider from "./BooksSlider";
-import { Pagination } from "@mui/material";
+import { Pagination, Skeleton } from "@mui/material";
 import { UseSelector } from "../../../../redux/store";
 
 export interface IBooksProps {}
@@ -37,7 +37,15 @@ export default function Books(props: IBooksProps) {
         {/* Mapped Data Container  */}
         <div className="w-full flex flex-col h-auto ">
           {/* Slider Container */}
-          {data && <BooksSlider data={data.data} loading={isLoading} fetch={isFetching} />}
+          {isFetching || isLoading ? (
+            <div className="w-full h-auto">
+              <Skeleton variant="rectangular" className="sm:h-[350px] h-[200px]" />
+            </div>
+          ) : data ? (
+            <BooksSlider data={data.data} loading={isLoading} fetch={isFetching} />
+          ) : (
+            <></>
+          )}
 
           {/* Paginatio */}
           {data && !isLoading && !isFetching && data.totalPages > 1 && (
