@@ -57,7 +57,7 @@ export default function BooksSlider({ data, loading, fetch }: IBooksSliderProps)
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="w-full h-full grid grid-cols-[5%_90%_5%]">
+      <div className="w-full h-auto grid grid-cols-[5%_90%_5%]">
         {/* Back Btn */}
         <button onClick={sliderRef?.slickPrev}>
           <ArrowBackIosIcon />

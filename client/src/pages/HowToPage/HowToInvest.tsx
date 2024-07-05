@@ -38,7 +38,9 @@ export default function HowToInvest(props: IHowToInvestProps) {
           <CreatorsSection />
 
           {/* Books */}
+          <div>
           <Books />
+          </div>
 
           {/* Brokerage Accounts */}
           <BrokeragePage />
