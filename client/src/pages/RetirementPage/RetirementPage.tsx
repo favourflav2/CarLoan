@@ -34,7 +34,7 @@ type FormFields = z.infer<typeof schema>;
 
 export default function RetirementPage() {
   // Redux States
-  const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const { selectedGoal, shrinkDashboardSidebar} = UseSelector((state) => state.app);
   const {user} = UseSelector(state => state.auth)
   const dispatch = Dispatch();
 
@@ -153,12 +153,12 @@ export default function RetirementPage() {
     setView("Graph View");
   }, [selectedGoal]);
 
+
   if (!selectedGoal || selectedGoal?.type !== "Retirement") {
     dispatch(setSelectedGoal(null));
     return null;
   }
 
-  //console.log(have)
 
   return (
     <div className="w-full h-full flex flex-col min-[900px]:px-0 px-4">

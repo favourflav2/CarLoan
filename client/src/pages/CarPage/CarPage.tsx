@@ -52,7 +52,7 @@ export const USDollar = new Intl.NumberFormat("en-US", {
 
 export default function CarPage() {
   // Redux States
-  const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const { selectedGoal, shrinkDashboardSidebar} = UseSelector((state) => state.app);
   const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
 
@@ -157,6 +157,9 @@ export default function CarPage() {
       left: 0,
     });
   }, [selectedGoal?.id]);
+
+ 
+
 
   if (!selectedGoal || selectedGoal?.type !== "Car") {
     dispatch(setSelectedGoal(null));

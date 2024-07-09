@@ -36,6 +36,11 @@ interface TableObj {
   userCarGoals: Array<CarObjWithFormattedData>;
   userCarGoalsError: any;
   userCarGoalsIsLoading: boolean
+
+
+  createRetireLoading:boolean;
+  createHouseLoading:boolean;
+  createCarLoading:boolean;
 }
 
 export const initialState: TableObj = {
@@ -60,7 +65,12 @@ export const initialState: TableObj = {
 
   userCarGoals:[],
   userCarGoalsError:"",
-  userCarGoalsIsLoading: false
+  userCarGoalsIsLoading: false,
+
+
+  createRetireLoading:false,
+  createCarLoading:false,
+  createHouseLoading:false
 };
 
 
@@ -113,15 +123,15 @@ const tableSlice = createSlice({
 
       // Add retire goal
       .addCase(createRetireGoal.pending, (state) => {
-        state.userRetireGoalsLoading = true;
+        state.createRetireLoading = true;
       })
       .addCase(createRetireGoal.fulfilled, (state) => {
         state.userRetireGoalsError = ""
-        state.userRetireGoalsLoading = false;
+        state.createRetireLoading = false;
       })
       .addCase(createRetireGoal.rejected, (state, action) => {
         state.userRetireGoalsError = action.payload;
-        state.userRetireGoalsLoading = false;
+        state.createRetireLoading = false;
       })
 
        // Delete retire goal
@@ -171,17 +181,17 @@ const tableSlice = createSlice({
 
       // Create House Goal
       .addCase(createHouseGoal.pending, (state) => {
-        state.userHouseGoalsLoading = true;
+        state.createHouseLoading = true;
       })
       .addCase(createHouseGoal.fulfilled, (state, action:PayloadAction<string>) => {
         //toast.success(action.payload)
         state.userHouseGoalsError = ''
-        state.userHouseGoalsLoading = false;
+        state.createHouseLoading = false;
       })
       .addCase(createHouseGoal.rejected, (state, action) => {
         toast.error(action.payload as string)
         state.userHouseGoalsError = action.payload
-        state.userHouseGoalsLoading = false;
+        state.createHouseLoading = false;
       })
 
       // Update House GOal
@@ -294,17 +304,17 @@ const tableSlice = createSlice({
 
       // Create Car Goal
       .addCase(createCarGoal.pending, (state) => {
-        state.userCarGoalsIsLoading = true;
+        state.createCarLoading = true;
       })
       .addCase(createCarGoal.fulfilled, (state) => {
         state.userCarGoalsError = ''
-        state.userCarGoalsIsLoading = false;
+        state.createCarLoading = false;
         
       })
       .addCase(createCarGoal.rejected, (state, action) => {
         toast.error(action.payload as string)
         state.userCarGoalsError = action.payload
-        state.userCarGoalsIsLoading = false;
+        state.createCarLoading = false;
       })
 
       // Update Car Goal
