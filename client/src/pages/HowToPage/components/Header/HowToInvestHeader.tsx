@@ -13,7 +13,7 @@ export default function HowToInvestHeader(props: IHowToInvestHeaderProps) {
           {/* Grid Container */}
           <div className="md:h-[400px] h-full grid md:grid-cols-2 grid-cols-1 md:gap-x-2 md:gap-y-0 gap-y-3">
             {/* Header */}
-            <div className="w-full flex flex-col bg-slate-200/20 dark:bg-black">
+            <div className="w-full flex flex-col bg-slate-200/20 dark:bg-black p-4">
               <h1 className="text-[35px] text-chartGreen">Investing </h1>
 
               <p className="text-[13px] mt-8 italic leading-6">
