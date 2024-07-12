@@ -27,7 +27,7 @@ services:
     build: ./server
     container_name: server
     env_file:
-      - ./server/.env.dev
+      - ./server/.env.docker
     ports:
       - "5001:5001"
     volumes:
@@ -42,7 +42,7 @@ services:
     build: ./server/postgres
     container_name: postgres
     env_file:
-    - ./server/.env.dev
+    - ./server/.env.docker
     ports:
     - "5433:5432"
 
