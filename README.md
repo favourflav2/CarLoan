@@ -22,57 +22,68 @@ I built this application so people can have a place where they can visually see 
 
 ![App Screenshot](./client/src/assets/readMe/chart.png)
 
-- A summary section just explaining more about the loan
-
-![App Screenshot](./client/src/assets/readMe/summary.png)
 
 - If theres an extra monthly payment, the summary section will show how that will impact your loan and how much you pay.
 
 ![App Screenshot](./client/src/assets/readMe/summaryMore.png)
 
+## Features
+
+- Light/dark mode toggle
+- Docker
+- Redux Persist
+- Puppeteer data scrape (Scraped all the cars from carvana)
+- AWS S3 Bucket, images are saved in aws bucket then the URL is saved to database
+- Login, Sign Up, Forget Passoword Auth
+
+## Tech Stack
+
+**Client:** React, Redux, TailwindCSS, Docker
+
+**Server:** Node, Express, PostgreSQL, Docker, AWS S3
+
+
+
+
 
 
 ## Installation
 
-#### Env Files
+### Environment Variables
 
-- Client (Frontend)
+To run this project, you will need to add the following environment variables to your .env file
+
+### Client (React)
 .env
-```bash
-  REACT_APP_LOCALHOST_API=<Your backend api>
-```
-example: REACT_APP_LOCALHOST_API="http://localhost:4000"
 
------
+`REACT_APP_LOCALHOST_API` : Connect to your backend localhost
 
-
-
-
-
-
-- Sever (backend)
+### Server (NodeJS)
 .env.docker
 
-MAIL_PASSWORD: [Google App Password](https://lizenshakya.medium.com/how-to-send-mails-with-gmail-using-nodemailer-after-less-secure-app-is-disabled-by-google-b41abf3fdada)
-```bash
-MAIL_PASSWORD=<Using nodemailer, also using google email. You will need to get your apps password>
-EMAIL=<Your email>
-POSTGRES_URI_COST_OF_LIVING=postgresql://<USER>@<HOST>:5432/costOfLivingIndex
-POSTGRES_URI_AUTH=postgresql://<USER>@<HOST>:5432/dataScrape
-TYPE=dev
-SECRET=<Secret for JSON Web Token>
-BUISNESS_EMAIL=<Your email>
-BUISNESS_PASSWORD=<Using nodemailer, also using google email. You will need to get your apps password>
-AWS_SECRET_KEY=<AWS SECRET KEY>
-AWS_ACCESS_KEY=<AWS ACCESS KEY>
-BUCKET=<Create a bucket with aws s3>
-REGION=<Enter Bucker Region>
-CONTENT_CREATOR_BUCKET=<Create a bucket with aws s3>
-POSTGRES_HOST_AUTH_METHOD= "trust"
-POSTGRES_HOST= <Postgres Host>
-POSTGRES_USER= <Postgres User>
-POSTGRES_DB= dataScrape
-```
+
+
+#### Environment Variable Descriptions
+|ENV| DESC  |
+|---|---|
+|  `MAIL_PASSWORD` |  Using nodemailer, also using google email. You will need to get your apps password. [Google App Password](https://lizenshakya.medium.com/how-to-send-mails-with-gmail-using-nodemailer-after-less-secure-app-is-disabled-by-google-b41abf3fdada) |
+| `EMAIL`  | Your Email  |
+| `POSTGRES_URI_COST_OF_LIVING`  |  postgresql://<USER>@<HOST>:5432/costOfLivingIndex  |
+| `POSTGRES_URI_AUTH`  |  postgresql://<USER>@<HOST>:5432/dataScrape |
+|  `TYPE` | Docker  |
+| `SECRET`  |  Secret for JSON Web Token |
+| `BUISNESS_EMAIL`  |  Your Email |
+|  `BUISNESS_PASSWORD` | Using nodemailer, also using google email. You will need to get your apps password. [Google App Password](https://lizenshakya.medium.com/how-to-send-mails-with-gmail-using-nodemailer-after-less-secure-app-is-disabled-by-google-b41abf3fdada) |
+|  `AWS_SECRET_KEY` | AWS SECRET KEY  |
+| `AWS_ACCESS_KEY`  | AWS ACCESS KEY  |
+| `BUCKET`  | Create a bucket with aws s3 to store images from goals |
+| `CONTENT_CREATOR_BUCKET`  |  Create a bucket with aws s3 to store images for content creators |
+|  `POSTGRES_HOST_AUTH_METHOD` | 'Trust' |
+| `POSTGRES_HOST`  | Enter Your Postgres Host |
+| `POSTGRES_USER`  | Enter Your Postgres User |
+|  `POSTGRES_DB` | dataScrape |
+
+
 
 
 #### Docker
@@ -80,4 +91,12 @@ POSTGRES_DB= dataScrape
 
 ```bash
   docker compose up --build
+```
+
+## Running Tests
+
+To run tests, run the following command ... Client
+
+```bash
+  npm run test
 ```
