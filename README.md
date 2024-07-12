@@ -12,16 +12,72 @@ I built this application so people can have a place where they can visually see 
 
 
 
+## Preview
+
+- How a goal will look .. You will have multiple options on the type of goal you would like to make
+
+![App Screenshot](./client/src/assets/readMe/house.png)
+
+- There will be a chart showing how much money will be paid over the course of the loan
+
+![App Screenshot](./client/src/assets/readMe/chart.png)
+
+- A summary section just explaining more about the loan
+
+![App Screenshot](./client/src/assets/readMe/summary.png)
+
+- If theres an extra monthly payment, the summary section will show how that will impact your loan and how much you pay.
+
+![App Screenshot](./client/src/assets/readMe/summaryMore.png)
 
 
-###### API
-- TheMovieDB
 
-###### Backend
-- NodeJS
+## Installation
 
-###### Database
-- PosgreSQL
+#### Env Files
 
-###### Frontend
-- React
+- Client (Frontend)
+.env
+```bash
+  REACT_APP_LOCALHOST_API=<Your backend api>
+```
+example: REACT_APP_LOCALHOST_API="http://localhost:4000"
+
+-----
+
+
+
+
+
+
+- Sever (backend)
+.env.docker
+
+MAIL_PASSWORD: [Google App Password](https://lizenshakya.medium.com/how-to-send-mails-with-gmail-using-nodemailer-after-less-secure-app-is-disabled-by-google-b41abf3fdada)
+```bash
+MAIL_PASSWORD=<Using nodemailer, also using google email. You will need to get your apps password>
+EMAIL=<Your email>
+POSTGRES_URI_COST_OF_LIVING=postgresql://<USER>@<HOST>:5432/costOfLivingIndex
+POSTGRES_URI_AUTH=postgresql://<USER>@<HOST>:5432/dataScrape
+TYPE=dev
+SECRET=<Secret for JSON Web Token>
+BUISNESS_EMAIL=<Your email>
+BUISNESS_PASSWORD=<Using nodemailer, also using google email. You will need to get your apps password>
+AWS_SECRET_KEY=<AWS SECRET KEY>
+AWS_ACCESS_KEY=<AWS ACCESS KEY>
+BUCKET=<Create a bucket with aws s3>
+REGION=<Enter Bucker Region>
+CONTENT_CREATOR_BUCKET=<Create a bucket with aws s3>
+POSTGRES_HOST_AUTH_METHOD= "trust"
+POSTGRES_HOST= <Postgres Host>
+POSTGRES_USER= <Postgres User>
+POSTGRES_DB= dataScrape
+```
+
+
+#### Docker
+- Once all enviroment variables are set
+
+```bash
+  docker compose up --build
+```
