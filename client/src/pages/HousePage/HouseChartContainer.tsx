@@ -61,7 +61,7 @@ export default function HouseChartContainer({ monthlyPayment, selectedGoal, regu
 
   return (
     <div className="w-full h-full flex flex-col my-5">
-      <h1 className="text-[19px] font-semibold">Retirement savings at age </h1>
+      <h1 className="text-[19px] font-semibold">Mortgage Calculations</h1>
 
       <div className="w-auto flex items-center mt-3 relative">
         <Checkbox
