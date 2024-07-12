@@ -221,7 +221,15 @@ export default function Home() {
           clickRef={clickRef}
           handlePageChange={handlePageChange}
         />
-        <div className=" w-full h-auto">{selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />}</div>
+        <div className=" w-full h-auto">
+          {selectedGoal?.id ? (
+            renderSwitch(selectedGoal)
+          ) : (
+            <CreateGoalLoading>
+              <NoSelectedGoal />
+            </CreateGoalLoading>
+          )}
+        </div>
       </div>
 
       {/* Modals */}
