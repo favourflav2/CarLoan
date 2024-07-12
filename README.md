@@ -30,7 +30,7 @@ I built this application so people can have a place where they can visually see 
 ## Features
 
 - Light/dark mode toggle
-- Docker
+- Docker Compose, run this project on your computer with ease
 - Redux Persist
 - Puppeteer data scrape (Scraped all the cars from carvana)
 - AWS S3 Bucket, images are saved in aws bucket then the URL is saved to database
@@ -68,8 +68,8 @@ To run this project, you will need to add the following environment variables to
 |---|---|
 |  `MAIL_PASSWORD` |  Using nodemailer, also using google email. You will need to get your apps password. [Google App Password](https://lizenshakya.medium.com/how-to-send-mails-with-gmail-using-nodemailer-after-less-secure-app-is-disabled-by-google-b41abf3fdada) |
 | `EMAIL`  | Your Email  |
-| `POSTGRES_URI_COST_OF_LIVING`  |  postgresql://<USER>@<HOST>:5432/costOfLivingIndex  |
-| `POSTGRES_URI_AUTH`  |  postgresql://<USER>@<HOST>:5432/dataScrape |
+| `POSTGRES_URI_COST_OF_LIVING`  |  postgresql://ENTER USER @ ENTER HOST:5432/costOfLivingIndex  |
+| `POSTGRES_URI_AUTH`  |  postgresql://ENTER USER @ ENTER HOST:5432/dataScrape |
 |  `TYPE` | Docker  |
 | `SECRET`  |  Secret for JSON Web Token |
 | `BUISNESS_EMAIL`  |  Your Email |
