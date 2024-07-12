@@ -5,4 +5,4 @@
 \i '/docker-entrypoint-initdb.d/tables/goals.sql'
 \i '/docker-entrypoint-initdb.d/tables/contentCreator.sql'
 \i '/docker-entrypoint-initdb.d/tables/videoLink.sql'
---\i '/docker-entrypoint-initdb.d/tables/books.sql'
+\i '/docker-entrypoint-initdb.d/tables/books.sql'
