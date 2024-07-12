@@ -34,7 +34,7 @@ type FormFields = z.infer<typeof schema>;
 
 export default function HousePage(props: IHousePageProps) {
   // Redux States
-  const { selectedGoal, shrinkDashboardSidebar } = UseSelector((state) => state.app);
+  const { selectedGoal, shrinkDashboardSidebar} = UseSelector((state) => state.app);
   const { user } = UseSelector((state) => state.auth);
   const dispatch = Dispatch();
 
@@ -129,6 +129,9 @@ export default function HousePage(props: IHousePageProps) {
       setSaveBtn(false);
     }
   };
+
+  
+
 
   if (!selectedGoal || selectedGoal.type !== "House") {
     dispatch(setSelectedGoal(null));

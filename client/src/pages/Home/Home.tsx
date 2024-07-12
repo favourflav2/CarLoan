@@ -23,6 +23,7 @@ import NoSelectedGoal from "./NoSelectedGoal";
 import UserDashBoardMappedData from "../../components/dashboardComponents/UserDashboardMappedData";
 import { Pagination } from "@mui/material";
 import { setPageState } from "../../redux/features/tablesSlice";
+import CreateGoalLoading from "../../components/redirects/CreateGoalLoading";
 
 export default function Home() {
   // Redux States
@@ -62,13 +63,29 @@ export default function Home() {
   function renderSwitch(value: RetirementGoals | null | CarObjWithFormattedData | HouseObjWithFormattedData) {
     switch (value?.type) {
       case "Retirement":
-        return <RetirementPage />;
+        return (
+          <CreateGoalLoading>
+            <RetirementPage />
+          </CreateGoalLoading>
+        );
       case "Car":
-        return <CarPage />;
+        return (
+          <CreateGoalLoading>
+            <CarPage />
+          </CreateGoalLoading>
+        );
       case "House":
-        return <HousePage />;
+        return (
+          <CreateGoalLoading>
+            <HousePage />
+          </CreateGoalLoading>
+        );
       default:
-        return <NoSelectedGoal />;
+        return (
+          <CreateGoalLoading>
+            <NoSelectedGoal />
+          </CreateGoalLoading>
+        );
     }
   }
 
@@ -97,10 +114,7 @@ export default function Home() {
           {shrinkDashboardSidebar ? (
             // Shrinked Left Side
             <div className=" w-full flex items-center   flex-col p-4 ">
-              <NavigateNextIcon
-                className="text-[30px] mr-1 dark:text-darkText  text-lightDashboardText"
-                onClick={() => dispatch(setShrinkDashboard())}
-              />
+              <NavigateNextIcon className="text-[30px] mr-1 dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())} />
             </div>
           ) : (
             // Regualr Left Side
@@ -120,10 +134,7 @@ export default function Home() {
                   <h1>Dashboard</h1>
                 </div>
                 {/* Shrink Btn */}
-                <div
-                  className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText"
-                  onClick={() => dispatch(setShrinkDashboard())}
-                >
+                <div className="w-auto flex items-center cursor-pointer dark:text-darkText  text-lightDashboardText" onClick={() => dispatch(setShrinkDashboard())}>
                   <NavigateBeforeIcon className="!text-[30px] " />
                 </div>
               </div>
@@ -133,9 +144,7 @@ export default function Home() {
 
               {/* Mapped Data When We Data ... Or just a selector that opens up a modal */}
               <div
-                className={`w-full h-[600px] overflow-y-auto no-scrollbar  ${
-                  !userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 && "border-gray-500 border-b-2 dark:border-white"
-                }`}
+                className={`w-full h-[600px] overflow-y-auto no-scrollbar  ${!userGoalsLoading && userGoals.totalPages && userGoals.totalPages > 1 && "border-gray-500 border-b-2 dark:border-white"}`}
                 ref={clickRef}
               >
                 {!User ? (
@@ -182,7 +191,15 @@ export default function Home() {
         </div>
         <div className={`${shrinkDashboardSidebar ? "ml-[40px]" : "ml-[280px]"}`}>
           {/* Right Side */}
-          <div className=" w-full h-full">{selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />}</div>
+          <div className=" w-full h-full">
+            {selectedGoal?.id ? (
+              renderSwitch(selectedGoal)
+            ) : (
+              <CreateGoalLoading>
+                <NoSelectedGoal />
+              </CreateGoalLoading>
+            )}
+          </div>
         </div>
       </div>
 
@@ -204,7 +221,15 @@ export default function Home() {
           clickRef={clickRef}
           handlePageChange={handlePageChange}
         />
-        <div className=" w-full h-auto">{selectedGoal?.id ? renderSwitch(selectedGoal) : <NoSelectedGoal />}</div>
+        <div className=" w-full h-auto">
+          {selectedGoal?.id ? (
+            renderSwitch(selectedGoal)
+          ) : (
+            <CreateGoalLoading>
+              <NoSelectedGoal />
+            </CreateGoalLoading>
+          )}
+        </div>
       </div>
 
       {/* Modals */}
