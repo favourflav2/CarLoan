@@ -1,0 +1,50 @@
+# Version of the docker compose
+# Remember its docker-compose up --build
+
+
+# What services are we going to use
+services: 
+
+  react:
+    build: ./client
+    container_name: client
+    ports:
+      - "3000:3000"
+    # Allows us to see real time updates when are contianers are up
+    volumes:
+      - ./client:/client_Docker
+      - /client_Docker/node_modules
+      # Need these for it to work with react
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
+      # - postgres
+
+
+  # Backend
+  server:
+    build: ./server
+    container_name: server
+    env_file:
+      - ./server/.env.dev
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./server:/server_Docker
+      - /server_Docker/node_modules
+    depends_on:
+      - postgres
+  
+
+    # Postgres
+  postgres:
+    build: ./server/postgres
+    container_name: postgres
+    env_file:
+    - ./server/.env.dev
+    ports:
+    - "5433:5432"
+
+  
+    

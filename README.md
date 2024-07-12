@@ -1,5 +1,5 @@
 # The Finance Calculator
-- [The Finance Calculator (Hulu Clone) - Full-Stack Application](https://bulu.onrender.com/Home)
+- [The Finance Calculator](https://thefinancecalculator.org/)
 
 # Description
 This application is a calculator that uses future value, present value, cost of debt, and other equations to find how much something cost. You will be able to visually see how time and interest play a crucial part on the type of loans you choose and the type of investments you decide.

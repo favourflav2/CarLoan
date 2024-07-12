@@ -2,7 +2,10 @@
 .env.production
 .env
 env.development
-
+.env.docker
 screenshots/
 /node_modules
 node_modules
+.env.dev
+env.dev
+env.docker
